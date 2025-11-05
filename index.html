@@ -3,34 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Relzzy's Webpage</title>
-
+    <title>The Paths - Relzzy's Webpage</title>
+    
+    <!-- Google Font (same as homepage) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
 
+    <!-- 
+      CSS STYLING STARTS HERE
+      This block creates the "adventure" UI.
+    -->
     <style>
         /* Define animations we will use */
         @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Basic setup */
@@ -43,108 +35,191 @@
         body {
             font-family: 'Poppins', sans-serif;
             
-            /* --- This replaces <body background="sunrise.jpg"> --- */
-            /* 1. The image */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('sunrise.jpg');
+            /* --- This replaces <body ... style=""> --- */
+            background-color: #1a1a1a;
+            background-image: linear-gradient(rgba(20, 20, 30, 0.8), rgba(20, 20, 30, 0.8)), url('forest.jpg');
             
-            /* 2. Dark overlay (the 'linear-gradient' above) makes text readable */
+            /* 2. Dark overlay (0.8 opacity) makes text readable */
             
             /* 3. Make the image cover the whole screen and stay fixed */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             
-            /* 4. Center all content on the page */
+            color: #ffffff;
+            
+            /* Center the content card */
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Make body at least the full height of the screen */
-            text-align: center;
-            color: #ffffff; /* Default text color is white */
+            min-height: 100vh;
+            padding: 40px 0;
         }
 
-        /* --- This replaces <h1><center><i> --- */
+        /* Container to hold all content */
+        .container {
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
+
+        /* --- New Title (replaces empty <h1>) --- */
         h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 900;
-            font-style: italic; /* This replaces the <i> tag */
-            color: #fff;
             
-            /* Cool neon glow effect for the text */
+            /* Using the "danger" red from your original link */
+            color: #e74c3c;
             text-shadow: 
-                0 0 5px #fff,
-                0 0 10px #fff,
-                0 0 20px #00aaff, /* You can change this glow color! */
-                0 0 30px #00aaff;
+                0 0 5px #e74c3c,
+                0 0 10px #e74c3c,
+                0 0 20px #fff;
             
             /* Animation */
             animation: fadeInDown 1s ease-out;
         }
 
-        /* --- This replaces the <hr> tags and styles the links --- */
-        nav {
-            margin: 25px 0; /* Space above and below the nav bar */
+        /* --- THE STORY CARD ---
+          This is the main "glassy" card UI.
+        */
+        .story-card {
+            background: rgba(30, 30, 46, 0.75); /* Dark blue/purple transparent */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 100, 220, 0.3); /* Subtle blue border */
+            border-radius: 16px;
+            padding: 30px 40px; /* More padding */
+            margin-top: 30px;
+            text-align: left; /* Text should be left-aligned */
+            
             /* Animation */
             animation: fadeInUp 1s ease-out 0.3s;
-            animation-fill-mode: backwards; /* Starts animation from the 'from' state */
+            animation-fill-mode: backwards;
+        }
+        
+        /* --- This replaces <p><font> --- */
+        .story-text {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-weight: bold; /* Replaces <b> */
+            
+            /* This is the "lightblue" you specified */
+            color: #add8e6; 
+        }
+        
+        /* --- This holds the two choice buttons --- */
+        .path-options {
+            display: flex;
+            flex-wrap: wrap; /* Allows buttons to stack on small screens */
+            justify-content: space-around;
+            gap: 20px;
+        }
+        
+        /* --- This is the main button style (replaces <a><font>) --- */
+        .path-btn {
+            flex: 1; /* Makes both buttons grow to fill space */
+            min-width: 200px;
+            
+            display: inline-block;
+            padding: 20px 30px;
+            font-size: 1.25rem;
+            font-weight: 900;
+            text-decoration: none;
+            text-align: center;
+            text-transform: uppercase;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            
+            /* This is the "interactive" part */
+            transition: all 0.3s ease;
+        }
+        
+        /* --- Specific button colors --- */
+        .path-btn.left {
+            background-color: #2ecc71; /* "Safe" green */
+        }
+        .path-btn.right {
+            background-color: #e74c3c; /* "Danger" red */
+        }
+        
+        /* --- Interactive hover effect --- */
+        .path-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        .path-btn.left:hover {
+            box-shadow: 0 5px 20px #2ecc71aa;
+        }
+        .path-btn.right:hover {
+            box-shadow: 0 5px 20px #e74c3caa;
         }
 
-        nav a {
+
+        /* --- Back Button (styled like homepage nav) --- */
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
             font-size: 1rem;
-            font-weight: 700; /* This replaces the <B> tag */
+            font-weight: 700;
             text-decoration: none;
             color: #ffffff;
             text-transform: uppercase;
-            
-            /* This turns the links into "pill" buttons */
             padding: 10px 25px;
-            margin: 0 10px;
             border: 2px solid #ffffff;
             border-radius: 50px;
-            
-            /* --- Animation for the button --- */
             transition: all 0.3s ease;
-        }
-
-        /* --- Animation for hovering over the buttons --- */
-        nav a:hover {
-            background-color: #ffffff;
-            color: #000000;
-            transform: translateY(-5px); /* Makes the button "lift up" */
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
-        }
-
-        /* --- This replaces <p><b><i> --- */
-        .welcome-text {
-            font-size: 1.25rem;
-            font-weight: bold;  /* Replaces <b> */
-            font-style: italic; /* Replaces <i> */
-            max-width: 600px; /* Keeps the text from getting too wide */
-            line-height: 1.6;
             
             /* Animation */
-            animation: fadeInUp 1s ease-out 0.6s;
+            animation: fadeInUp 1s ease-out 0.9s;
             animation-fill-mode: backwards;
+        }
+
+        .back-button:hover {
+            background-color: #ffffff;
+            color: #000000;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
-
 <body>
 
-    <h1>RELZZY'S WEBPAGE</h1>
+    <!-- 
+      CLEANED-UP HTML
+      All old tags are gone.
+      Links are now big, styled buttons.
+    -->
+    <div class="container">
 
-    <nav>
-        <a href="anime.html">ANIME</a>
-        <a href="story.html">STORY</a>
-        <a href="test.html">GOALS</a>
-        <a href="input.html">SCAM</a>
-        <a href="about.html">ABOUT</a>
-    </nav>
+        <!-- Title -->
+        <h1>THE TWO PATHS</h1>
 
-    <p class="welcome-text">
-        hello , im relzzy and this is my website i built for learning and fun , ill keep this website about me
-    </p>
+        <!-- The main story card -->
+        <div class="story-card">
+            
+            <!-- Your story text, now with a class -->
+            <p class="story-text">
+                the child after hiking through the mountain was faced with 2 paths , both the paths looked similar , there was a old rusted signboard that said danger pointing to the right side , the left one said path to the town , the child was perplexed on which path to take as he felt the need for adventure yet he didnt want his life to end , which path does he choose?
+            </p>
+            
+            <!-- The new interactive buttons -->
+            <div class="path-options">
+                <a href="page1.html" class="path-btn left">THE LEFT PATH</a>
+                <a href="page2.html" class="path-btn right">THE RIGHT PATH</a>
+            </div>
+            
+        </div>
+        
+        <!-- 
+          *** THIS IS THE FIX ***
+          The link is changed from "home.html" to "../index.html"
+          to go UP one folder to your main homepage.
+        -->
+        <a href="../index.html" class="back-button">Back to Home</a>
+
+    </div> <!-- End of .container -->
 
 </body>
 </html>

@@ -3,66 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANIME</title>
+    <title>ANIME - Relzzy's Webpage</title>
+    
+    <!-- Google Font (same as homepage) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- 
+      CSS STYLING STARTS HERE
+      All the UI and animations are controlled from this block.
+    -->
+    <style>
+        /* Define animations we will use */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Basic setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            
+            /* --- This replaces <body background="sugo.jpg"> --- */
+            /* 1. The image */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('sugo.jpg');
+            
+            /* 2. Dark overlay (0.7 opacity) makes text readable */
+            
+            /* 3. Make the image cover the whole screen and stay fixed */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            
+            color: #ffffff; /* Default text color is white */
+            text-align: center;
+        }
+
+        /* Main container to hold all content */
+        .container {
+            max-width: 1200px; /* Wider to fit more list columns */
+            margin: 40px auto; /* Space from top/bottom and centered */
+            padding: 20px;
+        }
+
+        /* --- This replaces <h1><center> --- */
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            
+            /* Cool neon glow effect (let's use an anime-purple) */
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px #9b59b6, /* Purple glow */
+                0 0 30px #9b59b6;
+            
+            /* Animation */
+            animation: fadeInDown 1s ease-out;
+        }
+
+        /* --- This styles the <h2> subtitle --- */
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            max-width: 700px;
+            margin: 10px auto 40px auto; /* Center and add space below */
+            line-height: 1.6;
+            
+            /* Animation */
+            animation: fadeInDown 1s ease-out 0.3s;
+            animation-fill-mode: backwards;
+        }
+
+        /* --- This styles the <ol> and its container --- */
+        .list-container {
+            /* THE BIG UPGRADE:
+              This automatically breaks your list into columns!
+            */
+            column-count: 3;
+            column-gap: 40px;
+            text-align: left; /* Align text inside the columns */
+            
+            /* Animation */
+            animation: fadeInUp 1s ease-out 0.6s;
+            animation-fill-mode: backwards;
+        }
+
+        ol {
+            list-style: none; /* We'll make our own numbers */
+            padding-left: 0;
+            counter-reset: anime-counter; /* Creates a counter for the list */
+        }
+
+        li {
+            counter-increment: anime-counter; /* Adds 1 to the counter for each <li> */
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            background-color: rgba(0, 0, 0, 0.2); /* Slight background */
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #9b59b6; /* Purple accent border */
+            
+            /* Prevents an item from breaking across columns */
+            -webkit-column-break-inside: avoid;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* This creates the custom number (e.g., "1. ") */
+        li::before {
+            content: counter(anime-counter) ". ";
+            font-weight: 700;
+            color: #9b59b6; /* Match the purple accent */
+            margin-right: 8px;
+        }
+        
+        /* --- This replaces <marquee> --- */
+        .update-note {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 40px;
+            animation: pulse 2s infinite;
+        }
+        
+        /* --- Back Button (styled like homepage nav) --- */
+        .back-button {
+            display: inline-block; /* Allows margin-top to work */
+            margin-top: 40px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: #ffffff;
+            text-transform: uppercase;
+            padding: 10px 25px;
+            border: 2px solid #ffffff;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            
+            /* Animation */
+            animation: fadeInUp 1s ease-out 0.9s;
+            animation-fill-mode: backwards;
+        }
+
+        .back-button:hover {
+            background-color: #ffffff;
+            color: #000000;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 1000px) {
+            .list-container {
+                column-count: 2; /* 2 columns on tablets */
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .list-container {
+                column-count: 1; /* 1 column on phones */
+            }
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1rem; }
+        }
+
+    </style>
 </head>
-<body bgcolor="navyblue">
-    <h1><center>ANIMES I HAVE WATCHED TILL NOW</center></h1>
-    <h2>the following are the list of animes ive  watched till now , i highly recomend everyone to check it out as most of them are fun </h2>
-    <ol>
-    <li>one punch man</li>
-    <li>naruto</li>
-    <li>one piece</li>
-    <li>jujutsu kaisen</li>
-    <li>grand blue , dreaming</li>
-    <li>bleach</li>
-    <li>hunter x hunter</li>
-    <li>chained soldier</li>
-    <li>the seven deadly sins</li>
-    <li>sky of connection</li>
-    <li>re-zero</li>
-    <li>mashle magic and muscle</li>
-    <li>classroom of the elite</li>
-    <li>my teen romantic comedy snafu</li>
-    <li>heavenly delusions </li>
-    <li>solo leveling</li>
-    <li>overflow</li>
-    <li>dont toy with me , miss nagato</li>
-    <li>interspieceies reviewer</li>
-    <li>fire force</li>
-    <li>the promised neverland</li>
-    <li>tokyo ghoul</li>
-    <li>kemonono jihen</li>
-    <li>tokyo revengers</li>
-    <li>spy x family</li>
-    <li>attack on titan</li>
-    <li>the misfit of the demon academy</li>
-    <li>prison school</li>
-    <li>tomodachi game</li>
-    <li>my hero academia</li>
-    <li>more than a married couple , but...</li>
-    <li>my life as inumakis dog</li>
-    <li>my dress up darling</li>
-    <li>zoom100:bucket list of dead</li>
-    <li>vinland saga</li>
-    <li>boruto: naruto next generation </li>
-    <li>black clover</li>
-    <li>oshi no ko</li>
-    <li>hells paradise</li>
-    <li>demon slayer</li>
-    <li>drifting home</li>
-    <li>suzume</li>
-    <li>i got a cheat skill from another life</li>
-    <li>death note</li>
-    <li>call of the night</li>
-    <li>chainsaw man</li>
-    <li>cyberpunk : edgerunners</li>
-    <li>vagabond(manga)</li>
-    <li>assaination classroom</li>
-    <li>A silent voice</li>
-    <li>akame ga kill</li>
-    <li>frieren : friends beyond journeys end</li>
-    <li>shangira la fronti</li>
-    </ol>
-    <marquee><font size="3" color="blue">LIST WILL BE UPDATED SOON </font></marquee>
+<body>
+
+    <!-- 
+      CLEANED-UP HTML
+      All the old <center>, <font>, and <marquee> tags are gone.
+    -->
+    <div class="container">
+
+        <!-- Title and subtitle -->
+        <h1>ANIMES I HAVE WATCHED TILL NOW</h1>
+        <h2>the following are the list of animes ive watched till now , i highly recomend everyone to check it out as most of them are fun</h2>
+
+        <!-- 
+          The list container.
+          Styled by '.list-container', 'ol', and 'li' CSS rules.
+        -->
+        <div class="list-container">
+            <ol>
+                <li>one punch man</li>
+                <li>naruto</li>
+                <li>one piece</li>
+                <li>jujutsu kaisen</li>
+                <li>grand blue , dreaming</li>
+                <li>bleach</li>
+                <li>hunter x hunter</li>
+                <li>chained soldier</li>
+                <li>the seven deadly sins</li>
+                <li>sky of connection</li>
+                <li>re-zero</li>
+                <li>mashle magic and muscle</li>
+                <li>classroom of the elite</li>
+                <li>my teen romantic comedy snafu</li>
+                <li>heavenly delusions</li>
+                <li>solo leveling</li>
+                <li>overflow</li>
+                <li>dont toy with me , miss nagato</li>
+                <li>interspieceies reviewer</li>
+                <li>fire force</li>
+                <li>the promised neverland</li>
+                <li>tokyo ghoul</li>
+                <li>kemonono jihen</li>
+                <li>tokyo revengers</li>
+                <li>spy x family</li>
+                <li>attack on titan</li>
+                <li>the misfit of the demon academy</li>
+                <li>prison school</li>
+                <li>tomodachi game</li>
+                <li>my hero academia</li>
+                <li>more than a married couple , but...</li>
+                <li>my life as inumakis dog</li>
+                <li>my dress up darling</li>
+                <li>zoom100:bucket list of dead</li>
+                <li>vinland saga</li>
+                <li>boruto: naruto next generation</li>
+                <li>black clover</li>
+                <li>oshi no ko</li>
+                <li>hells paradise</li>
+                <li>demon slayer</li>
+                <li>drifting home</li>
+                <li>suzume</li>
+                <li>i got a cheat skill from another life</li>
+                <li>death note</li>
+                <li>call of the night</li>
+                <li>chainsaw man</li>
+                <li>cyberpunk : edgerunners</li>
+                <li>vagabond(manga)</li>
+                <li>assaination classroom</li>
+                <li>A silent voice</li>
+                <li>akame ga kill</li>
+                <li>frieren : friends beyond journeys end</li>
+                <li>shangira la fronti</li>
+                <li>the eminence in shadow</li>
+                <li>fairy tail</li>
+                <li>ladies vs butlers</li>
+                <li>ragna crimson</li>
+                <li>monster</li>
+                <li>summertime rendering</li>
+                <li>wind breaker</li>
+                <li>the time i got reincranated as the 7th prince</li>
+                <li>kaiju no.8</li>
+                <!-- I removed the broken <i> tag that was here -->
+            </ol>
+        </div>
+
+        <!-- 
+          This replaces the old <marquee> tag.
+          Styled by the '.update-note' CSS rule.
+        -->
+        <p class="update-note">LIST WILL BE UPDATED SOON</p>
+
+        <!-- A 'Back' button to return to the homepage -->
+        <a href="index.html" class="back-button">Back to Home</a>
+
+    </div> <!-- End of .container -->
+
 </body>
 </html>

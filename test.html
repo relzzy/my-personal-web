@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals - Relzzy's Webpage</title>
+    
+    <!-- Google Font (same as homepage) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- 
+      CSS STYLING STARTS HERE
+      This block creates the "VS Code" inspired UI.
+    -->
+    <style>
+        /* Define animations we will use */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Basic setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            
+            /* --- This replaces <body background="vs.jpg"> --- */
+            /* Using a dark, "code editor" style gradient as a fallback */
+            background-color: #1e1e2d;
+            background-image: linear-gradient(rgba(20, 20, 30, 0.8), rgba(20, 20, 30, 0.8)), url('vs.jpg');
+            
+            /* 2. Dark overlay (0.8 opacity) makes text readable */
+            
+            /* 3. Make the image cover the whole screen and stay fixed */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            
+            color: #ffffff;
+            
+            /* Center the content card */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        /* Container to hold all content */
+        .container {
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
+
+        /* --- This replaces <h1><font><center> --- */
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            
+            /* The "neonblue" from your original code! */
+            color: #00aaff;
+            text-shadow: 
+                0 0 5px #00aaff,
+                0 0 10px #00aaff,
+                0 0 20px #fff;
+            
+            /* Animation */
+            animation: fadeInDown 1s ease-out;
+        }
+
+        /* --- This replaces <marquee> --- */
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #00aaff;
+            margin-top: 5px;
+            
+            /* Animation */
+            animation: pulse 2s infinite;
+        }
+
+        /* --- THE NOTES CARD ---
+          This is the main UI. It's a "glassy" card.
+        */
+        .notes-card {
+            background: rgba(30, 30, 46, 0.75); /* Dark blue/purple transparent */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 100, 220, 0.3); /* Subtle blue border */
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: left; /* Lists should be left-aligned */
+            
+            /* Animation */
+            animation: fadeInUp 1s ease-out 0.3s;
+            animation-fill-mode: backwards;
+        }
+        
+        /* --- Styles for the goals list --- */
+        .goals-list {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0; /* No margin on the last item */
+        }
+        
+        /* --- Styles for the "learn" items --- */
+        .goals-list li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 18px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            
+            display: flex;
+            
+            /* *** THIS IS THE FIX ***
+              Changed 'align-items: center' to 'align-items: flex-start'
+              This aligns the '>' and the text block to the top.
+            */
+            align-items: flex-start;
+        }
+        
+        /* This adds a "terminal" style > bullet point */
+        .goals-list li::before {
+            content: '>';
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #00aaff; /* Neon blue */
+            margin-right: 12px;
+            margin-top: 3px; /* A slight offset to align with the text */
+        }
+        
+        /* --- NEW STYLE for the <em> tags --- */
+        .goals-list li em {
+            font-style: italic;
+            font-weight: 700; /* Inherit parent's boldness */
+            color: #00aaff; /* Match the '>" color */
+        }
+
+        /* --- Style for the link to cheeku.fun --- */
+        .goals-list li a {
+            color: #f39c12; /* A nice "link" gold color */
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .goals-list li a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Back Button (styled like homepage nav) --- */
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: #ffffff;
+            text-transform: uppercase;
+            padding: 10px 25px;
+            border: 2px solid #ffffff;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            
+            /* Animation */
+            animation: fadeInUp 1s ease-out 0.9s;
+            animation-fill-mode: backwards;
+        }
+
+        .back-button:hover {
+            background-color: #ffffff;
+            color: #000000;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head><body>
+
+    <!-- 
+      CLEANED-UP HTML
+      All old content is replaced with your new goals.
+    -->
+    <div class="container">
+
+        <!-- Title -->
+        <h1>THE PLAN</h1>
+        
+        <!-- Marquee replacement -->
+        <p class="subtitle">CURRENT OBJECTIVES</p>
+
+        <!-- The main notes card -->
+        <div class="notes-card">
+            
+            <!-- Your new, refined goals list -->
+            <ul class="goals-list">
+                <li>
+                    <!-- 
+                      *** THIS IS THE 2ND FIX ***
+                      Changed <i> tags to <em> tags for better styling.
+                    -->
+                    Go full-on indie game dev. The main quest is building a psychological horror game (think <em>Omori</em> or <em>DDLC</em>) with my friend <a href="https://www.cheeku.fun/" target="_blank">cheeku</a>.
+                </li>
+                <li>
+                    Master the creator's toolkit. I'm grinding Blender, Unity, and other game engines to prepare for a Steam or itch.io release.
+                </li>
+                <li>
+                    Dive deep into AI. I'm set on learning prompt engineering and getting hands-on with training and hosting models.
+                </li>
+                <li>
+                    Get fluent in Web3. This means seriously learning blockchain and becoming an active member of more decentralized communities.
+                </li>
+                <li>
+                    Fund the dream. Stacking my savings for a new PC build that can actually handle all this.
+                </li>
+            </ul>
+            
+        </div>
+        
+        <!-- 
+          FIXED LINK:
+          This links back to "index.html", which is your main homepage
+          in the parent folder.
+        -->
+        <a href="index.html" class="back-button">Back to Home</a>
+
+    </div> <!-- End of .container -->
+
+</body>
+</html>

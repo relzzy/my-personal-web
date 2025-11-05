@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Relzzy's Webpage</title>
+    
+    <!-- Google Font (same as homepage) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- 
+      CSS STYLING STARTS HERE
+      This block creates the "glassy" card UI.
+    -->
+    <style>
+        /* Define animations we will use */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Basic setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            
+            /* --- This replaces <body background="img.jpg"> --- */
+            background-color: #1a1a1a;
+            background-image: linear-gradient(rgba(20, 20, 30, 0.8), rgba(20, 20, 30, 0.8)), url('img.jpg');
+            
+            /* 2. Dark overlay (0.8 opacity) makes text readable */
+            
+            /* 3. Make the image cover the whole screen and stay fixed */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            
+            color: #ffffff;
+            
+            /* Center the content card */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        /* Container to hold all content */
+        .container {
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
+
+        /* --- This replaces <h1><font><center> --- */
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            
+            /* Let's use a nice gold/orange glow */
+            color: #f39c12;
+            text-shadow: 
+                0 0 5px #f39c12,
+                0 0 10px #f39c12,
+                0 0 20px #fff;
+            
+            /* Animation */
+            animation: fadeInDown 1s ease-out;
+        }
+
+        /* --- THE ABOUT CARD ---
+          This is the main UI. It's a "glassy" card.
+        */
+        .about-card {
+            background: rgba(30, 30, 46, 0.75); /* Dark blue/purple transparent */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 100, 220, 0.3); /* Subtle blue border */
+            border-radius: 16px;
+            padding: 30px 40px; /* More padding */
+            margin-top: 30px;
+            text-align: left; /* Text should be left-aligned */
+            
+            /* Animation */
+            animation: fadeInUp 1s ease-out 0.3s;
+            animation-fill-mode: backwards;
+        }
+        
+        .about-card p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        
+        /* --- This styles the "My Vibe" list --- */
+        .about-card h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .about-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .about-card li {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        /* This adds a cool "sparkle" or "plus" bullet point */
+        .about-card li::before {
+            content: '✨'; /* You can change this emoji! */
+            font-size: 1.2rem;
+            margin-right: 15px;
+            margin-top: 3px;
+        }
+
+
+        /* --- Back Button (styled like homepage nav) --- */
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: #ffffff;
+            text-transform: uppercase;
+            padding: 10px 25px;
+            border: 2px solid #ffffff;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            
+            /* Animation */
+            animation: fadeInUp 1s ease-out 0.9s;
+            animation-fill-mode: backwards;
+        }
+
+        .back-button:hover {
+            background-color: #ffffff;
+            color: #000000;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 
+      CLEANED-UP HTML
+      All old tags are gone.
+      The text is now inside the new "about-card".
+    -->
+    <div class="container">
+
+        <!-- Title -->
+        <h1>ABOUT</h1>
+
+        <!-- The main notes card -->
+        <div class="about-card">
+            
+            <!-- Here is your refined "About Me" text -->
+            <p>
+                Hey, welcome to the about page. Ngl, I kinda just spun up this website for fun.
+            </p>
+            <p>
+                It's low-key my digital sandbox, so hopefully I'll be pushing regular updates and upgrades. No promises, but that's the vibe.
+            </p>
+
+            <h2>My Vibe:</h2>
+            <ul>
+                <li>
+                    Aspiring indie game dev. My main quest is to build cool worlds and experiences.
+                </li>
+                <li>
+                    Super into the whole AI/ML scene—like, actually training and hosting models, not just talking about it.
+                </li>
+                <li>
+                    I also spend a lot of time in Web3. I'm big on crypto, decentralized apps, and I'm pretty active in games like Cambria and Reign of Titans.
+                </li>
+            </ul>
+            
+        </div>
+        
+        <!-- Back button -->
+        <a href="index.html" class="back-button">Back to Home</a>
+
+    </div> <!-- End of .container -->
+
+</body>
+</html>

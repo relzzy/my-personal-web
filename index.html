@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -33,6 +32,32 @@
                 transform: translateY(0);
             }
         }
+        
+        /* --- NEW ANIMATION ---
+           This is the "pop and fade" effect you asked for.
+        */
+        @keyframes popAndFade {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+            15% {
+                opacity: 1;
+                transform: translateY(0) scale(1.05);
+            }
+            30% {
+                transform: scale(1);
+            }
+            80% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+            }
+        }
+
 
         /* Basic setup */
         * {
@@ -61,12 +86,7 @@
             padding: 20px 0;
         }
 
-        /* --- This replaces <h1><center><i> --- */
         h1 {
-            /* --- RESPONSIVE FIX --- 
-              'clamp' makes the font size shrink on smaller screens.
-              Min: 2.5rem, Preferred: 10vw, Max: 3.5rem
-            */
             font-size: clamp(2.5rem, 10vw, 3.5rem);
             font-weight: 900;
             font-style: italic;
@@ -80,16 +100,35 @@
             
             animation: fadeInDown 1s ease-out;
         }
-
-        /* --- This replaces the <hr> tags and styles the links --- */
-        nav {
-            /* --- RESPONSIVE FIX --- */
-            display: flex; /* Use flexbox for layout */
-            flex-wrap: wrap; /* THIS IS THE KEY: Allows buttons to wrap */
-            justify-content: center; /* Keeps them centered */
+        
+        /* --- NEW STYLE for the pop-up text --- */
+        .backend-status {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #00ff7f; /* "scam" form green, looks "techy" */
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid #00ff7f;
+            margin-top: 15px;
             
-            width: 100%; /* Ensure it can use the full width */
-            max-width: 800px; /* Don't let it get *too* wide on PC */
+            /* Apply the animation */
+            animation: popAndFade 5s ease-in-out; /* 5s total duration */
+            animation-delay: 1s; /* Wait 1s after page load */
+            animation-fill-mode: forwards; /* Stays invisible at the end */
+            
+            /* Start invisible */
+            opacity: 0;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            
+            width: 100%;
+            max-width: 800px;
             
             margin: 25px 0;
             animation: fadeInUp 1s ease-out 0.3s;
@@ -104,11 +143,6 @@
             text-transform: uppercase;
             
             padding: 10px 25px;
-            
-            /* --- RESPONSIVE FIX --- 
-              Was 'margin: 0 10px'.
-              This adds 5px top/bottom margin for when they wrap.
-            */
             margin: 5px 10px;
             
             border: 2px solid #ffffff;
@@ -124,15 +158,13 @@
             box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
 
-        /* --- This replaces <p><b><i> --- */
         .welcome-text {
             font-size: 1.25rem;
             font-weight: bold;
             font-style: italic;
             
-            /* --- RESPONSIVE FIX --- */
             max-width: 600px;
-            width: 90%; /* Ensures it doesn't touch the edges on mobile */
+            width: 90%;
             
             line-height: 1.6;
             
@@ -145,12 +177,18 @@
 <body>
 
     <h1>RELZZY'S WEBPAGE</h1>
+    
+    <!-- 
+      *** NEW HTML ELEMENT ***
+      This is the text that will pop up and fade out.
+    -->
+    <p class="backend-status">Backend Testing</p>
 
     <nav>
         <a href="anime.html">ANIME</a>
         
         <!-- This link is correct for your file structure -->
-        <a href="main.html">STORY</a>
+        <a href="story.html/main.html">STORY</a>
         
         <a href="test.html">GOALS</a>
         <a href="input.html">SCAM</a>

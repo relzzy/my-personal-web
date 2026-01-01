@@ -10,54 +10,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* Define animations we will use */
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* --- ANIMATIONS --- */
+        @keyframes blink {
+            50% { border-color: transparent; }
         }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
         }
-        
-        /* --- NEW ANIMATION ---
-           This is the "pop and fade" effect you asked for.
-        */
         @keyframes popAndFade {
-            0% {
-                opacity: 0;
-                transform: translateY(20px) scale(0.9);
-            }
-            15% {
-                opacity: 1;
-                transform: translateY(0) scale(1.05);
-            }
-            30% {
-                transform: scale(1);
-            }
-            80% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.9);
-            }
+            0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+            15% { opacity: 1; transform: translateY(0) scale(1.05); }
+            30% { transform: scale(1); }
+            80% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: translateY(-20px) scale(0.9); }
         }
-
 
         /* Basic setup */
         * {
@@ -68,12 +35,10 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('sunrise.jpg');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('sunrise.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -81,115 +46,132 @@
             min-height: 100vh;
             text-align: center;
             color: #ffffff;
-            
-            /* Add padding for mobile to prevent content from touching edges */
             padding: 20px 0;
+            overflow-x: hidden;
+        }
+
+        /* --- TYPING TITLE (No Glow) --- */
+        .typing-container {
+            display: inline-block;
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: clamp(2.5rem, 10vw, 3.5rem);
+            font-size: clamp(2rem, 6vw, 3.5rem);
             font-weight: 900;
             font-style: italic;
-            color: #fff;
             
-            text-shadow: 
-                0 0 5px #fff,
-                0 0 10px #fff,
-                0 0 20px #00aaff,
-                0 0 30px #00aaff;
+            /* Plain Purple, No Glow */
+            color: #9b59b6; 
             
-            animation: fadeInDown 1s ease-out;
+            overflow: hidden; 
+            white-space: nowrap; 
+            border-right: 4px solid #fff; 
+            width: 0; 
+            animation: 
+                typing 3.5s steps(30, end) forwards,
+                blink 0.75s step-end infinite;
         }
-        
-        /* --- NEW STYLE for the pop-up text --- */
+
+        /* --- BACKEND STATUS --- */
         .backend-status {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
-            color: #00ff7f; /* "scam" form green, looks "techy" */
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: 1px solid #00ff7f;
-            margin-top: 15px;
-            
-            /* Apply the animation */
-            animation: popAndFade 5s ease-in-out; /* 5s total duration */
-            animation-delay: 1s; /* Wait 1s after page load */
-            animation-fill-mode: forwards; /* Stays invisible at the end */
-            
-            /* Start invisible */
+            color: #9b59b6; /* Purple to match */
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid #9b59b6;
+            margin-top: 10px;
+            animation: popAndFade 5s ease-in-out 1s forwards;
             opacity: 0;
         }
 
+        /* --- NAVIGATION BUTTONS --- */
         nav {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            
             width: 100%;
-            max-width: 800px;
-            
-            margin: 25px 0;
-            animation: fadeInUp 1s ease-out 0.3s;
-            animation-fill-mode: backwards;
+            max-width: 900px;
+            margin: 40px 0;
+            gap: 20px;
         }
 
         nav a {
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 800;
             text-decoration: none;
-            color: #ffffff;
             text-transform: uppercase;
+            padding: 15px 35px;
             
-            padding: 10px 25px;
-            margin: 5px 10px;
+            /* PURPLE & BLACK THEME */
+            color: #9b59b6; /* Purple Text */
+            background-color: #000000; /* Black Background */
+            border: 2px solid #9b59b6; /* Purple Border */
             
-            border: 2px solid #ffffff;
             border-radius: 50px;
-            
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
+        /* Hover Effect: Flip Colors */
         nav a:hover {
-            background-color: #ffffff;
-            color: #000000;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px) scale(1.05);
+            background-color: #9b59b6; /* Purple Background */
+            color: #000000; /* Black Text */
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.6); /* Subtle purple glow */
         }
 
+        /* --- WELCOME TEXT --- */
         .welcome-text {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: bold;
             font-style: italic;
-            
             max-width: 600px;
             width: 90%;
-            
             line-height: 1.6;
-            
-            animation: fadeInUp 1s ease-out 0.6s;
-            animation-fill-mode: backwards;
+            margin-top: 20px;
+            color: #ccc;
         }
+
+        /* --- EASTER EGG BANNER --- */
+        .easter-egg-banner {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150%);
+            background: #000;
+            padding: 20px 40px;
+            border-radius: 12px;
+            border: 2px solid #9b59b6;
+            box-shadow: 0 0 30px #9b59b6;
+            text-align: center;
+            z-index: 9999;
+            transition: transform 0.5s ease;
+        }
+
+        .easter-egg-banner.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .easter-egg-banner h2 { color: #9b59b6; margin: 0; text-transform: uppercase; }
+        .easter-egg-banner p { color: #fff; margin-top: 5px; }
+
     </style>
 </head>
 
 <body>
 
-    <h1>RELZZY'S WEBPAGE</h1>
+    <div class="typing-container">
+        <h1>RELZZY'S WEBPAGE</h1>
+    </div>
     
-    <!-- 
-      *** NEW HTML ELEMENT ***
-      This is the text that will pop up and fade out.
-    -->
-    <p class="backend-status">Backend Testing</p>
+    <p class="backend-status">Backend Status: Live</p>
 
     <nav>
-        <a href="anime.html">ANIME</a>
-        
-        <!-- This link is correct for your file structure -->
         <a href="main.html">STORY</a>
-        
         <a href="test.html">GOALS</a>
         <a href="input.html">REACH OUT</a>
         <a href="about.html">ABOUT</a>
@@ -198,6 +180,48 @@
     <p class="welcome-text">
         hello , im relzzy and this is my website i built for learning and fun , ill keep this website about me
     </p>
+
+    <div id="secret-banner" class="easter-egg-banner">
+        <h2>🎉 SECRET FOUND! 🎉</h2>
+        <p>You truly know this place.</p>
+    </div>
+
+    <script>
+        let inputSequence = '';
+        
+        // We listen for key presses
+        window.addEventListener('keydown', (e) => {
+            // Add key to sequence
+            inputSequence += e.key.toLowerCase();
+
+            // Keep sequence manageable (last 10 chars is enough for our words)
+            if (inputSequence.length > 10) {
+                inputSequence = inputSequence.slice(-10);
+            }
+
+            // 1. Check for 'anime' -> REDIRECT
+            if (inputSequence.includes('anime')) {
+                // Reset sequence to prevent double triggers
+                inputSequence = ''; 
+                // Redirect
+                window.location.href = 'anime.html';
+            }
+
+            // 2. Check for 'relzzy' -> BANNER
+            if (inputSequence.includes('relzzy')) {
+                inputSequence = ''; 
+                activateBanner();
+            }
+        });
+
+        function activateBanner() {
+            const banner = document.getElementById('secret-banner');
+            banner.classList.add('show');
+            setTimeout(() => {
+                banner.classList.remove('show');
+            }, 4000);
+        }
+    </script>
 
 </body>
 </html>

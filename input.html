@@ -3,19 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>free laptop🤑</title>
+    <title>Connect - Relzzy's Portfolio</title>
     
-    <!-- Google Font (same as homepage) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
 
-    <!-- 
-      CSS STYLING (Same as before, no changes needed)
-    -->
     <style>
-        /* ... your entire CSS ... */
-        /* Define animations we will use */
+        /* --- NEW ANIMATIONS --- */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -24,15 +19,14 @@
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 10px #00ff7f; }
-            50% { transform: scale(1.05); box-shadow: 0 0 25px #00ff7f; }
-            100% { transform: scale(1); box-shadow: 0 0 10px #00ff7f; }
+        @keyframes electricGlow {
+            0% { box-shadow: 0 0 5px #00d4ff; }
+            50% { box-shadow: 0 0 20px #00d4ff; }
+            100% { box-shadow: 0 0 5px #00d4ff; }
         }
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
 
         /* Basic setup */
@@ -44,303 +38,269 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            
-            /* --- This replaces <body background="laptop.jpg"> --- */
-            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('laptop.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            
             color: #ffffff;
-            
-            /* Center the form vertically and horizontally */
+            /* Flex centering */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 40px 0;
+            overflow-x: hidden;
+            /* We removed the background-image here because the video element handles it now */
         }
 
-        /* Container to hold the form and title */
+        /* --- VIDEO BACKGROUND STYLES --- */
+        #bg-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -2; /* Puts video way in the back */
+            object-fit: cover; /* Ensures no black bars */
+        }
+
+        /* This creates the dark tint over the video so text is readable */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 20, 0.85); /* Your original dark tint color */
+            z-index: -1; /* sits on top of video, but behind content */
+        }
+
         .container {
-            max-width: 600px;
+            max-width: 700px;
             width: 90%;
             text-align: center;
+            position: relative; /* Ensures container sits above the fixed background */
+            z-index: 1;
         }
 
-        /* --- This replaces <h1><font><center> --- */
         h1 {
-            font-size: 2.8rem;
+            font-size: clamp(2rem, 8vw, 3.2rem);
             font-weight: 900;
-            
-            /* Bright "money" green neon glow */
-            color: #00ff7f; /* Neon/Spring Green */
-            text-shadow: 
-                0 0 5px #00ff7f,
-                0 0 10px #00ff7f,
-                0 0 20px #00ff7f;
-            
-            /* Animation */
+            color: #00d4ff; /* Electric Blue */
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+            margin-bottom: 10px;
+            text-transform: uppercase;
             animation: fadeInDown 1s ease-out;
         }
 
-        /* --- THE FORM CARD ---
-          This is the main UI upgrade. A "glassmorphism" card.
-        */
-        .scam-form {
-            background: rgba(10, 10, 20, 0.7); /* Dark, semi-transparent */
-            backdrop-filter: blur(10px); /* This makes it look "glassy" */
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 30px;
-            text-align: left;
-            
-            /* Animation */
-            animation: fadeInUp 1s ease-out 0.3s;
-            animation-fill-mode: backwards;
+        p.subtitle {
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 30px;
+            animation: fadeInDown 1.2s ease-out;
         }
 
-        /* --- Styles for form fields --- */
+        /* --- THE CONTACT CARD --- */
+        .contact-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: left;
+            animation: fadeInUp 1s ease-out 0.3s backwards;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .form-group label {
             display: block;
+            font-size: 0.9rem;
             font-weight: 700;
-            margin-bottom: 5px;
-            color: #fff;
+            margin-bottom: 8px;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             font-size: 1rem;
             font-family: 'Poppins', sans-serif;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
             color: #fff;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* This makes the <option> tags in the dropdown readable */
-        .form-group select option {
-            background: #333;
-            color: #fff;
-        }
-        
-        /* Style for the disabled "select one" option */
-        .form-group select option[disabled] {
-            color: #999;
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
         }
 
-
-        /* --- The appealing part: glowing fields on click --- */
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
-            border-color: #00ff7f;
-            box-shadow: 0 0 10px #00ff7f;
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
         }
         
-        /* A row for EXP Date and CVV to sit side-by-side */
-        .form-row {
-            display: flex;
-            gap: 15px;
-        }
-        .form-row .form-group {
-            flex: 1; /* Makes them share the space */
+        .form-group select option {
+            background: #1a1a2e;
+            color: #fff;
         }
 
-        /* --- The "CLAIM NOW" Button --- */
+        /* --- SUBMIT BUTTON --- */
         .submit-btn {
             width: 100%;
-            padding: 15px;
-            font-size: 1.25rem;
+            padding: 16px;
+            font-size: 1.1rem;
             font-weight: 900;
             color: #000;
-            background-color: #00ff7f;
+            background: linear-gradient(90deg, #00d4ff, #00ff7f, #00d4ff);
+            background-size: 200% auto;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.4s ease;
+            animation: shimmer 3s infinite linear;
             margin-top: 10px;
-            
-            /* The irresistible pulse animation */
-            animation: pulse 1.5s infinite;
-            transition: all 0.3s ease;
         }
         
-        /* Style for when button is disabled */
-        .submit-btn:disabled {
-            background-color: #555;
-            color: #999;
-            cursor: not-allowed;
-            animation: none; /* Turn off pulse when loading */
-        }
-
         .submit-btn:hover {
-            transform: scale(1.05); /* Even bigger on hover! */
-            box-shadow: 0 0 30px #00ff7f;
-        }
-        
-        .submit-btn:disabled:hover {
-            transform: none;
-            box-shadow: none;
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
         }
 
-        /* --- This replaces <marquee> --- */
-        .legit-note {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #f39c12; /* Orange */
-            margin-top: 20px;
-            
-            /* Flashing text animation */
-            animation: blink 1s infinite;
+        .submit-btn:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+            animation: none;
         }
-        
-        /* --- Back Button (styled like homepage nav) --- */
+
         .back-button {
             display: inline-block;
-            margin-top: 20px;
-            font-size: 1rem;
+            margin-top: 30px;
+            font-size: 0.9rem;
             font-weight: 700;
             text-decoration: none;
-            color: #ffffff;
+            color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase;
             padding: 10px 25px;
-            border: 2px solid #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50px;
             transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.6s backwards;
         }
 
         .back-button:hover {
-            background-color: #ffffff;
-            color: #000000;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+            background: #fff;
+            color: #000;
+            border-color: #fff;
         }
+
     </style>
 </head>
 <body>
 
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="goget.mp4" type="video/mp4">
+        </video>
+
+    <div class="video-overlay"></div>
+
     <div class="container">
 
-        <h1>FILL THE FORM FOR FREE LAPTOP 🤑🤑🤑🤑</h1>
+        <h1>Get In Touch</h1>
+        <p class="subtitle">Have a project in mind or just want to talk Game Dev/AI?</p>
 
-        <!-- 
-          *** THIS IS THE FINAL CHANGE ***
-          We are changing the 'action' from your local server
-          to your NEW, LIVE Render server URL.
-        -->
-        <form class="scam-form" 
-              id="scam-form"
-              method="POST" 
-              action="https://relzzy-backend.onrender.com/submit-scam-form">
+        <form class="contact-card" id="contact-form" method="POST" action="https://relzzy-backend.onrender.com/contact">
             
             <div class="form-group">
-                <label for="name">NAME:</label>
-                <input type="text" id="name" name="name" required>
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
             </div>
             
             <div class="form-group">
-                <label for="lname">LAST NAME:</label>
-                <input type="text" id="lname" name="last_name" required>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="email@example.com" required>
             </div>
             
             <div class="form-group">
-                <label for="gender">GENDER:</label>
-                <select id="gender" name="gender" required>
-                    <option value="" disabled selected>select one</option>
-                    <option value="male">male</option>
-                    <option value="female">female</option>
-                    <option value="attack helicopter">attack helicopter</option>
+                <label for="subject">Reason for Contact</label>
+                <select id="subject" name="subject" required>
+                    <option value="" disabled selected>Choose a topic</option>
+                    <option value="Game Dev">Game Development Collab</option>
+                    <option value="AI/ML">AI / Machine Learning</option>
+                    <option value="Web3">Web3 / Crypto Gaming</option>
+                    <option value="General">Just Saying Hi!</option>
                 </select>
             </div>
             
             <div class="form-group">
-                <label for="card">CARD NUMBER(mom or dads):</label>
-                <input type="text" id="card" name="card_number" required>
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="What's on your mind?" required></textarea>
             </div>
             
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="exp_date">ENTER EXP DATE</label>
-                    <input type="date" id="exp_date" name="exp_date" required>
-                </div>
-                <div class="form-group">
-                    <label for="cvv">ENTER CVV NO.</label>
-                    <input type="text" id="cvv" name="cvv" required>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="address">ADDRESS:</label>
-                <input type="text" id="address" name="address" required>
-            </div>
-            
-            <button type="submit" class="submit-btn">CLAIM NOW 🤑💲</button>
+            <button type="submit" class="submit-btn">Send Message 🚀</button>
             
         </form>
-
-        <p class="legit-note">TOTTALLY LEGIT BUSSINESS APPROVED BY THE GOVERNEMENT OF ANTARTICA</p>
         
         <a href="index.html" class="back-button">Back to Home</a>
 
-    </div> <!-- End of .container -->
-    
-    <!-- 
-      This SCRIPT block is already perfect.
-      It reads the 'action' from the form tag,
-      so it will automatically use the new Render URL.
-    -->
-    <script>
-        const scamForm = document.getElementById('scam-form');
-        const submitBtn = scamForm.querySelector('.submit-btn');
+    </div>
 
-        scamForm.addEventListener('submit', async (e) => {
-            // 1. Stop the form from submitting
+    <script>
+        const contactForm = document.getElementById('contact-form');
+        const submitBtn = contactForm.querySelector('.submit-btn');
+
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            // 2. Disable the button
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+            submitBtn.textContent = 'TRANSMITTING...';
             
-            // 3. Manually create a plain JavaScript object from the form data
-            const formData = new FormData(scamForm);
+            const formData = new FormData(contactForm);
             const data = {};
             formData.forEach((value, key) => {
                 data[key] = value;
             });
             
             try {
-                // 4. Send the data as JSON
-                const response = await fetch(scamForm.action, {
-                    method: scamForm.method,
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(data)
                 });
 
-                // 5. Wait for the server to respond
+                const result = await response.json();
+
                 if (response.ok) {
-                    alert('Form Submitted! 🤑 your laptop will be delivered soon');
-                    scamForm.reset(); 
+                    alert('Message Sent Successfully! 🚀 I will get back to you soon.');
+                    contactForm.reset(); 
                 } else {
-                    alert('Submission Failed! Server had an error.');
+                    alert('Error: ' + (result.message || 'Something went wrong.'));
                 }
             } catch (error) {
                 console.error('Fetch Error:', error);
-                alert('Submission Failed! Is your backend server running?');
+                alert('Connection Failed! Please check if the backend is awake.');
             } finally {
-                // 6. Re-enable the button
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'CLAIM NOW 🤑💲';
+                submitBtn.textContent = 'Send Message 🚀';
             }
         });
     </script>

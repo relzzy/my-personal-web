@@ -25,6 +25,12 @@
             80% { opacity: 1; transform: scale(1); }
             100% { opacity: 0; transform: translateY(-20px) scale(0.9); }
         }
+        /* New Pulse Animation for the RPG Button */
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 5px #9b59b6; }
+            50% { box-shadow: 0 0 20px #9b59b6, 0 0 10px #fff; }
+            100% { box-shadow: 0 0 5px #9b59b6; }
+        }
 
         /* Basic setup */
         * {
@@ -48,6 +54,7 @@
             color: #ffffff;
             padding: 20px 0;
             overflow-x: hidden;
+            position: relative; /* Needed for absolute positioning of RPG button */
         }
 
         /* --- TYPING TITLE (No Glow) --- */
@@ -60,10 +67,7 @@
             font-size: clamp(2rem, 6vw, 3.5rem);
             font-weight: 900;
             font-style: italic;
-            
-            /* Plain Purple, No Glow */
             color: #9b59b6; 
-            
             overflow: hidden; 
             white-space: nowrap; 
             border-right: 4px solid #fff; 
@@ -78,7 +82,7 @@
             font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
-            color: #9b59b6; /* Purple to match */
+            color: #9b59b6;
             background: rgba(0, 0, 0, 0.8);
             padding: 8px 16px;
             border-radius: 50px;
@@ -105,23 +109,56 @@
             text-decoration: none;
             text-transform: uppercase;
             padding: 15px 35px;
-            
-            /* PURPLE & BLACK THEME */
-            color: #9b59b6; /* Purple Text */
-            background-color: #000000; /* Black Background */
-            border: 2px solid #9b59b6; /* Purple Border */
-            
+            color: #9b59b6; 
+            background-color: #000000; 
+            border: 2px solid #9b59b6; 
             border-radius: 50px;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
-        /* Hover Effect: Flip Colors */
         nav a:hover {
             transform: translateY(-5px) scale(1.05);
-            background-color: #9b59b6; /* Purple Background */
-            color: #000000; /* Black Text */
-            box-shadow: 0 0 20px rgba(155, 89, 182, 0.6); /* Subtle purple glow */
+            background-color: #9b59b6; 
+            color: #000000; 
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.6); 
+        }
+
+        /* --- SPECIAL RPG BUTTON (Top Right) --- */
+        .rpg-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 0.9rem;
+            color: #fff;
+            background-color: #000;
+            border: 2px solid #9b59b6;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            animation: glowPulse 3s infinite; /* Pulsing effect */
+            z-index: 100;
+        }
+
+        .rpg-button:hover {
+            background-color: #9b59b6;
+            color: #000;
+            transform: scale(1.1) rotate(2deg); /* Slight tilt on hover */
+            box-shadow: 0 0 30px #9b59b6;
+        }
+
+        /* Mobile adjustment for RPG button */
+        @media (max-width: 600px) {
+            .rpg-button {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
         }
 
         /* --- WELCOME TEXT --- */
@@ -163,6 +200,10 @@
 </head>
 
 <body>
+
+    <a href="https://relzzy.github.io/text_rpg_demo/" target="_blank" class="rpg-button">
+        ⚔️ Play RPG Demo
+    </a>
 
     <div class="typing-container">
         <h1>RELZZY'S WEBPAGE</h1>

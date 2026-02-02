@@ -28,6 +28,11 @@
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
         }
+        @keyframes gentlePulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
 
         /* Basic setup */
         * {
@@ -39,14 +44,12 @@
         body {
             font-family: 'Poppins', sans-serif;
             color: #ffffff;
-            /* Flex centering */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 40px 0;
             overflow-x: hidden;
-            /* We removed the background-image here because the video element handles it now */
         }
 
         /* --- VIDEO BACKGROUND STYLES --- */
@@ -58,33 +61,32 @@
             min-height: 100%;
             width: auto;
             height: auto;
-            z-index: -2; /* Puts video way in the back */
-            object-fit: cover; /* Ensures no black bars */
+            z-index: -2;
+            object-fit: cover;
         }
 
-        /* This creates the dark tint over the video so text is readable */
         .video-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 10, 20, 0.85); /* Your original dark tint color */
-            z-index: -1; /* sits on top of video, but behind content */
+            background: rgba(10, 10, 20, 0.85);
+            z-index: -1;
         }
 
         .container {
             max-width: 700px;
             width: 90%;
             text-align: center;
-            position: relative; /* Ensures container sits above the fixed background */
+            position: relative;
             z-index: 1;
         }
 
         h1 {
             font-size: clamp(2rem, 8vw, 3.2rem);
             font-weight: 900;
-            color: #00d4ff; /* Electric Blue */
+            color: #00d4ff;
             text-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
             margin-bottom: 10px;
             text-transform: uppercase;
@@ -190,6 +192,27 @@
             animation: none;
         }
 
+        /* --- NEW: DELAY NOTICE --- */
+        .delay-notice {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(255, 215, 0, 0.1); /* Slight gold tint */
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #e0e0e0;
+            font-size: 0.85rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: gentlePulse 3s infinite ease-in-out;
+        }
+
+        .delay-notice span {
+            font-size: 1.2rem;
+        }
+
         .back-button {
             display: inline-block;
             margin-top: 30px;
@@ -217,7 +240,7 @@
 
     <video autoplay muted loop playsinline id="bg-video">
         <source src="goget.mp4" type="video/mp4">
-        </video>
+    </video>
 
     <div class="video-overlay"></div>
 
@@ -256,6 +279,14 @@
             
             <button type="submit" class="submit-btn">Send Message 🚀</button>
             
+            <div class="delay-notice">
+                <span>⚠️</span>
+                <div>
+                    <strong>Note:</strong> The server may take 30-40 seconds to wake up.<br>
+                    Please be on this page till the message is delivered , you will recieve a pop up notification when sent!
+                </div>
+            </div>
+
         </form>
         
         <a href="index.html" class="back-button">Back to Home</a>

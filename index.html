@@ -179,7 +179,10 @@
 
 <body>
 
-    <img src="character-art.webp" class="character-art" alt="Character Art">
+    <picture class="character-art-wrapper">
+        <source media="(max-width: 768px)" srcset="flower.jpg">
+        <img src="character-art.webp" class="character-art" alt="Character Art">
+    </picture>
 
     <div class="backend-status">BACKEND: LIVE</div>
 

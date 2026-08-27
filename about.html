@@ -1,239 +1,873 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - Relzzy's Webpage</title>
+    <meta name="description"
+        content="Learn about Relzzy — aspiring forward deployed engineer, indie game developer, and AI enthusiast building local LLM infrastructure and creative projects.">
     <link rel="icon" href="images/RELZZY_logo.svg" type="image/svg+xml">
-    
-    <!-- Google Font (same as homepage) -->
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet">
 
-    <!-- 
-      CSS STYLING STARTS HERE
-      This block creates the "glassy" card UI.
-    -->
     <style>
-        /* Define animations we will use */
+        /* ========================================
+           ANIMATIONS
+           ======================================== */
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* Basic setup */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 5px #f39c12, 0 0 10px #f39c12, 0 0 20px rgba(243, 156, 18, 0.4);
+            }
+
+            50% {
+                text-shadow: 0 0 8px #f39c12, 0 0 18px #f39c12, 0 0 35px rgba(243, 156, 18, 0.6);
+            }
+        }
+
+        @keyframes borderShimmer {
+            0% {
+                border-color: rgba(100, 100, 220, 0.3);
+            }
+
+            50% {
+                border-color: rgba(243, 156, 18, 0.25);
+            }
+
+            100% {
+                border-color: rgba(100, 100, 220, 0.3);
+            }
+        }
+
+        /* ========================================
+           RESET & BASE
+           ======================================== */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            
-            /* --- This replaces <body background="img.jpg"> --- */
             background-color: #1a1a1a;
-            background-image: linear-gradient(rgba(20, 20, 30, 0.8), rgba(20, 20, 30, 0.8)), url('images/img.jpg');
-            
-            /* 2. Dark overlay (0.8 opacity) makes text readable */
-            
-            /* 3. Make the image cover the whole screen and stay fixed */
+            background-image:
+                linear-gradient(rgba(20, 20, 30, 0.85), rgba(20, 20, 30, 0.85)),
+                url('images/img.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            
-            color: #ffffff;
-            
-            /* Center the content card */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            color: #d1d5db;
             min-height: 100vh;
-            padding: 40px 0;
-        }
-
-        /* Container to hold all content */
-        .container {
-            max-width: 800px;
-            width: 90%;
-            text-align: center;
-        }
-
-        /* --- This replaces <h1><font><center> --- */
-        h1 {
-            font-size: 3rem;
-            font-weight: 900;
-            
-            /* Let's use a nice gold/orange glow */
-            color: #f39c12;
-            text-shadow: 
-                0 0 5px #f39c12,
-                0 0 10px #f39c12,
-                0 0 20px #fff;
-            
-            /* Animation */
-            animation: fadeInDown 1s ease-out;
-        }
-
-        /* --- THE ABOUT CARD ---
-          This is the main UI. It's a "glassy" card.
-        */
-        .about-card {
-            background: rgba(30, 30, 46, 0.75); /* Dark blue/purple transparent */
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(100, 100, 220, 0.3); /* Subtle blue border */
-            border-radius: 16px;
-            padding: 30px 40px; /* More padding */
-            margin-top: 30px;
-            text-align: left; /* Text should be left-aligned */
-            
-            /* Animation */
-            animation: fadeInUp 1s ease-out 0.3s;
-            animation-fill-mode: backwards;
-        }
-        
-        .about-card p {
-            font-size: 1.1rem;
             line-height: 1.7;
-            margin-bottom: 20px;
-        }
-        
-        /* --- This styles the "My Vibe" list --- */
-        .about-card h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fff;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .about-card ul {
-            list-style: none;
-            padding-left: 0;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .about-card li {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
+        /* ========================================
+           SCROLLBAR
+           ======================================== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(20, 20, 30, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(243, 156, 18, 0.4);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(243, 156, 18, 0.6);
+        }
+
+        /* ========================================
+           LAYOUT
+           ======================================== */
+        .page-wrapper {
             display: flex;
-            align-items: flex-start;
-        }
-        
-        /* This adds a cool "sparkle" or "plus" bullet point */
-        .about-card li::before {
-            content: '✨'; /* You can change this emoji! */
-            font-size: 1.2rem;
-            margin-right: 15px;
-            margin-top: 3px;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px 80px;
         }
 
+        .container {
+            max-width: 780px;
+            width: 100%;
+        }
 
-        /* --- Back Button (styled like homepage nav) --- */
-        .back-button {
-            display: inline-block;
-            margin-top: 30px;
-            font-size: 1rem;
+        /* ========================================
+           PAGE TITLE
+           ======================================== */
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .page-title h1 {
+            font-size: clamp(2.2rem, 5vw, 3.2rem);
+            font-weight: 900;
+            color: #f39c12;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+
+        .page-title .subtitle {
+            font-size: 0.95rem;
+            color: rgba(209, 213, 219, 0.5);
+            font-weight: 300;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* ========================================
+           ABOUT CARD (Main Glass Container)
+           ======================================== */
+        .about-card {
+            background: rgba(30, 30, 46, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(100, 100, 220, 0.25);
+            border-radius: 20px;
+            padding: 45px 50px;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards, borderShimmer 6s ease-in-out infinite;
+        }
+
+        /* ========================================
+           INTRO PARAGRAPH
+           ======================================== */
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #c4c9d4;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* ========================================
+           SECTIONS
+           ======================================== */
+        .section {
+            margin-bottom: 45px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Section Headers */
+        .section h2 {
+            font-size: 1.5rem;
             font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(243, 156, 18, 0.25);
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 22px;
+            background: linear-gradient(180deg, #f39c12, #e67e22);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .section h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-top: 28px;
+            margin-bottom: 16px;
+            padding-left: 16px;
+            border-left: 3px solid rgba(243, 156, 18, 0.35);
+        }
+
+        /* ========================================
+           PARAGRAPHS
+           ======================================== */
+        .section p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #b8bcc6;
+            margin-bottom: 16px;
+        }
+
+        .section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .section p strong {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* ========================================
+           LISTS — Fixed the broken flex layout
+           ======================================== */
+        .section ul {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .section li {
+            font-size: 0.98rem;
+            line-height: 1.75;
+            color: #b8bcc6;
+            padding: 14px 18px;
+            padding-left: 44px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            position: relative;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .section li::before {
+            content: '✦';
+            position: absolute;
+            left: 16px;
+            top: 15px;
+            font-size: 0.85rem;
+            color: #f39c12;
+            opacity: 0.7;
+        }
+
+        .section li:hover {
+            background: rgba(243, 156, 18, 0.04);
+            border-color: rgba(243, 156, 18, 0.15);
+            transform: translateX(4px);
+        }
+
+        .section li strong {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* Numbered items (for the "How the system works" section) */
+        .numbered-list li {
+            counter-increment: step-counter;
+        }
+
+        .numbered-list li::before {
+            content: counter(step-counter);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 15px;
+            left: 14px;
+        }
+
+        .numbered-list {
+            counter-reset: step-counter;
+        }
+
+        /* ========================================
+           LINKS
+           ======================================== */
+        .section a {
+            color: #f39c12;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid transparent;
+            transition: color 0.25s ease, border-color 0.25s ease;
+        }
+
+        .section a:hover {
+            color: #fbbf24;
+            border-bottom-color: rgba(251, 191, 36, 0.4);
+        }
+
+        /* Link blocks (GitHub, HuggingFace, etc.) */
+        .link-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .link-group a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(243, 156, 18, 0.08);
+            border: 1px solid rgba(243, 156, 18, 0.2);
+            border-radius: 8px;
+            color: #f39c12;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .link-group a:hover {
+            background: rgba(243, 156, 18, 0.15);
+            border-color: rgba(243, 156, 18, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.15);
+        }
+
+        .link-group a .link-icon {
+            font-size: 1.1rem;
+        }
+
+        /* ========================================
+           SECTION DIVIDER
+           ======================================== */
+        .section+.section {
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* ========================================
+           BACK BUTTON
+           ======================================== */
+        .back-button-wrap {
+            text-align: center;
+            margin-top: 50px;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
             text-decoration: none;
             color: #ffffff;
             text-transform: uppercase;
-            padding: 10px 25px;
-            border: 2px solid #ffffff;
+            letter-spacing: 1.5px;
+            padding: 12px 32px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
             border-radius: 50px;
             transition: all 0.3s ease;
-            
-            /* Animation */
-            animation: fadeInUp 1s ease-out 0.9s;
-            animation-fill-mode: backwards;
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .back-button:hover {
-            background-color: #ffffff;
-            color: #000000;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+            background: #ffffff;
+            color: #1a1a2e;
+            border-color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+        }
+
+        .back-button .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .back-button:hover .arrow {
+            transform: translateX(-4px);
+        }
+
+        /* ========================================
+           EASTER EGG HINT (bottom of page)
+           ======================================== */
+        .easter-hint {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .easter-hint:hover {
+            color: rgba(243, 156, 18, 0.3);
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 640px) {
+            .page-wrapper {
+                padding: 40px 16px 60px;
+            }
+
+            .about-card {
+                padding: 30px 24px;
+                border-radius: 16px;
+            }
+
+            .section h2 {
+                font-size: 1.3rem;
+            }
+
+            .section h3 {
+                font-size: 1.05rem;
+            }
+
+            .section li {
+                padding: 12px 14px 12px 38px;
+                font-size: 0.92rem;
+            }
+
+            .section li::before {
+                left: 12px;
+            }
+
+            .numbered-list li::before {
+                left: 10px;
+            }
+
+            .link-group {
+                flex-direction: column;
+            }
+
+            .link-group a {
+                justify-content: center;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <!-- 
-      CLEANED-UP HTML
-      All old tags are gone.
-      The text is now inside the new "about-card".
-    -->
-    <div class="container">
+    <div class="page-wrapper">
+        <div class="container">
 
-        <!-- Title -->
-        <h1>ABOUT</h1>
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>ABOUT</h1>
+                <p class="subtitle">Projects, experiments & everything in between</p>
+            </div>
 
-        <!-- The main notes card -->
-        <div class="about-card">
-            
-            <!-- Here is your refined "About Me" text -->
-            <p>
-                Hey, welcome to the about page. This is a personal website i made for keeping track of my current and upcoming projects.
-            </p>
-            <p>
-                It's my digital sandbox, so hopefully I'll be pushing regular updates and upgrades.
-            </p>
+            <!-- Main Glass Card -->
+            <div class="about-card">
 
-            <h2>About me:</h2>
-            <ul>
-                <li>
-                    Aspiring indie game developer. My main quest is to build cool worlds and experiences in 3d and 2d.
-                    to bring my stories to life.
-                </li>
-                <li>
-                    Into AI/ML , self hosting models on LM studios , 
-                    Exploring the use of local LLMs to build an AI-powered 
-                    chatbot for this website, with the long-term goal of reusing the same underlying systems for in-game NPCs and interactive narrative experiences using apis.
-                </li>
-                <li>
-                    I also spend a lot of time in Web3. I'm active on crypto, decentralized apps, and I'm pretty active in web3 games ,contributing to communities and volunteering in many servers.
-                </li>
-                <li>
-                    also this website has completely functional backend in the reach out section with render acting as the engine and google firebase to store data.
-                </li>
-                <li>
-                i built a text based rpg game which can be found on the top left corner in the index page , i was planning to make it a proper long story based game , but after getting my new rtx 3060 rig
-                im currently building it in 3D , so i put up another story in the demo to showcase it , a brief description will follow below this point followed by a proper explaination.
-                </li>
-                <li>
-                   A fully interactive text-based adventure game built from scratch. Unlike simple 'choose your own adventure' scripts, this project features a robust
-                    game engine that tracks character health, energy, and stats. It includes a working inventory system where items can be collected and used, 
-                   a dynamic appearance system that alters story text based on your equipment, and local data persistence so players can save and load their progress.
-                </li>
-                <li>
-                    The Last Divine – Text-Based RPG Engine
+                <!-- Intro -->
+                <p class="intro-text">
+                    Hey, welcome to my about page. This is a personal website I built to keep track of
+                    my current projects, experiments, and things I'm working towards.
+                </p>
 
-Developed a modular game engine using Vanilla JavaScript and JSON, decoupling narrative data from game logic for scalable content creation.
+                <!-- About Me -->
+                <div class="section" id="about-me">
+                    <h2>About Me</h2>
+                    <ul>
+                        <li>
+                            <strong>Aspiring Forward Deployed Engineer and Indie Game Developer.</strong>
+                            I enjoy building practical systems across
+                            <strong>AI/ML, software development, web development, and game development</strong>,
+                            especially projects where different technologies have to work together as one system.
+                        </li>
+                        <li>
+                            I'm particularly interested in <strong>local AI and LLM infrastructure</strong>.
+                            I experiment with running and optimizing larger language models on consumer
+                            NVIDIA GPUs using tools such as <strong>llama.cpp, Ollama, vLLM, GGUF and
+                                quantization techniques</strong>. I'm especially interested in making
+                            <strong>30B-class models practical for complex coding and reasoning tasks on
+                                local hardware</strong>.
+                        </li>
+                    </ul>
+                </div>
 
-Implemented a persistent state system using localStorage to handle Save/Load functionality and session tracking.
+                <!-- My Main AI Project -->
+                <div class="section" id="ai-project">
+                    <h2>My Main AI Project</h2>
 
-Built a dynamic Inventory and Stats system, featuring conditional logic (stat checks), item consumption (potions), and real-time UI updates.
+                    <p>
+                        One of my main projects is a <strong>local code intelligence and RAG system</strong>
+                        built around a fine-tuned <strong>Qwen3.5-2B language model</strong>. The goal is
+                        to create a lightweight AI system that can understand a large codebase, retrieve
+                        the right information, and interact with the local Linux environment when needed.
+                    </p>
 
-Created a reactive Appearance system that updates narrative text dynamically based on character equipment and choices.
-Has ui compactible and optimised for both mobiles and pcs 
-                </li>
-                <li>
-                    Also ,this website has hidden easter eggs you can only find by typing certain words on the keyboard hehe , there are two for now , one is an hidden page which reveals my favorite enterainment type , 
-                    and another , u just have to type my name hehe , good luck finding it , find both to recieve smh from me ....(only compactible on pc for now , sryy)
-                </li>
-            </ul>
-            
+                    <p>
+                        The model itself is <strong>fine-tuned specifically for Linux-focused tool use and
+                            routing</strong>, rather than being used as a general-purpose chatbot. It learns
+                        to determine what the user is asking for and return a structured tool call that
+                        can be handled by the rest of the system.
+                    </p>
+
+                    <h3>How the system works</h3>
+
+                    <ul class="numbered-list">
+                        <li>
+                            <strong>Fine-Tuned LLM Router —</strong>
+                            A <strong>2B-parameter Qwen3.5 model</strong> fine-tuned using
+                            <strong>QLoRA and Unsloth</strong>. It classifies the user's intent and
+                            produces structured JSON tool calls. The training data is focused on
+                            <strong>Linux commands, system operations, codebase queries, and tool usage</strong>.
+                        </li>
+                        <li>
+                            <strong>Codebase Retrieval —</strong>
+                            When a question requires understanding the project itself, the request is
+                            sent to the RAG pipeline rather than directly to the terminal.
+                        </li>
+                        <li>
+                            <strong>Hybrid Search —</strong>
+                            The RAG system combines <strong>dense vector search using ChromaDB</strong>
+                            with <strong>BM25 keyword search</strong>. This allows it to find both
+                            semantically related code and exact matches such as function names,
+                            variables, filenames, and technical terms.
+                        </li>
+                        <li>
+                            <strong>Reciprocal Rank Fusion —</strong>
+                            Results from the different search methods are combined using
+                            <strong>RRF (Reciprocal Rank Fusion)</strong>, producing a stronger combined
+                            ranking instead of relying on a single search method.
+                        </li>
+                        <li>
+                            <strong>Cross-Encoder Re-ranking —</strong>
+                            The most relevant results are then passed through a
+                            <strong>cross-encoder reranker</strong> to improve the final selection of
+                            context given to the language model.
+                        </li>
+                        <li>
+                            <strong>Linux Tool Integration —</strong>
+                            System-level questions can be routed to controlled Linux tools for things
+                            such as <strong>file discovery, logs, processes, memory usage and system
+                                inspection</strong>.
+                        </li>
+                        <li>
+                            <strong>Final Response —</strong>
+                            The retrieved code or system information is passed to an LLM to produce a
+                            grounded response based on the available evidence.
+                        </li>
+                    </ul>
+
+                    <p>
+                        The system has been tested on a codebase containing <strong>350+ files</strong>,
+                        successfully indexing and retrieving relevant information from across the project.
+                        The initial indexing is a one-time process, after which queries can use the
+                        existing search indexes instead of processing the entire codebase again.
+                    </p>
+
+                    <p>
+                        The trained model can also be deployed locally using
+                        <strong>4-bit GGUF quantization</strong>, making the system practical on
+                        consumer hardware while keeping the data and inference local.
+                    </p>
+
+                    <h3>AI Project Links</h3>
+
+                    <div class="link-group">
+                        <a href="https://github.com/relzzy/codebase-RAG" target="_blank" rel="noopener noreferrer">
+                            <span class="link-icon">⟠</span> View Source Code
+                        </a>
+                        <a href="https://huggingface.co/relzzyy/Qwen3.5-2B-Micro-Router" target="_blank"
+                            rel="noopener noreferrer">
+                            <span class="link-icon">🤗</span> View Fine-Tuned Model
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Full-Stack Web Dev -->
+                <div class="section" id="web-dev">
+                    <h2>Full-Stack Web Development</h2>
+
+                    <p>
+                        I've also built and deployed several <strong>full-stack web applications</strong>
+                        rather than stopping at the frontend. These projects have involved designing
+                        interactive interfaces, building backend functionality, handling user data,
+                        implementing authentication, and deploying the complete application.
+                    </p>
+
+                    <ul>
+                        <li>
+                            <strong>Custom backend functionality</strong> for forms and user interactions.
+                        </li>
+                        <li>
+                            <strong>Firebase</strong> for storing submitted data and managing application data.
+                        </li>
+                        <li>
+                            <strong>Google and Discord authentication</strong> with protected user areas
+                            and working login systems.
+                        </li>
+                        <li>
+                            <strong>User dashboards</strong> with personalized content and account-based
+                            functionality.
+                        </li>
+                        <li>
+                            Deployment using services such as <strong>Render</strong>, allowing the
+                            applications to run as actual hosted web services rather than just local demos.
+                        </li>
+                    </ul>
+
+                    <div class="link-group">
+                        <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer">
+                            <span class="link-icon">⟠</span> GitHub
+                        </a>
+                        <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer">
+                            <span class="link-icon">🔗</span> LinkedIn
+                        </a>
+                    </div>
+                </div>
+
+                <!-- AI-Driven RPG -->
+                <div class="section" id="ai-rpg">
+                    <h2>AI-Driven Narrative RPG</h2>
+
+                    <p>
+                        One of my newer projects is a <strong>web-based RPG that combines traditional
+                            game systems with AI-generated content</strong>. Instead of allowing AI to
+                        completely control the story, the game uses a fixed <strong>canonical main
+                            storyline</strong> as its foundation while allowing AI to generate flexible
+                        dialogue and events around it.
+                    </p>
+
+                    <ul>
+                        <li>
+                            <strong>AI-generated dialogue and procedural events</strong> that respond
+                            to the player's situation.
+                        </li>
+                        <li>
+                            A persistent <strong>character, inventory and statistics system</strong>
+                            that keeps track of the player's state.
+                        </li>
+                        <li>
+                            Player decisions and game state can affect <strong>future events and potential
+                                endings</strong>.
+                        </li>
+                        <li>
+                            The AI operates within the game's existing rules instead of being allowed
+                            to freely rewrite the underlying game state.
+                        </li>
+                        <li>
+                            The project is currently in <strong>beta and runs through a web interface</strong>.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Visual Novel Engine -->
+                <div class="section" id="vn-engine">
+                    <h2>Visual Novel / RPG Engine</h2>
+
+                    <p>
+                        I also built a reusable <strong>visual novel-style game engine</strong> rather
+                        than creating only a single fixed story. The engine separates game logic from
+                        narrative data so that new stories and content can be added without rewriting
+                        the entire system.
+                    </p>
+
+                    <ul>
+                        <li>
+                            <strong>Save and load system</strong> for persistent player progress.
+                        </li>
+                        <li>
+                            <strong>Character appearance and wardrobe systems</strong> that can influence
+                            the game and narrative.
+                        </li>
+                        <li>
+                            Persistent <strong>stats, money, inventory and time systems</strong>.
+                        </li>
+                        <li>
+                            <strong>Branching story logic</strong> where choices and player state can
+                            affect later events.
+                        </li>
+                        <li>
+                            Designed to work across both <strong>PC and mobile layouts</strong>.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- The Last Divine -->
+                <div class="section" id="last-divine">
+                    <h2>The Last Divine — Text RPG</h2>
+
+                    <p>
+                        One of my earlier projects was <strong>The Last Divine</strong>, a text-based
+                        RPG built from scratch with Vanilla JavaScript and JSON. I designed it around
+                        a modular game system rather than a simple collection of "choose an option"
+                        pages.
+                    </p>
+
+                    <ul>
+                        <li>
+                            <strong>Persistent Save/Load system</strong> using localStorage.
+                        </li>
+                        <li>
+                            <strong>Inventory and item management</strong>, including usable items and
+                            consumables.
+                        </li>
+                        <li>
+                            <strong>Health, energy and character statistics</strong> with conditional
+                            gameplay logic.
+                        </li>
+                        <li>
+                            A reactive <strong>appearance system</strong> where equipped items can change
+                            how parts of the story are displayed.
+                        </li>
+                        <li>
+                            Narrative and game data separated from the core game logic for easier
+                            expansion.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Game Development -->
+                <div class="section" id="game-dev">
+                    <h2>Game Development &amp; Storytelling</h2>
+
+                    <p>
+                        Outside of programming, I'm also interested in <strong>game development and
+                            storytelling</strong>. I write story scripts and design characters, worlds,
+                        gameplay systems and narrative structures for games I want to build in the future.
+                        My long-term goal is to create a <strong>3D indie game</strong> that combines
+                        interactive gameplay with a strong story.
+                    </p>
+                </div>
+
+                <!-- Web3 & Community -->
+                <div class="section" id="web3">
+                    <h2>Web3 &amp; Community</h2>
+
+                    <p>
+                        I'm also active in <strong>decentralized and Web3 gaming communities</strong>,
+                        where I've participated as a community member, creator, volunteer and player.
+                        I've contributed to communities around decentralized games and projects and
+                        have been involved in helping promote and represent projects online.
+                    </p>
+
+                    <p>
+                        One particularly memorable part of that experience was being an early member and
+                        creator within a decentralized gaming community and receiving
+                        <strong>sponsored flights to Mumbai on three separate occasions</strong> to attend
+                        creator meetups and represent/promote the game.
+                    </p>
+                </div>
+
+                <!-- Explore the Site -->
+                <div class="section" id="explore">
+                    <h2>Explore the Site</h2>
+
+                    <p>
+                        This website is also one of my own projects. It includes a
+                        <strong>working backend for the Reach Out section</strong>, with
+                        <strong>Render</strong> used for deployment/backend execution and
+                        <strong>Google Firebase</strong> used for storing submitted data.
+                    </p>
+
+                    <p>
+                        And yes, there are a few hidden things here too.
+                        <strong>There are currently two keyboard-triggered easter eggs.</strong>
+                        One reveals a hidden page, while the other is triggered by typing my name.
+                        They're currently designed for PC users, so good luck finding both.
+                    </p>
+                </div>
+
+                <!-- Links -->
+                <div class="section" id="links">
+                    <h2>Links</h2>
+
+                    <div class="link-group">
+                        <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer">
+                            <span class="link-icon">⟠</span> GitHub
+                        </a>
+                        <a href="https://huggingface.co/relzzyy" target="_blank" rel="noopener noreferrer">
+                            <span class="link-icon">🤗</span> Hugging Face
+                        </a>
+                        <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer">
+                            <span class="link-icon">🔗</span> LinkedIn
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+            <!-- End .about-card -->
+
+            <!-- Back Button -->
+            <div class="back-button-wrap">
+                <a href="index.html" class="back-button" id="back-home-btn">
+                    <span class="arrow">←</span> Back to Home
+                </a>
+            </div>
+
+            <p class="easter-hint">There might be secrets on the homepage…</p>
+
         </div>
-        
-        <!-- Back button -->
-        <a href="index.html" class="back-button">Back to Home</a>
+    </div>
 
-    </div> <!-- End of .container -->
+    <!-- Scroll-triggered section reveal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            sections.forEach((section) => observer.observe(section));
+        });
+    </script>
 
 </body>
+
 </html>

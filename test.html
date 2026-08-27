@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Goals - Relzzy's Webpage</title>
     <link rel="icon" href="images/RELZZY_logo.svg" type="image/svg+xml">
-    
+
     <!-- Google Font (same as homepage) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,17 +19,41 @@
     <style>
         /* Define animations we will use */
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
 
         /* Basic setup */
@@ -40,21 +65,21 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            
+
             /* --- This replaces <body background="vs.jpg"> --- */
             /* Using a dark, "code editor" style gradient as a fallback */
             background-color: #1e1e2d;
             background-image: linear-gradient(rgba(20, 20, 30, 0.8), rgba(20, 20, 30, 0.8)), url('images/vs.jpg');
-            
+
             /* 2. Dark overlay (0.8 opacity) makes text readable */
-            
+
             /* 3. Make the image cover the whole screen and stay fixed */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            
+
             color: #ffffff;
-            
+
             /* Center the content card */
             display: flex;
             justify-content: center;
@@ -74,14 +99,14 @@
         h1 {
             font-size: 3rem;
             font-weight: 900;
-            
+
             /* The "neonblue" from your original code! */
             color: #00aaff;
-            text-shadow: 
+            text-shadow:
                 0 0 5px #00aaff,
                 0 0 10px #00aaff,
                 0 0 20px #fff;
-            
+
             /* Animation */
             animation: fadeInDown 1s ease-out;
         }
@@ -93,7 +118,7 @@
             text-transform: uppercase;
             color: #00aaff;
             margin-top: 5px;
-            
+
             /* Animation */
             animation: pulse 2s infinite;
         }
@@ -102,72 +127,86 @@
           This is the main UI. It's a "glassy" card.
         */
         .notes-card {
-            background: rgba(30, 30, 46, 0.75); /* Dark blue/purple transparent */
+            background: rgba(30, 30, 46, 0.75);
+            /* Dark blue/purple transparent */
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(100, 100, 220, 0.3); /* Subtle blue border */
+            border: 1px solid rgba(100, 100, 220, 0.3);
+            /* Subtle blue border */
             border-radius: 16px;
             padding: 30px;
             margin-top: 30px;
-            text-align: left; /* Lists should be left-aligned */
-            
+            text-align: left;
+            /* Lists should be left-aligned */
+
             /* Animation */
             animation: fadeInUp 1s ease-out 0.3s;
             animation-fill-mode: backwards;
         }
-        
+
         /* --- Styles for the goals list --- */
         .goals-list {
             list-style: none;
             padding-left: 0;
-            margin-bottom: 0; /* No margin on the last item */
+            margin-bottom: 0;
+            /* No margin on the last item */
         }
-        
+
         /* --- Styles for the "learn" items --- */
         .goals-list li {
             font-size: 1.1rem;
-            line-height: 1.6; /* Set a consistent line-height */
+            line-height: 1.6;
+            /* Set a consistent line-height */
             font-weight: 700;
             color: #fff;
             margin-bottom: 18px;
             padding: 12px;
             background: rgba(0, 0, 0, 0.2);
             border-radius: 6px;
-            
+
             /* --- THIS IS THE FIX --- */
             /* We are no longer using flexbox here. */
             /* This allows the text to wrap naturally. */
             position: relative;
-            padding-left: 30px; /* Make space for the '>' */
+            padding-left: 30px;
+            /* Make space for the '>' */
         }
-        
+
         /* This adds a "terminal" style > bullet point */
         .goals-list li::before {
             content: '>';
             font-size: 1.2rem;
             font-weight: 900;
-            color: #00aaff; /* Neon blue */
-            
+            color: #00aaff;
+            /* Neon blue */
+
             /* --- THIS IS THE FIX --- */
             /* We position the '>' symbol absolutely... */
             position: absolute;
-            left: 12px; /* ...12px from the left */
-            top: 12px;  /* ...12px from the top */
-            line-height: 1.6; /* Match the li's line-height */
+            left: 12px;
+            /* ...12px from the left */
+            top: 12px;
+            /* ...12px from the top */
+            line-height: 1.6;
+            /* Match the li's line-height */
         }
-        
+
         /* --- NEW STYLE for the <em> tags --- */
         .goals-list li em {
             font-style: italic;
-            font-weight: 700; /* Inherit parent's boldness */
-            color: #00aaff; /* Match the '>" color */
+            font-weight: 700;
+            /* Inherit parent's boldness */
+            color: #00aaff;
+            /* Match the '>" color */
         }
 
         /* --- Style for the link to cheeku.fun --- */
         .goals-list li a {
-            color: #f39c12; /* A nice "link" gold color */
+            color: #f39c12;
+            /* A nice "link" gold color */
             text-decoration: none;
             font-weight: 700;
         }
+
         .goals-list li a:hover {
             text-decoration: underline;
         }
@@ -185,7 +224,7 @@
             border: 2px solid #ffffff;
             border-radius: 50px;
             transition: all 0.3s ease;
-            
+
             /* Animation */
             animation: fadeInUp 1s ease-out 0.9s;
             animation-fill-mode: backwards;
@@ -199,46 +238,70 @@
         }
     </style>
 </head>
-<body>
 
+<body>
     <div class="container">
 
         <!-- Title -->
-        <h1>THE PLAN</h1>
-        
-        <!-- Marquee replacement -->
-        <p class="subtitle">CURRENT OBJECTIVES</p>
+        <h1>THE ROADMAP</h1>
 
-        <!-- The main notes card -->
+        <!-- Subtitle -->
+        <p class="subtitle">CURRENT OBJECTIVES & FUTURE PROJECTS</p>
+
+        <!-- Roadmap card -->
         <div class="notes-card">
-            
-            <!-- Your new, refined goals list -->
+
             <ul class="goals-list">
+
                 <li>
-                     building an indie story driven physcological horror game with my friend  <a href="https://www.cheeku.fun/" target="_blank">cheeku</a>.
+                    <strong>Codebase RAG Interface:</strong>
+                    Build a dedicated GUI for my existing codebase RAG system, making
+                    code search, retrieval results, tool usage, and AI responses easier
+                    to access and understand.
                 </li>
+
                 <li>
-                    learning 3d modelling and animation on blenbder and mastering game engines such as unity , unreal engine and godot.
+                    <strong>AI-Driven RPG:</strong>
+                    Continue developing the AI and procedural-generation based RPG.
+                    The current prototype is functional, but still needs a proper
+                    game-like GUI, application interface, and additional backend work
+                    before it can become a complete playable project.
                 </li>
+
                 <li>
-                    My goal in learning about large language models is to understand how to integrate them as reliable,
-                     controllable components in real-world applications — particularly games and interactive websites — using locally-hosted models .
-                     fluency in automation tools
+                    <strong>Story & Narrative Development:</strong>
+                    Develop proper storylines, characters, and world-building for my
+                    current visual novel, text RPG, and AI-driven RPG projects. The
+                    current versions focus mainly on the underlying systems and are
+                    still using placeholder or basic story content.
                 </li>
+
                 <li>
-                    participate in more web3 communities ,learn more about blockchain and decentralised currencies , contribute in them , and look for oppurtunities to invest and earn . 
+                    <strong>Local AI & Agentic Workflows:</strong>
+                    Improve agentic workflows, tool calling, context handling, and
+                    long coding sessions for LLMs running on consumer hardware.
+                    The long-term goal is to make local models more capable for
+                    demanding development tasks while reducing reliance on cloud
+                    services and keeping sensitive data private.
                 </li>
+
                 <li>
-                 utilize the rtx 3060 build , freelance skills and services such as upscalling video and image qualities , editting , local hosted coding
+                    <strong>Privacy-Focused AI IDE:</strong>
+                    Develop an IDE that can use cloud AI models for coding and other
+                    tasks while keeping sensitive information such as source code,
+                    credentials, API keys, and local data encrypted and protected from
+                    direct model access wherever possible.
                 </li>
+
             </ul>
-            
+
         </div>
-        
-        <!-- Back button (This link is correct, it's in the same folder as index.html) -->
+
+        <!-- Back button -->
         <a href="index.html" class="back-button">Back to Home</a>
 
     </div> <!-- End of .container -->
 
 </body>
+
 </html>

@@ -343,6 +343,15 @@
             .link-group {
                 flex-direction: column;
             }
+
+            .system-hint {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                margin: 30px auto 10px;
+                text-align: center;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -433,10 +442,16 @@
             document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
 
             // Add active class to clicked menu item
-            event.currentTarget.classList.add('active');
+            if (window.event && window.event.currentTarget) {
+                window.event.currentTarget.classList.add('active');
+            }
 
             // Add active class to corresponding panel
-            document.getElementById(panelId).classList.add('active');
+            const panel = document.getElementById(panelId);
+            if (panel) {
+                panel.classList.add('active');
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
     </script>
 </body>

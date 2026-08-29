@@ -797,7 +797,7 @@
                 <span class="badge">SYSTEM</span> RELZZY'S ARCHIVE // PROJECTS
             </div>
             <div class="p3-guide-prompt">
-                <span class="key">CLICK</span> SELECT PROJECT &nbsp;|&nbsp; <span class="key">ESC</span> MAIN MENU
+                <span class="key">1-7</span> QUICK SELECT &nbsp;|&nbsp; <span class="key">CLICK</span> SELECT PROJECT &nbsp;|&nbsp; <span class="key">ESC</span> MAIN MENU
             </div>
         </div>
     </div>
@@ -1090,9 +1090,23 @@
                 showProject('ai-project');
             }
 
-            // Press ESC key to return to index.html (Main Menu)
+            // Keyboard Shortcuts (1-7 for project switching, ESC for home)
+            const projectKeyMap = {
+                '1': 'ai-project',
+                '2': 'web-dev',
+                '3': 'ai-rpg',
+                '4': 'vn-engine',
+                '5': 'last-divine',
+                '6': 'game-dev',
+                '7': 'web3'
+            };
+
             window.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' || e.key === 'Esc') {
+                if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+                if (projectKeyMap[e.key]) {
+                    showProject(projectKeyMap[e.key]);
+                } else if (e.key === 'Escape' || e.key === 'Esc') {
                     window.location.href = 'index.html';
                 }
             });

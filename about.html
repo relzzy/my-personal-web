@@ -316,6 +316,7 @@
                 flex-direction: column;
                 align-items: flex-start;
                 overflow-y: auto;
+                padding: 20px;
             }
 
             body {
@@ -327,8 +328,25 @@
                 margin-bottom: 30px;
             }
 
-            .menu-item {
-                font-size: 2rem;
+            .menu-title {
+                font-size: 3.5rem;
+                margin-bottom: 20px;
+            }
+
+            .sidebar .menu-item,
+            .sidebar .menu-item:nth-child(2),
+            .sidebar .menu-item:nth-child(3),
+            .sidebar .menu-item:nth-child(4),
+            .sidebar .menu-item:nth-child(5),
+            .sidebar .menu-item:nth-child(6) {
+                font-size: 2.2rem;
+                margin-left: 0;
+                margin-top: 10px;
+                -webkit-text-stroke: 1px #00ffff;
+            }
+
+            .sidebar .menu-item:nth-child(6) {
+                margin-top: 30px;
             }
 
             .content-area {
@@ -337,6 +355,7 @@
             }
 
             .content-panel {
+                padding: 25px;
                 clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
             }
 

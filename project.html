@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Relzzy's Webpage</title>
+    <link rel="icon" href="images/RELZZY_logo.svg" type="image/svg+xml">
+
+    <!-- Google Fonts: Titillium Web, Montserrat & Poppins for authentic P3R high-contrast typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&family=Poppins:wght@400;600;700;900&family=Titillium+Web:ital,wght@0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ========================================
+           PERSONA 3 RELOAD SYSTEM ANIMATIONS & KEYFRAMES
+           ======================================== */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateX(30px) skewX(-4deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) skewX(-4deg);
+            }
+        }
+
+        @keyframes p3Pulse {
+            0%, 100% {
+                box-shadow: -8px 8px 0px #00d4ff, 0 0 15px rgba(0, 212, 255, 0.4);
+            }
+            50% {
+                box-shadow: -10px 10px 0px #ff0055, 0 0 25px rgba(255, 0, 85, 0.6);
+            }
+        }
+
+        /* ========================================
+           RESET & BASE
+           ======================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #e6f7ff;
+            min-height: 100vh;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            background-color: #030a1a;
+        }
+
+        /* ========================================
+           BRIGHTER BACKGROUND & P3 ATMOSPHERIC OVERLAY
+           ======================================== */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -10;
+            filter: brightness(1.2) contrast(1.05);
+        }
+
+        /* Reduced blackness, brighter blue Persona overlay */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 162, 255, 0.28) 0%, rgba(10, 30, 75, 0.35) 60%, rgba(0, 220, 255, 0.15) 100%);
+            z-index: -9;
+            pointer-events: none;
+        }
+
+        /* Slanted Halftone & P3 Graphic Accent Overlay */
+        .p3-pattern-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                radial-gradient(rgba(0, 240, 255, 0.15) 1px, transparent 0),
+                linear-gradient(135deg, transparent 45%, rgba(0, 162, 255, 0.08) 50%, transparent 55%);
+            background-size: 24px 24px, 200px 200px;
+            z-index: -8;
+            pointer-events: none;
+        }
+
+        /* Decorative Large P3 Watermark Text in Background */
+        .p3-bg-watermark {
+            position: fixed;
+            bottom: -50px;
+            right: -20px;
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 18vw;
+            font-weight: 900;
+            font-style: italic;
+            color: rgba(0, 240, 255, 0.04);
+            letter-spacing: -5px;
+            user-select: none;
+            z-index: -7;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+
+        /* ========================================
+           SCROLLBAR (P3 Neon Style)
+           ======================================== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(3, 15, 38, 0.8);
+            border-left: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #00f0ff, #0066ff);
+            border-radius: 0px;
+            box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff0055;
+        }
+
+        /* ========================================
+           TOP P3 SYSTEM HEADER BAR
+           ======================================== */
+        .p3-top-bar {
+            width: 100%;
+            height: 46px;
+            background: linear-gradient(90deg, #00a2ff 0%, #0033aa 40%, rgba(3, 10, 26, 0.85) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4);
+            border-bottom: 3px solid #00f0ff;
+            position: relative;
+            z-index: 10;
+            transform: skewX(-6deg);
+            margin-top: 10px;
+        }
+
+        .p3-top-bar-content {
+            transform: skewX(6deg);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .p3-logo-tag {
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+        }
+
+        .p3-logo-tag span.badge {
+            background: #ff0055;
+            color: #ffffff;
+            padding: 2px 10px;
+            font-size: 0.85rem;
+            font-style: normal;
+            font-weight: 900;
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        }
+
+        .p3-guide-prompt {
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #00f0ff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .p3-guide-prompt span.key {
+            background: #ffffff;
+            color: #002266;
+            padding: 1px 8px;
+            border-radius: 3px;
+            font-weight: 900;
+            box-shadow: 0 2px 0px #00f0ff;
+        }
+
+        /* ========================================
+           LAYOUT (Far Left & Far Right Positioning)
+           ======================================== */
+        .page-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 30px 40px 60px;
+            width: 100%;
+            max-width: 100vw;
+            gap: 40px;
+            min-height: calc(100vh - 60px);
+            perspective: 1200px;
+        }
+
+        /* ========================================
+           LEFT-MOST CONTAINER: PROJECT INDEX MENU
+           ======================================== */
+        .project-index-container {
+            flex: 0 0 390px;
+            background: rgba(4, 16, 42, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 2px solid #00f0ff;
+            border-left: 8px solid #00f0ff;
+            padding: 30px 24px;
+            position: sticky;
+            top: 30px;
+            transform: skewX(-4deg) translate3d(0, 0, 0);
+            box-shadow: -12px 12px 0px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 162, 255, 0.3);
+            z-index: 5;
+        }
+
+        /* P3 Heading Title */
+        .project-index-container .menu-header {
+            background: linear-gradient(90deg, #ff0055 0%, #ff5500 100%);
+            padding: 10px 18px;
+            margin: -30px -24px 25px -24px;
+            border-bottom: 3px solid #ffffff;
+            clip-path: polygon(0 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .project-index-container h2 {
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .project-index-container .menu-header .sub-tag {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 900;
+            background: #ffffff;
+            color: #ff0055;
+            padding: 2px 8px;
+            letter-spacing: 1px;
+        }
+
+        /* INDEX BUTTONS LIST */
+        .index-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            perspective: 800px;
+        }
+
+        /* Dynamic Sizes & 3D Stylized Persona Buttons */
+        .index-item {
+            background: linear-gradient(90deg, rgba(5, 25, 60, 0.9) 0%, rgba(0, 60, 130, 0.85) 100%);
+            border: 2px solid rgba(0, 240, 255, 0.5);
+            border-left: 5px solid #00f0ff;
+            color: #ffffff;
+            text-align: left;
+            font-family: 'Titillium Web', 'Montserrat', sans-serif;
+            font-style: italic;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            
+            /* Dynamic 3D Transform & Skew */
+            transform-style: preserve-3d;
+            transform: skewX(-10deg) translate3d(0, 0, 0);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            box-shadow: -6px 6px 0px rgba(0, 15, 40, 0.9), -8px 8px 0px rgba(0, 240, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* DIFFERENT SIZES & INDENTATIONS FOR PERSONA 3 MENU RHYTHM */
+        .index-list .index-item:nth-child(1) {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            letter-spacing: 1.5px;
+        }
+        .index-list .index-item:nth-child(2) {
+            width: 94%;
+            margin-left: 3%;
+            padding: 14px 18px;
+            font-size: 1.02rem;
+            letter-spacing: 1px;
+        }
+        .index-list .index-item:nth-child(3) {
+            width: 98%;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            letter-spacing: 1.2px;
+        }
+        .index-list .index-item:nth-child(4) {
+            width: 92%;
+            margin-left: 5%;
+            padding: 13px 16px;
+            font-size: 0.98rem;
+            letter-spacing: 1px;
+        }
+        .index-list .index-item:nth-child(5) {
+            width: 96%;
+            padding: 15px 18px;
+            font-size: 1.02rem;
+            letter-spacing: 1.2px;
+        }
+        .index-list .index-item:nth-child(6) {
+            width: 90%;
+            margin-left: 6%;
+            padding: 13px 16px;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+        .index-list .index-item:nth-child(7) {
+            width: 95%;
+            padding: 14px 18px;
+            font-size: 1.02rem;
+            letter-spacing: 1.2px;
+        }
+        .index-list .index-item:nth-child(8) {
+            width: 92%;
+            margin-left: 4%;
+            padding: 13px 17px;
+            font-size: 0.98rem;
+            letter-spacing: 1.1px;
+        }
+
+        /* Number Badge */
+        .index-item span.num {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-style: normal;
+            font-size: 0.9rem;
+            color: #00f0ff;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 2px 8px;
+            margin-right: 10px;
+            border-radius: 2px;
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        /* Action Badge Tag inside button */
+        .index-item .action-tag {
+            font-size: 0.7rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-style: normal;
+            background: rgba(255, 255, 255, 0.15);
+            color: #00f0ff;
+            padding: 2px 6px;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            transition: all 0.25s ease;
+        }
+
+        /* 3D HOVER ANIMATION */
+        .index-item:hover {
+            background: #00f0ff;
+            border-color: #ffffff;
+            border-left-color: #ff0055;
+            color: #030a1a;
+            
+            /* 3D Pop Out Effect */
+            transform: skewX(-10deg) translate3d(14px, -6px, 15px) scale(1.03);
+            box-shadow: -12px 12px 0px #ff0055, -16px 16px 20px rgba(0, 240, 255, 0.6);
+        }
+
+        .index-item:hover span.num {
+            background: #030a1a;
+            color: #00f0ff;
+            border-color: #030a1a;
+        }
+
+        .index-item:hover .action-tag {
+            background: #ff0055;
+            color: #ffffff;
+            opacity: 1;
+        }
+
+        /* ACTIVE BUTTON STATE (P3 Selected Target Highlight) */
+        .index-item.active {
+            background: linear-gradient(90deg, #ffffff 0%, #00f0ff 100%);
+            border: 2px solid #ffffff;
+            border-left: 8px solid #ff0055;
+            color: #020817;
+            font-weight: 900;
+            
+            /* Persistent 3D Lift */
+            transform: skewX(-10deg) translate3d(16px, -4px, 20px);
+            box-shadow: -14px 14px 0px #ff0055, 0 0 30px rgba(0, 240, 255, 0.9);
+            animation: p3Pulse 3s infinite alternate;
+        }
+
+        .index-item.active span.num {
+            background: #ff0055;
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .index-item.active .action-tag {
+            background: #030a1a;
+            color: #ffffff;
+            opacity: 1;
+            font-weight: 900;
+        }
+
+        /* ========================================
+           RIGHT-MOST CONTAINER: PROJECT EXPLANATION CARD
+           ======================================== */
+        .project-content-container {
+            flex: 1;
+            max-width: 920px;
+            margin-left: auto; /* Push to right most edge */
+            background: rgba(3, 14, 38, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid #00f0ff;
+            border-right: 8px solid #00f0ff;
+            padding: 45px 50px;
+            min-width: 0;
+            transform: skewX(-4deg);
+            box-shadow: 14px 14px 0px rgba(0, 0, 0, 0.6), 0 0 35px rgba(0, 162, 255, 0.35);
+            position: relative;
+            z-index: 4;
+        }
+
+        /* Corner Graphic Accent */
+        .project-content-container::after {
+            content: 'INFO // SYSTEM DATA';
+            position: absolute;
+            top: -16px;
+            right: 30px;
+            background: #00f0ff;
+            color: #020817;
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 900;
+            font-style: italic;
+            padding: 3px 14px;
+            letter-spacing: 2px;
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+            box-shadow: 0 4px 10px rgba(0, 240, 255, 0.5);
+        }
+
+        /* ========================================
+           PROJECT SECTION CONTENT (Persona Stylized)
+           ======================================== */
+        .project-section {
+            display: none;
+            transform: skewX(4deg); /* Un-skew inner text for crisp readability */
+        }
+
+        .project-section.active {
+            display: block;
+            animation: fadeIn 0.4s cubic-bezier(0.15, 0.85, 0.35, 1.2);
+        }
+
+        /* Header Style */
+        .project-section h2 {
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #ffffff;
+            margin-bottom: 25px;
+            padding-bottom: 14px;
+            border-bottom: 3px solid #00f0ff;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 0px #002244, 0 0 15px rgba(0, 240, 255, 0.6);
+            position: relative;
+        }
+
+        .project-section h2::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 32px;
+            background: #ff0055;
+            transform: skewX(-15deg);
+            box-shadow: -3px 3px 0px #00f0ff;
+        }
+
+        .project-section h3 {
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #00f0ff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 35px;
+            margin-bottom: 18px;
+            padding-left: 16px;
+            border-left: 5px solid #ff0055;
+            background: linear-gradient(90deg, rgba(0, 240, 255, 0.1) 0%, transparent 100%);
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+
+        .project-section p {
+            font-size: 1.08rem;
+            line-height: 1.85;
+            color: #d0e8ff;
+            margin-bottom: 20px;
+        }
+
+        .project-section p strong {
+            color: #ffffff;
+            font-weight: 700;
+            background: rgba(0, 240, 255, 0.15);
+            padding: 1px 6px;
+            border-bottom: 2px solid #00f0ff;
+        }
+
+        /* Stylized P3 List Items */
+        .project-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 25px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .project-section li {
+            font-size: 1.02rem;
+            line-height: 1.75;
+            color: #e0f2fe;
+            padding: 16px 20px 16px 48px;
+            background: rgba(4, 25, 65, 0.6);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-left: 4px solid #00f0ff;
+            position: relative;
+            transform: skewX(-3deg);
+            transition: all 0.25s ease;
+        }
+
+        .project-section li::before {
+            content: '◆';
+            position: absolute;
+            left: 18px;
+            top: 17px;
+            font-size: 1rem;
+            color: #ff0055;
+            text-shadow: 0 0 8px #ff0055;
+        }
+
+        .project-section li:hover {
+            background: rgba(0, 162, 255, 0.2);
+            border-color: #ffffff;
+            border-left-color: #ff0055;
+            transform: skewX(-3deg) translateX(8px);
+            box-shadow: -6px 6px 15px rgba(0, 240, 255, 0.3);
+        }
+
+        .project-section li strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* Numbered List for P3 System Breakdown */
+        .numbered-list li {
+            counter-increment: step-counter;
+        }
+
+        .numbered-list li::before {
+            content: counter(step-counter);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 900;
+            font-style: normal;
+            color: #ffffff;
+            background: #ff0055;
+            width: 26px;
+            height: 26px;
+            clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 16px;
+            left: 14px;
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.8);
+        }
+
+        .numbered-list {
+            counter-reset: step-counter;
+        }
+
+        /* Links with P3 Button Style */
+        .project-section a {
+            color: #00f0ff;
+            text-decoration: none;
+            font-weight: 700;
+            border-bottom: 2px solid #00f0ff;
+            transition: all 0.25s ease;
+        }
+
+        .project-section a:hover {
+            color: #ffffff;
+            background: #ff0055;
+            border-bottom-color: #ffffff;
+            padding: 2px 6px;
+            box-shadow: 0 0 12px rgba(255, 0, 85, 0.8);
+        }
+
+        .link-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .link-group a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(90deg, #00f0ff 0%, #0066ff 100%);
+            border: 2px solid #ffffff;
+            color: #020817;
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-decoration: none;
+            transform: skewX(-10deg);
+            box-shadow: -6px 6px 0px #ff0055;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .link-group a:hover {
+            background: #ff0055;
+            color: #ffffff;
+            transform: skewX(-10deg) translate3d(6px, -4px, 0);
+            box-shadow: -10px 10px 0px #00f0ff, 0 0 25px rgba(255, 0, 85, 0.8);
+            border-color: #ffffff;
+            padding: 12px 24px;
+        }
+
+        /* ========================================
+           BACK TO HOME BUTTON (3D Persona Style)
+           ======================================== */
+        .back-button-wrap {
+            margin-top: 35px;
+            perspective: 600px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            font-style: italic;
+            text-decoration: none;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 14px 28px;
+            background: linear-gradient(90deg, #ff0055 0%, #cc0044 100%);
+            border: 2px solid #ffffff;
+            transform: skewX(-10deg) translate3d(0, 0, 0);
+            box-shadow: -8px 8px 0px #00f0ff, 0 0 20px rgba(255, 0, 85, 0.4);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%;
+        }
+
+        .back-button span.btn-icon {
+            background: #ffffff;
+            color: #ff0055;
+            font-weight: 900;
+            font-style: normal;
+            padding: 2px 10px;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .back-button:hover {
+            background: #00f0ff;
+            color: #020817;
+            border-color: #ffffff;
+            transform: skewX(-10deg) translate3d(8px, -6px, 10px);
+            box-shadow: -12px 12px 0px #ff0055, 0 0 30px rgba(0, 240, 255, 0.9);
+        }
+
+        .back-button:hover span.btn-icon {
+            background: #020817;
+            color: #00f0ff;
+        }
+
+        /* ========================================
+           RESPONSIVE DESIGN
+           ======================================== */
+        @media (max-width: 1100px) {
+            .page-wrapper {
+                flex-direction: column;
+                padding: 25px 20px 60px;
+                gap: 30px;
+            }
+
+            .project-index-container {
+                flex: none;
+                position: relative;
+                top: 0;
+                width: 100%;
+                transform: skewX(0deg);
+                border-right: 2px solid #00f0ff;
+            }
+
+            .project-index-container .menu-header {
+                transform: skewX(0deg);
+            }
+
+            .project-content-container {
+                width: 100%;
+                max-width: 100%;
+                margin-left: 0;
+                transform: skewX(0deg);
+                border-left: 2px solid #00f0ff;
+            }
+
+            .project-section {
+                transform: skewX(0deg);
+            }
+
+            .index-item {
+                transform: skewX(0deg) !important;
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+
+            .index-item:hover, .index-item.active {
+                transform: translate3d(5px, -2px, 0) !important;
+            }
+
+            .back-button, .link-group a {
+                transform: skewX(0deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .p3-top-bar {
+                padding: 0 15px;
+            }
+            .p3-top-bar-content {
+                justify-content: center;
+            }
+            .p3-guide-prompt {
+                display: none;
+            }
+            .p3-logo-tag {
+                font-size: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Video with Brighter Persona Overlay -->
+    <video class="bg-video" autoplay loop muted playsinline>
+        <source src="images/projects.mp4" type="video/mp4">
+    </video>
+    <div class="bg-overlay"></div>
+    <div class="p3-pattern-overlay"></div>
+    <div class="p3-bg-watermark">P3 RELOAD // SYSTEM</div>
+
+    <!-- P3 Top System Bar -->
+    <div class="p3-top-bar">
+        <div class="p3-top-bar-content">
+            <div class="p3-logo-tag">
+                <span class="badge">SYSTEM</span> RELZZY'S ARCHIVE // PROJECTS
+            </div>
+            <div class="p3-guide-prompt">
+                <span class="key">1-8</span> QUICK SELECT &nbsp;|&nbsp; <span class="key">CLICK</span> SELECT PROJECT &nbsp;|&nbsp; <span class="key">ESC</span> MAIN MENU
+            </div>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+
+        <!-- Left-most Column: Stylized Persona 3 Project Index -->
+        <div class="project-index-container">
+            <div class="menu-header">
+                <h2>PROJECTS</h2>
+                <span class="sub-tag">08 ITEMS</span>
+            </div>
+            
+            <div class="index-list">
+                <button class="index-item active" data-target="ai-project">
+                    <div><span class="num">01</span> CODE INTELLIGENCE</div>
+                    <span class="action-tag">NEW</span>
+                </button>
+                
+                <button class="index-item" data-target="cue-platform">
+                    <div><span class="num">02</span> CUE PLATFORM</div>
+                    <span class="action-tag">SAAS</span>
+                </button>
+                
+                <button class="index-item" data-target="web-dev">
+                    <div><span class="num">03</span> FULL-STACK WEB</div>
+                    <span class="action-tag">SYSTEM</span>
+                </button>
+                
+                <button class="index-item" data-target="ai-rpg">
+                    <div><span class="num">04</span> AI NARRATIVE RPG</div>
+                    <span class="action-tag">BETA</span>
+                </button>
+                
+                <button class="index-item" data-target="vn-engine">
+                    <div><span class="num">05</span> VISUAL NOVEL ENGINE</div>
+                    <span class="action-tag">TOOL</span>
+                </button>
+                
+                <button class="index-item" data-target="last-divine">
+                    <div><span class="num">06</span> THE LAST DIVINE</div>
+                    <span class="action-tag">RPG</span>
+                </button>
+                
+                <button class="index-item" data-target="game-dev">
+                    <div><span class="num">07</span> GAME DEVELOPMENT</div>
+                    <span class="action-tag">DEV</span>
+                </button>
+                
+                <button class="index-item" data-target="web3">
+                    <div><span class="num">08</span> WEB3 &amp; COMMUNITY</div>
+                    <span class="action-tag">COMM</span>
+                </button>
+            </div>
+
+            <div class="back-button-wrap" style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="persona.html" class="back-button">
+                    <span class="btn-icon">B</span> PERSONA HOME
+                </a>
+                <a href="index.html" class="back-button" style="background: linear-gradient(90deg, #d4af37 0%, #aa820a 100%); box-shadow: -6px 6px 0px #000, 0 0 15px rgba(212, 175, 55, 0.4); color: #000;">
+                    <span class="btn-icon" style="color: #aa820a; background: #000;">⚡</span> PRO THEME
+                </a>
+            </div>
+        </div>
+
+        <!-- Right-most Column: Content Details Panel -->
+        <div class="project-content-container">
+
+            <!-- 01: Code Intelligence & RAG -->
+            <div class="project-section active" id="ai-project">
+                <h2>Code Intelligence &amp; RAG</h2>
+                <p>
+                    One of my main projects is a <strong>local code intelligence and RAG system</strong>
+                    built around a fine-tuned <strong>Qwen3.5-2B language model</strong>. The goal is
+                    to create a lightweight AI system that can understand a large codebase, retrieve
+                    the right information, and interact with the local Linux environment when needed.
+                </p>
+                <p>
+                    The model itself is <strong>fine-tuned specifically for Linux-focused tool use and
+                        routing</strong>, rather than being used as a general-purpose chatbot. It learns
+                    to determine what the user is asking for and return a structured tool call that
+                    can be handled by the rest of the system.
+                </p>
+                <h3>How the system works</h3>
+                <ul class="numbered-list">
+                    <li>
+                        <strong>Fine-Tuned LLM Router —</strong> A <strong>2B-parameter Qwen3.5 model</strong>
+                        fine-tuned using
+                        <strong>QLoRA and Unsloth</strong>. It classifies the user's intent and produces structured JSON
+                        tool calls. The training data is focused on
+                        <strong>Linux commands, system operations, codebase queries, and tool usage</strong>.
+                    </li>
+                    <li>
+                        <strong>Codebase Retrieval —</strong> When a question requires understanding the project itself,
+                        the request is sent to the RAG pipeline rather than directly to the terminal.
+                    </li>
+                    <li>
+                        <strong>Hybrid Search —</strong> The RAG system combines <strong>dense vector search using
+                            ChromaDB</strong> with <strong>BM25 keyword search</strong>. This allows it to find both
+                        semantically related code and exact matches such as function names, variables, filenames, and
+                        technical terms.
+                    </li>
+                    <li>
+                        <strong>Reciprocal Rank Fusion —</strong> Results from the different search methods are combined
+                        using <strong>RRF (Reciprocal Rank Fusion)</strong>, producing a stronger combined ranking
+                        instead of relying on a single search method.
+                    </li>
+                    <li>
+                        <strong>Cross-Encoder Re-ranking —</strong> The most relevant results are then passed through a
+                        <strong>cross-encoder reranker</strong> to improve the final selection of context given to the
+                        language model.
+                    </li>
+                    <li>
+                        <strong>Linux Tool Integration —</strong> System-level questions can be routed to controlled
+                        Linux tools for things such as <strong>file discovery, logs, processes, memory usage and system
+                            inspection</strong>.
+                    </li>
+                    <li>
+                        <strong>Final Response —</strong> The retrieved code or system information is passed to an LLM
+                        to produce a grounded response based on the available evidence.
+                    </li>
+                </ul>
+                <p>
+                    The system has been tested on a codebase containing <strong>350+ files</strong>, successfully
+                    indexing and retrieving relevant information from across the project. The initial indexing is a
+                    one-time process, after which queries can use the existing search indexes instead of processing the
+                    entire codebase again.
+                </p>
+                <p>
+                    The trained model can also be deployed locally using <strong>4-bit GGUF quantization</strong>,
+                    making the system practical on consumer hardware while keeping the data and inference local.
+                </p>
+                <div class="link-group">
+                    <a href="https://github.com/relzzy/codebase-RAG" target="_blank" rel="noopener noreferrer"><span
+                            class="link-icon">⟠</span> View Source Code</a>
+                    <a href="https://huggingface.co/relzzyy/Qwen3.5-2B-Micro-Router" target="_blank"
+                        rel="noopener noreferrer"><span class="link-icon">🤗</span> View Fine-Tuned Model</a>
+                </div>
+            </div>
+
+            <!-- 02: Cue Creator Review Platform -->
+            <div class="project-section" id="cue-platform">
+                <h2>Cue — Realtime Creator Video Review &amp; Scheduling Engine</h2>
+                <p>
+                    <strong>Cue</strong> is a multi-tenant creator review and scheduling platform engineered to streamline 
+                    video drafts, carousel reviews, revision tracking, and client approvals. In agency and creator workflows, 
+                    review rounds routinely degrade into lost Google Drive links, scattered WhatsApp threads, and timezone 
+                    confusion across international clients. Cue solves this by replacing ad-hoc communication with isolated 
+                    workspaces, dynamic timezone normalization, and sub-second feedback loops.
+                </p>
+                <p>
+                    Rather than a passive showcase site, Cue runs as a fully reactive web platform powered by 
+                    <strong>Next.js App Router, TypeScript, and Supabase</strong>, incorporating deterministic review 
+                    state machines, database-enforced multi-tenancy, and live WebSocket synchronization.
+                </p>
+                <h3>System Architecture &amp; Core Engineering</h3>
+                <ul class="numbered-list">
+                    <li>
+                        <strong>Universal Timezone Normalization Engine —</strong> To eliminate timezone errors when coordinating 
+                        cross-continent social campaigns, all schedule timestamps are persisted to PostgreSQL in strict UTC ground truth. 
+                        The frontend dynamically queries the user's runtime device clock using ECMAScript's native 
+                        <strong>Intl.DateTimeFormat API</strong>, automatically rendering local publishing times alongside universal UTC indicators.
+                    </li>
+                    <li>
+                        <strong>Multi-Tenant PostgreSQL Data Isolation —</strong> Tenant security is enforced at the database layer 
+                        using <strong>PostgreSQL Row-Level Security (RLS)</strong> policies coupled with email whitelisting. Client organizations 
+                        are sandboxed into dedicated workspaces with custom branding and logos, guaranteeing zero cross-tenant data leakage 
+                        of drafts, feedback notes, or unreleased assets.
+                    </li>
+                    <li>
+                        <strong>Workspace-Scoped Role-Based Access Control (RBAC) —</strong> Configured granular database permissions 
+                        allowing a user to act with <strong>Creator permissions</strong> (uploading drafts, modifying slide orders, triggering resubmissions) 
+                        in one workspace, while holding <strong>Reviewer permissions</strong> (issuing approvals and logging revision notes) in another.
+                    </li>
+                    <li>
+                        <strong>4-Way Review Decision State Machine —</strong> Implemented a deterministic approval pipeline featuring 
+                        four explicit states: <strong>Approve, Suggest Changes, Put on Hold, and Deny</strong>. Guarded by form-level and schema-level validation 
+                        requiring mandatory revision notes before review submission, followed by an atomic 1-click resubmission loop that resets 
+                        updated drafts directly back to <em>Pending Review</em>.
+                    </li>
+                    <li>
+                        <strong>Sub-Second Realtime Streams —</strong> Subscribed the client dashboard to Supabase Realtime WebSocket 
+                        channels listening directly to PostgreSQL change data capture (CDC). Status updates, reviewer notes, and slide-out 
+                        team chat messages synchronize across all active viewers with sub-second latency and zero manual page polling.
+                    </li>
+                    <li>
+                        <strong>Multi-Format Media Review Canvas —</strong> Engineered specialized inspection flows for 
+                        <strong>4:5 portrait carousels</strong> (including slide navigation, safe-zone overlays, and visual hook frameworks), 
+                        vertical short-form video (TikTok, Instagram Reels, YouTube Shorts), and external review embeds from Loom, Google Drive, 
+                        Frame.io, and Figma.
+                    </li>
+                </ul>
+                <p>
+                    Deployed on <strong>Vercel</strong> utilizing modern React Server Components and optimized edge streaming for fast first contentful paint.
+                </p>
+                <div class="link-group">
+                    <a href="https://cue-web-nine.vercel.app/" target="_blank" rel="noopener noreferrer"><span
+                            class="link-icon">🚀</span> Launch Live Platform</a>
+                    <a href="https://cue-web-nine.vercel.app/#workflow" target="_blank" rel="noopener noreferrer"><span
+                            class="link-icon">⚙</span> Explore Live Architecture &amp; Workflow</a>
+                </div>
+            </div>
+
+            <!-- 03: Full-Stack Web Dev -->
+            <div class="project-section" id="web-dev">
+                <h2>Full-Stack Web Development</h2>
+                <p>
+                    I've also built and deployed several <strong>full-stack web applications</strong> rather than
+                    stopping at the frontend. These projects have involved designing interactive interfaces, building
+                    backend functionality, handling user data, implementing authentication, and deploying the complete
+                    application.
+                </p>
+                <ul>
+                    <li><strong>Custom backend functionality</strong> for forms and user interactions.</li>
+                    <li><strong>Firebase</strong> for storing submitted data and managing application data.</li>
+                    <li><strong>Google and Discord authentication</strong> with protected user areas and working login
+                        systems.</li>
+                    <li><strong>User dashboards</strong> with personalized content and account-based functionality.</li>
+                    <li>Deployment using services such as <strong>Render</strong>, allowing the applications to run as
+                        actual hosted web services rather than just local demos.</li>
+                </ul>
+                <div class="link-group">
+                    <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer"><span
+                            class="link-icon">⟠</span> GitHub Profile</a>
+                </div>
+            </div>
+
+            <!-- 03: AI-Driven RPG -->
+            <div class="project-section" id="ai-rpg">
+                <h2>AI-Driven Narrative RPG</h2>
+                <p>
+                    One of my newer projects is a <strong>web-based RPG that combines traditional game systems with
+                        AI-generated content</strong>. Instead of allowing AI to completely control the story, the game
+                    uses a fixed <strong>canonical main storyline</strong> as its foundation while allowing AI to
+                    generate flexible dialogue and events around it.
+                </p>
+                <ul>
+                    <li><strong>AI-generated dialogue and procedural events</strong> that respond to the player's
+                        situation.</li>
+                    <li>A persistent <strong>character, inventory and statistics system</strong> that keeps track of the
+                        player's state.</li>
+                    <li>Player decisions and game state can affect <strong>future events and potential endings</strong>.
+                    </li>
+                    <li>The AI operates within the game's existing rules instead of being allowed to freely rewrite the
+                        underlying game state.</li>
+                    <li>The project is currently in <strong>beta and runs through a web interface</strong>.</li>
+                </ul>
+            </div>
+
+            <!-- 04: Visual Novel Engine -->
+            <div class="project-section" id="vn-engine">
+                <h2>Visual Novel / RPG Engine</h2>
+                <p>
+                    I also built a reusable <strong>visual novel-style game engine</strong> rather than creating only a
+                    single fixed story. The engine separates game logic from narrative data so that new stories and
+                    content can be added without rewriting the entire system.
+                </p>
+                <ul>
+                    <li><strong>Save and load system</strong> for persistent player progress.</li>
+                    <li><strong>Character appearance and wardrobe systems</strong> that can influence the game and
+                        narrative.</li>
+                    <li>Persistent <strong>stats, money, inventory and time systems</strong>.</li>
+                    <li><strong>Branching story logic</strong> where choices and player state can affect later events.
+                    </li>
+                    <li>Designed to work across both <strong>PC and mobile layouts</strong>.</li>
+                </ul>
+            </div>
+
+            <!-- 05: The Last Divine -->
+            <div class="project-section" id="last-divine">
+                <h2>The Last Divine — Text RPG</h2>
+                <p>
+                    One of my earlier projects was <strong>The Last Divine</strong>, a text-based RPG built from scratch
+                    with Vanilla JavaScript and JSON. I designed it around a modular game system rather than a simple
+                    collection of "choose an option" pages.
+                </p>
+                <ul>
+                    <li><strong>Persistent Save/Load system</strong> using localStorage.</li>
+                    <li><strong>Inventory and item management</strong>, including usable items and consumables.</li>
+                    <li><strong>Health, energy and character statistics</strong> with conditional gameplay logic.</li>
+                    <li>A reactive <strong>appearance system</strong> where equipped items can change how parts of the
+                        story are displayed.</li>
+                    <li>Narrative and game data separated from the core game logic for easier expansion.</li>
+                </ul>
+            </div>
+
+            <!-- 06: Game Development -->
+            <div class="project-section" id="game-dev">
+                <h2>Game Development &amp; Storytelling</h2>
+                <p>
+                    Outside of programming, I'm also interested in <strong>game development and storytelling</strong>. I
+                    write story scripts and design characters, worlds, gameplay systems and narrative structures for
+                    games I want to build in the future. My long-term goal is to create a <strong>3D indie game</strong>
+                    that combines interactive gameplay with a strong story.
+                </p>
+            </div>
+
+            <!-- 07: Web3 & Community -->
+            <div class="project-section" id="web3">
+                <h2>Web3 &amp; Community</h2>
+                <p>
+                    I'm also active in <strong>decentralized and Web3 gaming communities</strong>, where I've
+                    participated as a community member, creator, volunteer and player. I've contributed to communities
+                    around decentralized games and projects and have been involved in helping promote and represent
+                    projects online.
+                </p>
+                <p>
+                    One particularly memorable part of that experience was being an early member and creator within a
+                    decentralized gaming community and receiving <strong>sponsored flights to Mumbai on three separate
+                        occasions</strong> to attend creator meetups and represent/promote the game.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript Interactive Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const buttons = document.querySelectorAll('.index-item');
+            const sections = document.querySelectorAll('.project-section');
+
+            // Switch to a specific project by its ID
+            function showProject(projectId) {
+                // Remove active classes
+                buttons.forEach(btn => btn.classList.remove('active'));
+                sections.forEach(sec => sec.classList.remove('active'));
+
+                // Add active class to corresponding button and section
+                const targetButton = document.querySelector(`.index-item[data-target="${projectId}"]`);
+                const targetSection = document.getElementById(projectId);
+
+                if (targetButton && targetSection) {
+                    targetButton.classList.add('active');
+                    targetSection.classList.add('active');
+
+                    // Update URL hash without reloading page
+                    history.replaceState(null, null, `#${projectId}`);
+
+                    // On mobile, scroll content into view smoothly
+                    if (window.innerWidth <= 1100) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            }
+
+            // Bind click events to buttons
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-target');
+                    showProject(targetId);
+                });
+            });
+
+            // Parse hash on initial load
+            const hash = window.location.hash.substring(1); // remove '#'
+            if (hash && document.getElementById(hash)) {
+                showProject(hash);
+            } else {
+                // Default to ai-project if no valid hash
+                showProject('ai-project');
+            }
+
+            // Keyboard Shortcuts (1-8 for project switching, ESC for home)
+            const projectKeyMap = {
+                '1': 'ai-project',
+                '2': 'cue-platform',
+                '3': 'web-dev',
+                '4': 'ai-rpg',
+                '5': 'vn-engine',
+                '6': 'last-divine',
+                '7': 'game-dev',
+                '8': 'web3'
+            };
+
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+                if (projectKeyMap[e.key]) {
+                    showProject(projectKeyMap[e.key]);
+                } else if (e.key === 'Escape' || e.key === 'Esc') {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals - Relzzy's Webpage</title>
+    <link rel="icon" href="images/RELZZY_logo.svg" type="image/svg+xml">
+
+    <!-- Google Fonts for authentic P3R high-contrast typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&family=Poppins:wght@400;600;700;900&family=Titillium+Web:ital,wght@0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ========================================
+           PERSONA 3 RELOAD SYSTEM ANIMATIONS & KEYFRAMES
+           ======================================== */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateX(30px) skewX(-4deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) skewX(-4deg);
+            }
+        }
+
+        @keyframes p3Pulse {
+            0%, 100% {
+                box-shadow: -8px 8px 0px #00d4ff, 0 0 15px rgba(0, 212, 255, 0.4);
+            }
+            50% {
+                box-shadow: -10px 10px 0px #ff0055, 0 0 25px rgba(255, 0, 85, 0.6);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) skewX(-4deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) skewX(-4deg);
+            }
+        }
+
+        /* ========================================
+           RESET & BASE
+           ======================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #e6f7ff;
+            min-height: 100vh;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            background-color: #030a1a;
+        }
+
+        /* ========================================
+           BRIGHTER BACKGROUND & P3 ATMOSPHERIC OVERLAY
+           ======================================== */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('images/goals.png');
+            background-size: cover;
+            background-position: center;
+            z-index: -10;
+            filter: brightness(1.1) contrast(1.05);
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 162, 255, 0.28) 0%, rgba(10, 30, 75, 0.35) 60%, rgba(0, 220, 255, 0.15) 100%);
+            z-index: -9;
+            pointer-events: none;
+        }
+
+        .p3-pattern-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                radial-gradient(rgba(0, 240, 255, 0.15) 1px, transparent 0),
+                linear-gradient(135deg, transparent 45%, rgba(0, 162, 255, 0.08) 50%, transparent 55%);
+            background-size: 24px 24px, 200px 200px;
+            z-index: -8;
+            pointer-events: none;
+        }
+
+        .p3-bg-watermark {
+            position: fixed;
+            bottom: -50px;
+            right: -20px;
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 18vw;
+            font-weight: 900;
+            font-style: italic;
+            color: rgba(0, 240, 255, 0.05);
+            letter-spacing: -5px;
+            user-select: none;
+            z-index: -7;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+
+        /* ========================================
+           SCROLLBAR
+           ======================================== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(3, 15, 38, 0.8);
+            border-left: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #00f0ff, #0066ff);
+            border-radius: 0px;
+            box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff0055;
+        }
+
+        /* ========================================
+           TOP P3 SYSTEM HEADER BAR
+           ======================================== */
+        .p3-top-bar {
+            width: 100%;
+            height: 46px;
+            background: linear-gradient(90deg, #00a2ff 0%, #0033aa 40%, rgba(3, 10, 26, 0.85) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4);
+            border-bottom: 3px solid #00f0ff;
+            position: relative;
+            z-index: 10;
+            transform: skewX(-6deg);
+            margin-top: 10px;
+        }
+
+        .p3-top-bar-content {
+            transform: skewX(6deg);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .p3-logo-tag {
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+        }
+
+        .p3-logo-tag span.badge {
+            background: #ff0055;
+            color: #ffffff;
+            padding: 2px 10px;
+            font-size: 0.85rem;
+            font-style: normal;
+            font-weight: 900;
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        }
+
+        .p3-guide-prompt {
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #00f0ff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .p3-guide-prompt span.key {
+            background: #ffffff;
+            color: #002266;
+            padding: 1px 8px;
+            border-radius: 3px;
+            font-weight: 900;
+            box-shadow: 0 2px 0px #00f0ff;
+        }
+
+        /* ========================================
+           MAIN CONTENT AREA
+           ======================================== */
+        .page-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px;
+            width: 100%;
+            max-width: 100vw;
+            min-height: calc(100vh - 60px);
+            perspective: 1200px;
+        }
+
+        .goals-container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(3, 14, 38, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid #00f0ff;
+            border-right: 8px solid #00f0ff;
+            border-left: 8px solid #ff0055;
+            padding: 45px 50px;
+            transform: skewX(-4deg);
+            box-shadow: 14px 14px 0px rgba(0, 0, 0, 0.6), 0 0 35px rgba(0, 162, 255, 0.35);
+            position: relative;
+            z-index: 4;
+            animation: fadeInUp 0.8s cubic-bezier(0.15, 0.85, 0.35, 1.2);
+        }
+
+        .goals-container::after {
+            content: 'ROADMAP // SYSTEM DATA';
+            position: absolute;
+            top: -16px;
+            right: 30px;
+            background: #00f0ff;
+            color: #020817;
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 900;
+            font-style: italic;
+            padding: 3px 14px;
+            letter-spacing: 2px;
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+            box-shadow: 0 4px 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .goals-content {
+            transform: skewX(4deg); /* Un-skew inner text */
+        }
+
+        .goals-content h1 {
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #ffffff;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 0px #002244, 0 0 15px rgba(0, 240, 255, 0.6);
+        }
+
+        .goals-content h1::before {
+            content: '';
+            display: inline-block;
+            width: 15px;
+            height: 40px;
+            background: #ff0055;
+            transform: skewX(-15deg);
+            box-shadow: -4px 4px 0px #00f0ff;
+        }
+
+        .goals-content .subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #00f0ff;
+            margin-bottom: 30px;
+            padding-left: 30px;
+            letter-spacing: 2px;
+            border-bottom: 3px solid rgba(0, 240, 255, 0.3);
+            padding-bottom: 15px;
+            text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Stylized P3 List Items */
+        .goals-list {
+            list-style: none;
+            padding: 0;
+            margin: 25px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .goals-list li {
+            font-size: 1.1rem;
+            line-height: 1.75;
+            color: #e0f2fe;
+            padding: 20px 25px 20px 55px;
+            background: rgba(4, 25, 65, 0.7);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-left: 5px solid #00f0ff;
+            position: relative;
+            transform: skewX(-3deg);
+            transition: all 0.25s ease;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .goals-list li::before {
+            content: '◆';
+            position: absolute;
+            left: 20px;
+            top: 22px;
+            font-size: 1.2rem;
+            color: #ff0055;
+            text-shadow: 0 0 10px #ff0055;
+        }
+
+        .goals-list li:hover {
+            background: rgba(0, 162, 255, 0.25);
+            border-color: #ffffff;
+            border-left-color: #ff0055;
+            transform: skewX(-3deg) translateX(10px);
+            box-shadow: -8px 8px 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .goals-list li strong {
+            display: block;
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 1.25rem;
+            font-family: 'Titillium Web', sans-serif;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-shadow: 1px 1px 0px #000;
+        }
+
+        /* ========================================
+           BACK TO HOME BUTTON (3D Persona Style)
+           ======================================== */
+        .back-button-wrap {
+            margin-top: 45px;
+            perspective: 600px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: 'Titillium Web', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
+            font-style: italic;
+            text-decoration: none;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 16px 35px;
+            background: linear-gradient(90deg, #ff0055 0%, #cc0044 100%);
+            border: 2px solid #ffffff;
+            transform: skewX(-10deg) translate3d(0, 0, 0);
+            box-shadow: -8px 8px 0px #00f0ff, 0 0 20px rgba(255, 0, 85, 0.4);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .back-button span.btn-icon {
+            background: #ffffff;
+            color: #ff0055;
+            font-weight: 900;
+            font-style: normal;
+            padding: 3px 12px;
+            border-radius: 50%;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .back-button:hover {
+            background: #00f0ff;
+            color: #020817;
+            border-color: #ffffff;
+            transform: skewX(-10deg) translate3d(8px, -6px, 10px);
+            box-shadow: -12px 12px 0px #ff0055, 0 0 30px rgba(0, 240, 255, 0.9);
+        }
+
+        .back-button:hover span.btn-icon {
+            background: #020817;
+            color: #00f0ff;
+        }
+
+        @media (max-width: 768px) {
+            .p3-top-bar {
+                padding: 0 15px;
+            }
+            .p3-top-bar-content {
+                justify-content: center;
+            }
+            .p3-guide-prompt {
+                display: none;
+            }
+            .p3-logo-tag {
+                font-size: 1rem;
+                text-align: center;
+            }
+            
+            .goals-container {
+                padding: 30px 20px;
+                transform: skewX(0);
+            }
+            
+            .goals-content {
+                transform: skewX(0);
+            }
+
+            .goals-list li {
+                transform: skewX(0);
+            }
+            
+            .goals-list li:hover {
+                transform: translateX(5px);
+            }
+
+            .back-button {
+                transform: skewX(0);
+            }
+            .back-button:hover {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Image with P3 Filters -->
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="p3-pattern-overlay"></div>
+    <div class="p3-bg-watermark">P3 RELOAD // SYSTEM</div>
+
+    <!-- P3 Top System Bar -->
+    <div class="p3-top-bar">
+        <div class="p3-top-bar-content">
+            <div class="p3-logo-tag">
+                <span class="badge">SYSTEM</span> RELZZY'S ARCHIVE // ROADMAP
+            </div>
+            <div class="p3-guide-prompt">
+                <span class="key">ESC</span> MAIN MENU
+            </div>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <div class="goals-container">
+            <div class="goals-content">
+                <!-- Title -->
+                <h1>THE ROADMAP</h1>
+
+                <!-- Subtitle -->
+                <p class="subtitle">CURRENT OBJECTIVES & FUTURE PROJECTS</p>
+
+                <!-- Roadmap card -->
+                <ul class="goals-list">
+                    <li>
+                        <strong>Codebase RAG Interface</strong>
+                        Build a dedicated GUI for my existing codebase RAG system, making
+                        code search, retrieval results, tool usage, and AI responses easier
+                        to access and understand.
+                    </li>
+                    <li>
+                        <strong>AI-Driven RPG</strong>
+                        Continue developing the AI and procedural-generation based RPG.
+                        The current prototype is functional, but still needs a proper
+                        game-like GUI, application interface, and additional backend work
+                        before it can become a complete playable project.
+                    </li>
+                    <li>
+                        <strong>Story & Narrative Development</strong>
+                        Develop proper storylines, characters, and world-building for my
+                        current visual novel, text RPG, and AI-driven RPG projects. The
+                        current versions focus mainly on the underlying systems and are
+                        still using placeholder or basic story content.
+                    </li>
+                    <li>
+                        <strong>Local AI & Agentic Workflows</strong>
+                        Improve agentic workflows, tool calling, context handling, and
+                        long coding sessions for LLMs running on consumer hardware.
+                        The long-term goal is to make local models more capable for
+                        demanding development tasks while reducing reliance on cloud
+                        services and keeping sensitive data private.
+                    </li>
+                    <li>
+                        <strong>Privacy-Focused AI IDE</strong>
+                        Develop an IDE that can use cloud AI models for coding and other
+                        tasks while keeping sensitive information such as source code,
+                        credentials, API keys, and local data encrypted and protected from
+                        direct model access wherever possible.
+                    </li>
+                    <li>
+                        <strong>Cue Social Publishing &amp; Automated API Dispatch</strong>
+                        Expand the Cue creator review platform by engineering direct OAuth
+                        publishing dispatch to social platform APIs (Instagram Graph API,
+                        TikTok for Business API, YouTube Data API), allowing approved drafts
+                        to auto-publish according to their normalized UTC schedule slots.
+                    </li>
+                </ul>
+
+                <!-- Back button -->
+                <div class="back-button-wrap" style="display: flex; flex-direction: column; gap: 10px;">
+                    <a href="persona.html" class="back-button">
+                        <span class="btn-icon">B</span> PERSONA HOME
+                    </a>
+                    <a href="index.html" class="back-button" style="background: linear-gradient(90deg, #d4af37 0%, #aa820a 100%); box-shadow: -6px 6px 0px #000, 0 0 15px rgba(212, 175, 55, 0.4); color: #000;">
+                        <span class="btn-icon" style="color: #aa820a; background: #000;">⚡</span> PRO THEME
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Keyboard Shortcuts (ESC for home)
+        window.addEventListener('keydown', (e) => {
+            if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+            if (e.key === 'Escape' || e.key === 'Esc') {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+
+</html>

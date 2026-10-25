@@ -1,0 +1,2329 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" width="100%" height="100%" id="game-svg" tabIndex="0">
+  <defs>
+    <!-- Floor & Wall Gradients -->
+    <linearGradient id="wall-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0c0f16" />
+      <stop offset="60%" stop-color="#151a24" />
+      <stop offset="100%" stop-color="#1e2432" />
+    </linearGradient>
+
+    <linearGradient id="floor-wood" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1d1713" />
+      <stop offset="100%" stop-color="#2c221c" />
+    </linearGradient>
+
+    <linearGradient id="deck-wood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b3127" />
+      <stop offset="50%" stop-color="#4a3e32" />
+      <stop offset="100%" stop-color="#332a21" />
+    </linearGradient>
+
+    <linearGradient id="rug-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141822" />
+      <stop offset="50%" stop-color="#1f2636" />
+      <stop offset="100%" stop-color="#11151e" />
+    </linearGradient>
+
+    <radialGradient id="lamp-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe899" stop-opacity="0.65" />
+      <stop offset="40%" stop-color="#f5a623" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#ffb100" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="monitor-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00ffff" stop-opacity="0.7" />
+      <stop offset="60%" stop-color="#00a2ff" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#0066ff" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Sky Gradient (Balcony View) -->
+    <linearGradient id="sky-twilight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#050811" />
+      <stop offset="40%" stop-color="#0e172c" />
+      <stop offset="80%" stop-color="#182542" />
+      <stop offset="100%" stop-color="#283354" />
+    </linearGradient>
+
+    <!-- Furniture Wood -->
+    <linearGradient id="wood-desk" x1="0%" y1="0%" x2="100%" y2="20%">
+      <stop offset="0%" stop-color="#4a3728" />
+      <stop offset="50%" stop-color="#5c4533" />
+      <stop offset="100%" stop-color="#3d2c1e" />
+    </linearGradient>
+
+    <linearGradient id="wardrobe-wood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2b2019" />
+      <stop offset="45%" stop-color="#3d2f25" />
+      <stop offset="55%" stop-color="#45352a" />
+      <stop offset="100%" stop-color="#241b15" />
+    </linearGradient>
+
+    <linearGradient id="bed-quilt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1b212d" />
+      <stop offset="50%" stop-color="#252d3d" />
+      <stop offset="100%" stop-color="#161b24" />
+    </linearGradient>
+
+    <!-- Remastered Bathroom Luxury Finishes -->
+    <linearGradient id="bath-tile-luxe" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#232834" />
+      <stop offset="50%" stop-color="#1e222d" />
+      <stop offset="100%" stop-color="#181b24" />
+    </linearGradient>
+
+    <linearGradient id="bath-wall-tile" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#12151d" />
+      <stop offset="70%" stop-color="#1b202c" />
+      <stop offset="100%" stop-color="#242b3b" />
+    </linearGradient>
+
+    <linearGradient id="tub-acrylic" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="70%" stop-color="#edf2f7" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+
+    <linearGradient id="water-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.7" />
+    </linearGradient>
+
+    <linearGradient id="washer-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a3346" />
+      <stop offset="50%" stop-color="#1f2635" />
+      <stop offset="100%" stop-color="#161c28" />
+    </linearGradient>
+
+    <linearGradient id="washer-glass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <radialGradient id="ceiling-spot" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff4d1" stop-opacity="0.35" />
+      <stop offset="50%" stop-color="#ffe899" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#ffe899" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="mirror-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.45" />
+      <stop offset="60%" stop-color="#bae6fd" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#bae6fd" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Living Room Luxury Finishes -->
+    <linearGradient id="living-floor-wood" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2d2218" />
+      <stop offset="35%" stop-color="#3d2e20" />
+      <stop offset="70%" stop-color="#34271c" />
+      <stop offset="100%" stop-color="#221810" />
+    </linearGradient>
+
+    <linearGradient id="sofa-fabric" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#333c4d" />
+      <stop offset="50%" stop-color="#252c39" />
+      <stop offset="100%" stop-color="#1c222d" />
+    </linearGradient>
+
+    <radialGradient id="tv-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.3" />
+      <stop offset="60%" stop-color="#0284c7" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="tv-screen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a192f" />
+      <stop offset="40%" stop-color="#0f2b48" />
+      <stop offset="70%" stop-color="#143e5e" />
+      <stop offset="100%" stop-color="#0b1b30" />
+    </linearGradient>
+
+    <linearGradient id="kitchen-marble" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="50%" stop-color="#e2e8f0" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+
+    <linearGradient id="rug-living" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2430" />
+      <stop offset="50%" stop-color="#2a3242" />
+      <stop offset="100%" stop-color="#181c26" />
+    </linearGradient>
+
+    <linearGradient id="living-wall-top" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#252d3d" />
+      <stop offset="100%" stop-color="#181e2a" />
+    </linearGradient>
+
+    <linearGradient id="balcony-glass-tint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35" />
+      <stop offset="50%" stop-color="#0ea5e9" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.28" />
+    </linearGradient>
+
+    <linearGradient id="brass-gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="45%" stop-color="#d4af37" />
+      <stop offset="100%" stop-color="#996515" />
+    </linearGradient>
+
+    <linearGradient id="chair-cushion-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2c374a" />
+      <stop offset="100%" stop-color="#1a2230" />
+    </linearGradient>
+
+    <linearGradient id="monstera-leaf-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e" />
+      <stop offset="60%" stop-color="#15803d" />
+      <stop offset="100%" stop-color="#14532d" />
+    </linearGradient>
+
+    <!-- Character Gradients -->
+    <linearGradient id="suit-jacket" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#24262b" />
+      <stop offset="45%" stop-color="#15171a" />
+      <stop offset="100%" stop-color="#0d0e10" />
+    </linearGradient>
+
+    <linearGradient id="suit-trousers" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1c1d21" />
+      <stop offset="100%" stop-color="#0f1012" />
+    </linearGradient>
+
+    <linearGradient id="black-hair" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2c2e35" />
+      <stop offset="40%" stop-color="#17181c" />
+      <stop offset="100%" stop-color="#090a0c" />
+    </linearGradient>
+
+    <!-- Drop Shadow Filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#000" flood-opacity="0.55" />
+    </filter>
+  </defs>
+
+  <style>
+    <![CDATA[
+    #game-svg {
+      outline: none;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      background: #040507;
+    }
+
+    @keyframes pulsePrompt {
+      0%, 100% { transform: translateY(0px) scale(1); filter: drop-shadow(0 0 5px #00ffff); }
+      50% { transform: translateY(-4px) scale(1.05); filter: drop-shadow(0 0 14px #00ffff); }
+    }
+
+    @keyframes blinkLed {
+      0%, 100% { opacity: 0.95; }
+      50% { opacity: 0.25; }
+    }
+
+    @keyframes beaconBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.1; }
+    }
+
+    .prompt-badge {
+      animation: pulsePrompt 1.4s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    .led-pulse {
+      animation: blinkLed 1.8s infinite;
+    }
+
+    .beacon {
+      animation: beaconBlink 2s infinite ease-in-out;
+    }
+
+    .menu-btn {
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .menu-btn:hover rect.btn-bg {
+      fill: #ff3366 !important;
+      filter: drop-shadow(0 0 8px rgba(255, 51, 102, 0.8));
+    }
+    .menu-btn:hover text {
+      fill: #ffffff !important;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      cursor: pointer;
+    }
+    .close-btn:hover circle {
+      fill: #ff5f56;
+      filter: drop-shadow(0 0 5px #ff5f56);
+    }
+    ]]>
+  </style>
+
+  <!-- ================= CANVAS BACKGROUND ================= -->
+  <rect x="0" y="0" width="960" height="640" fill="#040507" />
+
+  <!-- ================================================================ -->
+  <!-- ZONE 1: MAIN BEDROOM (VISIBLE BY DEFAULT)                         -->
+  <!-- ================================================================ -->
+  <g id="room-bedroom">
+    <!-- Bedroom Floor -->
+    <rect x="80" y="70" width="800" height="500" fill="url(#floor-wood)" />
+
+    <!-- Hardwood Plank Seams -->
+    <g stroke="#17120e" stroke-width="1.2" opacity="0.65">
+      <line x1="80" y1="120" x2="880" y2="120" />
+      <line x1="80" y1="170" x2="880" y2="170" />
+      <line x1="80" y1="220" x2="880" y2="220" />
+      <line x1="80" y1="270" x2="880" y2="270" />
+      <line x1="80" y1="320" x2="880" y2="320" />
+      <line x1="80" y1="370" x2="880" y2="370" />
+      <line x1="80" y1="420" x2="880" y2="420" />
+      <line x1="80" y1="470" x2="880" y2="470" />
+      <line x1="80" y1="520" x2="880" y2="520" />
+      <line x1="200" y1="70" x2="200" y2="120" />
+      <line x1="420" y1="70" x2="420" y2="120" />
+      <line x1="640" y1="70" x2="640" y2="120" />
+      <line x1="300" y1="120" x2="300" y2="170" />
+      <line x1="520" y1="120" x2="520" y2="170" />
+      <line x1="740" y1="120" x2="740" y2="170" />
+      <line x1="220" y1="170" x2="220" y2="220" />
+      <line x1="440" y1="170" x2="440" y2="220" />
+      <line x1="660" y1="170" x2="660" y2="220" />
+      <line x1="320" y1="220" x2="320" y2="270" />
+      <line x1="560" y1="220" x2="560" y2="270" />
+      <line x1="780" y1="220" x2="780" y2="270" />
+      <line x1="240" y1="270" x2="240" y2="320" />
+      <line x1="480" y1="270" x2="480" y2="320" />
+      <line x1="700" y1="270" x2="700" y2="320" />
+      <line x1="360" y1="320" x2="360" y2="370" />
+      <line x1="600" y1="320" x2="600" y2="370" />
+      <line x1="820" y1="320" x2="820" y2="370" />
+      <line x1="260" y1="370" x2="260" y2="420" />
+      <line x1="500" y1="370" x2="500" y2="420" />
+      <line x1="720" y1="370" x2="720" y2="420" />
+      <line x1="380" y1="420" x2="380" y2="470" />
+      <line x1="620" y1="420" x2="620" y2="470" />
+      <line x1="840" y1="420" x2="840" y2="470" />
+      <line x1="280" y1="470" x2="280" y2="520" />
+      <line x1="540" y1="470" x2="540" y2="520" />
+      <line x1="760" y1="470" x2="760" y2="520" />
+      <line x1="340" y1="520" x2="340" y2="570" />
+      <line x1="660" y1="520" x2="660" y2="570" />
+    </g>
+
+    <!-- Luxury Central Area Rug -->
+    <g transform="translate(450, 310)">
+      <ellipse cx="120" cy="80" rx="135" ry="75" fill="#000" opacity="0.35" />
+      <ellipse cx="120" cy="78" rx="130" ry="70" fill="url(#rug-grad)" stroke="#d4af37" stroke-width="2" />
+      <ellipse cx="120" cy="78" rx="105" ry="52" fill="none" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="7,4" opacity="0.75" />
+      <ellipse cx="120" cy="78" rx="60" ry="28" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.5" />
+      <polygon points="120,60 133,78 120,96 107,78" fill="none" stroke="#d4af37" stroke-width="1.5" opacity="0.6" />
+    </g>
+
+    <!-- Bedroom Perimeter Walls -->
+    <rect x="75" y="62" width="355" height="12" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+    <rect x="530" y="62" width="355" height="12" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+
+    <!-- BALCONY DOOR (Top Wall, X: 430 to 530) -->
+    <g id="door-to-balcony" transform="translate(430, 60)" style="cursor: pointer;">
+      <rect x="0" y="0" width="100" height="14" fill="#24324a" stroke="#8ecae6" stroke-width="1.5" />
+      <rect x="3" y="2" width="45" height="10" fill="#7dd3fc" fill-opacity="0.35" stroke="#bae6fd" stroke-width="1" />
+      <rect x="52" y="2" width="45" height="10" fill="#7dd3fc" fill-opacity="0.35" stroke="#bae6fd" stroke-width="1" />
+      <line x1="47" y1="2" x2="47" y2="12" stroke="#d4af37" stroke-width="2" />
+      <line x1="53" y1="2" x2="53" y2="12" stroke="#d4af37" stroke-width="2" />
+    </g>
+
+    <!-- In-World Proximity Badge for Balcony Door (Only shown when near) -->
+    <g id="prompt-balcony-door" class="prompt-badge" transform="translate(480, 105)" style="display: none;">
+      <rect x="-65" y="-12" width="130" height="24" rx="12" fill="#0d1117" stroke="#7dd3fc" stroke-width="1.8" filter="url(#shadow)" />
+      <rect x="-56" y="-8" width="16" height="16" rx="3" fill="#7dd3fc" />
+      <text x="-48" y="4" font-size="10" font-weight="900" fill="#000" text-anchor="middle" font-family="monospace">E</text>
+      <text x="14" y="4" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">ENTER BALCONY</text>
+    </g>
+
+    <!-- Bottom Wall (with Bathroom Door opening in center) -->
+    <rect x="75" y="566" width="355" height="12" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+    <rect x="530" y="566" width="355" height="12" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+
+    <!-- BATHROOM DOOR (Bottom Wall, X: 430 to 530) -->
+    <g id="door-to-bathroom" transform="translate(430, 566)" style="cursor: pointer;">
+      <rect x="0" y="0" width="100" height="12" fill="#35281e" stroke="#d4af37" stroke-width="1" />
+      <rect x="5" y="2" width="90" height="8" fill="#4d3a2d" stroke="#6b523f" stroke-width="1" rx="1" />
+      <circle cx="82" cy="6" r="2" fill="#d4af37" />
+    </g>
+
+    <!-- In-World Proximity Badge for Bathroom Door (Only shown when near) -->
+    <g id="prompt-bathroom-door" class="prompt-badge" transform="translate(480, 530)" style="display: none;">
+      <rect x="-70" y="-12" width="140" height="24" rx="12" fill="#0d1117" stroke="#38ef7d" stroke-width="1.8" filter="url(#shadow)" />
+      <rect x="-61" y="-8" width="16" height="16" rx="3" fill="#38ef7d" />
+      <text x="-53" y="4" font-size="10" font-weight="900" fill="#000" text-anchor="middle" font-family="monospace">E</text>
+      <text x="14" y="4" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">ENTER BATHROOM</text>
+    </g>
+
+    <!-- Left Solid Wall -->
+    <rect x="72" y="62" width="12" height="516" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+
+    <!-- Right Wall (with Apartment Front Door) -->
+    <rect x="876" y="62" width="12" height="260" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+    <rect x="876" y="440" width="12" height="138" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+
+    <!-- DOOR TO LIVING ROOM (Right Wall) -->
+    <g id="door-to-livingroom" transform="translate(860, 322)" style="cursor: pointer;">
+      <rect x="-35" y="16" width="30" height="86" rx="3" fill="#181d26" stroke="#d4af37" stroke-width="1" />
+      <text x="-20" y="62" font-size="8" fill="#d4af37" text-anchor="middle" font-weight="bold" transform="rotate(-90, -20, 62)">LIVING ROOM</text>
+      <rect x="14" y="0" width="14" height="118" fill="#2d221a" stroke="#1a130e" stroke-width="1.5" />
+      <rect x="16" y="6" width="10" height="106" fill="#3d2e23" stroke="#d4af37" stroke-width="1" rx="1" />
+      <circle cx="21" cy="54" r="2.5" fill="#d4af37" />
+      <rect x="19" y="58" width="4" height="6" rx="1" fill="#aa820a" />
+      <circle cx="21" cy="30" r="1.5" fill="#d4af37" />
+    </g>
+
+    <!-- In-World Proximity Badge for Living Room Door (Only shown when near) -->
+    <g id="prompt-livingroom-door" class="prompt-badge" transform="translate(815, 380)" style="display: none;">
+      <rect x="-75" y="-12" width="150" height="24" rx="12" fill="#0d1117" stroke="#ffd166" stroke-width="1.8" filter="url(#shadow)" />
+      <rect x="-66" y="-8" width="16" height="16" rx="3" fill="#ffd166" />
+      <text x="-58" y="4" font-size="10" font-weight="900" fill="#000" text-anchor="middle" font-family="monospace">E</text>
+      <text x="14" y="4" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">ENTER LIVING ROOM</text>
+    </g>
+
+    <!-- ================= BEDROOM FURNITURE ================= -->
+
+    <!-- A. TABLE WITH COMPUTER (Top-Left) & CHAIR (Facing the Chair) -->
+    <g id="table-desk-group" transform="translate(84, 76)">
+      <rect x="0" y="0" width="140" height="140" rx="4" fill="#000" opacity="0.45" filter="url(#shadow)" />
+      <rect x="0" y="0" width="135" height="135" rx="3" fill="url(#wood-desk)" stroke="#1a130b" stroke-width="1.5" />
+      <rect x="4" y="4" width="127" height="127" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.6" />
+      <rect x="15" y="15" width="105" height="105" fill="#12151d" rx="3" stroke="#2b3445" stroke-width="1" />
+
+      <!-- PC Tower -->
+      <g id="pc-tower" transform="translate(18, 20)">
+        <rect x="0" y="0" width="30" height="42" fill="#101218" rx="3" stroke="#2b3342" stroke-width="1.2" />
+        <rect x="3" y="3" width="24" height="36" fill="#08090d" />
+        <circle cx="15" cy="8" r="1.8" fill="#00ffff" id="power-led" class="led-pulse" />
+        <circle cx="15" cy="8" r="3.5" fill="#00ffff" opacity="0.4" id="power-led-glow" />
+        <rect x="6" y="16" width="18" height="18" fill="#00a2ff" opacity="0.25" />
+      </g>
+
+      <!-- Coffee Mug -->
+      <g transform="translate(26, 85)">
+        <ellipse cx="7" cy="10" rx="5" ry="3" fill="#000" opacity="0.35" />
+        <rect x="2" y="2" width="10" height="9" fill="#e2e8f0" rx="2" />
+        <ellipse cx="7" cy="2" rx="5" ry="2" fill="#38251b" />
+        <path d="M 12 3 C 15 3, 15 7, 12 7" fill="none" stroke="#e2e8f0" stroke-width="1" />
+      </g>
+
+      <!-- COMPUTER MONITOR (FACING EAST TOWARD THE CHAIR) -->
+      <g id="computer-screen-station" transform="translate(55, 30)" style="cursor: pointer;">
+        <ellipse id="screen-glow" cx="28" cy="38" rx="35" ry="48" fill="url(#monitor-glow)" opacity="0.75" />
+        <ellipse cx="8" cy="38" rx="8" ry="16" fill="#0f1116" stroke="#363f54" stroke-width="1" />
+        <rect x="8" y="35" width="6" height="6" fill="#1b202c" />
+        <rect x="14" y="2" width="8" height="72" rx="2" fill="#13161c" stroke="#2e3748" stroke-width="1.5" />
+        <path d="M 14 6 L 8 18 L 8 58 L 14 70 Z" fill="#1a1e28" stroke="#252c3b" stroke-width="1" />
+        <rect id="screen-display" x="20" y="5" width="4" height="66" fill="#06121e" rx="1" stroke="#00ffff" stroke-width="1" />
+        <g id="screen-content">
+          <line x1="22" y1="10" x2="22" y2="22" stroke="#38ef7d" stroke-width="2" />
+          <line x1="22" y1="26" x2="22" y2="40" stroke="#00ffff" stroke-width="2" />
+          <line x1="22" y1="44" x2="22" y2="58" stroke="#38ef7d" stroke-width="2" />
+          <circle cx="22" cy="64" r="1.5" fill="#00ffff" class="led-pulse" />
+        </g>
+        <circle id="monitor-led" cx="18" cy="70" r="1" fill="#00ffff" />
+        <g id="screen-off-content" style="display: none;">
+          <rect x="20" y="5" width="4" height="66" fill="#040507" rx="1" stroke="#333b4d" stroke-width="1" />
+        </g>
+      </g>
+
+      <!-- Mechanical Keyboard & Mouse -->
+      <g transform="translate(86, 44)">
+        <rect x="0" y="0" width="20" height="46" fill="#1b202c" rx="2" stroke="#364054" stroke-width="1" />
+        <line x1="5" y1="4" x2="5" y2="42" stroke="#00ffff" stroke-width="1" opacity="0.8" />
+        <line x1="10" y1="4" x2="10" y2="42" stroke="#00ffff" stroke-width="1" opacity="0.8" />
+        <line x1="15" y1="4" x2="15" y2="42" stroke="#00ffff" stroke-width="1" opacity="0.8" />
+      </g>
+      <ellipse cx="118" cy="67" rx="5" ry="8" fill="#242b3b" stroke="#00ffff" stroke-width="0.8" />
+
+      <!-- Interactive Prompt Badge [E] -->
+      <g id="interact-prompt" class="prompt-badge" transform="translate(90, 68)" style="display: none;">
+        <rect x="-48" y="-12" width="96" height="24" rx="12" fill="#0d1117" stroke="#00ffff" stroke-width="1.8" filter="url(#shadow)" />
+        <rect x="-40" y="-8" width="16" height="16" rx="3" fill="#00ffff" />
+        <text x="-32" y="4" font-size="10" font-weight="900" fill="#000" text-anchor="middle" font-family="monospace">E</text>
+        <text x="12" y="4" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">INTERACT</text>
+      </g>
+    </g>
+
+    <!-- CHAIR (Facing the computer) -->
+    <g id="desk-chair" transform="translate(235, 115)">
+      <ellipse cx="24" cy="30" rx="20" ry="12" fill="#000" opacity="0.4" />
+      <line x1="12" y1="22" x2="36" y2="38" stroke="#333d4d" stroke-width="2.5" />
+      <line x1="36" y1="22" x2="12" y2="38" stroke="#333d4d" stroke-width="2.5" />
+      <line x1="24" y1="14" x2="24" y2="46" stroke="#333d4d" stroke-width="2.5" />
+      <circle cx="24" cy="30" r="3.5" fill="#4a5568" />
+      <rect x="6" y="10" width="30" height="40" rx="8" fill="#1b212c" stroke="#333e52" stroke-width="1.8" />
+      <rect x="10" y="15" width="22" height="30" rx="5" fill="#131720" />
+      <path d="M 32 8 C 38 18, 38 42, 32 52 L 28 50 C 34 40, 34 20, 28 10 Z" fill="#242c3a" stroke="#414f68" stroke-width="1.5" />
+      <rect x="10" y="6" width="20" height="4" rx="2" fill="#2d3748" />
+      <rect x="10" y="50" width="20" height="4" rx="2" fill="#2d3748" />
+    </g>
+
+    <!-- B. BED (Middle-Left) -->
+    <g id="bed-unit" transform="translate(84, 245)">
+      <rect x="0" y="0" width="350" height="160" rx="8" fill="#000" opacity="0.5" filter="url(#shadow)" />
+      <rect x="0" y="0" width="345" height="155" rx="6" fill="#1f1813" stroke="#3a2c22" stroke-width="2" />
+      <rect x="0" y="0" width="22" height="155" rx="3" fill="#35261d" stroke="#4d372a" stroke-width="1.5" />
+      <line x1="11" y1="0" x2="11" y2="155" stroke="#d4af37" stroke-width="1" opacity="0.6" />
+      <rect x="22" y="6" width="318" height="143" rx="4" fill="#242b38" stroke="#181d26" stroke-width="1" />
+      <g transform="translate(30, 16)">
+        <rect x="0" y="0" width="36" height="54" rx="7" fill="#f0f4f8" stroke="#c8d2df" stroke-width="1.5" />
+        <rect x="4" y="4" width="28" height="46" rx="5" fill="#e1e8f2" opacity="0.7" />
+        <path d="M 8 27 Q 18 24 28 27" fill="none" stroke="#b0c0d4" stroke-width="1" />
+      </g>
+      <g transform="translate(30, 84)">
+        <rect x="0" y="0" width="36" height="54" rx="7" fill="#f0f4f8" stroke="#c8d2df" stroke-width="1.5" />
+        <rect x="4" y="4" width="28" height="46" rx="5" fill="#e1e8f2" opacity="0.7" />
+        <path d="M 8 27 Q 18 24 28 27" fill="none" stroke="#b0c0d4" stroke-width="1" />
+      </g>
+      <path d="M 76 6 L 340 6 C 344 6, 344 149, 340 149 L 76 149 Z" fill="url(#bed-quilt)" stroke="#2f3a4e" stroke-width="1.5" />
+      <rect x="70" y="6" width="12" height="143" rx="2" fill="#e8eff7" stroke="#cbd7e6" stroke-width="1" />
+      <rect x="270" y="6" width="55" height="143" fill="#131720" stroke="#d4af37" stroke-width="1.2" />
+      <line x1="270" y1="6" x2="270" y2="149" stroke="#d4af37" stroke-width="2" />
+      <line x1="325" y1="6" x2="325" y2="149" stroke="#d4af37" stroke-width="2" />
+    </g>
+
+    <!-- C. NIGHTSTAND (Bottom-Left) -->
+    <g id="nightstand-unit" transform="translate(84, 430)">
+      <rect x="0" y="0" width="115" height="110" rx="6" fill="#000" opacity="0.4" filter="url(#shadow)" />
+      <rect x="0" y="0" width="110" height="105" rx="5" fill="url(#wood-desk)" stroke="#2b2018" stroke-width="2" />
+      <rect x="8" y="8" width="94" height="88" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.6" />
+      <line x1="55" y1="18" x2="55" y2="36" stroke="#d4af37" stroke-width="3" stroke-linecap="round" />
+      <g transform="translate(32, 28)">
+        <circle cx="0" cy="0" r="50" fill="url(#lamp-glow)" />
+        <circle cx="0" cy="0" r="13" fill="#d4af37" stroke="#aa820a" stroke-width="1.5" />
+        <circle cx="0" cy="0" r="7" fill="#fff5d1" />
+        <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
+      </g>
+      <g transform="translate(68, 62)">
+        <rect x="0" y="0" width="32" height="20" rx="3" fill="#111317" stroke="#252a36" stroke-width="1" />
+        <text x="16" y="14" font-size="7" fill="#00ffff" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-weight="bold">11:42</text>
+      </g>
+      <g transform="translate(20, 72)">
+        <rect x="0" y="0" width="26" height="18" rx="1" fill="#8b0000" stroke="#5a0000" stroke-width="1" />
+        <line x1="13" y1="0" x2="13" y2="18" stroke="#d4af37" stroke-width="1" />
+      </g>
+    </g>
+
+    <!-- D. WARDROBE (Top-Right) -->
+    <g id="wardrobe-unit" transform="translate(720, 74)">
+      <rect x="0" y="0" width="156" height="176" rx="6" fill="#000" opacity="0.45" filter="url(#shadow)" />
+      <rect x="0" y="0" width="150" height="170" rx="4" fill="url(#wardrobe-wood)" stroke="#17120e" stroke-width="2" />
+      <rect x="0" y="0" width="150" height="14" fill="#4d3a2e" stroke="#5f493b" stroke-width="1" />
+      <line x1="0" y1="14" x2="150" y2="14" stroke="#d4af37" stroke-width="1.5" />
+      <rect x="5" y="18" width="67" height="146" fill="#2f241c" stroke="#1d1611" stroke-width="1" />
+      <rect x="10" y="24" width="57" height="60" fill="#241b15" stroke="#3d2f25" stroke-width="1" />
+      <rect x="10" y="94" width="57" height="60" fill="#241b15" stroke="#3d2f25" stroke-width="1" />
+      <rect x="64" y="80" width="4" height="20" rx="1.5" fill="#d4af37" stroke="#997a15" stroke-width="0.8" />
+      <rect x="78" y="18" width="67" height="146" fill="#2f241c" stroke="#1d1611" stroke-width="1" />
+      <rect x="83" y="24" width="57" height="60" fill="#241b15" stroke="#3d2f25" stroke-width="1" />
+      <rect x="83" y="94" width="57" height="60" fill="#241b15" stroke="#3d2f25" stroke-width="1" />
+      <rect x="82" y="80" width="4" height="20" rx="1.5" fill="#d4af37" stroke="#997a15" stroke-width="0.8" />
+      <line x1="75" y1="14" x2="75" y2="168" stroke="#140f0c" stroke-width="2.5" />
+    </g>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- ZONE 2: BALCONY (ONLY VISIBLE AFTER ENTERING THE BALCONY DOOR)     -->
+  <!-- ================================================================ -->
+  <g id="room-balcony" style="display: none;">
+    <!-- Panoramic Sky & Apartment Skyline -->
+    <g id="balcony-skyline" transform="translate(60, 20)">
+      <rect x="0" y="0" width="840" height="300" fill="url(#sky-twilight)" rx="8" />
+      <g fill="#ffffff">
+        <circle cx="50" cy="35" r="1.5" opacity="0.85" />
+        <circle cx="140" cy="50" r="1.2" opacity="0.7" />
+        <circle cx="240" cy="30" r="1.6" opacity="0.9" />
+        <circle cx="360" cy="45" r="1" opacity="0.6" />
+        <circle cx="480" cy="25" r="1.4" opacity="0.8" />
+        <circle cx="590" cy="55" r="1.2" opacity="0.75" />
+        <circle cx="710" cy="32" r="1.5" opacity="0.9" />
+        <circle cx="790" cy="48" r="1.1" opacity="0.7" />
+      </g>
+      <circle cx="110" cy="55" r="14" fill="#f5f0d3" opacity="0.95" />
+      <circle cx="104" cy="50" r="12.5" fill="#050811" />
+
+      <!-- Skyline Buildings -->
+      <g transform="translate(60, 80)">
+        <rect x="0" y="0" width="180" height="220" fill="#141c2c" stroke="#1f2c45" stroke-width="1.5" />
+        <line x1="90" y1="0" x2="90" y2="-30" stroke="#485b7f" stroke-width="2" />
+        <circle cx="90" cy="-30" r="3" fill="#ff3344" class="beacon" />
+        <g fill="#ffdf79" opacity="0.8">
+          <rect x="20" y="25" width="24" height="18" rx="2" />
+          <rect x="75" y="25" width="24" height="18" rx="2" fill="#00d4ff" opacity="0.6" />
+          <rect x="130" y="25" width="24" height="18" rx="2" />
+          <rect x="20" y="65" width="24" height="18" rx="2" fill="#1b2538" />
+          <rect x="75" y="65" width="24" height="18" rx="2" />
+          <rect x="130" y="65" width="24" height="18" rx="2" />
+          <rect x="20" y="105" width="24" height="18" rx="2" />
+          <rect x="75" y="105" width="24" height="18" rx="2" fill="#1b2538" />
+          <rect x="130" y="105" width="24" height="18" rx="2" fill="#00d4ff" opacity="0.5" />
+        </g>
+      </g>
+
+      <g transform="translate(280, 50)">
+        <rect x="0" y="0" width="280" height="250" fill="#182338" stroke="#283958" stroke-width="1.5" />
+        <rect x="30" y="-20" width="60" height="20" fill="#121b2b" stroke="#2d4063" stroke-width="1.2" />
+        <rect x="170" y="-14" width="45" height="14" fill="#121b2b" />
+        <line x1="220" y1="-14" x2="220" y2="-40" stroke="#485b7f" stroke-width="2" />
+        <circle cx="220" cy="-40" r="3.5" fill="#ff3344" class="beacon" />
+        <g fill="#ffe28a" opacity="0.85">
+          <rect x="25" y="25" width="22" height="20" rx="2" />
+          <rect x="75" y="25" width="22" height="20" rx="2" fill="#00ffff" opacity="0.55" />
+          <rect x="125" y="25" width="22" height="20" rx="2" />
+          <rect x="175" y="25" width="22" height="20" rx="2" fill="#1d283c" />
+          <rect x="225" y="25" width="22" height="20" rx="2" />
+          <rect x="25" y="65" width="22" height="20" rx="2" />
+          <rect x="75" y="65" width="22" height="20" rx="2" />
+          <rect x="125" y="65" width="22" height="20" rx="2" fill="#1d283c" />
+          <rect x="175" y="65" width="22" height="20" rx="2" />
+          <rect x="225" y="65" width="22" height="20" rx="2" fill="#00d4ff" opacity="0.6" />
+        </g>
+      </g>
+
+      <g transform="translate(600, 75)">
+        <rect x="0" y="0" width="180" height="225" fill="#152033" stroke="#22324f" stroke-width="1.5" />
+        <g fill="#ffdf79" opacity="0.8">
+          <rect x="20" y="25" width="24" height="18" rx="2" />
+          <rect x="75" y="25" width="24" height="18" rx="2" fill="#1b2538" />
+          <rect x="130" y="25" width="24" height="18" rx="2" />
+          <rect x="20" y="65" width="24" height="18" rx="2" fill="#00d4ff" opacity="0.6" />
+          <rect x="75" y="65" width="24" height="18" rx="2" />
+          <rect x="130" y="65" width="24" height="18" rx="2" fill="#1b2538" />
+        </g>
+      </g>
+    </g>
+
+    <!-- Balcony Terrace Floor -->
+    <rect x="100" y="300" width="760" height="260" fill="url(#deck-wood)" />
+    <g stroke="#261e16" stroke-width="1.5" opacity="0.7">
+      <line x1="100" y1="330" x2="860" y2="330" />
+      <line x1="100" y1="360" x2="860" y2="360" />
+      <line x1="100" y1="390" x2="860" y2="390" />
+      <line x1="100" y1="420" x2="860" y2="420" />
+      <line x1="100" y1="450" x2="860" y2="450" />
+      <line x1="100" y1="480" x2="860" y2="480" />
+      <line x1="100" y1="510" x2="860" y2="510" />
+      <line x1="100" y1="540" x2="860" y2="540" />
+    </g>
+
+    <rect x="95" y="288" width="770" height="16" fill="#7dd3fc" fill-opacity="0.25" stroke="#bae6fd" stroke-width="1.5" />
+    <line x1="95" y1="288" x2="865" y2="288" stroke="#d4af37" stroke-width="3.5" />
+    <line x1="100" y1="288" x2="100" y2="304" stroke="#a0afba" stroke-width="3" />
+    <line x1="220" y1="288" x2="220" y2="304" stroke="#a0afba" stroke-width="3" />
+    <line x1="360" y1="288" x2="360" y2="304" stroke="#a0afba" stroke-width="3" />
+    <line x1="500" y1="288" x2="500" y2="304" stroke="#a0afba" stroke-width="3" />
+    <line x1="640" y1="288" x2="640" y2="304" stroke="#a0afba" stroke-width="3" />
+    <line x1="760" y1="288" x2="760" y2="304" stroke="#a0afba" stroke-width="3" />
+    <line x1="860" y1="288" x2="860" y2="304" stroke="#a0afba" stroke-width="3" />
+
+    <rect x="90" y="288" width="10" height="272" fill="#1b212d" stroke="#2d374d" stroke-width="2" />
+    <rect x="860" y="288" width="10" height="272" fill="#1b212d" stroke="#2d374d" stroke-width="2" />
+
+    <g transform="translate(130, 360)">
+      <ellipse cx="20" cy="35" rx="18" ry="10" fill="#000" opacity="0.35" />
+      <rect x="5" y="16" width="30" height="24" rx="3" fill="#242b38" stroke="#d4af37" stroke-width="1.2" />
+      <circle cx="20" cy="10" r="15" fill="#2d6a4f" />
+      <circle cx="14" cy="4" r="11" fill="#40916c" />
+      <circle cx="26" cy="6" r="10" fill="#52b788" />
+    </g>
+
+    <!-- EXIT DOOR BACK TO BEDROOM -->
+    <g id="exit-balcony-to-room" transform="translate(430, 545)" style="cursor: pointer;">
+      <rect x="0" y="0" width="100" height="15" fill="#1b2332" stroke="#d4af37" stroke-width="1.5" />
+      <rect x="5" y="2" width="42" height="11" fill="#7dd3fc" fill-opacity="0.3" />
+      <rect x="53" y="2" width="42" height="11" fill="#7dd3fc" fill-opacity="0.3" />
+    </g>
+
+    <!-- In-World Proximity Badge for Balcony Exit -->
+    <g id="prompt-balcony-exit" class="prompt-badge" transform="translate(480, 510)" style="display: none;">
+      <rect x="-65" y="-12" width="130" height="24" rx="12" fill="#0d1117" stroke="#d4af37" stroke-width="1.8" filter="url(#shadow)" />
+      <rect x="-56" y="-8" width="16" height="16" rx="3" fill="#d4af37" />
+      <text x="-48" y="4" font-size="10" font-weight="900" fill="#000" text-anchor="middle" font-family="monospace">E</text>
+      <text x="14" y="4" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">EXIT TO ROOM</text>
+    </g>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- ZONE 3: REMASTERED EN-SUITE BATHROOM (WIDE ARCHITECTURAL LAYOUT) -->
+  <!-- ================================================================ -->
+  <g id="room-bathroom" style="display: none;">
+    <!-- Ambient Room Shadow / Outer Wall Framing: X: 130 to 830, Y: 180 to 450 -->
+    <rect x="130" y="180" width="700" height="270" rx="8" fill="#000000" opacity="0.55" filter="url(#shadow)" />
+
+    <!-- Back Wall Accent Tiles (Charcoal Porcelain) -->
+    <rect x="138" y="185" width="684" height="28" fill="url(#bath-wall-tile)" stroke="#2d374d" stroke-width="1.5" />
+    <g stroke="#141822" stroke-width="1" opacity="0.6">
+      <line x1="260" y1="185" x2="260" y2="213" />
+      <line x1="380" y1="185" x2="380" y2="213" />
+      <line x1="580" y1="185" x2="580" y2="213" />
+      <line x1="700" y1="185" x2="700" y2="213" />
+    </g>
+
+    <!-- Honed Travertine Marble Floor: X: 138 to 822, Y: 205 to 435 -->
+    <rect x="138" y="205" width="684" height="230" fill="url(#bath-tile-luxe)" stroke="#2d374d" stroke-width="1.5" />
+    
+    <!-- Large Format Floor Tile Seams (Grid Pattern) -->
+    <g stroke="#141822" stroke-width="1.2" opacity="0.75">
+      <line x1="138" y1="262" x2="822" y2="262" />
+      <line x1="138" y1="320" x2="822" y2="320" />
+      <line x1="138" y1="378" x2="822" y2="378" />
+      <line x1="200" y1="205" x2="200" y2="435" />
+      <line x1="260" y1="205" x2="260" y2="435" />
+      <line x1="325" y1="205" x2="325" y2="435" />
+      <line x1="390" y1="205" x2="390" y2="435" />
+      <line x1="455" y1="205" x2="455" y2="435" />
+      <line x1="520" y1="205" x2="520" y2="435" />
+      <line x1="585" y1="205" x2="585" y2="435" />
+      <line x1="650" y1="205" x2="650" y2="435" />
+      <line x1="715" y1="205" x2="715" y2="435" />
+      <line x1="780" y1="205" x2="780" y2="435" />
+    </g>
+
+    <!-- Warm Recessed Ceiling Spotlights -->
+    <ellipse cx="480" cy="320" rx="160" ry="85" fill="url(#ceiling-spot)" />
+    <ellipse cx="200" cy="320" rx="55" ry="80" fill="url(#ceiling-spot)" opacity="0.6" />
+    <ellipse cx="740" cy="270" rx="65" ry="50" fill="url(#ceiling-spot)" opacity="0.6" />
+
+    <!-- Architectural Perimeter Walls -->
+    <rect x="132" y="180" width="10" height="267" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+    <rect x="818" y="180" width="10" height="267" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+    <rect x="132" y="435" width="696" height="12" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+    <!-- Top Wall Sections Flanking Door (Door: X: 440 to 520) -->
+    <rect x="132" y="180" width="308" height="14" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+    <rect x="520" y="180" width="308" height="14" fill="#181e2b" stroke="#2d374d" stroke-width="2" />
+
+    <!-- ================= REALISTIC ARCHITECTURAL DOORWAY ================= -->
+    <!-- Top Center Doorway (X: 440 to 520, Y: 178 to 202) -->
+    <g id="exit-bathroom-to-room" transform="translate(440, 178)" style="cursor: pointer;">
+      <!-- Deep Recessed Door Casing & Jamb -->
+      <rect x="0" y="0" width="80" height="24" rx="2" fill="#241a13" stroke="#3d2c20" stroke-width="2" />
+      <!-- Polished Brass Floor Threshold / Saddle -->
+      <rect x="2" y="20" width="76" height="4" fill="#d4af37" opacity="0.85" rx="1" />
+      <!-- Solid Luxury Wooden Door Leaf (Rich Walnut Finish) -->
+      <rect x="4" y="2" width="72" height="19" rx="1" fill="#3a291e" stroke="#523b2b" stroke-width="1" />
+      <!-- Inset Classic Wood Panels -->
+      <rect x="8" y="4" width="28" height="14" rx="1" fill="#291c15" stroke="#4a3527" stroke-width="0.8" />
+      <rect x="42" y="4" width="28" height="14" rx="1" fill="#291c15" stroke="#4a3527" stroke-width="0.8" />
+      <!-- Polished Brass Lever Handle & Escutcheon -->
+      <circle cx="64" cy="11" r="2.2" fill="#aa820a" />
+      <rect x="65" y="9.5" width="5" height="3" rx="1" fill="#d4af37" />
+    </g>
+
+    <!-- In-World Proximity Badge for Bathroom Exit (Only shown when standing near door) -->
+    <g id="prompt-bathroom-exit" class="prompt-badge" transform="translate(480, 225)" style="display: none;">
+      <rect x="-65" y="-12" width="130" height="24" rx="12" fill="#0d1117" stroke="#d4af37" stroke-width="1.8" filter="url(#shadow)" />
+      <rect x="-56" y="-8" width="16" height="16" rx="3" fill="#d4af37" />
+      <text x="-48" y="4" font-size="10" font-weight="900" fill="#000" text-anchor="middle" font-family="monospace">E</text>
+      <text x="14" y="4" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">EXIT TO ROOM</text>
+    </g>
+
+    <!-- ================= 1. VERTICAL LUXURY BATHTUB / WET ROOM (LEFT WALL) ================= -->
+    <!-- Spans entire vertical height on the left side of the room per user sketch -->
+    <!-- Position: X: 144 to 254, Y: 195 to 435 -->
+    <g id="luxe-bathtub" transform="translate(144, 195)">
+      <!-- Tub Cast Shadow -->
+      <rect x="0" y="0" width="114" height="242" rx="8" fill="#000" opacity="0.4" filter="url(#shadow)" />
+
+      <!-- Stone Surrounding Deck -->
+      <rect x="0" y="0" width="110" height="238" rx="6" fill="#1b202c" stroke="#333f54" stroke-width="1.5" />
+
+      <!-- Acrylic Tub Rim -->
+      <rect x="6" y="8" width="98" height="222" rx="18" fill="url(#tub-acrylic)" stroke="#94a3b8" stroke-width="1.5" />
+
+      <!-- Tub Basin -->
+      <rect x="12" y="16" width="86" height="206" rx="14" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" />
+
+      <!-- Translucent Shimmering Water -->
+      <rect x="15" y="20" width="80" height="198" rx="10" fill="url(#water-grad)" />
+      <path d="M 22 55 Q 55 46 88 56" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.65" />
+      <path d="M 20 115 Q 55 106 88 118" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.6" />
+      <path d="M 22 175 Q 55 166 88 178" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.65" />
+
+      <!-- Chrome Pop-up Drain at Bottom End -->
+      <circle cx="55" cy="198" r="5" fill="#475569" stroke="#94a3b8" stroke-width="0.8" />
+      <circle cx="55" cy="198" r="2.5" fill="#64748b" />
+
+      <!-- Wall-Mounted Thermostatic Mixer & Waterfall Spout at Top End -->
+      <g transform="translate(55, 12)">
+        <circle cx="0" cy="0" r="3.5" fill="#cbd5e1" stroke="#475569" stroke-width="0.8" />
+        <rect x="-3" y="1" width="6" height="6" rx="1" fill="#cbd5e1" />
+        <circle cx="-8" cy="0" r="2.2" fill="#d4af37" />
+        <circle cx="8" cy="0" r="2.2" fill="#38bdf8" />
+      </g>
+
+      <!-- Overhead Rainfall Showerhead Fixture -->
+      <g transform="translate(55, 62)">
+        <circle cx="0" cy="0" r="14" fill="none" stroke="#cbd5e1" stroke-width="1.5" />
+        <circle cx="0" cy="0" r="9" fill="none" stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="2,2" />
+        <circle cx="0" cy="0" r="3" fill="#64748b" />
+      </g>
+
+      <!-- Frameless Glass Shower Partition on Right Edge -->
+      <line x1="110" y1="4" x2="110" y2="234" stroke="#7dd3fc" stroke-width="3" opacity="0.85" />
+      <circle cx="110" cy="40" r="2.5" fill="#e2e8f0" stroke="#64748b" stroke-width="0.8" />
+      <circle cx="110" cy="198" r="2.5" fill="#e2e8f0" stroke="#64748b" stroke-width="0.8" />
+    </g>
+
+    <!-- Ribbed Floor Bath Mat Outside Tub -->
+    <g transform="translate(260, 275)">
+      <rect x="0" y="0" width="24" height="85" rx="3" fill="#242c3d" stroke="#3a475f" stroke-width="1" />
+      <line x1="4" y1="8" x2="4" y2="77" stroke="#343f55" stroke-width="1" />
+      <line x1="8" y1="8" x2="8" y2="77" stroke="#343f55" stroke-width="1" />
+      <line x1="12" y1="8" x2="12" y2="77" stroke="#343f55" stroke-width="1" />
+      <line x1="16" y1="8" x2="16" y2="77" stroke="#343f55" stroke-width="1" />
+      <line x1="20" y1="8" x2="20" y2="77" stroke="#343f55" stroke-width="1" />
+    </g>
+
+    <!-- ================= 2. WASHING MACHINE (TOP WALL, LEFT OF SINK) ================= -->
+    <!-- Position: X: 615 to 705, Y: 195 to 270 -->
+    <g id="luxe-washer" transform="translate(615, 195)">
+      <!-- Washer Shadow -->
+      <rect x="0" y="0" width="93" height="78" rx="4" fill="#000" opacity="0.4" filter="url(#shadow)" />
+
+      <!-- Main Chassis -->
+      <rect x="0" y="0" width="88" height="74" rx="4" fill="url(#washer-body)" stroke="#384358" stroke-width="1.5" />
+
+      <!-- Top Edge Control Panel -->
+      <rect x="3" y="3" width="82" height="19" rx="2" fill="#131722" stroke="#252e3e" stroke-width="1" />
+
+      <!-- Detergent Dispenser Drawer -->
+      <rect x="6" y="6" width="22" height="13" rx="1.5" fill="#1c2333" stroke="#334155" stroke-width="0.8" />
+      <line x1="12" y1="8" x2="12" y2="16" stroke="#64748b" stroke-width="0.8" />
+
+      <!-- Digital LED Status Display -->
+      <rect x="31" y="6" width="25" height="13" rx="1.5" fill="#090d14" stroke="#00ffff" stroke-width="0.6" />
+      <text x="43.5" y="15.5" font-size="7.5" font-weight="700" fill="#00ffff" text-anchor="middle" font-family="monospace">42m</text>
+
+      <!-- Knurled Rotary Cycle Selector Knob -->
+      <circle cx="69" cy="12.5" r="6" fill="#2d3748" stroke="#cbd5e1" stroke-width="1" />
+      <circle cx="69" cy="12.5" r="3.5" fill="#475569" />
+      <line x1="69" y1="7.5" x2="69" y2="10" stroke="#38bdf8" stroke-width="1.2" />
+
+      <!-- Front-Loader Round Glass Lid (Top-Down Perspective) -->
+      <ellipse cx="44" cy="46" rx="27" ry="20" fill="#161e2e" stroke="#64748b" stroke-width="2" />
+      <ellipse cx="44" cy="46" rx="22" ry="16" fill="url(#washer-glass)" stroke="#475569" stroke-width="1" />
+      <ellipse cx="44" cy="46" rx="14" ry="10" fill="#0f141f" />
+      <path d="M 28 42 Q 44 36 60 42" fill="none" stroke="#7dd3fc" stroke-width="1.2" opacity="0.75" />
+      <!-- Chrome Hinge & Release Latch -->
+      <rect x="16" y="43" width="2.5" height="6" rx="1" fill="#cbd5e1" />
+      <rect x="69" y="42" width="3" height="8" rx="1.5" fill="#d4af37" />
+    </g>
+
+    <!-- ================= 3. ARCHITECTURAL PRIVACY DIVIDER ================= -->
+    <!-- Position: X: 706 to 714, Y: 192 to 273 (Separating Washer and Sink per sketch) -->
+    <g id="luxe-divider" transform="translate(706, 192)">
+      <rect x="0" y="0" width="8" height="81" rx="2" fill="#101520" stroke="#334155" stroke-width="1.2" />
+      <rect x="2" y="2" width="4" height="77" rx="1" fill="#7dd3fc" fill-opacity="0.35" stroke="#38bdf8" stroke-width="0.6" />
+      <line x1="4" y1="2" x2="4" y2="79" stroke="#d4af37" stroke-width="0.8" opacity="0.7" />
+    </g>
+
+    <!-- ================= 4. LUXURY VANITY SINK (TOP-RIGHT CORNER) ================= -->
+    <!-- Position: X: 716 to 816, Y: 195 to 270 -->
+    <g id="luxe-vanity" transform="translate(716, 195)">
+      <!-- Vanity Shadow -->
+      <rect x="0" y="0" width="104" height="78" rx="4" fill="#000" opacity="0.4" filter="url(#shadow)" />
+
+      <!-- Backlit LED Vanity Mirror (On Wall Above Counter) -->
+      <rect x="8" y="-14" width="84" height="13" rx="2" fill="#182335" stroke="#7dd3fc" stroke-width="1.5" />
+      <polygon points="16,-12 45,-12 30,-2 12,-2" fill="#ffffff" opacity="0.12" />
+
+      <!-- Dark Stone / Quartz Countertop -->
+      <rect x="0" y="0" width="100" height="74" rx="3" fill="#181e29" stroke="#2e3849" stroke-width="1.5" />
+      <rect x="2" y="2" width="96" height="70" fill="none" stroke="#d4af37" stroke-width="0.6" opacity="0.5" />
+
+      <!-- Vanity Drawers & Brushed Brass Hardware -->
+      <line x1="50" y1="2" x2="50" y2="72" stroke="#0f131a" stroke-width="1.5" />
+      <rect x="45" y="32" width="2.5" height="12" rx="0.5" fill="#d4af37" />
+      <rect x="53" y="32" width="2.5" height="12" rx="0.5" fill="#d4af37" />
+
+      <!-- Undermount Ceramic Basin -->
+      <rect x="21" y="16" width="58" height="42" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.2" />
+      <rect x="26" y="21" width="48" height="32" rx="7" fill="#f8fafc" stroke="#e2e8f0" stroke-width="0.8" />
+      <circle cx="50" cy="37" r="4" fill="#64748b" stroke="#94a3b8" stroke-width="0.8" />
+
+      <!-- Chrome Gooseneck Faucet & Knobs -->
+      <g transform="translate(50, 10)">
+        <circle cx="0" cy="0" r="3" fill="#cbd5e1" stroke="#475569" stroke-width="0.8" />
+        <rect x="-2" y="0" width="4" height="8" rx="1" fill="#cbd5e1" stroke="#64748b" stroke-width="0.6" />
+        <circle cx="-8" cy="0" r="2" fill="#d4af37" />
+        <circle cx="8" cy="0" r="2" fill="#d4af37" />
+      </g>
+
+      <!-- Soap Pump Dispenser & Rolled Guest Towels -->
+      <rect x="8" y="26" width="7" height="9" rx="1.5" fill="#38bdf8" opacity="0.85" stroke="#0284c7" stroke-width="0.5" />
+      <g transform="translate(88, 30)">
+        <rect x="-5" y="-5" width="10" height="10" rx="2" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.6" />
+        <circle cx="0" cy="0" r="3" fill="#22c55e" />
+      </g>
+    </g>
+
+    <!-- ================= 5. LUXURY TOILET SUITE (BOTTOM-RIGHT CORNER) ================= -->
+    <!-- Position: X: 730 to 812, Y: 355 to 435 -->
+    <g id="luxe-toilet" transform="translate(730, 355)">
+      <!-- Soft Shadow Under Bowl -->
+      <ellipse cx="40" cy="42" rx="24" ry="18" fill="#000" opacity="0.3" />
+
+      <!-- Cistern Tank (Against Bottom Wall) -->
+      <rect x="18" y="55" width="44" height="18" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" />
+      <!-- Chrome Dual-Flush Button -->
+      <ellipse cx="40" cy="64" rx="5" ry="3" fill="#cbd5e1" stroke="#64748b" stroke-width="0.6" />
+
+      <!-- Porcelain Toilet Bowl (Facing Upward into Passage) -->
+      <path d="M 22 55 L 22 28 C 22 10, 58 10, 58 28 L 58 55 Z" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" />
+      <!-- Soft-Close Seat Lid -->
+      <ellipse cx="40" cy="34" rx="15" ry="19" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" />
+
+      <!-- Toilet Paper Roll Holder (On Right Wall) -->
+      <g transform="translate(68, 48)">
+        <rect x="0" y="0" width="8" height="12" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.8" />
+        <rect x="-2" y="2" width="3" height="8" rx="0.5" fill="#94a3b8" />
+      </g>
+    </g>
+
+    <!-- ================= 6. HEATED TOWEL RAIL (RIGHT WALL AISLE) ================= -->
+    <!-- Position: X: 808 to 818, Y: 288 to 346 (Between Sink and Toilet) -->
+    <g id="luxe-towel-rail" transform="translate(808, 288)">
+      <rect x="0" y="0" width="6" height="58" rx="1.5" fill="#d4af37" stroke="#aa820a" stroke-width="0.8" />
+      <line x1="-1" y1="12" x2="7" y2="12" stroke="#d4af37" stroke-width="2" />
+      <line x1="-1" y1="28" x2="7" y2="28" stroke="#d4af37" stroke-width="2" />
+      <line x1="-1" y1="44" x2="7" y2="44" stroke="#d4af37" stroke-width="2" />
+      <rect x="-5" y="8" width="10" height="12" rx="2" fill="#f8fafc" opacity="0.9" />
+      <rect x="-5" y="24" width="10" height="12" rx="2" fill="#2d3748" opacity="0.9" />
+    </g>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- ZONE 4: MODERN APARTMENT LIVING ROOM                             -->
+  <!-- ================================================================ -->
+  <g id="room-livingroom" style="display: none;">
+    <!-- ================= 1. FLOOR & AMBIENT BASE ================= -->
+    <!-- Hardwood Parquet Floor (X: 80 to 880, Y: 70 to 570) -->
+    <rect x="80" y="70" width="800" height="500" fill="url(#living-floor-wood)" />
+
+    <!-- Authentic Parquet & Plank Seams -->
+    <g stroke="#16100a" stroke-width="1.0" opacity="0.55">
+      <line x1="80" y1="120" x2="880" y2="120" />
+      <line x1="80" y1="170" x2="880" y2="170" />
+      <line x1="80" y1="220" x2="880" y2="220" />
+      <line x1="80" y1="270" x2="880" y2="270" />
+      <line x1="80" y1="320" x2="880" y2="320" />
+      <line x1="80" y1="370" x2="880" y2="370" />
+      <line x1="80" y1="420" x2="880" y2="420" />
+      <line x1="80" y1="470" x2="880" y2="470" />
+      <line x1="80" y1="520" x2="880" y2="520" />
+      <!-- Staggered vertical plank seams -->
+      <line x1="220" y1="70" x2="220" y2="120" />
+      <line x1="440" y1="70" x2="440" y2="120" />
+      <line x1="660" y1="70" x2="660" y2="120" />
+      <line x1="330" y1="120" x2="330" y2="170" />
+      <line x1="550" y1="120" x2="550" y2="170" />
+      <line x1="770" y1="120" x2="770" y2="170" />
+      <line x1="240" y1="170" x2="240" y2="220" />
+      <line x1="460" y1="170" x2="460" y2="220" />
+      <line x1="680" y1="170" x2="680" y2="220" />
+      <line x1="350" y1="220" x2="350" y2="270" />
+      <line x1="570" y1="220" x2="570" y2="270" />
+      <line x1="790" y1="220" x2="790" y2="270" />
+      <line x1="260" y1="270" x2="260" y2="320" />
+      <line x1="480" y1="270" x2="480" y2="320" />
+      <line x1="700" y1="270" x2="700" y2="320" />
+      <line x1="370" y1="320" x2="370" y2="370" />
+      <line x1="590" y1="320" x2="590" y2="370" />
+      <line x1="810" y1="320" x2="810" y2="370" />
+      <line x1="280" y1="370" x2="280" y2="420" />
+      <line x1="500" y1="370" x2="500" y2="420" />
+      <line x1="720" y1="370" x2="720" y2="420" />
+      <line x1="390" y1="420" x2="390" y2="470" />
+      <line x1="610" y1="420" x2="610" y2="470" />
+      <line x1="830" y1="420" x2="830" y2="470" />
+      <line x1="300" y1="470" x2="300" y2="520" />
+      <line x1="520" y1="470" x2="520" y2="520" />
+      <line x1="740" y1="470" x2="740" y2="520" />
+      <line x1="410" y1="520" x2="410" y2="570" />
+      <line x1="630" y1="520" x2="630" y2="570" />
+    </g>
+
+    <!-- Wall-to-Floor Ambient Occlusion Drops -->
+    <rect x="80" y="70" width="800" height="12" fill="#000000" opacity="0.32" />
+    <rect x="872" y="70" width="8" height="500" fill="#000000" opacity="0.25" />
+    <rect x="80" y="70" width="8" height="500" fill="#000000" opacity="0.25" />
+    <rect x="80" y="558" width="800" height="12" fill="#000000" opacity="0.32" />
+
+    <!-- Warm Ambient Recessed Ceiling Spotlights -->
+    <ellipse cx="640" cy="240" rx="160" ry="100" fill="url(#ceiling-spot)" opacity="0.85" />
+    <ellipse cx="255" cy="125" rx="95" ry="55" fill="url(#ceiling-spot)" opacity="0.75" />
+    <ellipse cx="235" cy="475" rx="85" ry="65" fill="url(#ceiling-spot)" opacity="0.75" />
+    <ellipse cx="120" cy="380" rx="55" ry="65" fill="url(#ceiling-spot)" opacity="0.65" />
+    <ellipse cx="652" cy="105" rx="80" ry="45" fill="url(#ceiling-spot)" opacity="0.65" />
+
+    <!-- ================= 2. ARCHITECTURAL PERIMETER WALLS & BASEBOARDS ================= -->
+    <!-- North Wall with 2.5D Depth Face & Baseboard Skirting -->
+    <rect x="64" y="50" width="832" height="14" fill="url(#living-wall-top)" stroke="#2d374d" stroke-width="1.5" />
+    <rect x="72" y="64" width="816" height="6" fill="#121620" />
+    <rect x="80" y="68" width="800" height="4" fill="#2d374d" stroke="#3b4860" stroke-width="0.8" />
+    <line x1="80" y1="72" x2="880" y2="72" stroke="#d4af37" stroke-width="0.8" opacity="0.65" />
+
+    <!-- East Wall (Solid) -->
+    <rect x="876" y="50" width="20" height="536" fill="url(#living-wall-top)" stroke="#2d374d" stroke-width="1.5" />
+    <rect x="874" y="64" width="6" height="510" fill="#121620" />
+    <rect x="876" y="70" width="4" height="498" fill="#2d374d" />
+
+    <!-- West Wall (Flanking Bedroom Doorway: Door Y: 322 to 430) -->
+    <rect x="64" y="50" width="16" height="272" fill="url(#living-wall-top)" stroke="#2d374d" stroke-width="1.5" />
+    <rect x="76" y="64" width="4" height="258" fill="#121620" />
+    <rect x="80" y="70" width="4" height="252" fill="#2d374d" />
+
+    <rect x="64" y="430" width="16" height="156" fill="url(#living-wall-top)" stroke="#2d374d" stroke-width="1.5" />
+    <rect x="76" y="430" width="4" height="140" fill="#121620" />
+    <rect x="80" y="430" width="4" height="138" fill="#2d374d" />
+
+    <!-- South Wall (Flanking Balcony Sliding Doors: Doors X: 450 to 800) -->
+    <rect x="64" y="570" width="386" height="16" fill="url(#living-wall-top)" stroke="#2d374d" stroke-width="1.5" />
+    <rect x="80" y="566" width="370" height="4" fill="#2d374d" />
+
+    <rect x="800" y="570" width="96" height="16" fill="url(#living-wall-top)" stroke="#2d374d" stroke-width="1.5" />
+    <rect x="800" y="566" width="76" height="4" fill="#2d374d" />
+
+    <!-- ================= 3. REDESIGNED WEST BEDROOM DOORWAY ================= -->
+    <!-- Architectural Bedroom Entryway (X: 62 to 140, Y: 322 to 430) -->
+    <g id="exit-living-to-room" style="cursor: pointer;">
+      <!-- Warm Golden Light Spill Emanating from Bedroom into Living Room Foyer -->
+      <polygon points="80,324 142,296 142,456 80,428" fill="url(#lamp-glow)" opacity="0.34" />
+
+      <!-- Architectural Door Jambs -->
+      <rect x="66" y="320" width="18" height="6" fill="#2d374d" stroke="#3b4860" stroke-width="1" />
+      <rect x="66" y="426" width="18" height="6" fill="#2d374d" stroke="#3b4860" stroke-width="1" />
+      <rect x="64" y="326" width="4" height="100" fill="#0d1117" />
+
+      <!-- Architectural Wood Door Slab Swung Inward to Bedroom -->
+      <rect x="60" y="326" width="14" height="100" rx="2" fill="#2b1f17" stroke="#3f2d22" stroke-width="1.2" />
+      <rect x="62" y="332" width="10" height="40" rx="1" fill="#3a2b20" stroke="#4d3a2c" stroke-width="0.8" />
+      <rect x="62" y="378" width="10" height="42" rx="1" fill="#3a2b20" stroke="#4d3a2c" stroke-width="0.8" />
+      <!-- Polished Brass Lever Hardware -->
+      <circle cx="70" cy="372" r="2.5" fill="#d4af37" />
+      <rect x="66" y="375" width="8" height="3" rx="1" fill="url(#brass-gold-grad)" />
+
+      <!-- Polished Solid Brass Threshold Plate -->
+      <rect x="76" y="324" width="8" height="104" rx="1.5" fill="url(#brass-gold-grad)" stroke="#854d0e" stroke-width="0.8" />
+      <line x1="80" y1="326" x2="80" y2="426" stroke="#ffffff" stroke-width="1" opacity="0.85" />
+
+      <!-- Foyer Welcome Entry Runner Mat -->
+      <rect x="88" y="335" width="46" height="82" rx="4" fill="#141822" stroke="#d4af37" stroke-width="1.2" />
+      <rect x="92" y="339" width="38" height="74" rx="2" fill="none" stroke="#d4af37" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.75" />
+      <text x="111" y="380" font-size="9" fill="#ffd166" text-anchor="middle" font-weight="700" letter-spacing="1" transform="rotate(90, 111, 380)">BEDROOM</text>
+    </g>
+
+    <!-- In-World Proximity Badge for Living Room Exit [Yellow/Gold System] -->
+    <g id="prompt-living-exit" class="prompt-badge" transform="translate(160, 377)" style="display: none;">
+      <rect x="-72" y="-13" width="144" height="26" rx="13" fill="#0d1117" stroke="#ffd166" stroke-width="1.8" filter="url(#shadow)" />
+      <rect x="-63" y="-9" width="18" height="18" rx="3" fill="#ffd166" />
+      <text x="-54" y="4" font-size="11" font-weight="900" fill="#000" text-anchor="middle" font-family="'JetBrains Mono', monospace">E</text>
+      <text x="16" y="4" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">EXIT TO BEDROOM</text>
+    </g>
+
+    <!-- Foyer Console Table & Runner (West Wall) -->
+    <g transform="translate(84, 235)">
+      <rect x="0" y="0" width="24" height="72" rx="3" fill="#000" opacity="0.32" filter="url(#shadow)" />
+      <rect x="0" y="0" width="22" height="68" rx="2" fill="url(#wood-desk)" stroke="#3a2a1c" stroke-width="1.2" />
+      <rect x="2" y="2" width="18" height="64" rx="1" fill="none" stroke="#d4af37" stroke-width="0.6" opacity="0.6" />
+      <!-- Carrara Marble Inset Top -->
+      <rect x="3" y="6" width="16" height="56" rx="1.5" fill="url(#kitchen-marble)" />
+      <!-- Brass Catch-All Key Tray -->
+      <rect x="5" y="14" width="12" height="18" rx="2" fill="#d4af37" stroke="#aa820a" stroke-width="0.6" />
+      <circle cx="11" cy="23" r="2.5" fill="#f8fafc" />
+      <!-- Minimalist Reed Diffuser -->
+      <circle cx="11" cy="48" r="4" fill="#0f172a" stroke="#64748b" stroke-width="0.8" />
+      <line x1="11" y1="48" x2="8" y2="40" stroke="#d4af37" stroke-width="0.8" />
+      <line x1="11" y1="48" x2="14" y2="41" stroke="#d4af37" stroke-width="0.8" />
+    </g>
+
+    <!-- ================= 4. REFINED KITCHENETTE / BREAKFAST BAR (TOP-LEFT) ================= -->
+    <!-- Back-Wall Credenza & Floating Upper Shelves (X: 165 to 345, Y: 64 to 86) -->
+    <g transform="translate(165, 64)">
+      <rect x="0" y="0" width="180" height="20" fill="#10141d" stroke="#252e3e" stroke-width="1" />
+      <line x1="0" y1="20" x2="180" y2="20" stroke="#d4af37" stroke-width="1" opacity="0.6" />
+      <!-- Warm Under-Shelf Lighting Strip -->
+      <line x1="2" y1="19" x2="178" y2="19" stroke="#ffe899" stroke-width="1.5" opacity="0.5" />
+      <!-- Curated Wine Bottles & Crystal Glassware -->
+      <circle cx="25" cy="10" r="3.5" fill="#7f1d1d" stroke="#581c1c" stroke-width="0.6" />
+      <circle cx="36" cy="10" r="3.5" fill="#065f46" stroke="#043c2c" stroke-width="0.6" />
+      <circle cx="47" cy="10" r="3.5" fill="#1e293b" stroke="#0f172a" stroke-width="0.6" />
+      <circle cx="60" cy="10" r="3" fill="#cbd5e1" opacity="0.75" stroke="#94a3b8" stroke-width="0.6" />
+      <circle cx="70" cy="10" r="3" fill="#cbd5e1" opacity="0.75" stroke="#94a3b8" stroke-width="0.6" />
+      <rect x="120" y="5" width="48" height="11" rx="2" fill="#1e2532" stroke="#334155" stroke-width="0.8" />
+      <text x="144" y="13" font-size="7" fill="#d4af37" text-anchor="middle" font-weight="600">CUISINE</text>
+    </g>
+
+    <!-- Waterfall Quartz Kitchen Island (X: 165 to 345, Y: 92 to 157) -->
+    <g id="living-kitchen-island" transform="translate(165, 92)">
+      <!-- Island Cast Contact Shadow -->
+      <rect x="0" y="2" width="184" height="67" rx="6" fill="#000" opacity="0.38" filter="url(#shadow)" />
+
+      <!-- Waterfall Quartz Countertop with 2.5D Front Depth Edge -->
+      <rect x="0" y="0" width="180" height="58" rx="4" fill="url(#kitchen-marble)" stroke="#94a3b8" stroke-width="1.5" />
+      <rect x="3" y="3" width="174" height="52" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.55" />
+
+      <!-- Front Beveled Edge (7px Physical Depth) -->
+      <rect x="0" y="58" width="180" height="7" rx="2" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.2" />
+
+      <!-- Left & Right Waterfall Slab Sides (Down to Floor) -->
+      <rect x="0" y="0" width="6" height="65" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1" />
+      <rect x="174" y="0" width="6" height="65" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1" />
+
+      <!-- Recessed Base Cabinetry in Dark Charcoal with Brushed Brass Kickplate -->
+      <rect x="10" y="58" width="160" height="5" fill="#181e28" />
+      <line x1="10" y1="63" x2="170" y2="63" stroke="#d4af37" stroke-width="0.8" opacity="0.75" />
+
+      <!-- 1. Undermount Stainless Steel Prep Sink & Brushed Brass Gooseneck Faucet -->
+      <g transform="translate(18, 12)">
+        <rect x="0" y="0" width="34" height="30" rx="3" fill="#1b212c" stroke="#475569" stroke-width="1" />
+        <rect x="2" y="2" width="30" height="26" rx="2" fill="#0f172a" />
+        <rect x="4" y="4" width="26" height="22" rx="1.5" fill="#0284c7" opacity="0.25" />
+        <circle cx="17" cy="15" r="3" fill="#334155" stroke="#64748b" stroke-width="0.6" />
+        <!-- Gooseneck Faucet with Brass Swivel -->
+        <circle cx="17" cy="-2" r="3" fill="#d4af37" stroke="#aa820a" stroke-width="0.8" />
+        <path d="M 17 -2 Q 17 9 20 10" fill="none" stroke="#d4af37" stroke-width="2.2" stroke-linecap="round" />
+        <line x1="12" y1="-2" x2="22" y2="-2" stroke="#d4af37" stroke-width="1.5" />
+      </g>
+
+      <!-- 2. Italian Espresso Station -->
+      <g transform="translate(70, 10)">
+        <rect x="0" y="0" width="36" height="34" rx="3" fill="#1b222d" stroke="#475569" stroke-width="1.2" />
+        <rect x="3" y="3" width="30" height="8" rx="1.5" fill="#cbd5e1" stroke="#94a3b8" stroke-width="0.6" />
+        <rect x="3" y="14" width="30" height="6" rx="1" fill="#0f172a" />
+        <circle cx="10" cy="17" r="1.5" fill="#00ffff" />
+        <circle cx="18" cy="17" r="1.5" fill="#d4af37" />
+        <!-- Portafilter with Brass Ring & Handle -->
+        <rect x="22" y="22" width="12" height="4" rx="1.5" fill="#090a0d" stroke="#d4af37" stroke-width="0.6" />
+        <!-- Porcelain Cups on Drip Tray -->
+        <circle cx="8" cy="27" r="3" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.6" />
+        <circle cx="16" cy="27" r="3" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.6" />
+      </g>
+
+      <!-- 3. Acacia Cutting Board with Sliced Citrus & Knife -->
+      <g transform="translate(124, 12)">
+        <rect x="0" y="0" width="38" height="28" rx="3" fill="#6d3a17" stroke="#45230d" stroke-width="1" />
+        <rect x="3" y="3" width="32" height="22" rx="2" fill="none" stroke="#45230d" stroke-width="0.8" />
+        <!-- Sliced Lemon & Segments -->
+        <circle cx="14" cy="14" r="5.5" fill="#f59e0b" stroke="#d97706" stroke-width="0.6" />
+        <circle cx="14" cy="14" r="4" fill="#fef08a" />
+        <circle cx="26" cy="16" r="4" fill="#84cc16" stroke="#65a30d" stroke-width="0.6" />
+        <!-- Chef's Knife -->
+        <polygon points="6,4 32,7 32,9 6,6" fill="#cbd5e1" stroke="#94a3b8" stroke-width="0.6" />
+        <rect x="2" y="4" width="6" height="3" rx="1" fill="#111827" />
+      </g>
+
+      <!-- 3 Modern Barstools Tucked Under South Overhang -->
+      <g transform="translate(35, 78)">
+        <circle cx="0" cy="0" r="11" fill="#161b24" stroke="#d4af37" stroke-width="1.2" />
+        <circle cx="0" cy="0" r="7" fill="#0d1117" />
+        <line x1="-8" y1="0" x2="8" y2="0" stroke="#334155" stroke-width="1" />
+      </g>
+      <g transform="translate(90, 78)">
+        <circle cx="0" cy="0" r="11" fill="#161b24" stroke="#d4af37" stroke-width="1.2" />
+        <circle cx="0" cy="0" r="7" fill="#0d1117" />
+        <line x1="-8" y1="0" x2="8" y2="0" stroke="#334155" stroke-width="1" />
+      </g>
+      <g transform="translate(145, 78)">
+        <circle cx="0" cy="0" r="11" fill="#161b24" stroke="#d4af37" stroke-width="1.2" />
+        <circle cx="0" cy="0" r="7" fill="#0d1117" />
+        <line x1="-8" y1="0" x2="8" y2="0" stroke="#334155" stroke-width="1" />
+      </g>
+    </g>
+
+    <!-- ================= 5. REFINED CONTEMPORARY DINING AREA (BOTTOM-LEFT) ================= -->
+    <!-- Position: Table X: 175 to 295, Y: 440 to 510 -->
+    <g id="living-dining-area" transform="translate(175, 440)">
+      <!-- Dining Table Cast Contact Shadow -->
+      <rect x="0" y="3" width="126" height="74" rx="8" fill="#000" opacity="0.35" filter="url(#shadow)" />
+
+      <!-- Solid Walnut Dining Tabletop with 2.5D Chamfer -->
+      <rect x="0" y="0" width="120" height="64" rx="6" fill="url(#wood-desk)" stroke="#3a281a" stroke-width="1.5" />
+      <rect x="3" y="3" width="114" height="58" rx="4" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.55" />
+
+      <!-- Front Beveled Edge (6px Physical Depth) -->
+      <rect x="0" y="64" width="120" height="6" rx="2" fill="#241910" stroke="#17100a" stroke-width="1.2" />
+
+      <!-- Angled Tapered Metal Legs with Brass Tips -->
+      <rect x="6" y="2" width="6" height="6" rx="1" fill="#111827" stroke="#d4af37" stroke-width="0.6" />
+      <rect x="108" y="2" width="6" height="6" rx="1" fill="#111827" stroke="#d4af37" stroke-width="0.6" />
+      <rect x="6" y="64" width="6" height="6" rx="1" fill="#111827" stroke="#d4af37" stroke-width="0.6" />
+      <rect x="108" y="64" width="6" height="6" rx="1" fill="#111827" stroke="#d4af37" stroke-width="0.6" />
+
+      <!-- Modern Fabric Table Runner -->
+      <rect x="42" y="0" width="36" height="70" fill="#222b3a" stroke="#334155" stroke-width="0.8" />
+      <line x1="42" y1="0" x2="78" y2="0" stroke="#d4af37" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.75" />
+      <line x1="42" y1="70" x2="78" y2="70" stroke="#d4af37" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.75" />
+
+      <!-- Center Minimalist Fluted Ceramic Vase & Botanical Sprigs -->
+      <circle cx="60" cy="35" r="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+      <circle cx="60" cy="35" r="4" fill="#33221a" />
+      <circle cx="58" cy="33" r="2.2" fill="#16a34a" />
+      <circle cx="62" cy="37" r="2.2" fill="#22c55e" />
+      <circle cx="63" cy="32" r="1.8" fill="#86efac" />
+
+      <!-- 4 Modern Dining Chairs (Perfect 2.5D Scale & Alignment) -->
+      <!-- North Chair (Facing South) -->
+      <g transform="translate(48, -22)">
+        <rect x="0" y="0" width="24" height="6" rx="2" fill="#1c2331" stroke="#3b4860" stroke-width="1" />
+        <rect x="2" y="6" width="20" height="14" rx="3" fill="url(#chair-cushion-grad)" stroke="#3b4860" stroke-width="1" />
+      </g>
+      <!-- South Chair (Facing North) -->
+      <g transform="translate(48, 72)">
+        <rect x="2" y="0" width="20" height="14" rx="3" fill="url(#chair-cushion-grad)" stroke="#3b4860" stroke-width="1" />
+        <rect x="0" y="14" width="24" height="6" rx="2" fill="#1c2331" stroke="#3b4860" stroke-width="1" />
+      </g>
+      <!-- West Chair (Facing East) -->
+      <g transform="translate(-24, 20)">
+        <rect x="0" y="0" width="6" height="24" rx="2" fill="#1c2331" stroke="#3b4860" stroke-width="1" />
+        <rect x="6" y="2" width="14" height="20" rx="3" fill="url(#chair-cushion-grad)" stroke="#3b4860" stroke-width="1" />
+      </g>
+      <!-- East Chair (Facing West) -->
+      <g transform="translate(124, 20)">
+        <rect x="0" y="2" width="14" height="20" rx="3" fill="url(#chair-cushion-grad)" stroke="#3b4860" stroke-width="1" />
+        <rect x="14" y="0" width="6" height="24" rx="2" fill="#1c2331" stroke="#3b4860" stroke-width="1" />
+      </g>
+    </g>
+
+    <!-- ================= 6. REBUILT UPPER-RIGHT WORKSTATION (BELIEVABLE PHYSICAL FURNITURE) ================= -->
+    <!-- Position: X: 570 to 735, Y: 72 to 118 (Normalized Relative to Player) -->
+    <g id="living-entertainment" transform="translate(570, 72)" style="cursor: pointer;">
+      <!-- Workstation Ground Contact Shadow -->
+      <rect x="0" y="3" width="169" height="47" rx="6" fill="#000" opacity="0.4" filter="url(#shadow)" />
+
+      <!-- Soft Cyan Ambient Bias Glow Behind Display -->
+      <ellipse cx="82" cy="2" rx="72" ry="22" fill="url(#tv-glow)" opacity="0.6" />
+
+      <!-- Executive Walnut Workstation Credenza (Believable Physical Proportions) -->
+      <rect x="0" y="0" width="165" height="38" rx="4" fill="url(#wood-desk)" stroke="#3a281a" stroke-width="1.5" />
+      <rect x="3" y="2" width="159" height="34" rx="2" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.6" />
+
+      <!-- Front 2.5D Beveled Fascia (7px Depth) -->
+      <rect x="0" y="38" width="165" height="7" rx="2" fill="#241910" stroke="#17100a" stroke-width="1.2" />
+      <!-- Cabinet Storage Dividing Seams -->
+      <line x1="55" y1="38" x2="55" y2="45" stroke="#100b07" stroke-width="1" />
+      <line x1="110" y1="38" x2="110" y2="45" stroke="#100b07" stroke-width="1" />
+      <!-- Brushed Brass Plinth Trim -->
+      <rect x="10" y="45" width="14" height="3" fill="#d4af37" rx="1" />
+      <rect x="141" y="45" width="14" height="3" fill="#d4af37" rx="1" />
+
+      <!-- Workstation Accessories on Desktop -->
+      <!-- Matte Executive Desk Pad -->
+      <rect x="38" y="8" width="88" height="26" rx="2" fill="#131720" stroke="#252d3d" stroke-width="0.8" />
+      <!-- Slim Mechanical Keyboard with Cyan Backlight -->
+      <rect x="60" y="15" width="38" height="13" rx="1.5" fill="#1a2230" stroke="#00ffff" stroke-width="0.7" />
+      <line x1="64" y1="19" x2="94" y2="19" stroke="#00ffff" stroke-width="0.7" opacity="0.7" />
+      <line x1="64" y1="23" x2="94" y2="23" stroke="#00ffff" stroke-width="0.7" opacity="0.7" />
+      <!-- Precision Ergonomic Mouse -->
+      <ellipse cx="110" cy="22" rx="3.5" ry="5.5" fill="#222b3d" stroke="#00ffff" stroke-width="0.6" />
+      <!-- Cable Pass-Through Grommet -->
+      <circle cx="82" cy="4" r="3" fill="#0f131a" stroke="#d4af37" stroke-width="0.8" />
+
+      <!-- Ultra-Wide Curved Workstation Display -->
+      <!-- Articulated Stand Mount -->
+      <rect x="78" y="2" width="8" height="5" fill="#475569" stroke="#64748b" stroke-width="0.8" />
+      <!-- Curved Monitor Bezel (Width 110px) -->
+      <rect x="27" y="-4" width="110" height="12" rx="3" fill="#080c13" stroke="#475569" stroke-width="1.2" />
+      <!-- Active Cyan Display Screen -->
+      <rect x="29" y="-3" width="106" height="10" rx="2" fill="#05121e" />
+      <!-- Terminal / Analytics Dashboard Visual -->
+      <path d="M 33 4 L 45 0 L 55 3 L 68 -1 L 80 2 L 95 -2 L 110 1 L 125 -1 L 132 2" fill="none" stroke="#00ffff" stroke-width="1" />
+      <circle cx="82" cy="7" r="1.2" fill="#00ffff" class="led-pulse" />
+
+      <!-- Studio Desktop Audio Monitors -->
+      <g transform="translate(10, 6)">
+        <rect x="0" y="0" width="14" height="22" rx="2" fill="#11151e" stroke="#252d3d" stroke-width="1" />
+        <circle cx="7" cy="11" r="4.5" fill="#1e2636" stroke="#d4af37" stroke-width="0.6" />
+      </g>
+      <g transform="translate(140, 6)">
+        <rect x="0" y="0" width="14" height="22" rx="2" fill="#11151e" stroke="#252d3d" stroke-width="1" />
+        <circle cx="7" cy="11" r="4.5" fill="#1e2636" stroke="#d4af37" stroke-width="0.6" />
+      </g>
+
+      <!-- Modern Ergonomic Executive Task Chair Tucked In -->
+      <g transform="translate(68, 42)">
+        <line x1="4" y1="12" x2="24" y2="12" stroke="#334155" stroke-width="2" />
+        <line x1="14" y1="4" x2="14" y2="20" stroke="#334155" stroke-width="2" />
+        <circle cx="14" cy="12" r="3" fill="#64748b" />
+        <!-- Padded Seat Cushion (2.5D Depth) -->
+        <rect x="0" y="3" width="28" height="18" rx="5" fill="#19202b" stroke="#334155" stroke-width="1.2" />
+        <!-- Lumbar Ergonomic Backrest -->
+        <rect x="2" y="17" width="24" height="7" rx="3" fill="#242e40" stroke="#475569" stroke-width="1.2" />
+      </g>
+    </g>
+
+    <!-- Interactive Proximity Badge for Living Room Workstation [Cyan System] -->
+    <g id="prompt-living-workstation" class="prompt-badge" transform="translate(652, 160)" style="display: none;">
+      <rect x="-75" y="-13" width="150" height="26" rx="13" fill="#0d1117" stroke="#00ffff" stroke-width="1.8" filter="url(#shadow)" />
+      <rect x="-66" y="-9" width="18" height="18" rx="3" fill="#00ffff" />
+      <text x="-57" y="4" font-size="11" font-weight="900" fill="#000" text-anchor="middle" font-family="'JetBrains Mono', monospace">E</text>
+      <text x="16" y="4" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">WORKSTATION</text>
+    </g>
+
+    <!-- ================= 7. REFINED LUXURY LOUNGE & SECTIONAL SOFA ================= -->
+    <!-- Large Designer Area Rug (X: 480 to 770, Y: 165 to 355) -->
+    <rect x="480" y="165" width="290" height="190" rx="10" fill="url(#rug-living)" stroke="#d4af37" stroke-width="1.5" opacity="0.95" />
+    <rect x="490" y="175" width="270" height="170" rx="6" fill="none" stroke="#d4af37" stroke-width="0.8" stroke-dasharray="6,4" opacity="0.55" />
+
+    <!-- Marble & Dark Wood Coffee Table (X: 585 to 685, Y: 195 to 240) -->
+    <g id="living-coffee-table" transform="translate(585, 195)">
+      <rect x="0" y="2" width="104" height="49" rx="6" fill="#000" opacity="0.35" filter="url(#shadow)" />
+      <!-- Walnut Frame -->
+      <rect x="0" y="0" width="100" height="45" rx="4" fill="url(#wood-desk)" stroke="#3a2a1c" stroke-width="1.5" />
+      <!-- Front Beveled Edge -->
+      <rect x="0" y="45" width="100" height="5" rx="1.5" fill="#241910" stroke="#17100a" stroke-width="1" />
+      <!-- Inlaid Carrara Marble -->
+      <rect x="4" y="4" width="92" height="37" rx="2" fill="url(#kitchen-marble)" opacity="0.9" />
+      <!-- Art Book & Mug -->
+      <rect x="14" y="12" width="24" height="22" rx="1" fill="#1b202c" stroke="#d4af37" stroke-width="0.8" />
+      <text x="26" y="25" font-size="7" font-weight="bold" fill="#d4af37" text-anchor="middle">ART</text>
+      <circle cx="60" cy="22" r="5" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.8" />
+      <circle cx="60" cy="22" r="3" fill="#78350f" />
+      <!-- Remote -->
+      <rect x="78" y="16" width="10" height="16" rx="1.5" fill="#090a0d" stroke="#334155" stroke-width="0.6" />
+    </g>
+
+    <!-- Modern L-Shaped Sectional Sofa (Slate Grey) -->
+    <!-- Main Body X: 505 to 735, Y: 260 to 316; Chaise Return X: 505 to 565, Y: 185 to 260 -->
+    <g id="living-sectional-sofa" transform="translate(505, 260)">
+      <!-- Soft Ambient Ground Shadow -->
+      <path d="M 0 -75 L 60 -75 L 60 0 L 230 0 L 230 56 L 0 56 Z" fill="#000" opacity="0.4" filter="url(#shadow)" />
+
+      <!-- Main Horizontal Seating Row (3-Seater) -->
+      <rect x="0" y="0" width="230" height="56" rx="6" fill="url(#sofa-fabric)" stroke="#475569" stroke-width="1.5" />
+      <!-- Plush Upholstered Cushions with 2.5D Piping -->
+      <rect x="6" y="8" width="66" height="40" rx="4" fill="#242c3b" stroke="#3b465a" stroke-width="1" />
+      <rect x="78" y="8" width="68" height="40" rx="4" fill="#242c3b" stroke="#3b465a" stroke-width="1" />
+      <rect x="152" y="8" width="72" height="40" rx="4" fill="#242c3b" stroke="#3b465a" stroke-width="1" />
+
+      <!-- Chaise Return Section (Extending North) -->
+      <rect x="0" y="-75" width="60" height="80" rx="6" fill="url(#sofa-fabric)" stroke="#475569" stroke-width="1.5" />
+      <rect x="6" y="-68" width="48" height="70" rx="4" fill="#242c3b" stroke="#3b465a" stroke-width="1" />
+
+      <!-- Accent Velvet Cushions (Gold & Teal) -->
+      <rect x="12" y="-62" width="20" height="16" rx="3" fill="#d4af37" opacity="0.9" transform="rotate(-15, 22, -54)" />
+      <rect x="160" y="12" width="18" height="18" rx="3" fill="#0284c7" opacity="0.9" transform="rotate(10, 169, 21)" />
+      <rect x="88" y="12" width="18" height="18" rx="3" fill="#d4af37" opacity="0.9" transform="rotate(-5, 97, 21)" />
+    </g>
+
+    <!-- Contemporary Lounge Armchair (X: 715 to 762, Y: 185 to 232) -->
+    <g transform="translate(715, 185)">
+      <rect x="0" y="2" width="49" height="49" rx="6" fill="#000" opacity="0.35" filter="url(#shadow)" />
+      <rect x="0" y="0" width="47" height="47" rx="4" fill="url(#sofa-fabric)" stroke="#475569" stroke-width="1.2" />
+      <rect x="5" y="5" width="37" height="37" rx="3" fill="#242c3b" stroke="#3b465a" stroke-width="1" />
+      <rect x="11" y="11" width="16" height="16" rx="2" fill="#d4af37" opacity="0.85" />
+    </g>
+
+    <!-- Arched Brass Floor Lamp over Sofa (X: 765, Y: 330) -->
+    <g transform="translate(765, 330)">
+      <!-- Weighted Circular Brass Base -->
+      <circle cx="0" cy="0" r="9" fill="url(#brass-gold-grad)" stroke="#aa820a" stroke-width="1.5" />
+      <!-- Arching Brass Pole -->
+      <path d="M 0 0 Q -18 -28 -36 -32" fill="none" stroke="#d4af37" stroke-width="2" />
+      <!-- Lamp Shade & Warm Spotlight -->
+      <polygon points="-36,-32 -30,-44 -42,-44" fill="#d4af37" stroke="#aa820a" stroke-width="1" />
+      <circle cx="-36,-32" r="5" fill="#fff4d1" opacity="0.9" />
+    </g>
+
+    <!-- ================= 8. REDESIGNED SOUTH BALCONY SLIDING GLASS DOORS ================= -->
+    <!-- Immediately Recognizable Floor-to-Ceiling Balcony Doors (X: 450 to 800, Y: 560 to 582) -->
+    <g id="living-panoramic-window" transform="translate(450, 560)">
+      <!-- Outdoor Balcony Decking & City Skyline View beyond Glass -->
+      <rect x="0" y="12" width="350" height="24" fill="url(#deck-wood)" />
+      <line x1="0" y1="34" x2="350" y2="34" stroke="#334155" stroke-width="2" />
+      <!-- Vertical Railing Pickets -->
+      <line x1="30" y1="20" x2="30" y2="34" stroke="#475569" stroke-width="1" />
+      <line x1="70" y1="20" x2="70" y2="34" stroke="#475569" stroke-width="1" />
+      <line x1="110" y1="20" x2="110" y2="34" stroke="#475569" stroke-width="1" />
+      <line x1="150" y1="20" x2="150" y2="34" stroke="#475569" stroke-width="1" />
+      <line x1="190" y1="20" x2="190" y2="34" stroke="#475569" stroke-width="1" />
+      <line x1="230" y1="20" x2="230" y2="34" stroke="#475569" stroke-width="1" />
+      <line x1="270" y1="20" x2="270" y2="34" stroke="#475569" stroke-width="1" />
+      <line x1="310" y1="20" x2="310" y2="34" stroke="#475569" stroke-width="1" />
+      <!-- Twinkling Skyscraper Lights in Horizon -->
+      <circle cx="25" cy="18" r="1.5" fill="#ffe28a" opacity="0.8" />
+      <circle cx="75" cy="17" r="1.2" fill="#00ffff" opacity="0.8" />
+      <circle cx="150" cy="18" r="1.5" fill="#ffd166" opacity="0.8" />
+      <circle cx="210" cy="16" r="1" fill="#38ef7d" opacity="0.8" />
+      <circle cx="280" cy="17" r="1.2" fill="#ff70a6" opacity="0.8" />
+
+      <!-- Heavy-Duty Extruded Anodized Bronze Door Frame -->
+      <rect x="-2" y="2" width="354" height="18" fill="#131720" stroke="#252d3d" stroke-width="1.5" />
+      <!-- Twin Polished Brass Sliding Sill Tracks -->
+      <line x1="0" y1="6" x2="350" y2="6" stroke="#d4af37" stroke-width="1.2" opacity="0.85" />
+      <line x1="0" y1="13" x2="350" y2="13" stroke="#d4af37" stroke-width="1.2" opacity="0.85" />
+
+      <!-- Panel 1: Left Sliding Glass Door (X: 2 to 120) -->
+      <g transform="translate(2, 3)">
+        <rect x="0" y="0" width="118" height="14" rx="2" fill="#1a212d" stroke="#3b4860" stroke-width="1.2" />
+        <rect x="3" y="2" width="112" height="10" rx="1" fill="url(#balcony-glass-tint)" stroke="#bae6fd" stroke-width="0.7" />
+        <line x1="20" y1="2" x2="40" y2="12" stroke="#ffffff" stroke-width="1" opacity="0.6" />
+        <line x1="60" y1="2" x2="80" y2="12" stroke="#ffffff" stroke-width="1" opacity="0.6" />
+        <rect x="110" y="1" width="3.5" height="12" rx="1" fill="url(#brass-gold-grad)" />
+      </g>
+
+      <!-- Panel 2: Center Sliding Glass Door (X: 116 to 234) -->
+      <g transform="translate(116, 3)">
+        <rect x="0" y="0" width="118" height="14" rx="2" fill="#1a212d" stroke="#3b4860" stroke-width="1.2" />
+        <rect x="3" y="2" width="112" height="10" rx="1" fill="url(#balcony-glass-tint)" stroke="#bae6fd" stroke-width="0.7" />
+        <line x1="20" y1="2" x2="40" y2="12" stroke="#ffffff" stroke-width="1" opacity="0.6" />
+        <line x1="60" y1="2" x2="80" y2="12" stroke="#ffffff" stroke-width="1" opacity="0.6" />
+        <rect x="6" y="1" width="3.5" height="12" rx="1" fill="url(#brass-gold-grad)" />
+      </g>
+
+      <!-- Panel 3: Right Sliding Glass Door (X: 230 to 348) -->
+      <g transform="translate(230, 3)">
+        <rect x="0" y="0" width="118" height="14" rx="2" fill="#1a212d" stroke="#3b4860" stroke-width="1.2" />
+        <rect x="3" y="2" width="112" height="10" rx="1" fill="url(#balcony-glass-tint)" stroke="#bae6fd" stroke-width="0.7" />
+        <line x1="20" y1="2" x2="40" y2="12" stroke="#ffffff" stroke-width="1" opacity="0.6" />
+        <line x1="60" y1="2" x2="80" y2="12" stroke="#ffffff" stroke-width="1" opacity="0.6" />
+        <rect x="108" y="1" width="3.5" height="12" rx="1" fill="url(#brass-gold-grad)" />
+      </g>
+
+      <!-- Sheer Decorative Drapes Tucked at Jamb Corners -->
+      <path d="M 0 0 Q 8 -15 0 -35 L 18 -35 Q 10 -15 18 0 Z" fill="#ffffff" opacity="0.32" />
+      <path d="M 350 0 Q 342 -15 350 -35 L 332 -35 Q 340 -15 332 0 Z" fill="#ffffff" opacity="0.32" />
+    </g>
+
+    <!-- ================= 9. REFINED ARCHITECTURAL MONSTERA DELICIOSA ================= -->
+    <!-- Position: X: 815, Y: 495 (Bottom-Right Corner) -->
+    <g id="living-plant-monstera" transform="translate(815, 495)">
+      <!-- Contact Ground Drop Shadow -->
+      <ellipse cx="0" cy="22" rx="24" ry="12" fill="#000" opacity="0.45" filter="url(#shadow)" />
+
+      <!-- Fluted White Ceramic Planter (2.5D Depth) -->
+      <rect x="-17" y="-2" width="34" height="28" rx="4" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+      <!-- Vertical Ceramic Flute Grooves -->
+      <line x1="-10" y1="-2" x2="-10" y2="24" stroke="#e2e8f0" stroke-width="1" />
+      <line x1="-3" y1="-2" x2="-3" y2="25" stroke="#e2e8f0" stroke-width="1" />
+      <line x1="3" y1="-2" x2="3" y2="25" stroke="#e2e8f0" stroke-width="1" />
+      <line x1="10" y1="-2" x2="10" y2="24" stroke="#e2e8f0" stroke-width="1" />
+
+      <!-- Top Planter Rim & Rich Potting Soil -->
+      <ellipse cx="0" cy="-2" rx="17" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+      <ellipse cx="0" cy="-1.5" rx="14" ry="4.5" fill="#2d1d13" />
+
+      <!-- Curated, Organically Sculpted Vector Monstera Leaves with Natural Fenestrations -->
+      <!-- Back Shadow Leaf -->
+      <path d="M 0 -2 Q -18 -26 -30 -34 Q -14 -18 2 -2" fill="#14532d" stroke="#0f3d21" stroke-width="0.8" />
+      <!-- Left Spreading Leaf -->
+      <path d="M 0 -2 Q -28 -12 -36 -16 Q -20 -4 0 -2" fill="#166534" stroke="#14532d" stroke-width="0.8" />
+      <!-- Top Left Leaf with Fenestrations -->
+      <path d="M 0 -2 Q -12 -32 -16 -44 Q 2 -26 2 -2" fill="#16a34a" stroke="#15803d" stroke-width="0.8" />
+      <ellipse cx="-8" cy="-26" rx="1.5" ry="3.5" fill="#2d1d13" opacity="0.8" transform="rotate(-20, -8, -26)" />
+      <!-- Center Upright Lush Leaf -->
+      <path d="M 0 -2 Q 2 -36 8 -48 Q 12 -28 0 -2" fill="url(#monstera-leaf-grad)" stroke="#15803d" stroke-width="0.8" />
+      <ellipse cx="6" cy="-30" rx="1.5" ry="4" fill="#2d1d13" opacity="0.8" transform="rotate(15, 6, -30)" />
+      <!-- Right Spreading Leaf -->
+      <path d="M 0 -2 Q 26 -14 36 -18 Q 18 -4 0 -2" fill="#16a34a" stroke="#15803d" stroke-width="0.8" />
+      <!-- Front Arching Leaf with Fresh Leaf Highlight -->
+      <path d="M 0 -2 Q 18 -28 28 -36 Q 12 -18 -2 -2" fill="#22c55e" stroke="#16a34a" stroke-width="0.8" />
+      <ellipse cx="16" cy="-22" rx="1.5" ry="3" fill="#2d1d13" opacity="0.75" transform="rotate(30, 16, -22)" />
+    </g>
+  </g>
+
+  <!-- ================= PLAYER CHARACTER ================= -->
+  <g id="player" transform="translate(480, 280)">
+    <ellipse cx="0" cy="38" rx="20" ry="8" fill="#000000" opacity="0.45" />
+
+    <g id="player-visual">
+      <!-- Legs & Pants -->
+      <g id="legs">
+        <rect id="leg-l" x="-13" y="14" width="10" height="24" rx="3" fill="url(#suit-trousers)" stroke="#090a0c" stroke-width="1" />
+        <rect id="leg-r" x="3" y="14" width="10" height="24" rx="3" fill="url(#suit-trousers)" stroke="#090a0c" stroke-width="1" />
+        <path id="shoe-l" d="M -15 36 L -2 36 L -2 40 L -14 40 Z" fill="#0a0a0d" stroke="#2b2d35" stroke-width="0.8" />
+        <path id="shoe-r" d="M 2 36 L 15 36 L 14 40 L 2 40 Z" fill="#0a0a0d" stroke="#2b2d35" stroke-width="0.8" />
+      </g>
+
+      <!-- Torso & Black Suit Jacket -->
+      <g id="torso">
+        <path d="M -16 -8 L 16 -8 L 14 18 L -14 18 Z" fill="url(#suit-jacket)" stroke="#0b0c0e" stroke-width="1.2" />
+        <polygon id="shirt-collar" points="0,11 -6,-8 6,-8" fill="#ffffff" />
+        <polygon id="tie" points="0,-4 3,11 0,14 -3,11" fill="#050507" />
+        <polygon points="0,-7 3,-4 -3,-4" fill="#111217" />
+
+        <path id="lapel-l" d="M -16 -8 L -6 4 L -6 -8 Z" fill="#1d1f24" stroke="#0a0b0d" stroke-width="0.8" />
+        <path id="lapel-r" d="M 16 -8 L 6 4 L 6 -8 Z" fill="#1d1f24" stroke="#0a0b0d" stroke-width="0.8" />
+
+        <circle id="suit-btn-1" cx="0" cy="7" r="1.2" fill="#d4af37" />
+        <circle id="suit-btn-2" cx="0" cy="13" r="1.2" fill="#d4af37" />
+
+        <g id="arm-l">
+          <rect x="-21" y="-7" width="8" height="23" rx="4" fill="url(#suit-jacket)" stroke="#090a0c" stroke-width="1" />
+          <rect x="-20" y="14" width="6" height="2" fill="#ffffff" />
+          <circle cx="-17" cy="18" r="3.5" fill="#f8cfb4" />
+        </g>
+        <g id="arm-r">
+          <rect x="13" y="-7" width="8" height="23" rx="4" fill="url(#suit-jacket)" stroke="#090a0c" stroke-width="1" />
+          <rect x="14" y="14" width="6" height="2" fill="#ffffff" />
+          <circle cx="17" cy="18" r="3.5" fill="#f8cfb4" />
+        </g>
+      </g>
+
+      <!-- Head & Black Hair -->
+      <g id="head" transform="translate(0, -18)">
+        <rect x="-4" y="3" width="8" height="8" fill="#e8b89b" />
+        <ellipse cx="0" cy="-3" rx="11" ry="12" fill="#f8cfb4" />
+
+        <g id="eyes">
+          <circle cx="-4" cy="-3" r="1.8" fill="#1a1c22" />
+          <circle cx="4" cy="-3" r="1.8" fill="#1a1c22" />
+          <circle cx="-3.5" cy="-3.8" r="0.6" fill="#ffffff" />
+          <circle cx="4.5" cy="-3.8" r="0.6" fill="#ffffff" />
+          <line x1="-6" y1="-6.5" x2="-2" y2="-6.5" stroke="#0c0d10" stroke-width="1" />
+          <line x1="2" y1="-6.5" x2="6" y2="-6.5" stroke="#0c0d10" stroke-width="1" />
+        </g>
+
+        <path d="M -12 -5 C -13 -18, 13 -18, 12 -5 C 13 -1, 14 3, 11 4 C 10 -2, 9 -7, 8 -7 C 5 -14, -5 -14, -8 -7 C -9 -7, -10 -2, -11 4 C -14 3, -13 -1, -12 -5 Z" fill="url(#black-hair)" stroke="#070709" stroke-width="1" />
+        <path d="M -11 -6 Q -8 -16 0 -16 Q 8 -16 11 -6 Q 6 -10 2 -8 Q -1 -12 -4 -6 Q -8 -9 -11 -6 Z" fill="#1a1b20" />
+        <path d="M -5 -8 Q 0 -15 7 -10 Q 3 -8 0 -5 Q -3 -8 -5 -8 Z" fill="#2d2f38" opacity="0.6" />
+      </g>
+    </g>
+  </g>
+
+  <!-- ================= HUD / LOCATION BADGE ================= -->
+  <g id="hud" transform="translate(90, 615)">
+    <rect x="0" y="-28" width="460" height="26" rx="6" fill="#0d1117" opacity="0.92" stroke="#21262d" stroke-width="1" />
+    <text id="hud-text" x="14" y="-11" fill="#8b949e" font-size="12" font-family="'Segoe UI', sans-serif">
+      Location: <tspan fill="#00ffff" font-weight="bold" id="location-label">BEDROOM</tspan> | Move: <tspan fill="#ffffff">WASD/Arrows</tspan> | Doors: <tspan fill="#7ee787">Press [E] when near</tspan>
+    </text>
+  </g>
+
+  <!-- ================= INTERACTIVE COMPUTER MODAL ================= -->
+  <g id="computer-modal" style="display: none;">
+    <rect x="0" y="0" width="960" height="640" fill="#000000" opacity="0.75" id="modal-backdrop" style="cursor: pointer;" />
+
+    <g id="modal-window" transform="translate(270, 140)">
+      <rect x="-8" y="-8" width="436" height="366" rx="14" fill="#000000" opacity="0.5" filter="url(#shadow)" />
+      <rect x="0" y="0" width="420" height="350" rx="12" fill="#0c0e14" stroke="#d4af37" stroke-width="2" />
+
+      <path d="M 0 12 C 0 5.37, 5.37 0, 12 0 L 408 0 C 414.63 0, 420 5.37, 420 12 L 420 38 L 0 38 Z" fill="#161a24" stroke="#252b3b" stroke-width="1" />
+      <line x1="0" y1="38" x2="420" y2="38" stroke="#d4af37" stroke-width="1" />
+
+      <circle cx="20" cy="19" r="6" fill="#ff5f56" stroke="#e0443e" stroke-width="0.5" class="close-btn" id="btn-close-dot" />
+      <circle cx="38" cy="19" r="6" fill="#ffbd2e" stroke="#dea123" stroke-width="0.5" />
+      <circle cx="56" cy="19" r="6" fill="#27c93f" stroke="#1aab29" stroke-width="0.5" />
+
+      <text x="210" y="24" font-size="13" font-weight="700" fill="#e2e8f0" text-anchor="middle" font-family="'JetBrains Mono', monospace" letter-spacing="1">
+        SYS_WORKSTATION // OS v2.4
+      </text>
+
+      <g class="close-btn" id="btn-close-modal" transform="translate(390, 12)">
+        <rect x="-8" y="-4" width="24" height="22" rx="4" fill="#212636" stroke="#3b445c" stroke-width="1" />
+        <text x="4" y="12" font-size="13" font-weight="bold" fill="#ff7b72" text-anchor="middle">✕</text>
+      </g>
+
+      <!-- ONLINE STATE VIEW -->
+      <g id="modal-online-view">
+        <rect x="25" y="55" width="370" height="75" rx="8" fill="#131722" stroke="#232a3d" stroke-width="1" />
+        
+        <g transform="translate(42, 70)">
+          <rect x="0" y="0" width="32" height="22" rx="3" fill="#08101a" stroke="#00ffff" stroke-width="1.5" />
+          <line x1="16" y1="22" x2="16" y2="28" stroke="#00ffff" stroke-width="2" />
+          <line x1="8" y1="28" x2="24" y2="28" stroke="#00ffff" stroke-width="2" />
+          <circle cx="16" cy="11" r="4" fill="#00ffff" opacity="0.6" class="led-pulse" />
+        </g>
+
+        <text x="90" y="78" font-size="14" font-weight="bold" fill="#ffffff" font-family="'JetBrains Mono', monospace">
+          RELZZY WORKSTATION [ONLINE]
+        </text>
+        <text x="90" y="96" font-size="11" fill="#7ee787" font-family="'JetBrains Mono', monospace">
+          ● Core: 100% | Display: Active (Facing Desk)
+        </text>
+        <text x="90" y="112" font-size="10" fill="#8b949e" font-family="'JetBrains Mono', monospace">
+          Host: Master-Suite-01 | Security: Normal
+        </text>
+
+        <line x1="25" y1="150" x2="395" y2="150" stroke="#212636" stroke-width="1" />
+        <text x="30" y="172" font-size="12" font-weight="600" fill="#d4af37" letter-spacing="1">
+          POWER OPTIONS
+        </text>
+
+        <!-- SHUT DOWN BUTTON -->
+        <g class="menu-btn" id="btn-shutdown" transform="translate(25, 190)">
+          <rect class="btn-bg" x="0" y="0" width="370" height="52" rx="8" fill="#21151a" stroke="#f85149" stroke-width="1.8" />
+          <g transform="translate(30, 26)">
+            <circle cx="0" cy="0" r="12" fill="none" stroke="#f85149" stroke-width="2.5" stroke-dasharray="50,16" />
+            <line x1="0" y1="-14" x2="0" y2="-2" stroke="#f85149" stroke-width="2.5" stroke-linecap="round" />
+          </g>
+          <text x="60" y="32" font-size="17" font-weight="bold" fill="#f85149" font-family="'JetBrains Mono', monospace" letter-spacing="1">
+            Shut Down
+          </text>
+          <text x="335" y="32" font-size="18" fill="#f85149" font-weight="bold">→</text>
+        </g>
+
+        <text x="210" y="278" font-size="11" fill="#6e7681" text-anchor="middle" font-family="'JetBrains Mono', monospace">
+          Press [ESC] or click outside to cancel and return
+        </text>
+      </g>
+
+      <!-- OFFLINE STATE VIEW -->
+      <g id="modal-offline-view" style="display: none;">
+        <rect x="25" y="60" width="370" height="150" rx="8" fill="#08090d" stroke="#1f2430" stroke-width="1" />
+        <circle cx="210" cy="110" r="24" fill="#141720" stroke="#484f58" stroke-width="2" />
+        <line x1="210" y1="96" x2="210" y2="108" stroke="#ff7b72" stroke-width="3" stroke-linecap="round" />
+        <circle cx="210" cy="110" r="14" fill="none" stroke="#ff7b72" stroke-width="2.5" stroke-dasharray="60,18" />
+
+        <text x="210" y="155" font-size="16" font-weight="bold" fill="#f85149" text-anchor="middle" font-family="'JetBrains Mono', monospace">
+          SYSTEM IS SHUT DOWN
+        </text>
+        <text x="210" y="175" font-size="11" fill="#8b949e" text-anchor="middle" font-family="'JetBrains Mono', monospace">
+          Display powered off. Workstation sleeping.
+        </text>
+
+        <g class="menu-btn" id="btn-power-on" transform="translate(110, 235)">
+          <rect class="btn-bg" x="0" y="0" width="200" height="46" rx="8" fill="#12281e" stroke="#2ea043" stroke-width="1.8" />
+          <text x="100" y="28" font-size="14" font-weight="bold" fill="#3fb950" text-anchor="middle" font-family="'JetBrains Mono', monospace">
+            ⚡ Power On System
+          </text>
+        </g>
+
+        <text x="210" y="315" font-size="11" fill="#6e7681" text-anchor="middle" font-family="'JetBrains Mono', monospace">
+          Click [X] or outside to leave the desk
+        </text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ================= GAME ENGINE & PROXIMITY [E] DOOR SYSTEM ================= -->
+  <script type="text/javascript">
+    <![CDATA[
+    (function () {
+      const state = {
+        currentZone: 'bedroom', // 'bedroom' | 'balcony' | 'bathroom'
+        x: 480,
+        y: 280,
+        speed: 4.2,
+        facing: 'down',
+        isMoving: false,
+        walkCycle: 0,
+        transitioning: false,
+        
+        computerPowered: true,
+        isNearComputer: false,
+        modalOpen: false,
+
+        // Proximity Door State
+        activeDoor: null, // Holds the door data if player is within interaction distance
+
+        keys: {
+          w: false, a: false, s: false, d: false,
+          up: false, down: false, left: false, right: false
+        }
+      };
+
+      // Room-specific boundaries, obstacles, and doors
+      const ROOM_DATA = {
+        bedroom: {
+          bounds: { minX: 100, maxX: 860, minY: 85, maxY: 555 },
+          obstacles: [
+            { x: 80, y: 70, w: 145, h: 145 }, // Desk
+            { x: 235, y: 115, w: 45, h: 55 }, // Chair
+            { x: 80, y: 240, w: 350, h: 165 }, // Bed
+            { x: 80, y: 425, w: 120, h: 120 }, // Nightstand
+            { x: 715, y: 70, w: 165, h: 180 }, // Wardrobe
+            // Top Walls (Door gap at X: 430 to 530, but solid until E pressed)
+            { x: 75, y: 55, w: 810, h: 25 },
+            // Bottom Walls
+            { x: 75, y: 560, w: 810, h: 25 },
+            // Right Wall
+            { x: 865, y: 60, w: 25, h: 260 },
+            { x: 865, y: 440, w: 25, h: 140 }
+          ],
+          computerHotspot: { x: 210, y: 140, radius: 100 },
+          doors: [
+            {
+              id: 'balcony-door',
+              promptEl: 'prompt-balcony-door',
+              hotspot: { x: 480, y: 95, radius: 55 },
+              targetZone: 'balcony',
+              spawnX: 480,
+              spawnY: 490
+            },
+            {
+              id: 'bathroom-door',
+              promptEl: 'prompt-bathroom-door',
+              hotspot: { x: 480, y: 535, radius: 55 },
+              targetZone: 'bathroom',
+              spawnX: 480,
+              spawnY: 240
+            },
+            {
+              id: 'livingroom-door',
+              promptEl: 'prompt-livingroom-door',
+              hotspot: { x: 840, y: 380, radius: 55 },
+              targetZone: 'livingroom',
+              spawnX: 135,
+              spawnY: 380
+            }
+          ]
+        },
+
+        balcony: {
+          bounds: { minX: 115, maxX: 845, minY: 305, maxY: 535 },
+          obstacles: [
+            { x: 90, y: 280, w: 780, h: 25 },
+            { x: 90, y: 280, w: 25, h: 280 },
+            { x: 845, y: 280, w: 25, h: 280 },
+            { x: 120, y: 350, w: 45, h: 50 },
+            { x: 90, y: 540, w: 780, h: 25 } // Bottom railing/wall
+          ],
+          doors: [
+            {
+              id: 'balcony-exit',
+              promptEl: 'prompt-balcony-exit',
+              hotspot: { x: 480, y: 510, radius: 55 },
+              targetZone: 'bedroom',
+              spawnX: 480,
+              spawnY: 115
+            }
+          ]
+        },
+
+        // Remastered Architectural En-Suite Bathroom (Wide Layout per Sketch)
+        bathroom: {
+          bounds: { minX: 145, maxX: 810, minY: 205, maxY: 428 },
+          obstacles: [
+            // Vertical Bathtub Enclosure on Left Wall (X: 144 to 258, Y: 195 to 435)
+            { x: 140, y: 195, w: 120, h: 245 },
+            // Washing Machine, Privacy Divider & Vanity Sink along Top Wall (X: 615 to 818, Y: 195 to 270)
+            { x: 610, y: 195, w: 210, h: 80 },
+            // Luxury Toilet Suite in Bottom-Right Corner (X: 730 to 812, Y: 355 to 435)
+            { x: 725, y: 355, w: 90, h: 80 },
+            // Top Perimeter Walls Flanking Doorway (Doorway at X: 440 to 520)
+            { x: 132, y: 180, w: 308, h: 25 },
+            { x: 520, y: 180, w: 308, h: 25 },
+            // Bottom Perimeter Wall
+            { x: 132, y: 432, w: 696, h: 25 }
+          ],
+          doors: [
+            {
+              id: 'bathroom-exit',
+              promptEl: 'prompt-bathroom-exit',
+              hotspot: { x: 480, y: 215, radius: 55 },
+              targetZone: 'bedroom',
+              spawnX: 480,
+              spawnY: 505
+            }
+          ]
+        },
+
+        // Modern Apartment Living Room
+        livingroom: {
+          bounds: { minX: 100, maxX: 860, minY: 85, maxY: 555 },
+          obstacles: [
+            // Kitchen Island + Barstools (X: 165 to 345, Y: 92 to 157, stools to 178)
+            { x: 160, y: 70, w: 190, h: 115 },
+            // Dining Table + Chairs (Table X: 175 to 295, Chairs: Y: 418 to 532, X: 148 to 322)
+            { x: 148, y: 418, w: 176, h: 120 },
+            // Rebuilt Workstation Furniture & Chair (X: 570 to 735, Y: 72 to 118, chair down to 146)
+            { x: 565, y: 70, w: 175, h: 80 },
+            // Sectional Sofa Main Row (X: 505 to 735, Y: 260 to 316)
+            { x: 500, y: 255, w: 240, h: 65 },
+            // Sectional Sofa Chaise Return (X: 505 to 565, Y: 185 to 260)
+            { x: 500, y: 180, w: 70, h: 80 },
+            // Coffee Table (X: 585 to 685, Y: 195 to 240)
+            { x: 580, y: 190, w: 110, h: 55 },
+            // Lounge Armchair (X: 715 to 762, Y: 185 to 232)
+            { x: 710, y: 180, w: 58, h: 58 },
+            // Monstera Plant in Bottom-Right Corner (X: 815, Y: 495)
+            { x: 795, y: 475, w: 45, h: 50 },
+            // Foyer Console Table (X: 84 to 108, Y: 235 to 307)
+            { x: 75, y: 230, w: 35, h: 80 },
+            // Top Perimeter Wall
+            { x: 65, y: 50, w: 830, h: 25 },
+            // Bottom Perimeter Wall Flanking Balcony Doors
+            { x: 65, y: 560, w: 385, h: 25 },
+            { x: 800, y: 560, w: 95, h: 25 },
+            // Right Perimeter Wall
+            { x: 865, y: 50, w: 25, h: 540 },
+            // Left Perimeter Wall (North of Door)
+            { x: 65, y: 50, w: 25, h: 275 },
+            // Left Perimeter Wall (South of Door)
+            { x: 65, y: 430, w: 25, h: 160 }
+          ],
+          workstationHotspot: { x: 652, y: 135, radius: 75 },
+          doors: [
+            {
+              id: 'livingroom-exit',
+              promptEl: 'prompt-living-exit',
+              hotspot: { x: 135, y: 380, radius: 55 },
+              targetZone: 'bedroom',
+              spawnX: 835,
+              spawnY: 380
+            }
+          ]
+        }
+      };
+
+      // DOM Elements
+      const svg = document.getElementById('game-svg');
+      const playerEl = document.getElementById('player');
+      const legLEl = document.getElementById('leg-l');
+      const legREl = document.getElementById('leg-r');
+      const shoeLEl = document.getElementById('shoe-l');
+      const shoeREl = document.getElementById('shoe-r');
+      const armLEl = document.getElementById('arm-l');
+      const armREl = document.getElementById('arm-r');
+      const headEl = document.getElementById('head');
+      const eyesEl = document.getElementById('eyes');
+      const shirtCollarEl = document.getElementById('shirt-collar');
+      const tieEl = document.getElementById('tie');
+      const lapelLEl = document.getElementById('lapel-l');
+      const lapelREl = document.getElementById('lapel-r');
+      const suitBtn1El = document.getElementById('suit-btn-1');
+      const suitBtn2El = document.getElementById('suit-btn-2');
+
+      const roomBedroomEl = document.getElementById('room-bedroom');
+      const roomBalconyEl = document.getElementById('room-balcony');
+      const roomBathroomEl = document.getElementById('room-bathroom');
+      const roomLivingRoomEl = document.getElementById('room-livingroom');
+      const locationLabel = document.getElementById('location-label');
+
+      const interactPrompt = document.getElementById('interact-prompt');
+      const computerModal = document.getElementById('computer-modal');
+      const modalBackdrop = document.getElementById('modal-backdrop');
+      const btnCloseModal = document.getElementById('btn-close-modal');
+      const btnCloseDot = document.getElementById('btn-close-dot');
+      const btnShutdown = document.getElementById('btn-shutdown');
+      const btnPowerOn = document.getElementById('btn-power-on');
+      const modalOnlineView = document.getElementById('modal-online-view');
+      const modalOfflineView = document.getElementById('modal-offline-view');
+      
+      const screenDisplay = document.getElementById('screen-display');
+      const screenContent = document.getElementById('screen-content');
+      const screenOffContent = document.getElementById('screen-off-content');
+      const screenGlow = document.getElementById('screen-glow');
+      const monitorLed = document.getElementById('monitor-led');
+      const powerLed = document.getElementById('power-led');
+      const powerLedGlow = document.getElementById('power-led-glow');
+      const computerStation = document.getElementById('computer-screen-station');
+
+      // Door prompt DOM elements
+      const promptBalconyDoor = document.getElementById('prompt-balcony-door');
+      const promptBathroomDoor = document.getElementById('prompt-bathroom-door');
+      const promptLivingDoor = document.getElementById('prompt-livingroom-door');
+      const promptBalconyExit = document.getElementById('prompt-balcony-exit');
+      const promptBathroomExit = document.getElementById('prompt-bathroom-exit');
+      const promptLivingExit = document.getElementById('prompt-living-exit');
+      const promptLivingWorkstation = document.getElementById('prompt-living-workstation');
+      const livingWorkstationEl = document.getElementById('living-entertainment');
+
+      const promptMap = {
+        'prompt-balcony-door': promptBalconyDoor,
+        'prompt-bathroom-door': promptBathroomDoor,
+        'prompt-livingroom-door': promptLivingDoor,
+        'prompt-balcony-exit': promptBalconyExit,
+        'prompt-bathroom-exit': promptBathroomExit,
+        'prompt-living-exit': promptLivingExit
+      };
+
+      // Door element click listeners (only work when near!)
+      const doorToBalcony = document.getElementById('door-to-balcony');
+      const doorToBathroom = document.getElementById('door-to-bathroom');
+      const doorToLiving = document.getElementById('door-to-livingroom');
+      const exitBalcony = document.getElementById('exit-balcony-to-room');
+      const exitBathroom = document.getElementById('exit-bathroom-to-room');
+      const exitLiving = document.getElementById('exit-living-to-room');
+
+      // Audio Synthesizer
+      function playTone(freq, duration, type = 'sine') {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+          gain.gain.setValueAtTime(0.1, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + duration);
+        } catch (e) {}
+      }
+
+      function playDoorSound() {
+        playTone(320, 0.08, 'triangle');
+        setTimeout(() => playTone(480, 0.12, 'triangle'), 80);
+      }
+
+      function playPowerDownSound() {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(440, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 0.6);
+          gain.gain.setValueAtTime(0.15, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.6);
+        } catch (e) {}
+      }
+
+      function playPowerUpSound() {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(110, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.4);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.4);
+        } catch (e) {}
+      }
+
+      // Room Transition Function
+      function switchRoom(targetZone, spawnX, spawnY) {
+        if (state.transitioning) return;
+        state.transitioning = true;
+        playDoorSound();
+
+        // Hide all prompts
+        hideAllDoorPrompts();
+
+        // Update State
+        state.currentZone = targetZone;
+        state.x = spawnX;
+        state.y = spawnY;
+        state.activeDoor = null;
+
+        // Hide all room layers
+        roomBedroomEl.style.display = 'none';
+        roomBalconyEl.style.display = 'none';
+        roomBathroomEl.style.display = 'none';
+        roomLivingRoomEl.style.display = 'none';
+
+        // Show targeted room layer only
+        if (targetZone === 'bedroom') {
+          roomBedroomEl.style.display = 'block';
+          locationLabel.textContent = 'BEDROOM';
+          locationLabel.setAttribute('fill', '#00ffff');
+        } else if (targetZone === 'balcony') {
+          roomBalconyEl.style.display = 'block';
+          locationLabel.textContent = 'BALCONY (CITY VIEW)';
+          locationLabel.setAttribute('fill', '#7dd3fc');
+        } else if (targetZone === 'bathroom') {
+          roomBathroomEl.style.display = 'block';
+          locationLabel.textContent = 'BATHROOM (REMASTERED)';
+          locationLabel.setAttribute('fill', '#38ef7d');
+        } else if (targetZone === 'livingroom') {
+          roomLivingRoomEl.style.display = 'block';
+          locationLabel.textContent = 'LIVING ROOM';
+          locationLabel.setAttribute('fill', '#ffd166');
+        }
+
+        state.keys.w = state.keys.a = state.keys.s = state.keys.d = false;
+        state.keys.up = state.keys.left = state.keys.down = state.keys.right = false;
+
+        playerEl.setAttribute('transform', `translate(${state.x}, ${state.y})`);
+
+        setTimeout(() => {
+          state.transitioning = false;
+          updateProximity();
+        }, 220);
+      }
+
+      function hideAllDoorPrompts() {
+        if (promptBalconyDoor) promptBalconyDoor.style.display = 'none';
+        if (promptBathroomDoor) promptBathroomDoor.style.display = 'none';
+        if (promptLivingDoor) promptLivingDoor.style.display = 'none';
+        if (promptBalconyExit) promptBalconyExit.style.display = 'none';
+        if (promptBathroomExit) promptBathroomExit.style.display = 'none';
+        if (promptLivingExit) promptLivingExit.style.display = 'none';
+        if (promptLivingWorkstation) promptLivingWorkstation.style.display = 'none';
+      }
+
+      // Check Proximity for Doors (Requires [E] to enter)
+      function updateDoorProximity() {
+        if (state.transitioning) return;
+        const currentData = ROOM_DATA[state.currentZone];
+        if (!currentData || !currentData.doors) {
+          state.activeDoor = null;
+          hideAllDoorPrompts();
+          return;
+        }
+
+        let foundDoor = null;
+
+        for (let i = 0; i < currentData.doors.length; i++) {
+          const door = currentData.doors[i];
+          const dx = state.x - door.hotspot.x;
+          const dy = state.y - door.hotspot.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < door.hotspot.radius) {
+            foundDoor = door;
+            break;
+          }
+        }
+
+        // Update active door & UI badge
+        hideAllDoorPrompts();
+        state.activeDoor = foundDoor;
+
+        if (foundDoor && foundDoor.promptEl) {
+          const pEl = promptMap[foundDoor.promptEl];
+          if (pEl) pEl.style.display = 'block';
+        }
+      }
+
+      // Check Proximity to Desk/Computer/Workstation
+      function updateProximity() {
+        if (state.currentZone === 'bedroom') {
+          const hotspot = ROOM_DATA.bedroom.computerHotspot;
+          const dx = state.x - hotspot.x;
+          const dy = state.y - hotspot.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          state.isNearComputer = dist < hotspot.radius;
+
+          if (state.isNearComputer && !state.modalOpen) {
+            interactPrompt.style.display = 'block';
+          } else {
+            interactPrompt.style.display = 'none';
+          }
+          if (promptLivingWorkstation) promptLivingWorkstation.style.display = 'none';
+        } else if (state.currentZone === 'livingroom') {
+          interactPrompt.style.display = 'none';
+          const hotspot = ROOM_DATA.livingroom.workstationHotspot;
+          if (hotspot) {
+            const dx = state.x - hotspot.x;
+            const dy = state.y - hotspot.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            state.isNearComputer = dist < hotspot.radius;
+
+            if (promptLivingWorkstation) {
+              if (state.isNearComputer && !state.modalOpen) {
+                promptLivingWorkstation.style.display = 'block';
+              } else {
+                promptLivingWorkstation.style.display = 'none';
+              }
+            }
+          } else {
+            state.isNearComputer = false;
+            if (promptLivingWorkstation) promptLivingWorkstation.style.display = 'none';
+          }
+        } else {
+          interactPrompt.style.display = 'none';
+          if (promptLivingWorkstation) promptLivingWorkstation.style.display = 'none';
+          state.isNearComputer = false;
+        }
+
+        updateDoorProximity();
+      }
+
+      // Open / Close Computer OS Modal
+      function openComputerModal() {
+        if (state.currentZone !== 'bedroom' && state.currentZone !== 'livingroom') return;
+        state.modalOpen = true;
+        interactPrompt.style.display = 'none';
+        if (promptLivingWorkstation) promptLivingWorkstation.style.display = 'none';
+        computerModal.style.display = 'block';
+        playTone(600, 0.1);
+      }
+
+      function closeComputerModal() {
+        state.modalOpen = false;
+        computerModal.style.display = 'none';
+        updateProximity();
+        playTone(400, 0.08);
+        if (svg) svg.focus();
+      }
+
+      function shutDownComputer() {
+        playPowerDownSound();
+        state.computerPowered = false;
+
+        screenDisplay.setAttribute('stroke', '#333b4d');
+        screenContent.style.display = 'none';
+        screenOffContent.style.display = 'block';
+        screenGlow.style.display = 'none';
+        monitorLed.setAttribute('fill', '#333b4d');
+        powerLed.setAttribute('fill', '#484f58');
+        powerLedGlow.style.display = 'none';
+
+        modalOnlineView.style.display = 'none';
+        modalOfflineView.style.display = 'block';
+      }
+
+      function powerOnComputer() {
+        playPowerUpSound();
+        state.computerPowered = true;
+
+        screenDisplay.setAttribute('stroke', '#00ffff');
+        screenContent.style.display = 'block';
+        screenOffContent.style.display = 'none';
+        screenGlow.style.display = 'block';
+        monitorLed.setAttribute('fill', '#00ffff');
+        powerLed.setAttribute('fill', '#00ffff');
+        powerLedGlow.style.display = 'block';
+
+        modalOnlineView.style.display = 'block';
+        modalOfflineView.style.display = 'none';
+      }
+
+      // Collision Detection per active room
+      function checkCollision(nx, ny) {
+        const charRadius = 15;
+        const currentData = ROOM_DATA[state.currentZone];
+        if (!currentData) return false;
+
+        if (nx - charRadius < currentData.bounds.minX || nx + charRadius > currentData.bounds.maxX) return true;
+        if (ny - 5 < currentData.bounds.minY || ny + 20 > currentData.bounds.maxY) return true;
+
+        for (let i = 0; i < currentData.obstacles.length; i++) {
+          const obs = currentData.obstacles[i];
+          if (
+            nx + charRadius > obs.x &&
+            nx - charRadius < obs.x + obs.w &&
+            ny + 15 > obs.y &&
+            ny - 10 < obs.y + obs.h
+          ) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // Input Event Listeners
+      function handleKeyDown(e) {
+        if (e.key === 'Escape') {
+          if (state.modalOpen) {
+            closeComputerModal();
+            return;
+          }
+        }
+
+        const key = e.key ? e.key.toLowerCase() : '';
+
+        // [E] KEY ACTION: Check Door Transition FIRST or Computer Interaction
+        if (key === 'e' || key === ' ' || key === 'enter' || e.code === 'KeyE' || e.code === 'Space' || e.code === 'Enter') {
+          // 1. Door Transition (only when near!)
+          if (state.activeDoor && !state.modalOpen) {
+            e.preventDefault();
+            switchRoom(state.activeDoor.targetZone, state.activeDoor.spawnX, state.activeDoor.spawnY);
+            return;
+          }
+
+          // 2. Computer Interaction (only when near in bedroom!)
+          if (state.isNearComputer && !state.modalOpen) {
+            e.preventDefault();
+            openComputerModal();
+            return;
+          }
+        }
+
+        if (state.modalOpen) return;
+
+        if (key === 'w' || e.code === 'KeyW') { state.keys.w = true; e.preventDefault(); }
+        if (key === 's' || e.code === 'KeyS') { state.keys.s = true; e.preventDefault(); }
+        if (key === 'a' || e.code === 'KeyA') { state.keys.a = true; e.preventDefault(); }
+        if (key === 'd' || e.code === 'KeyD') { state.keys.d = true; e.preventDefault(); }
+        if (key === 'arrowup' || e.code === 'ArrowUp') { state.keys.up = true; e.preventDefault(); }
+        if (key === 'arrowdown' || e.code === 'ArrowDown') { state.keys.down = true; e.preventDefault(); }
+        if (key === 'arrowleft' || e.code === 'ArrowLeft') { state.keys.left = true; e.preventDefault(); }
+        if (key === 'arrowright' || e.code === 'ArrowRight') { state.keys.right = true; e.preventDefault(); }
+      }
+
+      function handleKeyUp(e) {
+        const key = e.key ? e.key.toLowerCase() : '';
+        if (key === 'w' || e.code === 'KeyW') state.keys.w = false;
+        if (key === 's' || e.code === 'KeyS') state.keys.s = false;
+        if (key === 'a' || e.code === 'KeyA') state.keys.a = false;
+        if (key === 'd' || e.code === 'KeyD') state.keys.d = false;
+        if (key === 'arrowup' || e.code === 'ArrowUp') state.keys.up = false;
+        if (key === 'arrowdown' || e.code === 'ArrowDown') state.keys.down = false;
+        if (key === 'arrowleft' || e.code === 'ArrowLeft') state.keys.left = false;
+        if (key === 'arrowright' || e.code === 'ArrowRight') state.keys.right = false;
+      }
+
+      // Click Listeners (Strictly Require Proximity!)
+      if (interactPrompt) interactPrompt.addEventListener('click', openComputerModal);
+      if (computerStation) {
+        computerStation.addEventListener('click', function () {
+          if (state.isNearComputer && !state.modalOpen) {
+            openComputerModal();
+          }
+        });
+      }
+
+      // Door Clicks: ONLY triggered if player is already near the door!
+      function handleDoorClick(doorId) {
+        if (state.activeDoor && state.activeDoor.id === doorId && !state.modalOpen) {
+          switchRoom(state.activeDoor.targetZone, state.activeDoor.spawnX, state.activeDoor.spawnY);
+        }
+      }
+
+      if (doorToBalcony) doorToBalcony.addEventListener('click', () => handleDoorClick('balcony-door'));
+      if (doorToBathroom) doorToBathroom.addEventListener('click', () => handleDoorClick('bathroom-door'));
+      if (doorToLiving) doorToLiving.addEventListener('click', () => handleDoorClick('livingroom-door'));
+      if (exitBalcony) exitBalcony.addEventListener('click', () => handleDoorClick('balcony-exit'));
+      if (exitBathroom) exitBathroom.addEventListener('click', () => handleDoorClick('bathroom-exit'));
+      if (exitLiving) exitLiving.addEventListener('click', () => handleDoorClick('livingroom-exit'));
+
+      if (promptBalconyDoor) promptBalconyDoor.addEventListener('click', () => handleDoorClick('balcony-door'));
+      if (promptBathroomDoor) promptBathroomDoor.addEventListener('click', () => handleDoorClick('bathroom-door'));
+      if (promptLivingDoor) promptLivingDoor.addEventListener('click', () => handleDoorClick('livingroom-door'));
+      if (promptBalconyExit) promptBalconyExit.addEventListener('click', () => handleDoorClick('balcony-exit'));
+      if (promptBathroomExit) promptBathroomExit.addEventListener('click', () => handleDoorClick('bathroom-exit'));
+      if (promptLivingExit) promptLivingExit.addEventListener('click', () => handleDoorClick('livingroom-exit'));
+      if (promptLivingWorkstation) {
+        promptLivingWorkstation.addEventListener('click', function () {
+          if (state.isNearComputer && !state.modalOpen) {
+            openComputerModal();
+          }
+        });
+      }
+      if (livingWorkstationEl) {
+        livingWorkstationEl.addEventListener('click', function () {
+          if (state.isNearComputer && !state.modalOpen) {
+            openComputerModal();
+          }
+        });
+      }
+
+      if (btnCloseModal) btnCloseModal.addEventListener('click', closeComputerModal);
+      if (btnCloseDot) btnCloseDot.addEventListener('click', closeComputerModal);
+      if (modalBackdrop) modalBackdrop.addEventListener('click', closeComputerModal);
+      if (btnShutdown) btnShutdown.addEventListener('click', shutDownComputer);
+      if (btnPowerOn) btnPowerOn.addEventListener('click', powerOnComputer);
+
+      window.addEventListener('keydown', handleKeyDown);
+      window.addEventListener('keyup', handleKeyUp);
+      svg.addEventListener('click', function () { svg.focus(); });
+      svg.focus();
+
+      function updateCharacterFacing(facing) {
+        if (facing === 'up') {
+          eyesEl.style.display = 'none';
+          shirtCollarEl.style.display = 'none';
+          tieEl.style.display = 'none';
+          lapelLEl.style.display = 'none';
+          lapelREl.style.display = 'none';
+          suitBtn1El.style.display = 'none';
+          suitBtn2El.style.display = 'none';
+        } else if (facing === 'down') {
+          eyesEl.style.display = 'block';
+          shirtCollarEl.style.display = 'block';
+          tieEl.style.display = 'block';
+          lapelLEl.style.display = 'block';
+          lapelREl.style.display = 'block';
+          suitBtn1El.style.display = 'block';
+          suitBtn2El.style.display = 'block';
+          playerEl.querySelector('#player-visual').setAttribute('transform', 'scale(1, 1)');
+        } else if (facing === 'left') {
+          eyesEl.style.display = 'block';
+          shirtCollarEl.style.display = 'block';
+          tieEl.style.display = 'block';
+          lapelLEl.style.display = 'block';
+          lapelREl.style.display = 'block';
+          suitBtn1El.style.display = 'block';
+          suitBtn2El.style.display = 'block';
+          playerEl.querySelector('#player-visual').setAttribute('transform', 'scale(-1, 1)');
+        } else if (facing === 'right') {
+          eyesEl.style.display = 'block';
+          shirtCollarEl.style.display = 'block';
+          tieEl.style.display = 'block';
+          lapelLEl.style.display = 'block';
+          lapelREl.style.display = 'block';
+          suitBtn1El.style.display = 'block';
+          suitBtn2El.style.display = 'block';
+          playerEl.querySelector('#player-visual').setAttribute('transform', 'scale(1, 1)');
+        }
+      }
+
+      // Game Loop
+      function gameLoop() {
+        if (!state.modalOpen && !state.transitioning) {
+          let mx = 0;
+          let my = 0;
+
+          if (state.keys.w || state.keys.up) my -= 1;
+          if (state.keys.s || state.keys.down) my += 1;
+          if (state.keys.a || state.keys.left) mx -= 1;
+          if (state.keys.d || state.keys.right) mx += 1;
+
+          state.isMoving = (mx !== 0 || my !== 0);
+
+          if (state.isMoving) {
+            const length = Math.sqrt(mx * mx + my * my);
+            mx = (mx / length) * state.speed;
+            my = (my / length) * state.speed;
+
+            if (Math.abs(mx) > Math.abs(my)) {
+              state.facing = mx > 0 ? 'right' : 'left';
+            } else {
+              state.facing = my > 0 ? 'down' : 'up';
+            }
+            updateCharacterFacing(state.facing);
+
+            if (!checkCollision(state.x + mx, state.y)) {
+              state.x += mx;
+            }
+            if (!checkCollision(state.x, state.y + my)) {
+              state.y += my;
+            }
+
+            state.walkCycle += 0.22;
+            const legSwing = Math.sin(state.walkCycle) * 7;
+            const armSwing = Math.cos(state.walkCycle) * 6;
+            const headBob = Math.abs(Math.sin(state.walkCycle)) * 1.5;
+
+            legLEl.setAttribute('y', 14 + legSwing);
+            shoeLEl.setAttribute('transform', `translate(0, ${legSwing})`);
+            legREl.setAttribute('y', 14 - legSwing);
+            shoeREl.setAttribute('transform', `translate(0, ${-legSwing})`);
+
+            armLEl.setAttribute('transform', `translate(0, ${-armSwing})`);
+            armREl.setAttribute('transform', `translate(0, ${armSwing})`);
+            headEl.setAttribute('transform', `translate(0, ${-18 + headBob})`);
+          } else {
+            legLEl.setAttribute('y', 14);
+            shoeLEl.removeAttribute('transform');
+            legREl.setAttribute('y', 14);
+            shoeREl.removeAttribute('transform');
+            armLEl.removeAttribute('transform');
+            armREl.removeAttribute('transform');
+            headEl.setAttribute('transform', 'translate(0, -18)');
+          }
+
+          updateProximity();
+        }
+
+        playerEl.setAttribute('transform', `translate(${state.x}, ${state.y})`);
+
+        requestAnimationFrame(gameLoop);
+      }
+
+      updateCharacterFacing('down');
+      requestAnimationFrame(gameLoop);
+    })();
+    ]]>
+  </script>
+</svg>

@@ -1,0 +1,2927 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Relzzy / Developer & Local AI Systems Specialist. Portfolio showcasing local RAG pipelines, fine-tuned LLM routers, full-stack platforms, and game engines.">
+    <meta name="theme-color" content="#070709">
+    <title>Relzzy | Developer & AI Systems</title>
+    <link rel="icon" href="images/RELZZY_logo.svg" type="image/svg+xml">
+
+    <!-- Google Fonts: Plus Jakarta Sans, Space Grotesk & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. ROOT VARIABLES & DESIGN SYSTEM (Black / White / Gold Luxe Tech)
+           ========================================================================== */
+        :root {
+            --bg-base: #060608;
+            --bg-surface: #0c0c10;
+            --bg-elevated: #14141a;
+            --bg-card: rgba(18, 18, 24, 0.65);
+            --bg-card-hover: rgba(28, 28, 38, 0.85);
+
+            --border-subtle: rgba(255, 255, 255, 0.07);
+            --border-hover: rgba(255, 255, 255, 0.18);
+            --border-gold: rgba(212, 175, 55, 0.32);
+            --border-gold-bright: rgba(212, 175, 55, 0.75);
+
+            --gold-primary: #d4af37;
+            --gold-light: #f5e6a8;
+            --gold-dark: #996515;
+            --gold-gradient: linear-gradient(135deg, #f5e6a8 0%, #d4af37 50%, #aa820a 100%);
+            --gold-glow: rgba(212, 175, 55, 0.16);
+
+            --text-primary: #f8f9fa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+
+            --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+
+            --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-bounce: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ==========================================================================
+           2. BASE RESET & GLOBAL STYLES
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        body {
+            position: relative;
+            min-height: 100vh;
+            line-height: 1.7;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Ambient background subtle grid & glow */
+        .ambient-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                radial-gradient(rgba(212, 175, 55, 0.035) 1px, transparent 0),
+                linear-gradient(to right, rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 36px 36px, 120px 120px, 120px 120px;
+            z-index: -10;
+            pointer-events: none;
+        }
+
+        /* Ambient mouse light for desktop */
+        .cursor-light {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.045) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -8;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .cursor-light {
+                display: block;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #272732;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold-primary);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img, svg {
+            display: block;
+            max-width: 100%;
+        }
+
+        /* ==========================================================================
+           3. SPREAD-OUT LAYOUT WRAPPERS (Astra Spaciousness)
+           ========================================================================== */
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        section {
+            padding: 130px 0;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 85px 0;
+            }
+            .container {
+                padding: 0 20px;
+            }
+        }
+
+        /* Section Headers with Generous Breathing Room */
+        .section-header {
+            margin-bottom: 64px;
+        }
+
+        .section-tag {
+            font-family: var(--font-mono);
+            font-size: 0.84rem;
+            color: var(--gold-primary);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .section-tag::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--gold-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold-primary);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 4.2vw, 3.4rem);
+            font-weight: 700;
+            line-height: 1.15;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+        }
+
+        .section-subtitle {
+            font-size: clamp(1.05rem, 1.9vw, 1.22rem);
+            color: var(--text-secondary);
+            max-width: 720px;
+            margin-top: 16px;
+            font-weight: 400;
+            line-height: 1.65;
+        }
+
+        /* Reveal animations */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-up.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================================================
+           4. NAVIGATION BAR & THREE-DOTS MENU
+           ========================================================================== */
+        .header-nav {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(6, 6, 8, 0.8);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: all var(--transition-smooth);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 74px;
+        }
+
+        /* Brand Logo */
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--text-primary);
+        }
+
+        .brand-logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 1px solid var(--border-gold);
+            padding: 2px;
+            background: #000;
+        }
+
+        .brand-logo span.dot {
+            color: var(--gold-primary);
+        }
+
+        /* Desktop Nav Links */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 0.94rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+            position: relative;
+            padding: 8px 0;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.active {
+            color: var(--gold-light);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gold-gradient);
+            border-radius: 2px;
+        }
+
+        /* Action Buttons & 3-Dots */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-contact-nav {
+            font-family: var(--font-display);
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #000;
+            background: var(--gold-gradient);
+            padding: 9px 20px;
+            border-radius: var(--radius-full);
+            transition: all var(--transition-smooth);
+            box-shadow: 0 2px 12px rgba(212, 175, 55, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-contact-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.45);
+        }
+
+        /* Three Dots Button */
+        .three-dots-wrapper {
+            position: relative;
+        }
+
+        .btn-three-dots {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-three-dots:hover,
+        .btn-three-dots.active {
+            color: var(--gold-primary);
+            border-color: var(--border-gold);
+            background: var(--bg-elevated);
+        }
+
+        .three-dots-menu {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 275px;
+            background: rgba(12, 12, 16, 0.96);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 0 0 24px var(--gold-glow);
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 1100;
+            animation: menuFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes menuFadeIn {
+            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .three-dots-menu.show {
+            display: flex;
+        }
+
+        .menu-header-label {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 8px 12px 4px;
+        }
+
+        .three-dots-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            font-size: 0.88rem;
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .three-dots-item:hover {
+            background: rgba(212, 175, 55, 0.12);
+            color: var(--gold-light);
+        }
+
+        .three-dots-item .item-icon {
+            font-size: 1.1rem;
+            width: 22px;
+            text-align: center;
+        }
+
+        .three-dots-item.persona-toggle {
+            border: 1px solid var(--border-gold);
+            background: rgba(212, 175, 55, 0.08);
+            color: var(--gold-light);
+            font-weight: 600;
+        }
+
+        .three-dots-item.persona-toggle:hover {
+            background: var(--gold-primary);
+            color: #000;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 4px 0;
+        }
+
+        /* Mobile Hamburger */
+        .mobile-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* Mobile Drawer */
+        .mobile-drawer {
+            position: fixed;
+            top: 74px;
+            left: 0;
+            width: 100vw;
+            height: calc(100vh - 74px);
+            background: rgba(6, 6, 8, 0.98);
+            backdrop-filter: blur(28px);
+            padding: 36px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            transform: translateX(-100%);
+            transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .mobile-drawer.open {
+            transform: translateX(0);
+        }
+
+        .mobile-drawer a {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-drawer a span.arrow {
+            color: var(--gold-primary);
+        }
+
+        @media (max-width: 860px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-toggle {
+                display: flex;
+            }
+            .btn-contact-nav {
+                display: none;
+            }
+        }
+
+        /* ==========================================================================
+           5. HERO SECTION: ASTRA-INSPIRED 100VH COSMIC PORTAL
+           ========================================================================== */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 100vh;
+            max-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: var(--bg-base);
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        /* Fullscreen Interactive Galaxy Canvas */
+        #galaxy-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: auto;
+            z-index: 1;
+            mix-blend-mode: screen;
+            cursor: grab;
+        }
+
+        #galaxy-canvas:active {
+            cursor: grabbing;
+        }
+
+        /* Hero Stage flanking elements (Astra Style) */
+        .hero-stage {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 60px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .hero-astral-label {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 6vw, 5.6rem);
+            font-weight: 500;
+            color: #ffffff;
+            letter-spacing: -0.04em;
+            line-height: 1.02;
+            user-select: none;
+            pointer-events: auto;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            text-shadow: 0 0 45px rgba(0, 0, 0, 0.95);
+        }
+
+        .hero-astral-label.left {
+            text-align: left;
+        }
+
+        .hero-astral-label.right {
+            text-align: right;
+            color: #f1f1f1;
+        }
+
+        .hero-astral-label span.gold-accent {
+            color: var(--gold-light);
+            font-weight: 600;
+        }
+
+        /* Minimalist Bottom Scroll Cue */
+        .hero-scroll-cue {
+            position: absolute;
+            bottom: 36px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            pointer-events: auto;
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .hero-scroll-cue:hover {
+            color: var(--gold-light);
+        }
+
+        .scroll-cue-line {
+            width: 1px;
+            height: 38px;
+            background: linear-gradient(to bottom, var(--gold-primary), transparent);
+            animation: scrollLineFlow 2.2s infinite ease-in-out;
+        }
+
+        @keyframes scrollLineFlow {
+            0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+            45% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+            50% { transform-origin: bottom; }
+            100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+        }
+
+        @media (max-width: 860px) {
+            .hero-stage {
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 120px 24px 90px;
+                text-align: center;
+            }
+            .hero-astral-label.left,
+            .hero-astral-label.right {
+                text-align: center;
+                font-size: clamp(2.1rem, 9vw, 3.4rem);
+            }
+            .hero-scroll-cue {
+                bottom: 20px;
+            }
+        }
+
+        /* ==========================================================================
+           5B. INTRO & OVERVIEW SECTION (Displaced to Below the Fold)
+           ========================================================================== */
+        .intro-section {
+            padding: 130px 0 110px;
+            border-bottom: 1px solid var(--border-subtle);
+            position: relative;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 64px;
+            align-items: flex-start;
+        }
+
+        .intro-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 4.2vw, 3.6rem);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            margin-top: 14px;
+        }
+
+        .intro-body {
+            font-size: 1.12rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .intro-body strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .intro-body.sub {
+            color: var(--text-muted);
+            font-size: 1.02rem;
+            margin-bottom: 38px;
+        }
+
+        .intro-metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            padding-top: 34px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .intro-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .intro-metric .val {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+            font-weight: 700;
+            line-height: 1;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .intro-metric .lbl {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        @media (max-width: 980px) {
+            .intro-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .intro-metrics-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+        }
+
+        /* ==========================================================================
+           6. FEATURED PROJECTS SECTION (Fixed Layout & Col-12 Bug Fixed)
+           ========================================================================== */
+        /* Filter Pills */
+        .filter-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 44px;
+        }
+
+        .filter-btn {
+            font-family: var(--font-mono);
+            font-size: 0.84rem;
+            font-weight: 500;
+            padding: 9px 20px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        .filter-btn.active {
+            background: var(--bg-elevated);
+            color: var(--gold-light);
+            border-color: var(--border-gold-bright);
+            box-shadow: 0 0 14px var(--gold-glow);
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 28px;
+        }
+
+        /* Base Card Styling with Open Padding */
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: all var(--transition-smooth);
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(212, 175, 55, 0.07), transparent 40%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .project-card:hover {
+            border-color: var(--border-gold);
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45), 0 0 26px var(--gold-glow);
+        }
+
+        /* Column Spans (Including Explicit .col-12 Bug Fix) */
+        .project-card.featured-flagship {
+            grid-column: span 12;
+            border-color: var(--border-gold);
+            background: linear-gradient(135deg, rgba(22, 22, 30, 0.8) 0%, rgba(14, 14, 20, 0.9) 100%);
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.12);
+        }
+
+        .project-card.col-12 {
+            grid-column: span 12;
+            width: 100%;
+        }
+
+        .project-card.col-8 {
+            grid-column: span 8;
+        }
+
+        .project-card.col-6 {
+            grid-column: span 6;
+        }
+
+        .project-card.col-4 {
+            grid-column: span 4;
+        }
+
+        @media (max-width: 980px) {
+            .project-card.col-8,
+            .project-card.col-6,
+            .project-card.col-4 {
+                grid-column: span 12;
+            }
+            .project-card {
+                padding: 30px;
+            }
+        }
+
+        /* Card Content Elements */
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-number {
+            font-family: var(--font-mono);
+            font-size: 0.86rem;
+            color: var(--gold-primary);
+            letter-spacing: 1px;
+        }
+
+        .card-badge {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .card-badge.gold {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--border-gold);
+            color: var(--gold-light);
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.45rem, 2.3vw, 1.95rem);
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .card-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        .card-desc strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Tech Tags */
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-bottom: 28px;
+        }
+
+        .tech-tag {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            transition: all var(--transition-fast);
+        }
+
+        .project-card:hover .tech-tag {
+            color: var(--text-secondary);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Architecture Steps in Flagship */
+        .arch-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
+            margin: 24px 0 32px;
+            padding: 22px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+        }
+
+        .arch-step-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .arch-step-label {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--gold-primary);
+            font-weight: 600;
+        }
+
+        .arch-step-desc {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Card Action Links */
+        .card-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding-top: 22px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .card-btn {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 11px 22px;
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all var(--transition-smooth);
+            text-decoration: none;
+        }
+
+        .card-btn.gold {
+            background: var(--gold-gradient);
+            color: #000;
+            box-shadow: 0 2px 14px rgba(212, 175, 55, 0.28);
+        }
+
+        .card-btn.gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 22px rgba(212, 175, 55, 0.5);
+        }
+
+        .card-btn.outline {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+        }
+
+        .card-btn.outline:hover {
+            border-color: var(--border-gold);
+            color: var(--gold-light);
+            background: rgba(212, 175, 55, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================================
+           7. THE ARCADE / PLAYABLE GAMES SECTION (Dedicated Showcase)
+           ========================================================================== */
+        .arcade-section {
+            background: linear-gradient(180deg, var(--bg-base) 0%, #09090e 50%, var(--bg-base) 100%);
+            position: relative;
+        }
+
+        .arcade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 28px;
+        }
+
+        .arcade-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 38px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all var(--transition-smooth);
+            position: relative;
+        }
+
+        .arcade-card:hover {
+            border-color: var(--border-gold-bright);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55), 0 0 28px var(--gold-glow);
+        }
+
+        .arcade-badge {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--gold-light);
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--border-gold);
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+
+        .arcade-title {
+            font-family: var(--font-display);
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+        }
+
+        .arcade-desc {
+            font-size: 0.98rem;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            line-height: 1.65;
+        }
+
+        .btn-arcade-play {
+            font-family: var(--font-display);
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: #000;
+            background: var(--gold-gradient);
+            padding: 13px 26px;
+            border-radius: var(--radius-full);
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all var(--transition-smooth);
+            box-shadow: 0 4px 18px rgba(212, 175, 55, 0.32);
+        }
+
+        .btn-arcade-play:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 28px rgba(212, 175, 55, 0.55);
+        }
+
+        /* ==========================================================================
+           8. ABOUT ME SECTION (Mindset & Infrastructure Focus)
+           ========================================================================== */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 5fr 7fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .about-sidebar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 38px;
+        }
+
+        .about-avatar-wrap {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .about-role-title {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .about-role-subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            color: var(--gold-primary);
+            margin-bottom: 24px;
+        }
+
+        .about-specs {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 24px;
+            margin-bottom: 28px;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .spec-name {
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .spec-val {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Social / Network Buttons */
+        .social-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 20px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            font-family: var(--font-display);
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+        }
+
+        .social-btn:hover {
+            border-color: var(--border-gold);
+            color: var(--gold-light);
+            background: var(--bg-elevated);
+            transform: translateX(4px);
+        }
+
+        /* About Main Body */
+        .about-main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .about-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 38px;
+            transition: all var(--transition-smooth);
+        }
+
+        .about-block:hover {
+            border-color: rgba(255, 255, 255, 0.16);
+        }
+
+        .about-block-title {
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .about-block-text {
+            font-size: 1.02rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+
+        .about-block-text strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Stack Pill Grid */
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .stack-item {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 9px 12px;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            text-align: center;
+            transition: all var(--transition-fast);
+        }
+
+        .stack-item:hover {
+            border-color: var(--border-gold);
+            color: var(--gold-light);
+            background: rgba(212, 175, 55, 0.08);
+        }
+
+        /* ==========================================================================
+           9. ROADMAP / OBJECTIVES SECTION
+           ========================================================================== */
+        .roadmap-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .roadmap-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 28px 36px;
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 24px;
+            align-items: center;
+            transition: all var(--transition-smooth);
+        }
+
+        .roadmap-card:hover {
+            border-color: var(--border-gold);
+            transform: translateX(6px);
+            background: var(--bg-card-hover);
+        }
+
+        .roadmap-num {
+            font-family: var(--font-mono);
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+        }
+
+        .roadmap-content h4 {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .roadmap-content p {
+            font-size: 0.98rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .roadmap-card {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 22px;
+            }
+        }
+
+        /* ==========================================================================
+           10. CONTACT / TRANSMISSION SECTION (Backend Integrated)
+           ========================================================================== */
+        .contact-wrap {
+            display: grid;
+            grid-template-columns: 5fr 7fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .contact-wrap {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .contact-info {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 42px;
+        }
+
+        .contact-info h3 {
+            font-family: var(--font-display);
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+        }
+
+        .contact-info p {
+            font-size: 1.02rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 28px;
+        }
+
+        .contact-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .contact-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold-primary);
+        }
+
+        .contact-detail-text span.label {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .contact-detail-text a, .contact-detail-text span.value {
+            font-size: 0.98rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Form */
+        .contact-form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 42px;
+            box-shadow: 0 12px 45px rgba(0, 0, 0, 0.5), 0 0 24px var(--gold-glow);
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 15px 20px;
+            font-family: var(--font-body);
+            font-size: 0.96rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: all var(--transition-fast);
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 14px var(--gold-glow);
+            background: var(--bg-elevated);
+        }
+
+        .form-textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .delay-warning {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 14px 18px;
+            background: rgba(212, 175, 55, 0.07);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .delay-warning strong {
+            color: var(--gold-light);
+        }
+
+        .btn-submit {
+            width: 100%;
+            font-family: var(--font-display);
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: #000;
+            background: var(--gold-gradient);
+            border: none;
+            border-radius: var(--radius-full);
+            padding: 17px 30px;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            box-shadow: 0 4px 22px rgba(212, 175, 55, 0.38);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 30px rgba(212, 175, 55, 0.6);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Form Feedback Alert */
+        .form-status {
+            margin-top: 18px;
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            font-size: 0.92rem;
+            display: none;
+        }
+
+        .form-status.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+        }
+
+        .form-status.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #f87171;
+        }
+
+        /* ==========================================================================
+           11. SECRET TOAST & EASTER EGG BANNER
+           ========================================================================== */
+        .secret-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            max-width: 400px;
+            background: rgba(18, 18, 24, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--gold-primary);
+            border-radius: var(--radius-md);
+            padding: 18px 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px var(--gold-glow);
+            z-index: 9999;
+            transform: translateY(150%);
+            opacity: 0;
+            transition: all var(--transition-bounce);
+        }
+
+        .secret-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-header {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .toast-body {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ==========================================================================
+           12. FOOTER
+           ========================================================================== */
+        footer {
+            border-top: 1px solid var(--border-subtle);
+            padding: 60px 0 45px;
+            background: #040406;
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 1px;
+        }
+
+        .footer-copy {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .footer-nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .footer-nav a {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: color var(--transition-fast);
+        }
+
+        .footer-nav a:hover {
+            color: var(--gold-light);
+        }
+
+        .btn-back-top {
+            font-family: var(--font-mono);
+            font-size: 0.84rem;
+            color: var(--gold-primary);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            padding: 7px 16px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-back-top:hover {
+            border-color: var(--border-gold);
+            background: var(--bg-elevated);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Ambient Grids and Lights -->
+    <div class="ambient-grid"></div>
+    <div class="cursor-light" id="cursor-light"></div>
+
+    <!-- ==========================================================================
+         TOP NAVIGATION
+         ========================================================================== -->
+    <header class="header-nav">
+        <div class="container nav-inner">
+            <a href="#hero" class="brand-logo">
+                <img src="images/RELZZY_logo.svg" alt="Relzzy Logo">
+                <span>RELZZY<span class="dot">.</span></span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#projects" class="active">Projects</a></li>
+                    <li><a href="#arcade">Arcade</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#roadmap">Roadmap</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="#contact" class="btn-contact-nav">
+                    <span>Contact</span>
+                    <span>→</span>
+                </a>
+
+                <!-- Three-Dots Menu -->
+                <div class="three-dots-wrapper">
+                    <button class="btn-three-dots" id="three-dots-btn" aria-label="More Options">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="5" cy="12" r="2"></circle>
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <circle cx="19" cy="12" r="2"></circle>
+                        </svg>
+                    </button>
+
+                    <div class="three-dots-menu" id="three-dots-dropdown">
+                        <div class="menu-header-label">THEMES &amp; MODES</div>
+                        <a href="persona.html" class="three-dots-item persona-toggle">
+                            <span class="item-icon">🎭</span>
+                            <span>Persona 3/5 Reload Theme</span>
+                        </a>
+
+                        <div class="menu-divider"></div>
+                        <div class="menu-header-label">COMMUNICATION &amp; CODE</div>
+                        <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer" class="three-dots-item">
+                            <span class="item-icon">⟠</span>
+                            <span>GitHub Profile</span>
+                        </a>
+                        <a href="https://huggingface.co/relzzyy" target="_blank" rel="noopener noreferrer" class="three-dots-item">
+                            <span class="item-icon">🤗</span>
+                            <span>Hugging Face</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer" class="three-dots-item">
+                            <span class="item-icon">💼</span>
+                            <span>LinkedIn Profile</span>
+                        </a>
+
+                        <div class="menu-divider"></div>
+                        <div class="menu-header-label">EASTER EGGS</div>
+                        <div class="three-dots-item" onclick="triggerEasterEggHint()">
+                            <span class="item-icon">⌨️</span>
+                            <span>Secret Keystrokes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Hamburger -->
+                <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle navigation menu">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Navigation -->
+    <div class="mobile-drawer" id="mobile-drawer">
+        <a href="#projects" class="mobile-nav-link"><span>Projects</span> <span class="arrow">→</span></a>
+        <a href="#arcade" class="mobile-nav-link"><span>Arcade &amp; Demos</span> <span class="arrow">→</span></a>
+        <a href="#about" class="mobile-nav-link"><span>About Me</span> <span class="arrow">→</span></a>
+        <a href="#roadmap" class="mobile-nav-link"><span>Roadmap</span> <span class="arrow">→</span></a>
+        <a href="#contact" class="mobile-nav-link"><span>Contact / Reach Out</span> <span class="arrow">→</span></a>
+        <a href="persona.html" style="color: var(--gold-light); border-color: var(--border-gold);">
+            <span>🎭 Switch to Persona Theme</span>
+            <span class="arrow">➔</span>
+        </a>
+    </div>
+
+    <!-- ==========================================================================
+         HERO SECTION: ASTRA-INSPIRED 100VH COSMIC PORTAL
+         ========================================================================== -->
+    <section class="hero-section" id="hero">
+        <!-- Interactive Astra Swirling Galaxy Vortex Canvas -->
+        <canvas id="galaxy-canvas"></canvas>
+
+        <div class="hero-stage">
+            <div class="hero-astral-label left">
+                Welcome to
+            </div>
+            <div class="hero-astral-label right">
+                relzzy's website<span class="gold-accent">.</span>
+            </div>
+        </div>
+
+        <!-- Minimalist Bottom Scroll Cue -->
+        <a href="#intro" class="hero-scroll-cue" aria-label="Scroll to explore">
+            <span>Scroll to Explore</span>
+            <div class="scroll-cue-line"></div>
+        </a>
+    </section>
+
+    <!-- ==========================================================================
+         OVERVIEW & INTRODUCTION (Revealed Upon Scrolling Down)
+         ========================================================================== -->
+    <section class="intro-section" id="intro">
+        <div class="container">
+            <div class="intro-grid reveal-up">
+                <div class="intro-left">
+                    <div class="section-tag">// ARCHITECT &amp; SYSTEMS</div>
+                    <h2 class="intro-title">Engineering local AI systems, fast tools, and interactive software.</h2>
+                </div>
+                <div class="intro-right">
+                    <p class="intro-body">
+                        I am <strong>Relzzy</strong>, an engineer building software where machine learning, custom Linux tooling, and full-stack software meet. My work centers on running small language models efficiently on consumer hardware, designing hybrid retrieval pipelines, and building modular game systems.
+                    </p>
+                    <p class="intro-body sub">
+                        No corporate jargon or unnecessary cloud dependencies where local compute does the job better. Everything is built to run fast, stay transparent, and solve real engineering challenges.
+                    </p>
+                    <div class="intro-metrics-row">
+                        <div class="intro-metric">
+                            <span class="val">350+</span>
+                            <span class="lbl">Files Indexed in RAG</span>
+                        </div>
+                        <div class="intro-metric">
+                            <span class="val">4-bit</span>
+                            <span class="lbl">GGUF Quantization</span>
+                        </div>
+                        <div class="intro-metric">
+                            <span class="val">2B</span>
+                            <span class="lbl">Qwen Router Trained</span>
+                        </div>
+                        <div class="intro-metric">
+                            <span class="val">08</span>
+                            <span class="lbl">Systems Shipped</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         FEATURED PROJECTS SECTION (Fixed Col-12 & Spaced Out)
+         ========================================================================== -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <div class="section-tag">// 01 ARCHITECTURE &amp; SYSTEMS</div>
+                <h2 class="section-title">Engineering Projects &amp; Research</h2>
+                <p class="section-subtitle">
+                    A collection of production platforms, local AI tool routers, hybrid retrieval engines, and interactive game architectures.
+                </p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-container reveal-up">
+                <button class="filter-btn active" data-filter="all">All Projects (8)</button>
+                <button class="filter-btn" data-filter="ai">AI &amp; RAG</button>
+                <button class="filter-btn" data-filter="fullstack">Full-Stack</button>
+                <button class="filter-btn" data-filter="games">Game Systems</button>
+                <button class="filter-btn" data-filter="web3">Web3 &amp; Community</button>
+            </div>
+
+            <!-- Projects Bento Grid -->
+            <div class="projects-grid">
+
+                <!-- 01: Code Intelligence & RAG (FLAGSHIP BENTO HERO) -->
+                <div class="project-card featured-flagship reveal-up" data-category="ai">
+                    <div>
+                        <div class="card-top">
+                            <span class="card-number">01 // FLAGSHIP AI SYSTEM</span>
+                            <span class="card-badge gold">FINE-TUNED &amp; DEPLOYED</span>
+                        </div>
+                        <h3 class="card-title">Local Codebase Intelligence &amp; RAG Pipeline</h3>
+                        <p class="card-desc">
+                            A production-grade, privacy-first local code intelligence system built around a custom fine-tuned 
+                            <strong>Qwen3.5-2B language model</strong>. Rather than acting as a generic chatbot, the model operates 
+                            as a dedicated <strong>Linux-focused router and structured JSON tool-caller</strong>, dynamically invoking 
+                            controlled terminal tools or querying a hybrid codebase retrieval engine.
+                        </p>
+
+                        <!-- Architecture Highlights Grid -->
+                        <div class="arch-steps">
+                            <div class="arch-step-item">
+                                <span class="arch-step-label">Fine-Tuned LLM Router</span>
+                                <span class="arch-step-desc">2B Qwen trained with QLoRA and Unsloth for Linux intent classification &amp; tool output.</span>
+                            </div>
+                            <div class="arch-step-item">
+                                <span class="arch-step-label">Hybrid RAG Search</span>
+                                <span class="arch-step-desc">ChromaDB dense vector embeddings combined with BM25 exact keyword matching.</span>
+                            </div>
+                            <div class="arch-step-item">
+                                <span class="arch-step-label">RRF &amp; Cross-Encoder</span>
+                                <span class="arch-step-desc">Reciprocal Rank Fusion and Cross-Encoder reranking select precise context from 350+ files.</span>
+                            </div>
+                            <div class="arch-step-item">
+                                <span class="arch-step-label">4-bit GGUF Quantization</span>
+                                <span class="arch-step-desc">Runs entirely on consumer GPUs with sub-second local inference and zero cloud telemetry.</span>
+                            </div>
+                        </div>
+
+                        <div class="tech-tags">
+                            <span class="tech-tag">Qwen3.5-2B</span>
+                            <span class="tech-tag">Unsloth &amp; QLoRA</span>
+                            <span class="tech-tag">ChromaDB</span>
+                            <span class="tech-tag">BM25 Retrieval</span>
+                            <span class="tech-tag">Reciprocal Rank Fusion</span>
+                            <span class="tech-tag">Cross-Encoder</span>
+                            <span class="tech-tag">4-bit GGUF</span>
+                            <span class="tech-tag">Linux Tool Calling</span>
+                        </div>
+                    </div>
+
+                    <div class="card-links">
+                        <a href="https://github.com/relzzy/codebase-RAG" target="_blank" rel="noopener noreferrer" class="card-btn gold">
+                            <span>⟠ View Source Code</span>
+                        </a>
+                        <a href="https://huggingface.co/relzzyy/Qwen3.5-2B-Micro-Router" target="_blank" rel="noopener noreferrer" class="card-btn outline">
+                            <span>🤗 Fine-Tuned Model Weights</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 02: Cue — Realtime Creator Video Review & Scheduling Engine (FLAGSHIP FULLSTACK BENTO HERO) -->
+                <div class="project-card featured-flagship reveal-up" data-category="fullstack">
+                    <div>
+                        <div class="card-top">
+                            <span class="card-number">02 // FULL-STACK FLAGSHIP</span>
+                            <span class="card-badge gold">PRODUCTION SAAS</span>
+                        </div>
+                        <h3 class="card-title">Cue — Realtime Creator Video Review &amp; Scheduling Engine</h3>
+                        <p class="card-desc">
+                            A multi-tenant workflow and review platform built for content creators, agencies, and brand reviewers 
+                            to approve multi-slide carousels and video drafts across 7 social networks. Eliminates lost links, 
+                            email clutter, and international scheduling mistakes by combining isolated client workspaces, dynamic browser 
+                            timezone translation, and sub-second feedback loops.
+                        </p>
+
+                        <!-- Architecture Highlights Grid -->
+                        <div class="arch-steps">
+                            <div class="arch-step-item">
+                                <span class="arch-step-label">Universal Timezone Engine</span>
+                                <span class="arch-step-desc">Normalizes publish dates to UTC ground truth and translates to each client's browser clock via the native <code>Intl.DateTimeFormat</code> API.</span>
+                            </div>
+                            <div class="arch-step-item">
+                                <span class="arch-step-label">Multi-Tenant Isolation</span>
+                                <span class="arch-step-desc">Guarantees zero cross-client data leaks using PostgreSQL Row-Level Security (RLS) policies and workspace-scoped creator/reviewer roles.</span>
+                            </div>
+                            <div class="arch-step-item">
+                                <span class="arch-step-label">4-Way Decision State Machine</span>
+                                <span class="arch-step-desc">Enforces structured decisions (Approve, Suggest Changes, Hold, Deny) with mandatory revision guards and an atomic 1-click resubmission loop.</span>
+                            </div>
+                            <div class="arch-step-item">
+                                <span class="arch-step-label">Sub-Second Realtime Streams</span>
+                                <span class="arch-step-desc">PostgreSQL change streams broadcast over Supabase WebSockets to sync live review cards, revision badges, and slide-out team chat.</span>
+                            </div>
+                        </div>
+
+                        <div class="tech-tags">
+                            <span class="tech-tag">Next.js (App Router)</span>
+                            <span class="tech-tag">TypeScript</span>
+                            <span class="tech-tag">Tailwind CSS</span>
+                            <span class="tech-tag">Supabase</span>
+                            <span class="tech-tag">PostgreSQL RLS</span>
+                            <span class="tech-tag">Realtime WebSockets</span>
+                            <span class="tech-tag">Intl Timezone API</span>
+                            <span class="tech-tag">Multi-Tenant RBAC</span>
+                            <span class="tech-tag">Vercel</span>
+                        </div>
+                    </div>
+
+                    <div class="card-links">
+                        <a href="https://cue-web-nine.vercel.app/" target="_blank" rel="noopener noreferrer" class="card-btn gold">
+                            <span>🚀 Launch Live Platform ↗</span>
+                        </a>
+                        <a href="https://cue-web-nine.vercel.app/#workflow" target="_blank" rel="noopener noreferrer" class="card-btn outline">
+                            <span>⚙ View Architecture &amp; Workflow ↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 03: Full-Stack Web Development -->
+                <div class="project-card col-6 reveal-up" data-category="fullstack">
+                    <div>
+                        <div class="card-top">
+                            <span class="card-number">03 // FULL-STACK</span>
+                            <span class="card-badge">LIVE PLATFORMS</span>
+                        </div>
+                        <h3 class="card-title">Full-Stack Web Architecture &amp; Microservices</h3>
+                        <p class="card-desc">
+                            Designed and deployed complete production web applications featuring custom backend services, 
+                            <strong>Firebase real-time persistence</strong>, Google &amp; Discord OAuth authentication flows, 
+                            and automated continuous deployments on <strong>Render</strong>.
+                        </p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Node.js / Express</span>
+                            <span class="tech-tag">Google Firebase</span>
+                            <span class="tech-tag">Discord / Google OAuth</span>
+                            <span class="tech-tag">Render Cloud</span>
+                            <span class="tech-tag">REST APIs</span>
+                        </div>
+                    </div>
+                    <div class="card-links">
+                        <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer" class="card-btn outline">
+                            <span>GitHub Profile ↗</span>
+                        </a>
+                        <a href="#contact" class="card-btn outline">
+                            <span>Test Live Backend Relay ➔</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 04: AI-Driven Narrative RPG -->
+                <div class="project-card col-6 reveal-up" data-category="games">
+                    <div>
+                        <div class="card-top">
+                            <span class="card-number">04 // GAME AI</span>
+                            <span class="card-badge gold">BETA ENGINE</span>
+                        </div>
+                        <h3 class="card-title">AI-Driven Narrative RPG Engine</h3>
+                        <p class="card-desc">
+                            A hybrid storytelling framework that anchors gameplay in a fixed canonical storyline while 
+                            leveraging LLMs for procedural dialogue and context-sensitive encounters. Player stats, inventory, 
+                            and historical decisions bound the AI to prevent game state hallucination.
+                        </p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Procedural Dialogue</span>
+                            <span class="tech-tag">Game State Guardrails</span>
+                            <span class="tech-tag">Persistent Inventory</span>
+                            <span class="tech-tag">Web Beta</span>
+                        </div>
+                    </div>
+                    <div class="card-links">
+                        <a href="#arcade" class="card-btn gold">
+                            <span>🎮 Explore in Arcade</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 05: Visual Novel Engine -->
+                <div class="project-card col-4 reveal-up" data-category="games">
+                    <div>
+                        <div class="card-top">
+                            <span class="card-number">05 // ENGINE TOOL</span>
+                            <span class="card-badge">PRODUCTION</span>
+                        </div>
+                        <h3 class="card-title">Modular Visual Novel Engine</h3>
+                        <p class="card-desc">
+                            A decoupled narrative engine that completely isolates story scripts from underlying game logic. 
+                            Features persistent save/load, dynamic character wardrobe systems, currency, and responsive mobile rendering.
+                        </p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">State Machine</span>
+                            <span class="tech-tag">Save/Load Logic</span>
+                            <span class="tech-tag">Wardrobe System</span>
+                            <span class="tech-tag">Mobile Responsive</span>
+                        </div>
+                    </div>
+                    <div class="card-links">
+                        <a href="https://visual-novel-six.vercel.app/" target="_blank" rel="noopener noreferrer" class="card-btn outline">
+                            <span>Play Live Demo ↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 06: The Last Divine -->
+                <div class="project-card col-4 reveal-up" data-category="games">
+                    <div>
+                        <div class="card-top">
+                            <span class="card-number">06 // RPG DEV</span>
+                            <span class="card-badge">VANILLA JS</span>
+                        </div>
+                        <h3 class="card-title">The Last Divine (Text RPG)</h3>
+                        <p class="card-desc">
+                            Built entirely from scratch with Vanilla JavaScript and JSON data structures. Features localStorage persistence, 
+                            dynamic character equipment effects, consumable items, and branching tactical decisions.
+                        </p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Vanilla JS</span>
+                            <span class="tech-tag">JSON Database</span>
+                            <span class="tech-tag">localStorage</span>
+                            <span class="tech-tag">Modular Mechanics</span>
+                        </div>
+                    </div>
+                    <div class="card-links">
+                        <a href="https://relzzy.github.io/text_rpg_demo/" target="_blank" rel="noopener noreferrer" class="card-btn outline">
+                            <span>Play Text RPG ↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 07: Game Development & Storytelling -->
+                <div class="project-card col-4 reveal-up" data-category="games">
+                    <div>
+                        <div class="card-top">
+                            <span class="card-number">07 // CREATIVE DEV</span>
+                            <span class="card-badge">PIPELINE</span>
+                        </div>
+                        <h3 class="card-title">3D Indie Game &amp; Narrative Design</h3>
+                        <p class="card-desc">
+                            Comprehensive worldbuilding, character design, and dialogue writing pipelines targeted toward a future 
+                            standalone 3D indie game combining atmospheric storytelling with technical depth.
+                        </p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Worldbuilding</span>
+                            <span class="tech-tag">Script Writing</span>
+                            <span class="tech-tag">3D Mechanics</span>
+                        </div>
+                    </div>
+                    <div class="card-links">
+                        <span style="font-size: 0.88rem; color: var(--text-muted);">In active pre-production</span>
+                    </div>
+                </div>
+
+                <!-- 08: Web3 & Community (FIXED COL-12 FULL WIDTH) -->
+                <div class="project-card col-12 reveal-up" data-category="web3">
+                    <div>
+                        <div class="card-top">
+                            <span class="card-number">08 // ECOSYSTEM LEADERSHIP</span>
+                            <span class="card-badge gold">COMMUNITY ARCHITECT</span>
+                        </div>
+                        <h3 class="card-title">Web3 Ecosystem &amp; Creator Summit Delegate</h3>
+                        <p class="card-desc">
+                            Early contributor and creator within decentralized gaming ecosystems. Led community engagement, represented projects online, 
+                            and was selected for <strong>three separately sponsored trips to Mumbai</strong> to attend creator meetups, provide product feedback, 
+                            and advocate for decentralized player-owned gaming networks.
+                        </p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Decentralized Gaming</span>
+                            <span class="tech-tag">Community Architecture</span>
+                            <span class="tech-tag">Creator Summits (Mumbai 3x)</span>
+                            <span class="tech-tag">Ecosystem Representation</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         THE ARCADE / PLAYABLE DEMOS SECTION (Dedicated Interactive Hub)
+         ========================================================================== -->
+    <section class="arcade-section" id="arcade">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <div class="section-tag">// 02 INTERACTIVE LAB</div>
+                <h2 class="section-title">Playable Game Demos &amp; Arcades</h2>
+                <p class="section-subtitle">
+                    Experience my playable game systems and narrative engines directly in your browser.
+                </p>
+            </div>
+
+            <div class="arcade-grid">
+
+                <!-- Demo 1: Text RPG -->
+                <div class="arcade-card reveal-up">
+                    <div>
+                        <div class="arcade-badge">
+                            <span>⚔️</span> LIVE DEMO AVAILABLE
+                        </div>
+                        <h3 class="arcade-title">The Last Divine (Text RPG)</h3>
+                        <p class="arcade-desc">
+                            A complete Vanilla JavaScript narrative RPG with persistent stats, inventory slots, 
+                            interactive dialogues, and branching decision trees. No external framework dependencies.
+                        </p>
+                    </div>
+                    <a href="https://relzzy.github.io/text_rpg_demo/" target="_blank" rel="noopener noreferrer" class="btn-arcade-play">
+                        <span>Launch Playable RPG</span>
+                        <span>↗</span>
+                    </a>
+                </div>
+
+                <!-- Demo 2: Visual Novel -->
+                <div class="arcade-card reveal-up">
+                    <div>
+                        <div class="arcade-badge">
+                            <span>📖</span> VERCEL HOSTED
+                        </div>
+                        <h3 class="arcade-title">Visual Novel Engine Showcase</h3>
+                        <p class="arcade-desc">
+                            Interactive visual novel experience built on my custom modular narrative engine. 
+                            Features save/load persistence, dynamic outfit changes, and fluid transitions.
+                        </p>
+                    </div>
+                    <a href="https://visual-novel-six.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn-arcade-play">
+                        <span>Launch Visual Novel Demo</span>
+                        <span>↗</span>
+                    </a>
+                </div>
+
+                <!-- Demo 3: AI RPG Sandbox -->
+                <div class="arcade-card reveal-up">
+                    <div>
+                        <div class="arcade-badge">
+                            <span>🧪</span> EXPERIMENTAL BETA
+                        </div>
+                        <h3 class="arcade-title">AI-Driven RPG Prototype</h3>
+                        <p class="arcade-desc">
+                            Prototype integrating procedural dialogue generation with canonical game rules. 
+                            Currently undergoing interface refinement and local model inference integration.
+                        </p>
+                    </div>
+                    <a href="#contact" class="btn-arcade-play" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-gold);">
+                        <span>Request Sandbox Access</span>
+                        <span>→</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         ABOUT ME SECTION (Mindset & Infrastructure Focus)
+         ========================================================================== -->
+    <section id="about">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <div class="section-tag">// 03 BACKGROUND &amp; PHILOSOPHY</div>
+                <h2 class="section-title">About Me</h2>
+                <p class="section-subtitle">
+                    Forward Deployed Engineer bridging research models, local systems, and practical software.
+                </p>
+            </div>
+
+            <div class="about-grid">
+                <!-- Sidebar -->
+                <div class="about-sidebar reveal-up">
+                    <div class="about-avatar-wrap">
+                        <h3 class="about-role-title">Relzzy</h3>
+                        <div class="about-role-subtitle">Forward Deployed Engineer</div>
+                    </div>
+
+                    <div class="about-specs">
+                        <div class="spec-item">
+                            <span class="spec-name">Specialization:</span>
+                            <span class="spec-val">Local LLMs &amp; Full-Stack</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-name">Quantization:</span>
+                            <span class="spec-val">GGUF / QLoRA 4-bit</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-name">Deployment:</span>
+                            <span class="spec-val">Linux / Vercel / Cloud</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-name">Ecosystem:</span>
+                            <span class="spec-val">Next.js, Supabase, Game Dev</span>
+                        </div>
+                    </div>
+
+                    <div class="social-buttons">
+                        <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer" class="social-btn">
+                            <span>GitHub / relzzy</span>
+                            <span>↗</span>
+                        </a>
+                        <a href="https://huggingface.co/relzzyy" target="_blank" rel="noopener noreferrer" class="social-btn">
+                            <span>Hugging Face / relzzyy</span>
+                            <span>↗</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer" class="social-btn">
+                            <span>LinkedIn Profile</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Main Narrative -->
+                <div class="about-main-content">
+                    <div class="about-block reveal-up">
+                        <h4 class="about-block-title">
+                            <span>⚡</span> The Forward Deployed Mindset
+                        </h4>
+                        <p class="about-block-text">
+                            I thrive where different disciplines intersect: <strong>AI/ML, software development, web infrastructure, and game systems</strong>. 
+                            My philosophy is rooted in pragmatism: rather than treating AI as an isolated black box, I connect language models directly 
+                            to real-world environments, operating system tools, and structured data stores to create dependable, self-healing systems.
+                        </p>
+                    </div>
+
+                    <div class="about-block reveal-up">
+                        <h4 class="about-block-title">
+                            <span>🖥️</span> Local AI &amp; Consumer GPU Optimization
+                        </h4>
+                        <p class="about-block-text">
+                            A core focus of my research is making <strong>high-parameter models practical on local consumer hardware</strong>. 
+                            I experiment heavily with <strong>llama.cpp, Ollama, vLLM, GGUF quantization, and Unsloth QLoRA fine-tuning</strong>. 
+                            By engineering lightweight micro-routers and multi-stage RAG pipelines, I aim to deliver 30B-class coding and reasoning capabilities 
+                            without relying on costly cloud APIs or sacrificing source code privacy.
+                        </p>
+                        
+                        <div class="stack-grid">
+                            <div class="stack-item">Next.js / React</div>
+                            <div class="stack-item">TypeScript</div>
+                            <div class="stack-item">Supabase / Postgres</div>
+                            <div class="stack-item">PyTorch</div>
+                            <div class="stack-item">llama.cpp</div>
+                            <div class="stack-item">vLLM / Ollama</div>
+                            <div class="stack-item">ChromaDB</div>
+                            <div class="stack-item">Unsloth QLoRA</div>
+                            <div class="stack-item">Python</div>
+                            <div class="stack-item">JavaScript</div>
+                            <div class="stack-item">Linux / Bash</div>
+                            <div class="stack-item">Docker</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         ROADMAP SECTION
+         ========================================================================== -->
+    <section id="roadmap">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <div class="section-tag">// 04 FUTURE OBJECTIVES</div>
+                <h2 class="section-title">Technical Roadmap</h2>
+                <p class="section-subtitle">
+                    Milestones and upcoming engineering initiatives currently in progress.
+                </p>
+            </div>
+
+            <div class="roadmap-list">
+                <div class="roadmap-card reveal-up">
+                    <div class="roadmap-num">01</div>
+                    <div class="roadmap-content">
+                        <h4>Codebase RAG Graphical Interface</h4>
+                        <p>Constructing a dedicated developer GUI for my hybrid codebase RAG system, visualizing dense vector embeddings, reciprocal rank fusion scoring, and tool call traces.</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-card reveal-up">
+                    <div class="roadmap-num">02</div>
+                    <div class="roadmap-content">
+                        <h4>Privacy-Focused Local AI IDE</h4>
+                        <p>Developing an editor layer that leverages local and cloud models for deep reasoning while ensuring proprietary credentials, keys, and source code remain strictly encrypted.</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-card reveal-up">
+                    <div class="roadmap-num">03</div>
+                    <div class="roadmap-content">
+                        <h4>Local AI Agentic Autonomous Workflows</h4>
+                        <p>Refining multi-step tool-calling routines, error-recovery loops, and persistent memory across extended development sessions on consumer-tier GPUs.</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-card reveal-up">
+                    <div class="roadmap-num">04</div>
+                    <div class="roadmap-content">
+                        <h4>3D Indie Game Narrative Pipeline</h4>
+                        <p>Expanding character systems, branching worldbuilding, and 3D mechanics for a narrative-first standalone indie game release.</p>
+                    </div>
+                </div>
+
+                <div class="roadmap-card reveal-up">
+                    <div class="roadmap-num">05</div>
+                    <div class="roadmap-content">
+                        <h4>Cue Automated Social Publishing Dispatch</h4>
+                        <p>Engineering direct OAuth publishing integrations to Instagram Graph API, TikTok for Business, and YouTube Data API, allowing approved creator drafts to auto-publish on schedule.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         CONTACT / REACH OUT SECTION (Live Backend Integrated)
+         ========================================================================== -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <div class="section-tag">// 05 INITIATE CONNECTION</div>
+                <h2 class="section-title">Get in Touch</h2>
+                <p class="section-subtitle">
+                    Have an engineering role, collaborative project, or inquiry? Transmit a message directly to my live backend relay.
+                </p>
+            </div>
+
+            <div class="contact-wrap">
+                <!-- Contact Info Panel -->
+                <div class="contact-info reveal-up">
+                    <h3>Direct Communication Vector</h3>
+                    <p>
+                        I'm actively interested in Forward Deployed Engineer roles, AI infrastructure research, and innovative game engineering collaborations.
+                    </p>
+
+                    <div class="contact-details">
+                        <div class="contact-detail-item">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-detail-text">
+                                <span class="label">LOCATION</span>
+                                <span class="value">India (Open to Global &amp; Remote)</span>
+                            </div>
+                        </div>
+
+                        <div class="contact-detail-item">
+                            <div class="contact-icon">⚡</div>
+                            <div class="contact-detail-text">
+                                <span class="label">BACKEND STATUS</span>
+                                <span class="value" style="color: #10b981;">● Online via Render Relay</span>
+                            </div>
+                        </div>
+
+                        <div class="contact-detail-item">
+                            <div class="contact-icon">💼</div>
+                            <div class="contact-detail-text">
+                                <span class="label">LINKEDIN</span>
+                                <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer">Relzzy on LinkedIn ↗</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-detail-item">
+                            <div class="contact-icon">⟠</div>
+                            <div class="contact-detail-text">
+                                <span class="label">GITHUB</span>
+                                <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer">github.com/relzzy ↗</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form Card -->
+                <div class="contact-form-card reveal-up">
+                    <form id="contact-form" method="POST" action="https://relzzy-backend.onrender.com/contact">
+                        
+                        <div class="form-group">
+                            <label for="name" class="form-label">User Designation / Name</label>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="e.g. Alex Mercer" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Network Address / Email</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="alex@company.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Communication Vector / Subject</label>
+                            <select id="subject" name="subject" class="form-select" required>
+                                <option value="" disabled selected>Select Protocol...</option>
+                                <option value="Forward Deployed Role">Forward Deployed Engineering Role</option>
+                                <option value="AI/ML Collab">AI / LLM Infrastructure Project</option>
+                                <option value="Game Dev">Game Development Collaboration</option>
+                                <option value="Web3">Web3 / Decentralized Gaming</option>
+                                <option value="General">General Inquiry</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="form-label">Data Payload / Message</label>
+                            <textarea id="message" name="message" class="form-textarea" placeholder="Describe the project, role, or query..." required></textarea>
+                        </div>
+
+                        <div class="delay-warning">
+                            <span>⚠</span>
+                            <div>
+                                <strong>RELAY LATENCY NOTICE:</strong> The free-tier Render server may require ~30 seconds to wake up from idle. Please leave the interface open while sending.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="submit-btn">
+                            <span id="submit-btn-text">Transmit Data 🚀</span>
+                        </button>
+
+                        <div class="form-status" id="form-status"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECRET EASTER EGG TOAST
+         ========================================================================== -->
+    <div class="secret-toast" id="secret-toast">
+        <div class="toast-header">
+            <span>✨ SECRET RECOGNIZED</span>
+            <button class="toast-close" onclick="closeToast()">&times;</button>
+        </div>
+        <div class="toast-body" id="toast-body">
+            You discovered the "relzzy" keyword easter egg! Welcome to the inner circle.
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         FOOTER
+         ========================================================================== -->
+    <footer>
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo">RELZZY</div>
+                <div class="footer-copy">© 2026 Relzzy. Designed with precision in black, white, and gold.</div>
+            </div>
+
+            <nav class="footer-nav">
+                <a href="#hero">Back to Top ↑</a>
+                <a href="persona.html">Persona Theme 🎭</a>
+                <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://huggingface.co/relzzyy" target="_blank" rel="noopener noreferrer">Hugging Face</a>
+                <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </nav>
+        </div>
+    </footer>
+
+    <!-- ==========================================================================
+         INTERACTIVE JAVASCRIPT & ASTRA GALAXY SIMULATION
+         ========================================================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. OpenAI Astra Swirling Stars Galaxy Simulation (Interactive) ---
+            (function initGalaxy() {
+                const canvas = document.getElementById('galaxy-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                let width = 0, height = 0, dpr = 1;
+                const numStars = 1800;
+                const stars = [];
+                const ripples = [];
+
+                // Galaxy spiral parameters (matching GPT-6 Astra logarithmic shape)
+                const arms = 2; // Dual spiral arms forming the celestial vortex
+                const armSpread = 0.52;
+                const spiralTightness = 3.6;
+
+                function resize() {
+                    dpr = Math.min(window.devicePixelRatio || 1, 2);
+                    width = window.innerWidth;
+                    height = window.innerHeight;
+
+                    canvas.width = width * dpr;
+                    canvas.height = height * dpr;
+                    canvas.style.width = width + 'px';
+                    canvas.style.height = height + 'px';
+                    ctx.scale(dpr, dpr);
+                }
+
+                function createStars() {
+                    stars.length = 0;
+                    const maxR = Math.min(width, height) * 0.46;
+
+                    for (let i = 0; i < numStars; i++) {
+                        // Dense celestial core power curve
+                        const p = Math.random();
+                        const r = Math.pow(p, 1.85) * maxR + (Math.random() * 6);
+
+                        // Dual arm alignment (0 and PI)
+                        const armIndex = Math.floor(Math.random() * arms);
+                        const baseAngle = armIndex * Math.PI;
+
+                        // Astra logarithmic spiral equation + natural cloud dispersion
+                        const spiralAngle = spiralTightness * Math.log(r / 18 + 1);
+                        const spread = (Math.random() - 0.5) * armSpread * (r / maxR + 0.32);
+                        const angle = baseAngle + spiralAngle + spread;
+
+                        // Star color mix (Pure White, Metallic Gold, Warm Champagne, Ice Diamond)
+                        const colorType = Math.random();
+                        let color, baseAlpha;
+                        if (colorType < 0.32) {
+                            color = '212, 175, 55'; // Metallic Gold
+                            baseAlpha = 0.6 + Math.random() * 0.4;
+                        } else if (colorType < 0.60) {
+                            color = '245, 230, 168'; // Warm Champagne
+                            baseAlpha = 0.55 + Math.random() * 0.4;
+                        } else if (colorType < 0.88) {
+                            color = '255, 255, 255'; // Diamond White
+                            baseAlpha = 0.75 + Math.random() * 0.25;
+                        } else {
+                            color = '200, 235, 255'; // Celestial Ice Sparkle
+                            baseAlpha = 0.5 + Math.random() * 0.45;
+                        }
+
+                        // Star radius
+                        const size = Math.random() < 0.08 ? (1.8 + Math.random() * 1.6) : (0.6 + Math.random() * 1.1);
+
+                        // Differential orbital speed (core spins faster than outer arms)
+                        const baseSpeed = 0.00085 + 0.0013 * (1 - r / maxR * 0.55);
+
+                        // Twinkle parameters
+                        const twinkleSpeed = 0.02 + Math.random() * 0.035;
+                        const twinklePhase = Math.random() * Math.PI * 2;
+
+                        stars.push({
+                            originalR: r,
+                            r: r,
+                            angle: angle,
+                            speed: baseSpeed,
+                            size: size,
+                            color: color,
+                            baseAlpha: baseAlpha,
+                            twinkleSpeed: twinkleSpeed,
+                            twinklePhase: twinklePhase,
+                            dispX: 0,
+                            dispY: 0,
+                            z: (Math.random() - 0.5) * 90 // 3D depth for parallax tilt
+                        });
+                    }
+                }
+
+                // Interactive Mouse Physics & 3D Tilt
+                let targetTiltX = 0, targetTiltY = 0;
+                let curTiltX = 0, curTiltY = 0;
+                let vortexBoost = 1.0;
+                let isDragging = false;
+                let lastMouseX = 0, lastMouseY = 0;
+
+                function onPointerMove(clientX, clientY) {
+                    const cx = width / 2;
+                    const cy = height / 2;
+                    targetTiltX = ((clientX - cx) / width) * 0.32;
+                    targetTiltY = ((clientY - cy) / height) * 0.32;
+
+                    // Mouse velocity adds kinetic vortex boost
+                    const dx = clientX - lastMouseX;
+                    const dy = clientY - lastMouseY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > 2) {
+                        vortexBoost = Math.min(2.8, vortexBoost + 0.018);
+                    }
+                    lastMouseX = clientX;
+                    lastMouseY = clientY;
+                }
+
+                function triggerRipple(clientX, clientY) {
+                    const rect = canvas.getBoundingClientRect();
+                    ripples.push({
+                        x: clientX - rect.left,
+                        y: clientY - rect.top,
+                        radius: 0,
+                        maxRadius: Math.min(width, height) * 0.55,
+                        speed: 10,
+                        power: 1.0
+                    });
+                    // Spin acceleration kick on click/tap
+                    vortexBoost = Math.min(3.2, vortexBoost + 0.45);
+                }
+
+                window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY));
+
+                canvas.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    triggerRipple(e.clientX, e.clientY);
+                });
+
+                window.addEventListener('mouseup', () => { isDragging = false; });
+
+                canvas.addEventListener('touchstart', (e) => {
+                    if (e.touches.length > 0) {
+                        const t = e.touches[0];
+                        onPointerMove(t.clientX, t.clientY);
+                        triggerRipple(t.clientX, t.clientY);
+                    }
+                }, { passive: true });
+
+                canvas.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 0) {
+                        const t = e.touches[0];
+                        onPointerMove(t.clientX, t.clientY);
+                    }
+                }, { passive: true });
+
+                function render() {
+                    ctx.clearRect(0, 0, width, height);
+
+                    // Smooth parallax tilt & velocity damping
+                    curTiltX += (targetTiltX - curTiltX) * 0.045;
+                    curTiltY += (targetTiltY - curTiltY) * 0.045;
+                    vortexBoost += (1.0 - vortexBoost) * 0.025;
+
+                    const centerX = width / 2;
+                    const centerY = height / 2;
+
+                    // Radiant central galactic core glow (Astra golden heart)
+                    const coreRadius = Math.min(width, height) * 0.22;
+                    const coreGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, coreRadius);
+                    coreGradient.addColorStop(0, 'rgba(245, 230, 168, 0.28)');
+                    coreGradient.addColorStop(0.2, 'rgba(212, 175, 55, 0.14)');
+                    coreGradient.addColorStop(0.55, 'rgba(212, 175, 55, 0.035)');
+                    coreGradient.addColorStop(1, 'transparent');
+                    ctx.fillStyle = coreGradient;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, coreRadius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Update shockwave ripples
+                    for (let r = ripples.length - 1; r >= 0; r--) {
+                        const rip = ripples[r];
+                        rip.radius += rip.speed;
+                        rip.power = 1.0 - (rip.radius / rip.maxRadius);
+                        if (rip.radius >= rip.maxRadius) {
+                            ripples.splice(r, 1);
+                        }
+                    }
+
+                    // Render swirling stars
+                    for (let i = 0; i < stars.length; i++) {
+                        const s = stars[i];
+
+                        // Orbital motion with dynamic velocity boost
+                        s.angle += s.speed * vortexBoost;
+                        s.twinklePhase += s.twinkleSpeed;
+
+                        // Orbital position in plane
+                        let starX = centerX + Math.cos(s.angle) * s.r;
+                        let starY = centerY + Math.sin(s.angle) * s.r;
+
+                        // Check interaction with active ripples
+                        for (let j = 0; j < ripples.length; j++) {
+                            const rip = ripples[j];
+                            const rdx = starX - rip.x;
+                            const rdy = starY - rip.y;
+                            const rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+                            const waveDiff = Math.abs(rdist - rip.radius);
+
+                            if (waveDiff < 45 && rdist > 0) {
+                                const force = (1 - waveDiff / 45) * rip.power * 24;
+                                s.dispX += (rdx / rdist) * force;
+                                s.dispY += (rdy / rdist) * force;
+                            }
+                        }
+
+                        // Smooth displacement recovery
+                        s.dispX *= 0.92;
+                        s.dispY *= 0.92;
+
+                        // 3D perspective projection
+                        const finalX = starX + s.dispX + s.z * curTiltX * 1.6;
+                        const finalY = centerY + (starY - centerY) * (0.86 + curTiltY * 0.22) + s.dispY;
+
+                        const twinkle = Math.sin(s.twinklePhase) * 0.22;
+                        const alpha = Math.max(0.08, Math.min(1, s.baseAlpha + twinkle));
+
+                        ctx.fillStyle = `rgba(${s.color}, ${alpha})`;
+                        ctx.beginPath();
+                        ctx.arc(finalX, finalY, s.size, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Sparkle halo for luminous stars
+                        if (s.size > 1.7) {
+                            ctx.fillStyle = `rgba(${s.color}, ${alpha * 0.24})`;
+                            ctx.beginPath();
+                            ctx.arc(finalX, finalY, s.size * 2.8, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+
+                    requestAnimationFrame(render);
+                }
+
+                resize();
+                createStars();
+                render();
+
+                window.addEventListener('resize', () => {
+                    resize();
+                    createStars();
+                });
+            })();
+
+            // --- 2. Ambient Mouse Cursor Light ---
+            const cursorLight = document.getElementById('cursor-light');
+            if (cursorLight && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                window.addEventListener('mousemove', (e) => {
+                    cursorLight.style.left = `${e.clientX}px`;
+                    cursorLight.style.top = `${e.clientY}px`;
+
+                    // Update mouse position on project cards for radial border shine
+                    document.querySelectorAll('.project-card').forEach(card => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        card.style.setProperty('--mouse-x', `${x}px`);
+                        card.style.setProperty('--mouse-y', `${y}px`);
+                    });
+                });
+            }
+
+            // --- 3. Three-Dots Menu Toggle ---
+            const threeDotsBtn = document.getElementById('three-dots-btn');
+            const threeDotsDropdown = document.getElementById('three-dots-dropdown');
+
+            if (threeDotsBtn && threeDotsDropdown) {
+                threeDotsBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = threeDotsDropdown.classList.contains('show');
+                    threeDotsDropdown.classList.toggle('show', !isOpen);
+                    threeDotsBtn.classList.toggle('active', !isOpen);
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!threeDotsDropdown.contains(e.target) && e.target !== threeDotsBtn) {
+                        threeDotsDropdown.classList.remove('show');
+                        threeDotsBtn.classList.remove('active');
+                    }
+                });
+            }
+
+            // --- 4. Mobile Navigation Drawer ---
+            const mobileToggle = document.getElementById('mobile-toggle');
+            const mobileDrawer = document.getElementById('mobile-drawer');
+
+            if (mobileToggle && mobileDrawer) {
+                mobileToggle.addEventListener('click', () => {
+                    mobileDrawer.classList.toggle('open');
+                });
+
+                document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileDrawer.classList.remove('open');
+                    });
+                });
+            }
+
+            // --- 5. Intersection Observer for Scroll Reveal Animations ---
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -40px 0px'
+            };
+
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-up').forEach((el) => {
+                revealObserver.observe(el);
+            });
+
+            // --- 6. Project Filtering Logic ---
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const projectCards = document.querySelectorAll('.project-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.dataset.filter;
+
+                    projectCards.forEach(card => {
+                        const category = card.dataset.category;
+                        if (filter === 'all' || category === filter) {
+                            card.style.display = 'flex';
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, 30);
+                        } else {
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(15px)';
+                            setTimeout(() => {
+                                card.style.display = 'none';
+                            }, 200);
+                        }
+                    });
+                });
+            });
+
+            // --- 7. Active Nav Link on Scroll ---
+            const navLinks = document.querySelectorAll('.nav-links a');
+            const sections = document.querySelectorAll('section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(sec => {
+                    const top = sec.offsetTop - 130;
+                    if (window.scrollY >= top) {
+                        current = sec.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // --- 8. Live Contact Form Submission to Render Backend ---
+            const contactForm = document.getElementById('contact-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const submitBtnText = document.getElementById('submit-btn-text');
+            const formStatus = document.getElementById('form-status');
+
+            if (contactForm) {
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    submitBtn.disabled = true;
+                    submitBtnText.textContent = 'Transmitting Data... ⏳';
+                    formStatus.className = 'form-status';
+                    formStatus.style.display = 'none';
+
+                    const formData = new FormData(contactForm);
+                    const payload = {};
+                    formData.forEach((val, key) => payload[key] = val);
+
+                    try {
+                        const response = await fetch(contactForm.action, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        const resData = await response.json().catch(() => ({}));
+
+                        if (response.ok) {
+                            formStatus.className = 'form-status success';
+                            formStatus.textContent = '✓ Data Transmitted Successfully! Connection established with Relzzy.';
+                            contactForm.reset();
+                        } else {
+                            formStatus.className = 'form-status error';
+                            formStatus.textContent = `Transmission error: ${resData.message || 'Failed to deliver payload.'}`;
+                        }
+                    } catch (err) {
+                        console.error('Relay error:', err);
+                        formStatus.className = 'form-status error';
+                        formStatus.textContent = '⚠ Network failure. The relay server may still be powering up from sleep mode. Please wait a moment and try again.';
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtnText.textContent = 'Transmit Data 🚀';
+                    }
+                });
+            }
+
+            // --- 9. Preserved Keyboard Easter Eggs ('anime' and 'relzzy') ---
+            let keySequence = '';
+            window.addEventListener('keydown', (e) => {
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+
+                keySequence += e.key.toLowerCase();
+                if (keySequence.length > 12) keySequence = keySequence.slice(-12);
+
+                // 1. Check for 'anime' -> Redirects to anime.html
+                if (keySequence.includes('anime')) {
+                    keySequence = '';
+                    window.location.href = 'anime.html';
+                }
+
+                // 2. Check for 'relzzy' -> Show Gold Toast Notification
+                if (keySequence.includes('relzzy')) {
+                    keySequence = '';
+                    showToast('🎉 Secret Keyword Recognized', 'You typed "relzzy"! Welcome to the inner circle. The original Persona theme is also always available via the three dots menu.');
+                }
+            });
+
+        });
+
+        // Toast Helpers
+        function showToast(title, message) {
+            const toast = document.getElementById('secret-toast');
+            const toastBody = document.getElementById('toast-body');
+            if (toast && toastBody) {
+                toastBody.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 6000);
+            }
+        }
+
+        function closeToast() {
+            const toast = document.getElementById('secret-toast');
+            if (toast) toast.classList.remove('show');
+        }
+
+        function triggerEasterEggHint() {
+            showToast('⌨️ Secret Keystroke Hint', 'Type "relzzy" anywhere on your keyboard for the author badge, or type "anime" to open the secret gateway.');
+        }
+    </script>
+</body>
+</html>

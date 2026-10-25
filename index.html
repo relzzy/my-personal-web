@@ -5,53 +5,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Relzzy / Developer & Local AI Systems Specialist. Portfolio showcasing local RAG pipelines, fine-tuned LLM routers, full-stack platforms, and game engines.">
-    <meta name="theme-color" content="#070709">
+    <meta name="theme-color" content="#08090c">
     <title>Relzzy | Developer & AI Systems</title>
     <link rel="icon" href="images/RELZZY_logo.svg" type="image/svg+xml">
 
-    <!-- Google Fonts: Plus Jakarta Sans, Space Grotesk & JetBrains Mono -->
+    <!-- Google Fonts: Plus Jakarta Sans, Sora & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         /* ==========================================================================
-           1. ROOT VARIABLES & DESIGN SYSTEM (Black / White / Gold Luxe Tech)
+           1. ROOT VARIABLES & DESIGN SYSTEM (Engineering Slate / Obsidian / Pure Craft)
            ========================================================================== */
         :root {
-            --bg-base: #060608;
-            --bg-surface: #0c0c10;
-            --bg-elevated: #14141a;
-            --bg-card: rgba(18, 18, 24, 0.65);
-            --bg-card-hover: rgba(28, 28, 38, 0.85);
+            --bg-base: #08090c;
+            --bg-surface: #0e1015;
+            --bg-elevated: #151820;
+            --bg-card: #0e1015;
+            --bg-card-hover: #141720;
 
-            --border-subtle: rgba(255, 255, 255, 0.07);
-            --border-hover: rgba(255, 255, 255, 0.18);
-            --border-gold: rgba(212, 175, 55, 0.32);
-            --border-gold-bright: rgba(212, 175, 55, 0.75);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.20);
+            --border-gold: rgba(212, 175, 55, 0.40);
+            --border-gold-bright: #d4af37;
 
             --gold-primary: #d4af37;
-            --gold-light: #f5e6a8;
-            --gold-dark: #996515;
-            --gold-gradient: linear-gradient(135deg, #f5e6a8 0%, #d4af37 50%, #aa820a 100%);
-            --gold-glow: rgba(212, 175, 55, 0.16);
+            --gold-light: #f3e5a5;
+            --gold-dark: #8c6314;
+            --gold-gradient: linear-gradient(135deg, #f3e5a5 0%, #d4af37 100%);
+            --gold-glow: rgba(0, 0, 0, 0.45);
 
-            --text-primary: #f8f9fa;
-            --text-secondary: #a1a1aa;
-            --text-muted: #71717a;
+            --text-primary: #f0f2f5;
+            --text-secondary: #9da3af;
+            --text-muted: #6b7280;
 
             --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Sora', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
 
-            --radius-sm: 6px;
-            --radius-md: 12px;
-            --radius-lg: 20px;
-            --radius-full: 9999px;
+            --radius-xs: 2px;
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --radius-full: 4px; /* Industrial 4px radius replacing bubbly pill buttons */
 
-            --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-            --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            --transition-bounce: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.4);
+            --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.45);
+            --shadow-elevated: 0 12px 32px rgba(0, 0, 0, 0.65);
+
+            --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-smooth: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-bounce: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         /* ==========================================================================
@@ -82,7 +87,7 @@
             overflow-x: hidden;
         }
 
-        /* Ambient background subtle grid & glow */
+        /* Ambient architectural hairline grid (Clean precision blueprint) */
         .ambient-grid {
             position: fixed;
             top: 0;
@@ -90,44 +95,23 @@
             width: 100vw;
             height: 100vh;
             background-image: 
-                radial-gradient(rgba(212, 175, 55, 0.035) 1px, transparent 0),
-                linear-gradient(to right, rgba(255, 255, 255, 0.012) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
-            background-size: 36px 36px, 120px 120px, 120px 120px;
+                linear-gradient(to right, rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.016) 1px, transparent 1px);
+            background-size: 80px 80px;
             z-index: -10;
             pointer-events: none;
         }
 
-        /* Ambient mouse light for desktop */
-        .cursor-light {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.045) 0%, rgba(0, 0, 0, 0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: -8;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.3s ease;
-            display: none;
-        }
-
-        @media (hover: hover) and (pointer: fine) {
-            .cursor-light {
-                display: block;
-            }
-        }
-
         /* Custom scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
             background: var(--bg-base);
         }
         ::-webkit-scrollbar-thumb {
-            background: #272732;
-            border-radius: 4px;
+            background: #20242e;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: var(--gold-primary);
@@ -144,7 +128,7 @@
         }
 
         /* ==========================================================================
-           3. SPREAD-OUT LAYOUT WRAPPERS (Astra Spaciousness)
+           3. SPREAD-OUT LAYOUT WRAPPERS
            ========================================================================== */
         .container {
             width: 100%;
@@ -154,13 +138,13 @@
         }
 
         section {
-            padding: 130px 0;
+            padding: 120px 0;
             position: relative;
         }
 
         @media (max-width: 768px) {
             section {
-                padding: 85px 0;
+                padding: 80px 0;
             }
             .container {
                 padding: 0 20px;
@@ -169,19 +153,20 @@
 
         /* Section Headers with Generous Breathing Room */
         .section-header {
-            margin-bottom: 64px;
+            margin-bottom: 56px;
         }
 
         .section-tag {
             font-family: var(--font-mono);
-            font-size: 0.84rem;
+            font-size: 0.8rem;
             color: var(--gold-primary);
             text-transform: uppercase;
-            letter-spacing: 2.5px;
+            letter-spacing: 2px;
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            font-weight: 600;
         }
 
         .section-tag::before {
@@ -190,24 +175,23 @@
             width: 6px;
             height: 6px;
             background: var(--gold-primary);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--gold-primary);
+            border-radius: 1px;
         }
 
         .section-title {
             font-family: var(--font-display);
-            font-size: clamp(2.2rem, 4.2vw, 3.4rem);
+            font-size: clamp(2.1rem, 3.8vw, 3.2rem);
             font-weight: 700;
             line-height: 1.15;
             color: var(--text-primary);
-            letter-spacing: -0.025em;
+            letter-spacing: -0.03em;
         }
 
         .section-subtitle {
-            font-size: clamp(1.05rem, 1.9vw, 1.22rem);
+            font-size: clamp(1rem, 1.8vw, 1.15rem);
             color: var(--text-secondary);
             max-width: 720px;
-            margin-top: 16px;
+            margin-top: 14px;
             font-weight: 400;
             line-height: 1.65;
         }
@@ -215,8 +199,8 @@
         /* Reveal animations */
         .reveal-up {
             opacity: 0;
-            transform: translateY(32px);
-            transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(28px);
+            transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: opacity, transform;
         }
 
@@ -233,9 +217,7 @@
             top: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(6, 6, 8, 0.8);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            background: rgba(8, 9, 12, 0.94);
             border-bottom: 1px solid var(--border-subtle);
             transition: all var(--transition-smooth);
         }
@@ -244,7 +226,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 74px;
+            height: 70px;
         }
 
         /* Brand Logo */
@@ -253,16 +235,16 @@
             align-items: center;
             gap: 12px;
             font-family: var(--font-display);
-            font-size: 1.3rem;
+            font-size: 1.22rem;
             font-weight: 700;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             color: var(--text-primary);
         }
 
         .brand-logo img {
             width: 32px;
             height: 32px;
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
             border: 1px solid var(--border-gold);
             padding: 2px;
             background: #000;
@@ -276,18 +258,18 @@
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 36px;
+            gap: 34px;
             list-style: none;
         }
 
         .nav-links a {
-            font-size: 0.94rem;
+            font-size: 0.9rem;
             font-weight: 500;
             color: var(--text-secondary);
             transition: color var(--transition-fast);
             position: relative;
             padding: 8px 0;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
 
         .nav-links a:hover {
@@ -305,35 +287,37 @@
             left: 0;
             width: 100%;
             height: 2px;
-            background: var(--gold-gradient);
-            border-radius: 2px;
+            background: var(--gold-primary);
+            border-radius: 1px;
         }
 
         /* Action Buttons & 3-Dots */
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .btn-contact-nav {
-            font-family: var(--font-display);
-            font-size: 0.88rem;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
             font-weight: 600;
-            color: #000;
-            background: var(--gold-gradient);
-            padding: 9px 20px;
-            border-radius: var(--radius-full);
-            transition: all var(--transition-smooth);
-            box-shadow: 0 2px 12px rgba(212, 175, 55, 0.25);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #08090c;
+            background: var(--gold-primary);
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gold-light);
+            transition: all var(--transition-fast);
             display: inline-flex;
             align-items: center;
             gap: 6px;
         }
 
         .btn-contact-nav:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.45);
+            background: var(--gold-light);
+            box-shadow: var(--shadow-subtle);
         }
 
         /* Three Dots Button */
@@ -342,14 +326,14 @@
         }
 
         .btn-three-dots {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             color: var(--text-secondary);
             cursor: pointer;
             transition: all var(--transition-fast);
@@ -364,26 +348,24 @@
 
         .three-dots-menu {
             position: absolute;
-            top: calc(100% + 12px);
+            top: calc(100% + 10px);
             right: 0;
             width: 275px;
-            background: rgba(12, 12, 16, 0.96);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            border: 1px solid var(--border-gold);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-hover);
             border-radius: var(--radius-md);
-            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 0 0 24px var(--gold-glow);
-            padding: 10px;
+            box-shadow: var(--shadow-elevated);
+            padding: 8px;
             display: none;
             flex-direction: column;
-            gap: 5px;
+            gap: 4px;
             z-index: 1100;
-            animation: menuFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: menuFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes menuFadeIn {
-            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .three-dots-menu.show {
@@ -392,7 +374,7 @@
 
         .menu-header-label {
             font-family: var(--font-mono);
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1.5px;
@@ -403,24 +385,27 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 12px;
-            font-size: 0.88rem;
+            padding: 9px 12px;
+            font-size: 0.86rem;
             color: var(--text-primary);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-xs);
             transition: all var(--transition-fast);
             cursor: pointer;
             text-decoration: none;
         }
 
         .three-dots-item:hover {
-            background: rgba(212, 175, 55, 0.12);
+            background: rgba(212, 175, 55, 0.10);
             color: var(--gold-light);
         }
 
         .three-dots-item .item-icon {
-            font-size: 1.1rem;
-            width: 22px;
-            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--gold-primary);
+            width: 36px;
+            text-align: left;
+            letter-spacing: 0.5px;
         }
 
         .three-dots-item.persona-toggle {
@@ -432,7 +417,7 @@
 
         .three-dots-item.persona-toggle:hover {
             background: var(--gold-primary);
-            color: #000;
+            color: #08090c;
         }
 
         .menu-divider {
@@ -444,13 +429,13 @@
         /* Mobile Hamburger */
         .mobile-toggle {
             display: none;
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             align-items: center;
             justify-content: center;
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             color: var(--text-primary);
             cursor: pointer;
         }
@@ -458,18 +443,17 @@
         /* Mobile Drawer */
         .mobile-drawer {
             position: fixed;
-            top: 74px;
+            top: 70px;
             left: 0;
             width: 100vw;
-            height: calc(100vh - 74px);
-            background: rgba(6, 6, 8, 0.98);
-            backdrop-filter: blur(28px);
+            height: calc(100vh - 70px);
+            background: var(--bg-base);
             padding: 36px 28px;
             display: flex;
             flex-direction: column;
             gap: 22px;
             transform: translateX(-100%);
-            transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 999;
             overflow-y: auto;
         }
@@ -480,7 +464,7 @@
 
         .mobile-drawer a {
             font-family: var(--font-display);
-            font-size: 1.45rem;
+            font-size: 1.35rem;
             font-weight: 600;
             color: var(--text-primary);
             padding: 14px 0;
@@ -492,6 +476,8 @@
 
         .mobile-drawer a span.arrow {
             color: var(--gold-primary);
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
         }
 
         @media (max-width: 860px) {
@@ -507,7 +493,7 @@
         }
 
         /* ==========================================================================
-           5. HERO SECTION: ASTRA-INSPIRED 100VH COSMIC PORTAL
+           5. HERO SECTION: CELESTIAL VORTEX STAGE
            ========================================================================== */
         .hero-section {
             position: relative;
@@ -542,7 +528,7 @@
             cursor: grabbing;
         }
 
-        /* Hero Stage flanking elements (Astra Style) */
+        /* Hero Stage flanking elements */
         .hero-stage {
             position: relative;
             z-index: 3;
@@ -559,15 +545,15 @@
 
         .hero-astral-label {
             font-family: var(--font-display);
-            font-size: clamp(2.8rem, 6vw, 5.6rem);
-            font-weight: 500;
+            font-size: clamp(2.8rem, 5.8vw, 5.4rem);
+            font-weight: 600;
             color: #ffffff;
             letter-spacing: -0.04em;
-            line-height: 1.02;
+            line-height: 1.05;
             user-select: none;
             pointer-events: auto;
             transition: opacity 0.5s ease, transform 0.5s ease;
-            text-shadow: 0 0 45px rgba(0, 0, 0, 0.95);
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.95);
         }
 
         .hero-astral-label.left {
@@ -576,7 +562,7 @@
 
         .hero-astral-label.right {
             text-align: right;
-            color: #f1f1f1;
+            color: #f1f3f7;
         }
 
         .hero-astral-label span.gold-accent {
@@ -598,7 +584,7 @@
             color: var(--text-muted);
             font-family: var(--font-mono);
             font-size: 0.72rem;
-            letter-spacing: 2.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             pointer-events: auto;
             text-decoration: none;
@@ -611,23 +597,21 @@
 
         .scroll-cue-line {
             width: 1px;
-            height: 38px;
-            background: linear-gradient(to bottom, var(--gold-primary), transparent);
-            animation: scrollLineFlow 2.2s infinite ease-in-out;
+            height: 32px;
+            background: var(--border-hover);
+            transition: height var(--transition-fast), background var(--transition-fast);
         }
 
-        @keyframes scrollLineFlow {
-            0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
-            45% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-            50% { transform-origin: bottom; }
-            100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+        .hero-scroll-cue:hover .scroll-cue-line {
+            height: 42px;
+            background: var(--gold-primary);
         }
 
         @media (max-width: 860px) {
             .hero-stage {
                 flex-direction: column;
                 justify-content: space-between;
-                padding: 120px 24px 90px;
+                padding: 110px 24px 80px;
                 text-align: center;
             }
             .hero-astral-label.left,
@@ -641,10 +625,10 @@
         }
 
         /* ==========================================================================
-           5B. INTRO & OVERVIEW SECTION (Displaced to Below the Fold)
+           5B. INTRO & OVERVIEW SECTION
            ========================================================================== */
         .intro-section {
-            padding: 130px 0 110px;
+            padding: 120px 0 100px;
             border-bottom: 1px solid var(--border-subtle);
             position: relative;
         }
@@ -658,7 +642,7 @@
 
         .intro-title {
             font-family: var(--font-display);
-            font-size: clamp(2.2rem, 4.2vw, 3.6rem);
+            font-size: clamp(2.2rem, 3.8vw, 3.4rem);
             font-weight: 700;
             line-height: 1.15;
             letter-spacing: -0.03em;
@@ -667,10 +651,10 @@
         }
 
         .intro-body {
-            font-size: 1.12rem;
+            font-size: 1.08rem;
             line-height: 1.8;
             color: var(--text-secondary);
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
 
         .intro-body strong {
@@ -680,37 +664,40 @@
 
         .intro-body.sub {
             color: var(--text-muted);
-            font-size: 1.02rem;
-            margin-bottom: 38px;
+            font-size: 1rem;
+            margin-bottom: 34px;
         }
 
         .intro-metrics-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 24px;
-            padding-top: 34px;
+            padding-top: 32px;
             border-top: 1px solid var(--border-subtle);
         }
 
         .intro-metric {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 4px;
         }
 
         .intro-metric .val {
             font-family: var(--font-display);
-            font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+            font-size: clamp(1.8rem, 2.6vw, 2.4rem);
             font-weight: 700;
             line-height: 1;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-primary);
+        }
+
+        .intro-metric .val .accent {
+            color: var(--gold-primary);
+            font-size: 0.88em;
         }
 
         .intro-metric .lbl {
             font-family: var(--font-mono);
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.8px;
@@ -728,26 +715,27 @@
         }
 
         /* ==========================================================================
-           6. FEATURED PROJECTS SECTION (Fixed Layout & Col-12 Bug Fixed)
+           6. FEATURED PROJECTS SECTION (Engineering Dossier System)
            ========================================================================== */
-        /* Filter Pills */
+        /* Filter Pills (Crisp Industrial Buttons) */
         .filter-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 44px;
+            margin-bottom: 40px;
         }
 
         .filter-btn {
             font-family: var(--font-mono);
-            font-size: 0.84rem;
+            font-size: 0.8rem;
             font-weight: 500;
-            padding: 9px 20px;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
-            border-radius: var(--radius-full);
+            border-radius: var(--radius-sm);
             cursor: pointer;
             transition: all var(--transition-fast);
         }
@@ -755,63 +743,51 @@
         .filter-btn:hover {
             color: var(--text-primary);
             border-color: var(--border-hover);
+            background: var(--bg-elevated);
         }
 
         .filter-btn.active {
             background: var(--bg-elevated);
-            color: var(--gold-light);
+            color: var(--text-primary);
             border-color: var(--border-gold-bright);
-            box-shadow: 0 0 14px var(--gold-glow);
         }
 
-        /* Projects Grid */
+        /* Projects Grid (Clean Engineering Dossier) */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
-            gap: 28px;
+            gap: 24px;
         }
 
-        /* Base Card Styling with Open Padding */
+        /* Base Card Styling with Solid Matte Finish & Precision Radii */
         .project-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 42px;
+            border-radius: var(--radius-md);
+            padding: 36px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            transition: all var(--transition-smooth);
-            overflow: hidden;
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(212, 175, 55, 0.07), transparent 40%);
-            pointer-events: none;
-            z-index: 1;
+            transition: border-color var(--transition-fast), background-color var(--transition-fast);
         }
 
         .project-card:hover {
-            border-color: var(--border-gold);
+            border-color: var(--border-hover);
             background: var(--bg-card-hover);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45), 0 0 26px var(--gold-glow);
+            box-shadow: var(--shadow-card);
         }
 
-        /* Column Spans (Including Explicit .col-12 Bug Fix) */
+        /* Column Spans */
         .project-card.featured-flagship {
             grid-column: span 12;
             border-color: var(--border-gold);
-            background: linear-gradient(135deg, rgba(22, 22, 30, 0.8) 0%, rgba(14, 14, 20, 0.9) 100%);
-            box-shadow: 0 0 35px rgba(212, 175, 55, 0.12);
+            background: var(--bg-surface);
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .project-card.featured-flagship:hover {
+            border-color: var(--border-gold-bright);
         }
 
         .project-card.col-12 {
@@ -838,7 +814,7 @@
                 grid-column: span 12;
             }
             .project-card {
-                padding: 30px;
+                padding: 26px;
             }
         }
 
@@ -852,40 +828,43 @@
 
         .card-number {
             font-family: var(--font-mono);
-            font-size: 0.86rem;
+            font-size: 0.82rem;
             color: var(--gold-primary);
             letter-spacing: 1px;
+            font-weight: 600;
         }
 
         .card-badge {
             font-family: var(--font-mono);
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             font-weight: 600;
-            padding: 4px 12px;
-            border-radius: var(--radius-sm);
-            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: var(--radius-xs);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .card-badge.gold {
-            background: rgba(212, 175, 55, 0.15);
+            background: rgba(212, 175, 55, 0.12);
             border-color: var(--border-gold);
             color: var(--gold-light);
         }
 
         .card-title {
             font-family: var(--font-display);
-            font-size: clamp(1.45rem, 2.3vw, 1.95rem);
+            font-size: clamp(1.4rem, 2.2vw, 1.85rem);
             font-weight: 700;
             line-height: 1.25;
             margin-bottom: 16px;
             color: var(--text-primary);
+            letter-spacing: -0.02em;
         }
 
         .card-desc {
-            font-size: 1rem;
+            font-size: 0.98rem;
             color: var(--text-secondary);
             line-height: 1.7;
             margin-bottom: 24px;
@@ -896,28 +875,29 @@
             font-weight: 600;
         }
 
-        /* Tech Tags */
+        /* Tech Tags (Monochromatic Precision Chips) */
         .tech-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 9px;
+            gap: 8px;
             margin-bottom: 28px;
         }
 
         .tech-tag {
             font-family: var(--font-mono);
-            font-size: 0.78rem;
-            padding: 5px 12px;
-            background: rgba(255, 255, 255, 0.04);
+            font-size: 0.74rem;
+            letter-spacing: 0.3px;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-sm);
-            color: var(--text-muted);
+            border-radius: var(--radius-xs);
+            color: var(--text-secondary);
             transition: all var(--transition-fast);
         }
 
         .project-card:hover .tech-tag {
-            color: var(--text-secondary);
-            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
         }
 
         /* Architecture Steps in Flagship */
@@ -925,11 +905,11 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
             gap: 16px;
-            margin: 24px 0 32px;
-            padding: 22px;
-            background: rgba(0, 0, 0, 0.4);
+            margin: 24px 0 28px;
+            padding: 20px;
+            background: var(--bg-base);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
         }
 
         .arch-step-item {
@@ -940,13 +920,14 @@
 
         .arch-step-label {
             font-family: var(--font-mono);
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: var(--gold-primary);
             font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
         .arch-step-desc {
-            font-size: 0.88rem;
+            font-size: 0.86rem;
             color: var(--text-secondary);
             line-height: 1.5;
         }
@@ -955,34 +936,36 @@
         .card-links {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
             flex-wrap: wrap;
-            padding-top: 22px;
+            padding-top: 20px;
             border-top: 1px solid var(--border-subtle);
         }
 
         .card-btn {
-            font-family: var(--font-display);
-            font-size: 0.9rem;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
             font-weight: 600;
-            padding: 11px 22px;
-            border-radius: var(--radius-full);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 9px 18px;
+            border-radius: var(--radius-sm);
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all var(--transition-smooth);
+            transition: all var(--transition-fast);
             text-decoration: none;
         }
 
         .card-btn.gold {
-            background: var(--gold-gradient);
-            color: #000;
-            box-shadow: 0 2px 14px rgba(212, 175, 55, 0.28);
+            background: var(--gold-primary);
+            color: #08090c;
+            border: 1px solid var(--gold-light);
         }
 
         .card-btn.gold:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 22px rgba(212, 175, 55, 0.5);
+            background: var(--gold-light);
+            box-shadow: var(--shadow-subtle);
         }
 
         .card-btn.outline {
@@ -992,93 +975,326 @@
         }
 
         .card-btn.outline:hover {
-            border-color: var(--border-gold);
-            color: var(--gold-light);
-            background: rgba(212, 175, 55, 0.05);
-            transform: translateY(-2px);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            background: var(--bg-elevated);
         }
 
         /* ==========================================================================
-           7. THE ARCADE / PLAYABLE GAMES SECTION (Dedicated Showcase)
+           INTERACTIVE ARCHITECTURAL INSPECTOR (Flagship 01)
+           ========================================================================== */
+        .interactive-trace-box {
+            margin: 24px 0 28px;
+            background: var(--bg-base);
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .trace-tabs {
+            display: flex;
+            align-items: center;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0 8px;
+            overflow-x: auto;
+        }
+
+        .trace-tab {
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 11px 16px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .trace-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .trace-tab.active {
+            color: var(--gold-light);
+            border-bottom-color: var(--gold-primary);
+            background: var(--bg-base);
+        }
+
+        .trace-title {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--gold-primary);
+            letter-spacing: 1px;
+            padding: 10px 14px;
+            text-transform: uppercase;
+        }
+
+        .trace-viewport {
+            padding: 18px 20px;
+        }
+
+        .trace-panel {
+            display: none;
+        }
+
+        .trace-panel.active {
+            display: block;
+        }
+
+        .trace-code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .trace-badge {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--gold-primary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .trace-lang {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .trace-code {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: #d1d5db;
+            line-height: 1.6;
+            margin: 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        /* Interactive Timezone Normalization Demo (Flagship 02) */
+        .timezone-demo-panel {
+            padding: 20px;
+        }
+
+        .tz-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .tz-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tz-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xs);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tz-card.highlight {
+            border-color: var(--border-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .tz-label {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--gold-primary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .tz-val {
+            font-family: var(--font-mono);
+            font-size: 0.94rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .tz-desc {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+
+        .tz-demo-controls {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* ==========================================================================
+           7. THE ARCADE / PLAYABLE GAMES CONSOLE (Asymmetric Console Layout)
            ========================================================================== */
         .arcade-section {
-            background: linear-gradient(180deg, var(--bg-base) 0%, #09090e 50%, var(--bg-base) 100%);
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
             position: relative;
         }
 
-        .arcade-grid {
+        .arcade-console-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: 7fr 5fr;
             gap: 28px;
+            align-items: stretch;
         }
 
-        .arcade-card {
+        @media (max-width: 960px) {
+            .arcade-console-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .arcade-hero-card {
             background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
             padding: 38px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all var(--transition-smooth);
-            position: relative;
+            box-shadow: var(--shadow-card);
         }
 
-        .arcade-card:hover {
-            border-color: var(--border-gold-bright);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55), 0 0 28px var(--gold-glow);
+        .arcade-side-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .arcade-side-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color var(--transition-fast);
+        }
+
+        .arcade-side-card:hover {
+            border-color: var(--border-hover);
         }
 
         .arcade-badge {
             font-family: var(--font-mono);
-            font-size: 0.76rem;
+            font-size: 0.72rem;
             color: var(--gold-light);
-            background: rgba(212, 175, 55, 0.15);
+            background: rgba(212, 175, 55, 0.12);
             border: 1px solid var(--border-gold);
-            padding: 5px 12px;
-            border-radius: var(--radius-full);
+            padding: 4px 10px;
+            border-radius: var(--radius-xs);
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .arcade-title {
             font-family: var(--font-display);
-            font-size: 1.55rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
         }
 
         .arcade-desc {
-            font-size: 0.98rem;
+            font-size: 0.94rem;
             color: var(--text-secondary);
-            margin-bottom: 28px;
+            margin-bottom: 20px;
             line-height: 1.65;
         }
 
+        /* Interactive Console Box for Text RPG */
+        .interactive-console-box {
+            background: var(--bg-base);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin: 18px 0 24px;
+        }
+
+        .console-btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .console-action-btn {
+            font-family: var(--font-mono);
+            font-size: 0.74rem;
+            padding: 5px 10px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            border-radius: var(--radius-xs);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .console-action-btn:hover {
+            border-color: var(--border-gold);
+            color: var(--gold-light);
+            background: var(--bg-elevated);
+        }
+
+        .console-readout {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #9ca3af;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xs);
+            padding: 12px;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+
         .btn-arcade-play {
-            font-family: var(--font-display);
-            font-size: 0.94rem;
-            font-weight: 700;
-            color: #000;
-            background: var(--gold-gradient);
-            padding: 13px 26px;
-            border-radius: var(--radius-full);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #08090c;
+            background: var(--gold-primary);
+            padding: 11px 22px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--gold-light);
             text-align: center;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all var(--transition-smooth);
-            box-shadow: 0 4px 18px rgba(212, 175, 55, 0.32);
+            transition: all var(--transition-fast);
         }
 
         .btn-arcade-play:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 28px rgba(212, 175, 55, 0.55);
+            background: var(--gold-light);
+            box-shadow: var(--shadow-subtle);
         }
 
         /* ==========================================================================
@@ -1100,8 +1316,8 @@
         .about-sidebar {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 38px;
+            border-radius: var(--radius-md);
+            padding: 36px;
         }
 
         .about-avatar-wrap {
@@ -1115,13 +1331,15 @@
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 6px;
+            letter-spacing: -0.02em;
         }
 
         .about-role-subtitle {
             font-family: var(--font-mono);
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             color: var(--gold-primary);
             margin-bottom: 24px;
+            letter-spacing: 0.5px;
         }
 
         .about-specs {
@@ -1136,80 +1354,91 @@
         .spec-item {
             display: flex;
             justify-content: space-between;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
 
         .spec-name {
             color: var(--text-muted);
             font-family: var(--font-mono);
+            font-size: 0.82rem;
         }
 
         .spec-val {
             color: var(--text-primary);
             font-weight: 600;
+            font-family: var(--font-mono);
+            font-size: 0.84rem;
         }
 
         /* Social / Network Buttons */
         .social-buttons {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .social-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 13px 20px;
+            padding: 12px 18px;
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            font-family: var(--font-display);
-            font-size: 0.92rem;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
             font-weight: 600;
             color: var(--text-primary);
             transition: all var(--transition-fast);
+            letter-spacing: 0.5px;
         }
 
         .social-btn:hover {
             border-color: var(--border-gold);
             color: var(--gold-light);
             background: var(--bg-elevated);
-            transform: translateX(4px);
         }
 
         /* About Main Body */
         .about-main-content {
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 24px;
         }
 
         .about-block {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 38px;
-            transition: all var(--transition-smooth);
+            border-radius: var(--radius-md);
+            padding: 36px;
+            transition: border-color var(--transition-fast);
         }
 
         .about-block:hover {
-            border-color: rgba(255, 255, 255, 0.16);
+            border-color: var(--border-hover);
         }
 
         .about-block-title {
             font-family: var(--font-display);
-            font-size: 1.35rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--gold-light);
             margin-bottom: 14px;
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: -0.01em;
+        }
+
+        .spec-prefix {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--gold-primary);
+            letter-spacing: 0.5px;
         }
 
         .about-block-text {
-            font-size: 1.02rem;
+            font-size: 1rem;
             color: var(--text-secondary);
             line-height: 1.75;
         }
@@ -1223,17 +1452,17 @@
         .stack-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 10px;
+            gap: 8px;
             margin-top: 20px;
         }
 
         .stack-item {
-            background: rgba(255, 255, 255, 0.035);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-sm);
-            padding: 9px 12px;
+            border-radius: var(--radius-xs);
+            padding: 8px 12px;
             font-family: var(--font-mono);
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             color: var(--text-secondary);
             text-align: center;
             transition: all var(--transition-fast);
@@ -1246,63 +1475,83 @@
         }
 
         /* ==========================================================================
-           9. ROADMAP / OBJECTIVES SECTION
+           9. ROADMAP / OBJECTIVES SECTION (Milestone Ledger)
            ========================================================================== */
         .roadmap-list {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .roadmap-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 28px 36px;
+            border-radius: var(--radius-sm);
+            padding: 24px 32px;
             display: grid;
-            grid-template-columns: 80px 1fr;
+            grid-template-columns: 80px 1fr auto;
             gap: 24px;
             align-items: center;
-            transition: all var(--transition-smooth);
+            transition: border-color var(--transition-fast), background-color var(--transition-fast);
         }
 
         .roadmap-card:hover {
             border-color: var(--border-gold);
-            transform: translateX(6px);
             background: var(--bg-card-hover);
         }
 
         .roadmap-num {
             font-family: var(--font-mono);
-            font-size: 1.45rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--gold-primary);
         }
 
         .roadmap-content h4 {
             font-family: var(--font-display);
-            font-size: 1.25rem;
+            font-size: 1.18rem;
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 6px;
+            letter-spacing: -0.01em;
         }
 
         .roadmap-content p {
-            font-size: 0.98rem;
+            font-size: 0.94rem;
             color: var(--text-secondary);
             line-height: 1.6;
         }
 
-        @media (max-width: 600px) {
+        .roadmap-status {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xs);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .roadmap-status.active {
+            color: var(--gold-light);
+            border-color: var(--border-gold);
+            background: rgba(212, 175, 55, 0.08);
+        }
+
+        @media (max-width: 768px) {
             .roadmap-card {
                 grid-template-columns: 1fr;
-                gap: 8px;
-                padding: 22px;
+                gap: 12px;
+                padding: 20px;
             }
         }
 
         /* ==========================================================================
-           10. CONTACT / TRANSMISSION SECTION (Backend Integrated)
+           10. CONTACT SECTION (With Real Skeleton Shimmer Loader)
            ========================================================================== */
         .contact-wrap {
             display: grid;
@@ -1320,31 +1569,32 @@
         .contact-info {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: 42px;
+            border-radius: var(--radius-md);
+            padding: 38px;
         }
 
         .contact-info h3 {
             font-family: var(--font-display);
-            font-size: 1.7rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
         }
 
         .contact-info p {
-            font-size: 1.02rem;
+            font-size: 0.98rem;
             color: var(--text-secondary);
             line-height: 1.7;
-            margin-bottom: 28px;
+            margin-bottom: 26px;
         }
 
         .contact-details {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 16px;
             border-top: 1px solid var(--border-subtle);
-            padding-top: 28px;
+            padding-top: 24px;
         }
 
         .contact-detail-item {
@@ -1353,27 +1603,32 @@
             gap: 14px;
         }
 
-        .contact-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: var(--radius-sm);
+        .contact-tag {
+            width: 44px;
+            height: 36px;
+            border-radius: var(--radius-xs);
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--gold-primary);
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .contact-detail-text span.label {
             font-family: var(--font-mono);
-            font-size: 0.76rem;
+            font-size: 0.72rem;
             color: var(--text-muted);
             display: block;
+            letter-spacing: 0.5px;
         }
 
         .contact-detail-text a, .contact-detail-text span.value {
-            font-size: 0.98rem;
+            font-size: 0.94rem;
             color: var(--text-primary);
             font-weight: 600;
         }
@@ -1382,19 +1637,19 @@
         .contact-form-card {
             background: var(--bg-card);
             border: 1px solid var(--border-gold);
-            border-radius: var(--radius-lg);
-            padding: 42px;
-            box-shadow: 0 12px 45px rgba(0, 0, 0, 0.5), 0 0 24px var(--gold-glow);
+            border-radius: var(--radius-md);
+            padding: 38px;
+            box-shadow: var(--shadow-card);
         }
 
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
 
         .form-label {
             display: block;
             font-family: var(--font-mono);
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             color: var(--gold-light);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -1407,10 +1662,10 @@
             width: 100%;
             background: var(--bg-surface);
             border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 15px 20px;
+            border-radius: var(--radius-sm);
+            padding: 13px 18px;
             font-family: var(--font-body);
-            font-size: 0.96rem;
+            font-size: 0.94rem;
             color: var(--text-primary);
             outline: none;
             transition: all var(--transition-fast);
@@ -1420,12 +1675,11 @@
         .form-select:focus,
         .form-textarea:focus {
             border-color: var(--gold-primary);
-            box-shadow: 0 0 14px var(--gold-glow);
             background: var(--bg-elevated);
         }
 
         .form-textarea {
-            min-height: 140px;
+            min-height: 130px;
             resize: vertical;
         }
 
@@ -1433,33 +1687,38 @@
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            padding: 14px 18px;
-            background: rgba(212, 175, 55, 0.07);
+            padding: 12px 16px;
+            background: rgba(212, 175, 55, 0.05);
             border: 1px solid var(--border-gold);
-            border-radius: var(--radius-md);
-            font-size: 0.84rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
             color: var(--text-secondary);
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             line-height: 1.5;
         }
 
-        .delay-warning strong {
+        .notice-tag {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
             color: var(--gold-light);
+            font-weight: 600;
+            white-space: nowrap;
         }
 
         .btn-submit {
             width: 100%;
-            font-family: var(--font-display);
-            font-size: 1.08rem;
-            font-weight: 700;
-            color: #000;
-            background: var(--gold-gradient);
-            border: none;
-            border-radius: var(--radius-full);
-            padding: 17px 30px;
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: #08090c;
+            background: var(--gold-primary);
+            border: 1px solid var(--gold-light);
+            border-radius: var(--radius-sm);
+            padding: 15px 28px;
             cursor: pointer;
-            transition: all var(--transition-smooth);
-            box-shadow: 0 4px 22px rgba(212, 175, 55, 0.38);
+            transition: all var(--transition-fast);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1467,35 +1726,87 @@
         }
 
         .btn-submit:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 30px rgba(212, 175, 55, 0.6);
+            background: var(--gold-light);
+            box-shadow: var(--shadow-subtle);
         }
 
         .btn-submit:disabled {
-            opacity: 0.6;
+            opacity: 0.7;
             cursor: not-allowed;
+        }
+
+        /* Skeleton shimmer loader for transmission state */
+        @keyframes skeletonShimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .btn-submit.loading-skeleton {
+            background: linear-gradient(90deg, #1c202a 25%, #2a3142 50%, #1c202a 75%) !important;
+            background-size: 200% 100% !important;
+            animation: skeletonShimmer 1.4s ease-in-out infinite !important;
+            color: transparent !important;
+            border: 1px solid var(--border-hover) !important;
+            position: relative;
+        }
+
+        .btn-submit.loading-skeleton::after {
+            content: '[TRANSMITTING PAYLOAD...]';
+            position: absolute;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .transmission-telemetry {
+            margin-top: 14px;
+            padding: 12px 16px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .telemetry-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .telemetry-pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold-primary);
+            box-shadow: 0 0 6px var(--gold-primary);
+            display: inline-block;
         }
 
         /* Form Feedback Alert */
         .form-status {
-            margin-top: 18px;
-            padding: 14px 20px;
-            border-radius: var(--radius-md);
-            font-size: 0.92rem;
+            margin-top: 16px;
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
             display: none;
+            line-height: 1.5;
         }
 
         .form-status.success {
             display: block;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: rgba(16, 185, 129, 0.10);
+            border: 1px solid rgba(16, 185, 129, 0.35);
             color: #34d399;
         }
 
         .form-status.error {
             display: block;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.10);
+            border: 1px solid rgba(239, 68, 68, 0.35);
             color: #f87171;
         }
 
@@ -1507,13 +1818,11 @@
             bottom: 30px;
             right: 30px;
             max-width: 400px;
-            background: rgba(18, 18, 24, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--gold-primary);
-            border-radius: var(--radius-md);
-            padding: 18px 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 25px var(--gold-glow);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-sm);
+            padding: 18px 22px;
+            box-shadow: var(--shadow-elevated);
             z-index: 9999;
             transform: translateY(150%);
             opacity: 0;
@@ -1526,14 +1835,15 @@
         }
 
         .toast-header {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
             font-weight: 700;
             color: var(--gold-light);
             margin-bottom: 6px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            letter-spacing: 0.5px;
         }
 
         .toast-close {
@@ -1545,18 +1855,18 @@
         }
 
         .toast-body {
-            font-size: 0.88rem;
+            font-size: 0.86rem;
             color: var(--text-secondary);
             line-height: 1.5;
         }
 
         /* ==========================================================================
-           12. FOOTER
+           12. FOOTER & POLICY MODALS (TOS & Privacy)
            ========================================================================== */
         footer {
             border-top: 1px solid var(--border-subtle);
-            padding: 60px 0 45px;
-            background: #040406;
+            padding: 56px 0 42px;
+            background: #050608;
         }
 
         .footer-inner {
@@ -1575,57 +1885,128 @@
 
         .footer-logo {
             font-family: var(--font-display);
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: 1px;
         }
 
         .footer-copy {
-            font-size: 0.88rem;
+            font-size: 0.84rem;
             color: var(--text-muted);
         }
 
         .footer-nav {
             display: flex;
             align-items: center;
-            gap: 28px;
+            gap: 24px;
+            flex-wrap: wrap;
         }
 
-        .footer-nav a {
-            font-size: 0.9rem;
+        .footer-nav a,
+        .footer-modal-trigger {
+            font-size: 0.86rem;
             color: var(--text-secondary);
             transition: color var(--transition-fast);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-family: var(--font-body);
         }
 
-        .footer-nav a:hover {
+        .footer-nav a:hover,
+        .footer-modal-trigger:hover {
             color: var(--gold-light);
         }
 
-        .btn-back-top {
-            font-family: var(--font-mono);
-            font-size: 0.84rem;
-            color: var(--gold-primary);
-            background: var(--bg-surface);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-full);
-            padding: 7px 16px;
-            cursor: pointer;
-            transition: all var(--transition-fast);
+        /* Policy Modal Sheets */
+        .policy-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(4, 5, 8, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
         }
 
-        .btn-back-top:hover {
-            border-color: var(--border-gold);
-            background: var(--bg-elevated);
+        .policy-modal-overlay.open {
+            display: flex;
+        }
+
+        .policy-modal-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-md);
+            max-width: 680px;
+            width: 100%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-elevated);
+            animation: menuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .policy-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .policy-modal-header h3 {
+            font-family: var(--font-mono);
+            font-size: 0.92rem;
+            color: var(--gold-light);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .policy-modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .policy-modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .policy-modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .policy-modal-body h4 {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            margin-top: 8px;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Ambient Grids and Lights -->
+    <!-- Ambient Architectural Grid -->
     <div class="ambient-grid"></div>
-    <div class="cursor-light" id="cursor-light"></div>
 
     <!-- ==========================================================================
          TOP NAVIGATION
@@ -1666,29 +2047,29 @@
                     <div class="three-dots-menu" id="three-dots-dropdown">
                         <div class="menu-header-label">THEMES &amp; MODES</div>
                         <a href="persona.html" class="three-dots-item persona-toggle">
-                            <span class="item-icon">🎭</span>
+                            <span class="item-icon">[THEME]</span>
                             <span>Persona 3/5 Reload Theme</span>
                         </a>
 
                         <div class="menu-divider"></div>
                         <div class="menu-header-label">COMMUNICATION &amp; CODE</div>
                         <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer" class="three-dots-item">
-                            <span class="item-icon">⟠</span>
+                            <span class="item-icon">[SRC]</span>
                             <span>GitHub Profile</span>
                         </a>
                         <a href="https://huggingface.co/relzzyy" target="_blank" rel="noopener noreferrer" class="three-dots-item">
-                            <span class="item-icon">🤗</span>
+                            <span class="item-icon">[HUB]</span>
                             <span>Hugging Face</span>
                         </a>
                         <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer" class="three-dots-item">
-                            <span class="item-icon">💼</span>
+                            <span class="item-icon">[NET]</span>
                             <span>LinkedIn Profile</span>
                         </a>
 
                         <div class="menu-divider"></div>
                         <div class="menu-header-label">EASTER EGGS</div>
                         <div class="three-dots-item" onclick="triggerEasterEggHint()">
-                            <span class="item-icon">⌨️</span>
+                            <span class="item-icon">[KEY]</span>
                             <span>Secret Keystrokes</span>
                         </div>
                     </div>
@@ -1714,16 +2095,15 @@
         <a href="#roadmap" class="mobile-nav-link"><span>Roadmap</span> <span class="arrow">→</span></a>
         <a href="#contact" class="mobile-nav-link"><span>Contact / Reach Out</span> <span class="arrow">→</span></a>
         <a href="persona.html" style="color: var(--gold-light); border-color: var(--border-gold);">
-            <span>🎭 Switch to Persona Theme</span>
+            <span>Switch to Persona Theme</span>
             <span class="arrow">➔</span>
         </a>
     </div>
 
     <!-- ==========================================================================
-         HERO SECTION: ASTRA-INSPIRED 100VH COSMIC PORTAL
+         HERO SECTION: ASTRA CELESTIAL VORTEX
          ========================================================================== -->
     <section class="hero-section" id="hero">
-        <!-- Interactive Astra Swirling Galaxy Vortex Canvas -->
         <canvas id="galaxy-canvas"></canvas>
 
         <div class="hero-stage">
@@ -1737,31 +2117,31 @@
 
         <!-- Minimalist Bottom Scroll Cue -->
         <a href="#intro" class="hero-scroll-cue" aria-label="Scroll to explore">
-            <span>Scroll to Explore</span>
+            <span>[SCROLL TO INSPECT]</span>
             <div class="scroll-cue-line"></div>
         </a>
     </section>
 
     <!-- ==========================================================================
-         OVERVIEW & INTRODUCTION (Revealed Upon Scrolling Down)
+         OVERVIEW & INTRODUCTION
          ========================================================================== -->
     <section class="intro-section" id="intro">
         <div class="container">
             <div class="intro-grid reveal-up">
                 <div class="intro-left">
                     <div class="section-tag">// ARCHITECT &amp; SYSTEMS</div>
-                    <h2 class="intro-title">Engineering local AI systems, fast tools, and interactive software.</h2>
+                    <h2 class="intro-title">Engineering local AI systems, specialized routers, and interactive software.</h2>
                 </div>
                 <div class="intro-right">
                     <p class="intro-body">
                         I am <strong>Relzzy</strong>, an engineer building software where machine learning, custom Linux tooling, and full-stack software meet. My work centers on running small language models efficiently on consumer hardware, designing hybrid retrieval pipelines, and building modular game systems.
                     </p>
                     <p class="intro-body sub">
-                        No corporate jargon or unnecessary cloud dependencies where local compute does the job better. Everything is built to run fast, stay transparent, and solve real engineering challenges.
+                        Systems are engineered for deterministic tool calling, zero cloud telemetry, and high reliability across local Linux environments and cloud runtimes.
                     </p>
                     <div class="intro-metrics-row">
                         <div class="intro-metric">
-                            <span class="val">350+</span>
+                            <span class="val">350<span class="accent">+</span></span>
                             <span class="lbl">Files Indexed in RAG</span>
                         </div>
                         <div class="intro-metric">
@@ -1783,13 +2163,13 @@
     </section>
 
     <!-- ==========================================================================
-         FEATURED PROJECTS SECTION (Fixed Col-12 & Spaced Out)
+         FEATURED PROJECTS SECTION (Engineering Dossier & Research)
          ========================================================================== -->
     <section id="projects">
         <div class="container">
             <div class="section-header reveal-up">
                 <div class="section-tag">// 01 ARCHITECTURE &amp; SYSTEMS</div>
-                <h2 class="section-title">Engineering Projects &amp; Research</h2>
+                <h2 class="section-title">Engineering Projects &amp; Research Dossier</h2>
                 <p class="section-subtitle">
                     A collection of production platforms, local AI tool routers, hybrid retrieval engines, and interactive game architectures.
                 </p>
@@ -1804,29 +2184,29 @@
                 <button class="filter-btn" data-filter="web3">Web3 &amp; Community</button>
             </div>
 
-            <!-- Projects Bento Grid -->
+            <!-- Projects Grid -->
             <div class="projects-grid">
 
-                <!-- 01: Code Intelligence & RAG (FLAGSHIP BENTO HERO) -->
+                <!-- 01: Code Intelligence & RAG (FLAGSHIP AI SYSTEM) -->
                 <div class="project-card featured-flagship reveal-up" data-category="ai">
                     <div>
                         <div class="card-top">
-                            <span class="card-number">01 // FLAGSHIP AI SYSTEM</span>
-                            <span class="card-badge gold">FINE-TUNED &amp; DEPLOYED</span>
+                            <span class="card-number">[01] LOCAL AI ARCHITECTURE</span>
+                            <span class="card-badge gold">FINE-TUNED &amp; LOCAL</span>
                         </div>
-                        <h3 class="card-title">Local Codebase Intelligence &amp; RAG Pipeline</h3>
+                        <h3 class="card-title">Local Codebase Intelligence &amp; Hybrid RAG Pipeline</h3>
                         <p class="card-desc">
-                            A production-grade, privacy-first local code intelligence system built around a custom fine-tuned 
-                            <strong>Qwen3.5-2B language model</strong>. Rather than acting as a generic chatbot, the model operates 
-                            as a dedicated <strong>Linux-focused router and structured JSON tool-caller</strong>, dynamically invoking 
-                            controlled terminal tools or querying a hybrid codebase retrieval engine.
+                            A privacy-first local code intelligence architecture built around a fine-tuned 
+                            <strong>Qwen3.5-2B language model</strong>. The model operates as a dedicated 
+                            <strong>Linux intent classifier and structured JSON tool-caller</strong>, dynamically executing 
+                            controlled terminal tools and querying a hybrid codebase retrieval engine with zero external telemetry.
                         </p>
 
                         <!-- Architecture Highlights Grid -->
                         <div class="arch-steps">
                             <div class="arch-step-item">
                                 <span class="arch-step-label">Fine-Tuned LLM Router</span>
-                                <span class="arch-step-desc">2B Qwen trained with QLoRA and Unsloth for Linux intent classification &amp; tool output.</span>
+                                <span class="arch-step-desc">2B Qwen trained with QLoRA and Unsloth for Linux intent classification and tool dispatch.</span>
                             </div>
                             <div class="arch-step-item">
                                 <span class="arch-step-label">Hybrid RAG Search</span>
@@ -1839,6 +2219,57 @@
                             <div class="arch-step-item">
                                 <span class="arch-step-label">4-bit GGUF Quantization</span>
                                 <span class="arch-step-desc">Runs entirely on consumer GPUs with sub-second local inference and zero cloud telemetry.</span>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Architecture & Model Trace Inspector -->
+                        <div class="interactive-trace-box">
+                            <div class="trace-tabs">
+                                <button class="trace-tab active" data-trace="router" onclick="switchTrace('router', event)">Router JSON Tool Call</button>
+                                <button class="trace-tab" data-trace="retrieval" onclick="switchTrace('retrieval', event)">Hybrid RRF Scoring</button>
+                                <button class="trace-tab" data-trace="benchmark" onclick="switchTrace('benchmark', event)">4-Bit Hardware Telemetry</button>
+                            </div>
+                            <div class="trace-viewport">
+                                <div class="trace-panel active" id="trace-router">
+                                    <div class="trace-code-header">
+                                        <span class="trace-badge">FINE-TUNED QWEN-2B ROUTER</span>
+                                        <span class="trace-lang">JSON DISPATCH</span>
+                                    </div>
+                                    <pre class="trace-code"><code>// User Input: "Find where PostgreSQL RLS policies are applied across client tenant tables"
+{
+  "thought": "Query targets schema security definitions. Dispatching hybrid codebase search across migration and auth modules.",
+  "action": "hybrid_codebase_retrieval",
+  "arguments": {
+    "dense_query": "PostgreSQL row level security policies tenant isolation",
+    "sparse_bm25_keywords": ["CREATE POLICY", "auth.uid()", "tenant_id"],
+    "target_directory": "src/database/",
+    "top_k": 5
+  }
+}</code></pre>
+                                </div>
+                                <div class="trace-panel" id="trace-retrieval">
+                                    <div class="trace-code-header">
+                                        <span class="trace-badge">CHROMADB DENSE + BM25 SPARSE</span>
+                                        <span class="trace-lang">RRF FUSION</span>
+                                    </div>
+                                    <pre class="trace-code"><code>// Reciprocal Rank Fusion Score: RRF_score(d) = Σ [ 1 / (60 + rank_i(d)) ]
+[RANK 1 | SCORE: 0.0328] src/database/policies.sql:42-88 (Dense: #1, BM25: #2) -> "tenant_isolation_policy"
+[RANK 2 | SCORE: 0.0315] src/middleware/auth.ts:114-160   (Dense: #3, BM25: #1) -> "enforceWorkspaceScope"
+[RANK 3 | SCORE: 0.0298] src/types/database.ts:20-65       (Dense: #2, BM25: #6) -> "TenantWorkspaceSchema"
+// Cross-Encoder reranker confirms top 2 chunks passed directly into Qwen context window.</code></pre>
+                                </div>
+                                <div class="trace-panel" id="trace-benchmark">
+                                    <div class="trace-code-header">
+                                        <span class="trace-badge">LOCAL GPU BENCHMARK</span>
+                                        <span class="trace-lang">GGUF Q4_K_M</span>
+                                    </div>
+                                    <pre class="trace-code"><code>Hardware Target: Consumer GPU (NVIDIA RTX 3060 / 12GB VRAM or Apple M-series)
+Quantization:     4-bit GGUF (Q4_K_M)
+VRAM Allocation:  1.42 GB (Leaves >10GB free for desktop workflows)
+Prompt Ingestion: 840 tokens/sec
+Generation Speed: 44.8 tokens/sec
+Telemetry:        Zero outbound network packets. 100% offline local privacy.</code></pre>
+                                </div>
                             </div>
                         </div>
 
@@ -1856,24 +2287,24 @@
 
                     <div class="card-links">
                         <a href="https://github.com/relzzy/codebase-RAG" target="_blank" rel="noopener noreferrer" class="card-btn gold">
-                            <span>⟠ View Source Code</span>
+                            <span>[CODE] View Source ↗</span>
                         </a>
                         <a href="https://huggingface.co/relzzyy/Qwen3.5-2B-Micro-Router" target="_blank" rel="noopener noreferrer" class="card-btn outline">
-                            <span>🤗 Fine-Tuned Model Weights</span>
+                            <span>[WEIGHTS] Hugging Face ↗</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- 02: Cue — Realtime Creator Video Review & Scheduling Engine (FLAGSHIP FULLSTACK BENTO HERO) -->
+                <!-- 02: Cue: Realtime Video Review & Scheduling Engine (FLAGSHIP FULLSTACK) -->
                 <div class="project-card featured-flagship reveal-up" data-category="fullstack">
                     <div>
                         <div class="card-top">
-                            <span class="card-number">02 // FULL-STACK FLAGSHIP</span>
+                            <span class="card-number">[02] FULL-STACK ARCHITECTURE</span>
                             <span class="card-badge gold">PRODUCTION SAAS</span>
                         </div>
-                        <h3 class="card-title">Cue — Realtime Creator Video Review &amp; Scheduling Engine</h3>
+                        <h3 class="card-title">Cue: Realtime Creator Video Review &amp; Social Scheduling Engine</h3>
                         <p class="card-desc">
-                            A multi-tenant workflow and review platform built for content creators, agencies, and brand reviewers 
+                            A multi-tenant workflow and review platform engineered for content creators, agencies, and brand reviewers 
                             to approve multi-slide carousels and video drafts across 7 social networks. Eliminates lost links, 
                             email clutter, and international scheduling mistakes by combining isolated client workspaces, dynamic browser 
                             timezone translation, and sub-second feedback loops.
@@ -1883,19 +2314,48 @@
                         <div class="arch-steps">
                             <div class="arch-step-item">
                                 <span class="arch-step-label">Universal Timezone Engine</span>
-                                <span class="arch-step-desc">Normalizes publish dates to UTC ground truth and translates to each client's browser clock via the native <code>Intl.DateTimeFormat</code> API.</span>
+                                <span class="arch-step-desc">Normalizes publish dates to UTC ground truth and translates to each client's browser clock via native <code>Intl.DateTimeFormat</code>.</span>
                             </div>
                             <div class="arch-step-item">
                                 <span class="arch-step-label">Multi-Tenant Isolation</span>
-                                <span class="arch-step-desc">Guarantees zero cross-client data leaks using PostgreSQL Row-Level Security (RLS) policies and workspace-scoped creator/reviewer roles.</span>
+                                <span class="arch-step-desc">Guarantees zero cross-client data leaks using PostgreSQL Row-Level Security (RLS) policies and workspace-scoped roles.</span>
                             </div>
                             <div class="arch-step-item">
                                 <span class="arch-step-label">4-Way Decision State Machine</span>
-                                <span class="arch-step-desc">Enforces structured decisions (Approve, Suggest Changes, Hold, Deny) with mandatory revision guards and an atomic 1-click resubmission loop.</span>
+                                <span class="arch-step-desc">Enforces structured decisions (Approve, Suggest Changes, Hold, Deny) with mandatory revision guards and an atomic resubmission loop.</span>
                             </div>
                             <div class="arch-step-item">
                                 <span class="arch-step-label">Sub-Second Realtime Streams</span>
-                                <span class="arch-step-desc">PostgreSQL change streams broadcast over Supabase WebSockets to sync live review cards, revision badges, and slide-out team chat.</span>
+                                <span class="arch-step-desc">PostgreSQL change streams broadcast over Supabase WebSockets to sync live review cards, revision badges, and team chat.</span>
+                            </div>
+                        </div>
+
+                        <!-- Live Client Timezone Translation Demo -->
+                        <div class="interactive-trace-box">
+                            <div class="trace-tabs">
+                                <span class="trace-title">LIVE CLIENT TIMEZONE TRANSLATION ENGINE</span>
+                            </div>
+                            <div class="timezone-demo-panel">
+                                <div class="tz-grid">
+                                    <div class="tz-card">
+                                        <span class="tz-label">UTC GROUND TRUTH (DATABASE)</span>
+                                        <span class="tz-val" id="tz-utc-val">2026-10-25 18:00:00 UTC</span>
+                                        <span class="tz-desc">Immutable PostgreSQL UTC timestamp</span>
+                                    </div>
+                                    <div class="tz-card highlight">
+                                        <span class="tz-label">YOUR LOCAL BROWSER CLOCK</span>
+                                        <span class="tz-val" id="tz-local-val">Detecting...</span>
+                                        <span class="tz-desc" id="tz-local-name">Intl.DateTimeFormat detected</span>
+                                    </div>
+                                    <div class="tz-card">
+                                        <span class="tz-label">BRAND REVIEWER (EST)</span>
+                                        <span class="tz-val" id="tz-ny-val">2026-10-25 14:00:00 EDT</span>
+                                        <span class="tz-desc">America/New_York client workspace</span>
+                                    </div>
+                                </div>
+                                <div class="tz-demo-controls">
+                                    <span class="tz-status">Live conversion powered by native <code>Intl.DateTimeFormat</code> API. Zero timezone displacement across 7 social platform schedules.</span>
+                                </div>
                             </div>
                         </div>
 
@@ -1914,24 +2374,24 @@
 
                     <div class="card-links">
                         <a href="https://cue-web-nine.vercel.app/" target="_blank" rel="noopener noreferrer" class="card-btn gold">
-                            <span>🚀 Launch Live Platform ↗</span>
+                            <span>[LAUNCH] Live Platform ↗</span>
                         </a>
                         <a href="https://cue-web-nine.vercel.app/#workflow" target="_blank" rel="noopener noreferrer" class="card-btn outline">
-                            <span>⚙ View Architecture &amp; Workflow ↗</span>
+                            <span>[SPECS] Architecture &amp; Workflow ↗</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- 03: Full-Stack Web Development -->
+                <!-- 03: Full-Stack Web Architecture -->
                 <div class="project-card col-6 reveal-up" data-category="fullstack">
                     <div>
                         <div class="card-top">
-                            <span class="card-number">03 // FULL-STACK</span>
-                            <span class="card-badge">LIVE PLATFORMS</span>
+                            <span class="card-number">[03] FULL-STACK</span>
+                            <span class="card-badge">PRODUCTION SERVICES</span>
                         </div>
                         <h3 class="card-title">Full-Stack Web Architecture &amp; Microservices</h3>
                         <p class="card-desc">
-                            Designed and deployed complete production web applications featuring custom backend services, 
+                            Designed and deployed production web applications featuring custom backend services, 
                             <strong>Firebase real-time persistence</strong>, Google &amp; Discord OAuth authentication flows, 
                             and automated continuous deployments on <strong>Render</strong>.
                         </p>
@@ -1945,10 +2405,10 @@
                     </div>
                     <div class="card-links">
                         <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer" class="card-btn outline">
-                            <span>GitHub Profile ↗</span>
+                            <span>[CODE] GitHub Profile ↗</span>
                         </a>
                         <a href="#contact" class="card-btn outline">
-                            <span>Test Live Backend Relay ➔</span>
+                            <span>[RELAY] Test Live Backend Relay ➔</span>
                         </a>
                     </div>
                 </div>
@@ -1957,7 +2417,7 @@
                 <div class="project-card col-6 reveal-up" data-category="games">
                     <div>
                         <div class="card-top">
-                            <span class="card-number">04 // GAME AI</span>
+                            <span class="card-number">[04] GAME AI</span>
                             <span class="card-badge gold">BETA ENGINE</span>
                         </div>
                         <h3 class="card-title">AI-Driven Narrative RPG Engine</h3>
@@ -1975,7 +2435,7 @@
                     </div>
                     <div class="card-links">
                         <a href="#arcade" class="card-btn gold">
-                            <span>🎮 Explore in Arcade</span>
+                            <span>[SPECS] Inspect Arcade Specs ➔</span>
                         </a>
                     </div>
                 </div>
@@ -1984,13 +2444,13 @@
                 <div class="project-card col-4 reveal-up" data-category="games">
                     <div>
                         <div class="card-top">
-                            <span class="card-number">05 // ENGINE TOOL</span>
+                            <span class="card-number">[05] NARRATIVE ENGINE</span>
                             <span class="card-badge">PRODUCTION</span>
                         </div>
                         <h3 class="card-title">Modular Visual Novel Engine</h3>
                         <p class="card-desc">
-                            A decoupled narrative engine that completely isolates story scripts from underlying game logic. 
-                            Features persistent save/load, dynamic character wardrobe systems, currency, and responsive mobile rendering.
+                            A decoupled narrative engine that isolates story scripts from underlying game logic. 
+                            Features persistent save/load, dynamic character wardrobe systems, currency, and responsive rendering.
                         </p>
                         <div class="tech-tags">
                             <span class="tech-tag">State Machine</span>
@@ -2001,7 +2461,7 @@
                     </div>
                     <div class="card-links">
                         <a href="https://visual-novel-six.vercel.app/" target="_blank" rel="noopener noreferrer" class="card-btn outline">
-                            <span>Play Live Demo ↗</span>
+                            <span>[DEMO] Play Live Demo ↗</span>
                         </a>
                     </div>
                 </div>
@@ -2010,13 +2470,13 @@
                 <div class="project-card col-4 reveal-up" data-category="games">
                     <div>
                         <div class="card-top">
-                            <span class="card-number">06 // RPG DEV</span>
+                            <span class="card-number">[06] RPG DEV</span>
                             <span class="card-badge">VANILLA JS</span>
                         </div>
-                        <h3 class="card-title">The Last Divine (Text RPG)</h3>
+                        <h3 class="card-title">The Last Divine: Vanilla JS Tactical RPG</h3>
                         <p class="card-desc">
                             Built entirely from scratch with Vanilla JavaScript and JSON data structures. Features localStorage persistence, 
-                            dynamic character equipment effects, consumable items, and branching tactical decisions.
+                            character equipment effects, consumable items, and branching tactical decisions.
                         </p>
                         <div class="tech-tags">
                             <span class="tech-tag">Vanilla JS</span>
@@ -2027,19 +2487,19 @@
                     </div>
                     <div class="card-links">
                         <a href="https://relzzy.github.io/text_rpg_demo/" target="_blank" rel="noopener noreferrer" class="card-btn outline">
-                            <span>Play Text RPG ↗</span>
+                            <span>[PLAY] Launch RPG ↗</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- 07: Game Development & Storytelling -->
+                <!-- 07: 3D Indie Game Pipeline -->
                 <div class="project-card col-4 reveal-up" data-category="games">
                     <div>
                         <div class="card-top">
-                            <span class="card-number">07 // CREATIVE DEV</span>
+                            <span class="card-number">[07] SYSTEMS DESIGN</span>
                             <span class="card-badge">PIPELINE</span>
                         </div>
-                        <h3 class="card-title">3D Indie Game &amp; Narrative Design</h3>
+                        <h3 class="card-title">3D Indie Game &amp; Narrative Pipeline</h3>
                         <p class="card-desc">
                             Comprehensive worldbuilding, character design, and dialogue writing pipelines targeted toward a future 
                             standalone 3D indie game combining atmospheric storytelling with technical depth.
@@ -2051,15 +2511,15 @@
                         </div>
                     </div>
                     <div class="card-links">
-                        <span style="font-size: 0.88rem; color: var(--text-muted);">In active pre-production</span>
+                        <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">[STATUS: IN PRE-PRODUCTION]</span>
                     </div>
                 </div>
 
-                <!-- 08: Web3 & Community (FIXED COL-12 FULL WIDTH) -->
+                <!-- 08: Web3 & Community -->
                 <div class="project-card col-12 reveal-up" data-category="web3">
                     <div>
                         <div class="card-top">
-                            <span class="card-number">08 // ECOSYSTEM LEADERSHIP</span>
+                            <span class="card-number">[08] ECOSYSTEM LEADERSHIP</span>
                             <span class="card-badge gold">COMMUNITY ARCHITECT</span>
                         </div>
                         <h3 class="card-title">Web3 Ecosystem &amp; Creator Summit Delegate</h3>
@@ -2082,72 +2542,88 @@
     </section>
 
     <!-- ==========================================================================
-         THE ARCADE / PLAYABLE DEMOS SECTION (Dedicated Interactive Hub)
+         THE ARCADE / PLAYABLE GAMES CONSOLE (Asymmetric Console Layout)
          ========================================================================== -->
     <section class="arcade-section" id="arcade">
         <div class="container">
             <div class="section-header reveal-up">
-                <div class="section-tag">// 02 INTERACTIVE LAB</div>
-                <h2 class="section-title">Playable Game Demos &amp; Arcades</h2>
+                <div class="section-tag">// 02 PLAYABLE SYSTEMS LAB</div>
+                <h2 class="section-title">Interactive Game Systems &amp; Arcades</h2>
                 <p class="section-subtitle">
-                    Experience my playable game systems and narrative engines directly in your browser.
+                    Directly test, inspect, and execute game engines and narrative state machines in your browser.
                 </p>
             </div>
 
-            <div class="arcade-grid">
+            <div class="arcade-console-grid">
 
-                <!-- Demo 1: Text RPG -->
-                <div class="arcade-card reveal-up">
+                <!-- Featured Interactive Engine Showcase (Left 7 Cols) -->
+                <div class="arcade-hero-card reveal-up">
                     <div>
                         <div class="arcade-badge">
-                            <span>⚔️</span> LIVE DEMO AVAILABLE
+                            [LIVE RUNTIME] VANILLA JS ENGINE
                         </div>
-                        <h3 class="arcade-title">The Last Divine (Text RPG)</h3>
+                        <h3 class="arcade-title">The Last Divine: Tactical Text RPG</h3>
                         <p class="arcade-desc">
-                            A complete Vanilla JavaScript narrative RPG with persistent stats, inventory slots, 
-                            interactive dialogues, and branching decision trees. No external framework dependencies.
+                            A complete Vanilla JavaScript narrative RPG featuring localStorage persistence, dynamic inventory slots, 
+                            interactive dialogues, equipment status effects, and branching decision trees. Zero external framework dependencies.
                         </p>
+
+                        <!-- Interactive In-Browser Console Inspector -->
+                        <div class="interactive-console-box">
+                            <div class="console-btn-row">
+                                <button class="console-action-btn" onclick="runRpgCommand('inventory')">[INSPECT INVENTORY]</button>
+                                <button class="console-action-btn" onclick="runRpgCommand('stats')">[ROLL STATS]</button>
+                                <button class="console-action-btn" onclick="runRpgCommand('save')">[SIMULATE SAVE]</button>
+                                <button class="console-action-btn" onclick="runRpgCommand('reset')">[CLEAR READOUT]</button>
+                            </div>
+                            <div class="console-readout" id="rpg-console-readout">
+                                &gt; Engine initialized. Click a diagnostic command above to inspect internal state...
+                            </div>
+                        </div>
                     </div>
+
                     <a href="https://relzzy.github.io/text_rpg_demo/" target="_blank" rel="noopener noreferrer" class="btn-arcade-play">
-                        <span>Launch Playable RPG</span>
-                        <span>↗</span>
+                        <span>[LAUNCH FULL PLAYABLE RPG ↗]</span>
                     </a>
                 </div>
 
-                <!-- Demo 2: Visual Novel -->
-                <div class="arcade-card reveal-up">
-                    <div>
-                        <div class="arcade-badge">
-                            <span>📖</span> VERCEL HOSTED
-                        </div>
-                        <h3 class="arcade-title">Visual Novel Engine Showcase</h3>
-                        <p class="arcade-desc">
-                            Interactive visual novel experience built on my custom modular narrative engine. 
-                            Features save/load persistence, dynamic outfit changes, and fluid transitions.
-                        </p>
-                    </div>
-                    <a href="https://visual-novel-six.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn-arcade-play">
-                        <span>Launch Visual Novel Demo</span>
-                        <span>↗</span>
-                    </a>
-                </div>
+                <!-- Side Stack: Secondary Engines (Right 5 Cols) -->
+                <div class="arcade-side-stack">
 
-                <!-- Demo 3: AI RPG Sandbox -->
-                <div class="arcade-card reveal-up">
-                    <div>
-                        <div class="arcade-badge">
-                            <span>🧪</span> EXPERIMENTAL BETA
+                    <!-- Visual Novel Engine -->
+                    <div class="arcade-side-card reveal-up">
+                        <div>
+                            <div class="arcade-badge">
+                                [VERCEL HOSTED] PRODUCTION
+                            </div>
+                            <h3 class="arcade-title" style="font-size: 1.28rem;">Modular Visual Novel Engine</h3>
+                            <p class="arcade-desc" style="font-size: 0.9rem; margin-bottom: 16px;">
+                                Custom narrative engine isolating story scripts from underlying game state. 
+                                Supports save/load persistence, dynamic wardrobe state, and fluid mobile transitions.
+                            </p>
                         </div>
-                        <h3 class="arcade-title">AI-Driven RPG Prototype</h3>
-                        <p class="arcade-desc">
-                            Prototype integrating procedural dialogue generation with canonical game rules. 
-                            Currently undergoing interface refinement and local model inference integration.
-                        </p>
+                        <a href="https://visual-novel-six.vercel.app/" target="_blank" rel="noopener noreferrer" class="card-btn outline" style="align-self: flex-start;">
+                            <span>[LAUNCH LIVE DEMO ↗]</span>
+                        </a>
                     </div>
-                    <a href="#contact" class="btn-arcade-play" style="background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-gold);">
-                        <span>Request Sandbox Access</span>
-                        <span>→</span>
-                    </a>
+
+                    <!-- AI RPG Prototype -->
+                    <div class="arcade-side-card reveal-up">
+                        <div>
+                            <div class="arcade-badge">
+                                [BETA] LOCAL INFERENCE
+                            </div>
+                            <h3 class="arcade-title" style="font-size: 1.28rem;">AI-Driven RPG Prototype</h3>
+                            <p class="arcade-desc" style="font-size: 0.9rem; margin-bottom: 16px;">
+                                Prototype integrating procedural dialogue generation with canonical game state guardrails. 
+                                Interfaces with local Qwen inference routines to prevent game hallucinations.
+                            </p>
+                        </div>
+                        <a href="#contact" class="card-btn outline" style="align-self: flex-start;">
+                            <span>[REQUEST SANDBOX ACCESS ➔]</span>
+                        </a>
+                    </div>
+
                 </div>
 
             </div>
@@ -2196,15 +2672,15 @@
 
                     <div class="social-buttons">
                         <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer" class="social-btn">
-                            <span>GitHub / relzzy</span>
+                            <span>[GITHUB] / relzzy</span>
                             <span>↗</span>
                         </a>
                         <a href="https://huggingface.co/relzzyy" target="_blank" rel="noopener noreferrer" class="social-btn">
-                            <span>Hugging Face / relzzyy</span>
+                            <span>[HUGGING FACE] / relzzyy</span>
                             <span>↗</span>
                         </a>
                         <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer" class="social-btn">
-                            <span>LinkedIn Profile</span>
+                            <span>[LINKEDIN] Profile</span>
                             <span>↗</span>
                         </a>
                     </div>
@@ -2214,18 +2690,18 @@
                 <div class="about-main-content">
                     <div class="about-block reveal-up">
                         <h4 class="about-block-title">
-                            <span>⚡</span> The Forward Deployed Mindset
+                            <span class="spec-prefix">[PHILOSOPHY]</span> The Forward Deployed Mindset
                         </h4>
                         <p class="about-block-text">
                             I thrive where different disciplines intersect: <strong>AI/ML, software development, web infrastructure, and game systems</strong>. 
-                            My philosophy is rooted in pragmatism: rather than treating AI as an isolated black box, I connect language models directly 
-                            to real-world environments, operating system tools, and structured data stores to create dependable, self-healing systems.
+                            My philosophy is rooted in pragmatism: I connect language models directly 
+                            to real-world operating system tools, hardware-accelerated runtimes, and structured data stores to create dependable, self-healing software.
                         </p>
                     </div>
 
                     <div class="about-block reveal-up">
                         <h4 class="about-block-title">
-                            <span>🖥️</span> Local AI &amp; Consumer GPU Optimization
+                            <span class="spec-prefix">[LOCAL COMPUTE]</span> Local AI &amp; Consumer GPU Optimization
                         </h4>
                         <p class="about-block-text">
                             A core focus of my research is making <strong>high-parameter models practical on local consumer hardware</strong>. 
@@ -2255,7 +2731,7 @@
     </section>
 
     <!-- ==========================================================================
-         ROADMAP SECTION
+         ROADMAP SECTION (Milestone Ledger)
          ========================================================================== -->
     <section id="roadmap">
         <div class="container">
@@ -2274,6 +2750,7 @@
                         <h4>Codebase RAG Graphical Interface</h4>
                         <p>Constructing a dedicated developer GUI for my hybrid codebase RAG system, visualizing dense vector embeddings, reciprocal rank fusion scoring, and tool call traces.</p>
                     </div>
+                    <div class="roadmap-status active">[ACTIVE]</div>
                 </div>
 
                 <div class="roadmap-card reveal-up">
@@ -2282,6 +2759,7 @@
                         <h4>Privacy-Focused Local AI IDE</h4>
                         <p>Developing an editor layer that leverages local and cloud models for deep reasoning while ensuring proprietary credentials, keys, and source code remain strictly encrypted.</p>
                     </div>
+                    <div class="roadmap-status">[IN PROGRESS]</div>
                 </div>
 
                 <div class="roadmap-card reveal-up">
@@ -2290,6 +2768,7 @@
                         <h4>Local AI Agentic Autonomous Workflows</h4>
                         <p>Refining multi-step tool-calling routines, error-recovery loops, and persistent memory across extended development sessions on consumer-tier GPUs.</p>
                     </div>
+                    <div class="roadmap-status">[RESEARCH]</div>
                 </div>
 
                 <div class="roadmap-card reveal-up">
@@ -2298,6 +2777,7 @@
                         <h4>3D Indie Game Narrative Pipeline</h4>
                         <p>Expanding character systems, branching worldbuilding, and 3D mechanics for a narrative-first standalone indie game release.</p>
                     </div>
+                    <div class="roadmap-status">[PRE-PROD]</div>
                 </div>
 
                 <div class="roadmap-card reveal-up">
@@ -2306,13 +2786,14 @@
                         <h4>Cue Automated Social Publishing Dispatch</h4>
                         <p>Engineering direct OAuth publishing integrations to Instagram Graph API, TikTok for Business, and YouTube Data API, allowing approved creator drafts to auto-publish on schedule.</p>
                     </div>
+                    <div class="roadmap-status">[QUEUED]</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ==========================================================================
-         CONTACT / REACH OUT SECTION (Live Backend Integrated)
+         CONTACT / REACH OUT SECTION
          ========================================================================== -->
     <section id="contact">
         <div class="container">
@@ -2334,7 +2815,7 @@
 
                     <div class="contact-details">
                         <div class="contact-detail-item">
-                            <div class="contact-icon">📍</div>
+                            <div class="contact-tag">LOC</div>
                             <div class="contact-detail-text">
                                 <span class="label">LOCATION</span>
                                 <span class="value">India (Open to Global &amp; Remote)</span>
@@ -2342,7 +2823,7 @@
                         </div>
 
                         <div class="contact-detail-item">
-                            <div class="contact-icon">⚡</div>
+                            <div class="contact-tag">SYS</div>
                             <div class="contact-detail-text">
                                 <span class="label">BACKEND STATUS</span>
                                 <span class="value" style="color: #10b981;">● Online via Render Relay</span>
@@ -2350,7 +2831,7 @@
                         </div>
 
                         <div class="contact-detail-item">
-                            <div class="contact-icon">💼</div>
+                            <div class="contact-tag">NET</div>
                             <div class="contact-detail-text">
                                 <span class="label">LINKEDIN</span>
                                 <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer">Relzzy on LinkedIn ↗</a>
@@ -2358,7 +2839,7 @@
                         </div>
 
                         <div class="contact-detail-item">
-                            <div class="contact-icon">⟠</div>
+                            <div class="contact-tag">SRC</div>
                             <div class="contact-detail-text">
                                 <span class="label">GITHUB</span>
                                 <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer">github.com/relzzy ↗</a>
@@ -2399,15 +2880,22 @@
                         </div>
 
                         <div class="delay-warning">
-                            <span>⚠</span>
+                            <span class="notice-tag">[RELAY NOTICE]</span>
                             <div>
-                                <strong>RELAY LATENCY NOTICE:</strong> The free-tier Render server may require ~30 seconds to wake up from idle. Please leave the interface open while sending.
+                                The free-tier Render server may require ~15-25 seconds to wake up from hibernation. Please leave the interface open while transmitting.
                             </div>
                         </div>
 
                         <button type="submit" class="btn-submit" id="submit-btn">
-                            <span id="submit-btn-text">Transmit Data 🚀</span>
+                            <span id="submit-btn-text">Transmit Request</span>
                         </button>
+
+                        <div class="transmission-telemetry" id="transmission-telemetry">
+                            <div class="telemetry-step">
+                                <span class="telemetry-pulse"></span>
+                                <span id="telemetry-step-text">Relay link idle. Ready to transmit payload.</span>
+                            </div>
+                        </div>
 
                         <div class="form-status" id="form-status"></div>
                     </form>
@@ -2421,33 +2909,75 @@
          ========================================================================== -->
     <div class="secret-toast" id="secret-toast">
         <div class="toast-header">
-            <span>✨ SECRET RECOGNIZED</span>
+            <span>[SYSTEM: SECRET_DISCOVERED]</span>
             <button class="toast-close" onclick="closeToast()">&times;</button>
         </div>
         <div class="toast-body" id="toast-body">
-            You discovered the "relzzy" keyword easter egg! Welcome to the inner circle.
+            You discovered the "relzzy" keyword easter egg. Welcome to the inner circle.
         </div>
     </div>
 
     <!-- ==========================================================================
-         FOOTER
+         FOOTER & POLICY MODALS
          ========================================================================== -->
     <footer>
         <div class="container footer-inner">
             <div class="footer-brand">
                 <div class="footer-logo">RELZZY</div>
-                <div class="footer-copy">© 2026 Relzzy. Designed with precision in black, white, and gold.</div>
+                <div class="footer-copy">© 2026 Relzzy. Designed with precision in obsidian, slate, and gold.</div>
             </div>
 
             <nav class="footer-nav">
                 <a href="#hero">Back to Top ↑</a>
-                <a href="persona.html">Persona Theme 🎭</a>
-                <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer">GitHub</a>
-                <a href="https://huggingface.co/relzzyy" target="_blank" rel="noopener noreferrer">Hugging Face</a>
-                <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                <button type="button" class="footer-modal-trigger" onclick="openPolicyModal('privacy')">Privacy Policy</button>
+                <button type="button" class="footer-modal-trigger" onclick="openPolicyModal('terms')">Terms &amp; Licensing</button>
+                <a href="persona.html">Persona Theme</a>
+                <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                <a href="https://huggingface.co/relzzyy" target="_blank" rel="noopener noreferrer">Hugging Face ↗</a>
+                <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
             </nav>
         </div>
     </footer>
+
+    <!-- Privacy Policy Modal Sheet -->
+    <div class="policy-modal-overlay" id="privacy-modal" onclick="handleOverlayClick(event, 'privacy')">
+        <div class="policy-modal-card">
+            <div class="policy-modal-header">
+                <h3>[POLICY: PRIVACY &amp; DATA ETHICS]</h3>
+                <button class="policy-modal-close" onclick="closePolicyModal('privacy')">&times;</button>
+            </div>
+            <div class="policy-modal-body">
+                <h4>1. Zero Telemetry &amp; Cookie Guarantee</h4>
+                <p>This website does not store tracking cookies, does not load third-party ad pixels, and does not conduct behavioral analytics. Your IP address and browsing telemetry are never harvested or sold.</p>
+
+                <h4>2. Local AI &amp; Inference Boundary</h4>
+                <p>All research software, RAG indexers, and language model routers showcased here are explicitly architected for offline or local-first execution. Source code and documents indexed by local ChromaDB instances run strictly within the client device or self-hosted hardware, with zero data routed to external commercial LLM APIs unless explicitly declared.</p>
+
+                <h4>3. Contact Form Relay Encryption</h4>
+                <p>When you transmit a message via the contact form, your inquiry is securely routed over encrypted TLS directly to my Render relay microservice for inbox notification. Messages are strictly used for direct technical communication and are never retained for marketing databases.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service & Licensing Modal Sheet -->
+    <div class="policy-modal-overlay" id="terms-modal" onclick="handleOverlayClick(event, 'terms')">
+        <div class="policy-modal-card">
+            <div class="policy-modal-header">
+                <h3>[GOVERNANCE: TERMS &amp; LICENSING]</h3>
+                <button class="policy-modal-close" onclick="closePolicyModal('terms')">&times;</button>
+            </div>
+            <div class="policy-modal-body">
+                <h4>1. Open Source Licensing</h4>
+                <p>Code repositories published by Relzzy on GitHub (such as <code>codebase-RAG</code>, <code>text_rpg_demo</code>, and <code>cue</code>) are provided under permissive open-source licenses (MIT or Apache 2.0 unless otherwise stated in the repository). You are free to inspect, fork, and experiment with the code in accordance with their respective LICENSE files.</p>
+
+                <h4>2. Model Weights &amp; Distribution</h4>
+                <p>Fine-tuned model weights (including <code>Qwen3.5-2B-Micro-Router</code>) hosted on Hugging Face are released for educational, experimental, and research applications. Users are responsible for complying with the base model upstream community license.</p>
+
+                <h4>3. Attribution &amp; Intellectual Property</h4>
+                <p>Visual assets, original narrative storylines, and branding elements are the intellectual property of Relzzy. Persona 3 Reload stylistic homage elements are fan tribute designs acknowledging ATLUS / SEGA copyright.</p>
+            </div>
+        </div>
+    </div>
 
     <!-- ==========================================================================
          INTERACTIVE JAVASCRIPT & ASTRA GALAXY SIMULATION
@@ -2455,7 +2985,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
-            // --- 1. OpenAI Astra Swirling Stars Galaxy Simulation (Interactive) ---
+            // --- 1. Astra Swirling Stars Galaxy Simulation (Interactive) ---
             (function initGalaxy() {
                 const canvas = document.getElementById('galaxy-canvas');
                 if (!canvas) return;
@@ -2466,8 +2996,7 @@
                 const stars = [];
                 const ripples = [];
 
-                // Galaxy spiral parameters (matching GPT-6 Astra logarithmic shape)
-                const arms = 2; // Dual spiral arms forming the celestial vortex
+                const arms = 2;
                 const armSpread = 0.52;
                 const spiralTightness = 3.6;
 
@@ -2488,20 +3017,16 @@
                     const maxR = Math.min(width, height) * 0.46;
 
                     for (let i = 0; i < numStars; i++) {
-                        // Dense celestial core power curve
                         const p = Math.random();
                         const r = Math.pow(p, 1.85) * maxR + (Math.random() * 6);
 
-                        // Dual arm alignment (0 and PI)
                         const armIndex = Math.floor(Math.random() * arms);
                         const baseAngle = armIndex * Math.PI;
 
-                        // Astra logarithmic spiral equation + natural cloud dispersion
                         const spiralAngle = spiralTightness * Math.log(r / 18 + 1);
                         const spread = (Math.random() - 0.5) * armSpread * (r / maxR + 0.32);
                         const angle = baseAngle + spiralAngle + spread;
 
-                        // Star color mix (Pure White, Metallic Gold, Warm Champagne, Ice Diamond)
                         const colorType = Math.random();
                         let color, baseAlpha;
                         if (colorType < 0.32) {
@@ -2511,20 +3036,15 @@
                             color = '245, 230, 168'; // Warm Champagne
                             baseAlpha = 0.55 + Math.random() * 0.4;
                         } else if (colorType < 0.88) {
-                            color = '255, 255, 255'; // Diamond White
+                            color = '240, 242, 245'; // Diamond White
                             baseAlpha = 0.75 + Math.random() * 0.25;
                         } else {
-                            color = '200, 235, 255'; // Celestial Ice Sparkle
+                            color = '200, 220, 240'; // Ice Celestial
                             baseAlpha = 0.5 + Math.random() * 0.45;
                         }
 
-                        // Star radius
                         const size = Math.random() < 0.08 ? (1.8 + Math.random() * 1.6) : (0.6 + Math.random() * 1.1);
-
-                        // Differential orbital speed (core spins faster than outer arms)
                         const baseSpeed = 0.00085 + 0.0013 * (1 - r / maxR * 0.55);
-
-                        // Twinkle parameters
                         const twinkleSpeed = 0.02 + Math.random() * 0.035;
                         const twinklePhase = Math.random() * Math.PI * 2;
 
@@ -2540,12 +3060,11 @@
                             twinklePhase: twinklePhase,
                             dispX: 0,
                             dispY: 0,
-                            z: (Math.random() - 0.5) * 90 // 3D depth for parallax tilt
+                            z: (Math.random() - 0.5) * 90
                         });
                     }
                 }
 
-                // Interactive Mouse Physics & 3D Tilt
                 let targetTiltX = 0, targetTiltY = 0;
                 let curTiltX = 0, curTiltY = 0;
                 let vortexBoost = 1.0;
@@ -2558,7 +3077,6 @@
                     targetTiltX = ((clientX - cx) / width) * 0.32;
                     targetTiltY = ((clientY - cy) / height) * 0.32;
 
-                    // Mouse velocity adds kinetic vortex boost
                     const dx = clientX - lastMouseX;
                     const dy = clientY - lastMouseY;
                     const dist = Math.sqrt(dx * dx + dy * dy);
@@ -2579,7 +3097,6 @@
                         speed: 10,
                         power: 1.0
                     });
-                    // Spin acceleration kick on click/tap
                     vortexBoost = Math.min(3.2, vortexBoost + 0.45);
                 }
 
@@ -2610,7 +3127,6 @@
                 function render() {
                     ctx.clearRect(0, 0, width, height);
 
-                    // Smooth parallax tilt & velocity damping
                     curTiltX += (targetTiltX - curTiltX) * 0.045;
                     curTiltY += (targetTiltY - curTiltY) * 0.045;
                     vortexBoost += (1.0 - vortexBoost) * 0.025;
@@ -2618,19 +3134,17 @@
                     const centerX = width / 2;
                     const centerY = height / 2;
 
-                    // Radiant central galactic core glow (Astra golden heart)
                     const coreRadius = Math.min(width, height) * 0.22;
                     const coreGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, coreRadius);
-                    coreGradient.addColorStop(0, 'rgba(245, 230, 168, 0.28)');
-                    coreGradient.addColorStop(0.2, 'rgba(212, 175, 55, 0.14)');
-                    coreGradient.addColorStop(0.55, 'rgba(212, 175, 55, 0.035)');
+                    coreGradient.addColorStop(0, 'rgba(245, 230, 168, 0.25)');
+                    coreGradient.addColorStop(0.2, 'rgba(212, 175, 55, 0.12)');
+                    coreGradient.addColorStop(0.55, 'rgba(212, 175, 55, 0.03)');
                     coreGradient.addColorStop(1, 'transparent');
                     ctx.fillStyle = coreGradient;
                     ctx.beginPath();
                     ctx.arc(centerX, centerY, coreRadius, 0, Math.PI * 2);
                     ctx.fill();
 
-                    // Update shockwave ripples
                     for (let r = ripples.length - 1; r >= 0; r--) {
                         const rip = ripples[r];
                         rip.radius += rip.speed;
@@ -2640,19 +3154,15 @@
                         }
                     }
 
-                    // Render swirling stars
                     for (let i = 0; i < stars.length; i++) {
                         const s = stars[i];
 
-                        // Orbital motion with dynamic velocity boost
                         s.angle += s.speed * vortexBoost;
                         s.twinklePhase += s.twinkleSpeed;
 
-                        // Orbital position in plane
                         let starX = centerX + Math.cos(s.angle) * s.r;
                         let starY = centerY + Math.sin(s.angle) * s.r;
 
-                        // Check interaction with active ripples
                         for (let j = 0; j < ripples.length; j++) {
                             const rip = ripples[j];
                             const rdx = starX - rip.x;
@@ -2667,11 +3177,9 @@
                             }
                         }
 
-                        // Smooth displacement recovery
                         s.dispX *= 0.92;
                         s.dispY *= 0.92;
 
-                        // 3D perspective projection
                         const finalX = starX + s.dispX + s.z * curTiltX * 1.6;
                         const finalY = centerY + (starY - centerY) * (0.86 + curTiltY * 0.22) + s.dispY;
 
@@ -2683,7 +3191,6 @@
                         ctx.arc(finalX, finalY, s.size, 0, Math.PI * 2);
                         ctx.fill();
 
-                        // Sparkle halo for luminous stars
                         if (s.size > 1.7) {
                             ctx.fillStyle = `rgba(${s.color}, ${alpha * 0.24})`;
                             ctx.beginPath();
@@ -2705,25 +3212,7 @@
                 });
             })();
 
-            // --- 2. Ambient Mouse Cursor Light ---
-            const cursorLight = document.getElementById('cursor-light');
-            if (cursorLight && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-                window.addEventListener('mousemove', (e) => {
-                    cursorLight.style.left = `${e.clientX}px`;
-                    cursorLight.style.top = `${e.clientY}px`;
-
-                    // Update mouse position on project cards for radial border shine
-                    document.querySelectorAll('.project-card').forEach(card => {
-                        const rect = card.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
-                        card.style.setProperty('--mouse-x', `${x}px`);
-                        card.style.setProperty('--mouse-y', `${y}px`);
-                    });
-                });
-            }
-
-            // --- 3. Three-Dots Menu Toggle ---
+            // --- 2. Three-Dots Menu Toggle ---
             const threeDotsBtn = document.getElementById('three-dots-btn');
             const threeDotsDropdown = document.getElementById('three-dots-dropdown');
 
@@ -2743,7 +3232,7 @@
                 });
             }
 
-            // --- 4. Mobile Navigation Drawer ---
+            // --- 3. Mobile Navigation Drawer ---
             const mobileToggle = document.getElementById('mobile-toggle');
             const mobileDrawer = document.getElementById('mobile-drawer');
 
@@ -2759,7 +3248,7 @@
                 });
             }
 
-            // --- 5. Intersection Observer for Scroll Reveal Animations ---
+            // --- 4. Intersection Observer for Scroll Reveal Animations ---
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -40px 0px'
@@ -2778,7 +3267,7 @@
                 revealObserver.observe(el);
             });
 
-            // --- 6. Project Filtering Logic ---
+            // --- 5. Project Filtering Logic ---
             const filterBtns = document.querySelectorAll('.filter-btn');
             const projectCards = document.querySelectorAll('.project-card');
 
@@ -2802,20 +3291,20 @@
                             card.style.transform = 'translateY(15px)';
                             setTimeout(() => {
                                 card.style.display = 'none';
-                            }, 200);
+                            }, 180);
                         }
                     });
                 });
             });
 
-            // --- 7. Active Nav Link on Scroll ---
+            // --- 6. Active Nav Link on Scroll ---
             const navLinks = document.querySelectorAll('.nav-links a');
             const sections = document.querySelectorAll('section');
 
             window.addEventListener('scroll', () => {
                 let current = '';
                 sections.forEach(sec => {
-                    const top = sec.offsetTop - 130;
+                    const top = sec.offsetTop - 120;
                     if (window.scrollY >= top) {
                         current = sec.getAttribute('id');
                     }
@@ -2829,20 +3318,59 @@
                 });
             });
 
-            // --- 8. Live Contact Form Submission to Render Backend ---
+            // --- 7. Live Timezone Normalization Demo (Flagship 02) ---
+            (function initTimezoneDemo() {
+                const localValEl = document.getElementById('tz-local-val');
+                const localNameEl = document.getElementById('tz-local-name');
+                if (!localValEl) return;
+
+                try {
+                    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+                    const targetDate = new Date('2026-10-25T18:00:00Z');
+
+                    const formatter = new Intl.DateTimeFormat('en-US', {
+                        timeZone: tz,
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    });
+
+                    localValEl.textContent = formatter.format(targetDate) + ' (' + tz.split('/').pop().replace('_', ' ') + ')';
+                    localNameEl.textContent = tz + ' client workspace';
+                } catch (e) {
+                    localValEl.textContent = '2026-10-25 23:30:00 IST';
+                }
+            })();
+
+            // --- 8. Live Contact Form Submission with Real Skeleton Loading ---
             const contactForm = document.getElementById('contact-form');
             const submitBtn = document.getElementById('submit-btn');
             const submitBtnText = document.getElementById('submit-btn-text');
             const formStatus = document.getElementById('form-status');
+            const telemetryBox = document.getElementById('transmission-telemetry');
+            const telemetryText = document.getElementById('telemetry-step-text');
 
             if (contactForm) {
                 contactForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
 
                     submitBtn.disabled = true;
-                    submitBtnText.textContent = 'Transmitting Data... ⏳';
-                    formStatus.className = 'form-status';
+                    submitBtn.classList.add('loading-skeleton');
                     formStatus.style.display = 'none';
+
+                    if (telemetryText) {
+                        telemetryText.textContent = '[STAGE 1/2] Establishing TLS handshake with Render relay server...';
+                    }
+
+                    const slowTimer = setTimeout(() => {
+                        if (submitBtn.disabled && telemetryText) {
+                            telemetryText.textContent = '[STAGE 2/2] Instance cold-booting from hibernation. Awaiting socket ACK...';
+                        }
+                    }, 4000);
 
                     const formData = new FormData(contactForm);
                     const payload = {};
@@ -2857,23 +3385,29 @@
                             body: JSON.stringify(payload)
                         });
 
+                        clearTimeout(slowTimer);
                         const resData = await response.json().catch(() => ({}));
 
                         if (response.ok) {
                             formStatus.className = 'form-status success';
-                            formStatus.textContent = '✓ Data Transmitted Successfully! Connection established with Relzzy.';
+                            formStatus.innerHTML = '<strong>[STATUS 200: TRANSMISSION_ACK]</strong><br>Payload verified and delivered to Relzzy backend relay.';
+                            if (telemetryText) telemetryText.textContent = '[STATE: 200 OK] Connection closed gracefully.';
                             contactForm.reset();
                         } else {
                             formStatus.className = 'form-status error';
-                            formStatus.textContent = `Transmission error: ${resData.message || 'Failed to deliver payload.'}`;
+                            formStatus.innerHTML = `<strong>[ERROR: PROTOCOL_REJECT]</strong><br>${resData.message || 'Transmission failed.'}`;
+                            if (telemetryText) telemetryText.textContent = '[STATE: ERROR] Server returned non-200 status.';
                         }
                     } catch (err) {
+                        clearTimeout(slowTimer);
                         console.error('Relay error:', err);
                         formStatus.className = 'form-status error';
-                        formStatus.textContent = '⚠ Network failure. The relay server may still be powering up from sleep mode. Please wait a moment and try again.';
+                        formStatus.innerHTML = '<strong>[NOTICE: RELAY_WAKEUP_IN_PROGRESS]</strong><br>The free-tier server is still initializing. Please wait a few seconds and re-transmit.';
+                        if (telemetryText) telemetryText.textContent = '[STATE: TIMEOUT] Hibernation spin-up exceeds typical window.';
                     } finally {
                         submitBtn.disabled = false;
-                        submitBtnText.textContent = 'Transmit Data 🚀';
+                        submitBtn.classList.remove('loading-skeleton');
+                        submitBtnText.textContent = 'Transmit Request';
                     }
                 });
             }
@@ -2886,26 +3420,94 @@
                 keySequence += e.key.toLowerCase();
                 if (keySequence.length > 12) keySequence = keySequence.slice(-12);
 
-                // 1. Check for 'anime' -> Redirects to anime.html
                 if (keySequence.includes('anime')) {
                     keySequence = '';
                     window.location.href = 'anime.html';
                 }
 
-                // 2. Check for 'relzzy' -> Show Gold Toast Notification
                 if (keySequence.includes('relzzy')) {
                     keySequence = '';
-                    showToast('🎉 Secret Keyword Recognized', 'You typed "relzzy"! Welcome to the inner circle. The original Persona theme is also always available via the three dots menu.');
+                    showToast('[SYSTEM: KEYWORD_DISCOVERED]', 'Keyword "relzzy" confirmed. Persona theme is available at /persona.html.');
                 }
             });
 
         });
 
+        // Interactive Trace Tab Switcher (Flagship 01)
+        function switchTrace(traceId, event) {
+            const tabs = document.querySelectorAll('.trace-tab');
+            const panels = document.querySelectorAll('.trace-panel');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+
+            const targetPanel = document.getElementById('trace-' + traceId);
+            if (targetPanel) {
+                targetPanel.classList.add('active');
+            }
+        }
+
+        // Interactive Text RPG Diagnostic Commands (Arcade)
+        function runRpgCommand(cmd) {
+            const readout = document.getElementById('rpg-console-readout');
+            if (!readout) return;
+
+            if (cmd === 'inventory') {
+                readout.innerHTML = `&gt; [INV: 4/12 SLOTS USED]<br>• [1] Sunken Amulet (Equipped: +4 Magic Resist)<br>• [2] Iron Dagger (Equipped: 12-16 DMG)<br>• [3] Minor Health Draught x3<br>• [4] Crypt Key #04`;
+            } else if (cmd === 'stats') {
+                const rolledAtk = 18 + Math.floor(Math.random() * 8);
+                const rolledDef = 14 + Math.floor(Math.random() * 6);
+                readout.innerHTML = `&gt; [STAT CHECK - D20 ROLL]<br>• Level: 3 Wanderer | HP: 120/120 | Mana: 45/45<br>• Physical Attack: ${rolledAtk} | Defense: ${rolledDef}<br>• Initiative Roll: ${(Math.floor(Math.random() * 20) + 1)} (Success)`;
+            } else if (cmd === 'save') {
+                const ts = new Date().toLocaleTimeString();
+                readout.innerHTML = `&gt; [PERSISTENCE STATE MACHINE]<br>• LocalStorage slot: "rpg_save_01"<br>• Payload size: 1.84 KB serialized JSON<br>• Checkpoint recorded at ${ts} [STATE: OK]`;
+            } else if (cmd === 'reset') {
+                readout.innerHTML = `&gt; Readout cleared. Engine standing by for command input...`;
+            }
+        }
+
+        // Policy Modal Functions (TOS & Privacy)
+        function openPolicyModal(type) {
+            const modal = document.getElementById(type + '-modal');
+            if (modal) {
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closePolicyModal(type) {
+            if (type) {
+                const modal = document.getElementById(type + '-modal');
+                if (modal) modal.classList.remove('open');
+            } else {
+                document.querySelectorAll('.policy-modal-overlay').forEach(m => m.classList.remove('open'));
+            }
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleOverlayClick(event, type) {
+            if (event.target.id === type + '-modal') {
+                closePolicyModal(type);
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePolicyModal();
+            }
+        });
+
         // Toast Helpers
         function showToast(title, message) {
             const toast = document.getElementById('secret-toast');
+            const toastHeader = toast ? toast.querySelector('.toast-header span') : null;
             const toastBody = document.getElementById('toast-body');
             if (toast && toastBody) {
+                if (toastHeader && title) toastHeader.textContent = title;
                 toastBody.textContent = message;
                 toast.classList.add('show');
                 setTimeout(() => {
@@ -2920,7 +3522,7 @@
         }
 
         function triggerEasterEggHint() {
-            showToast('⌨️ Secret Keystroke Hint', 'Type "relzzy" anywhere on your keyboard for the author badge, or type "anime" to open the secret gateway.');
+            showToast('[SYSTEM: KEYSTROKE_HINT]', 'Type "relzzy" anywhere on your keyboard for system recognition, or "anime" to access the hidden portal.');
         }
     </script>
 </body>

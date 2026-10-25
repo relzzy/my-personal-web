@@ -907,39 +907,39 @@
                 <h3>How the system works</h3>
                 <ul class="numbered-list">
                     <li>
-                        <strong>Fine-Tuned LLM Router —</strong> A <strong>2B-parameter Qwen3.5 model</strong>
+                        <strong>Fine-Tuned LLM Router:</strong> A <strong>2B-parameter Qwen3.5 model</strong>
                         fine-tuned using
                         <strong>QLoRA and Unsloth</strong>. It classifies the user's intent and produces structured JSON
                         tool calls. The training data is focused on
                         <strong>Linux commands, system operations, codebase queries, and tool usage</strong>.
                     </li>
                     <li>
-                        <strong>Codebase Retrieval —</strong> When a question requires understanding the project itself,
+                        <strong>Codebase Retrieval:</strong> When a question requires understanding the project itself,
                         the request is sent to the RAG pipeline rather than directly to the terminal.
                     </li>
                     <li>
-                        <strong>Hybrid Search —</strong> The RAG system combines <strong>dense vector search using
+                        <strong>Hybrid Search:</strong> The RAG system combines <strong>dense vector search using
                             ChromaDB</strong> with <strong>BM25 keyword search</strong>. This allows it to find both
                         semantically related code and exact matches such as function names, variables, filenames, and
                         technical terms.
                     </li>
                     <li>
-                        <strong>Reciprocal Rank Fusion —</strong> Results from the different search methods are combined
+                        <strong>Reciprocal Rank Fusion:</strong> Results from the different search methods are combined
                         using <strong>RRF (Reciprocal Rank Fusion)</strong>, producing a stronger combined ranking
                         instead of relying on a single search method.
                     </li>
                     <li>
-                        <strong>Cross-Encoder Re-ranking —</strong> The most relevant results are then passed through a
+                        <strong>Cross-Encoder Re-ranking:</strong> The most relevant results are then passed through a
                         <strong>cross-encoder reranker</strong> to improve the final selection of context given to the
                         language model.
                     </li>
                     <li>
-                        <strong>Linux Tool Integration —</strong> System-level questions can be routed to controlled
+                        <strong>Linux Tool Integration:</strong> System-level questions can be routed to controlled
                         Linux tools for things such as <strong>file discovery, logs, processes, memory usage and system
                             inspection</strong>.
                     </li>
                     <li>
-                        <strong>Final Response —</strong> The retrieved code or system information is passed to an LLM
+                        <strong>Final Response:</strong> The retrieved code or system information is passed to an LLM
                         to produce a grounded response based on the available evidence.
                     </li>
                 </ul>
@@ -963,7 +963,7 @@
 
             <!-- 02: Cue Creator Review Platform -->
             <div class="project-section" id="cue-platform">
-                <h2>Cue — Realtime Creator Video Review &amp; Scheduling Engine</h2>
+                <h2>Cue: Realtime Creator Video Review &amp; Scheduling Engine</h2>
                 <p>
                     <strong>Cue</strong> is a multi-tenant creator review and scheduling platform engineered to streamline 
                     video drafts, carousel reviews, revision tracking, and client approvals. In agency and creator workflows, 
@@ -979,35 +979,35 @@
                 <h3>System Architecture &amp; Core Engineering</h3>
                 <ul class="numbered-list">
                     <li>
-                        <strong>Universal Timezone Normalization Engine —</strong> To eliminate timezone errors when coordinating 
+                        <strong>Universal Timezone Normalization Engine:</strong> To eliminate timezone errors when coordinating 
                         cross-continent social campaigns, all schedule timestamps are persisted to PostgreSQL in strict UTC ground truth. 
                         The frontend dynamically queries the user's runtime device clock using ECMAScript's native 
                         <strong>Intl.DateTimeFormat API</strong>, automatically rendering local publishing times alongside universal UTC indicators.
                     </li>
                     <li>
-                        <strong>Multi-Tenant PostgreSQL Data Isolation —</strong> Tenant security is enforced at the database layer 
+                        <strong>Multi-Tenant PostgreSQL Data Isolation:</strong> Tenant security is enforced at the database layer 
                         using <strong>PostgreSQL Row-Level Security (RLS)</strong> policies coupled with email whitelisting. Client organizations 
                         are sandboxed into dedicated workspaces with custom branding and logos, guaranteeing zero cross-tenant data leakage 
                         of drafts, feedback notes, or unreleased assets.
                     </li>
                     <li>
-                        <strong>Workspace-Scoped Role-Based Access Control (RBAC) —</strong> Configured granular database permissions 
+                        <strong>Workspace-Scoped Role-Based Access Control (RBAC):</strong> Configured granular database permissions 
                         allowing a user to act with <strong>Creator permissions</strong> (uploading drafts, modifying slide orders, triggering resubmissions) 
                         in one workspace, while holding <strong>Reviewer permissions</strong> (issuing approvals and logging revision notes) in another.
                     </li>
                     <li>
-                        <strong>4-Way Review Decision State Machine —</strong> Implemented a deterministic approval pipeline featuring 
+                        <strong>4-Way Review Decision State Machine:</strong> Implemented a deterministic approval pipeline featuring 
                         four explicit states: <strong>Approve, Suggest Changes, Put on Hold, and Deny</strong>. Guarded by form-level and schema-level validation 
                         requiring mandatory revision notes before review submission, followed by an atomic 1-click resubmission loop that resets 
                         updated drafts directly back to <em>Pending Review</em>.
                     </li>
                     <li>
-                        <strong>Sub-Second Realtime Streams —</strong> Subscribed the client dashboard to Supabase Realtime WebSocket 
+                        <strong>Sub-Second Realtime Streams:</strong> Subscribed the client dashboard to Supabase Realtime WebSocket 
                         channels listening directly to PostgreSQL change data capture (CDC). Status updates, reviewer notes, and slide-out 
                         team chat messages synchronize across all active viewers with sub-second latency and zero manual page polling.
                     </li>
                     <li>
-                        <strong>Multi-Format Media Review Canvas —</strong> Engineered specialized inspection flows for 
+                        <strong>Multi-Format Media Review Canvas:</strong> Engineered specialized inspection flows for 
                         <strong>4:5 portrait carousels</strong> (including slide navigation, safe-zone overlays, and visual hook frameworks), 
                         vertical short-form video (TikTok, Instagram Reels, YouTube Shorts), and external review embeds from Loom, Google Drive, 
                         Frame.io, and Figma.
@@ -1091,7 +1091,7 @@
 
             <!-- 05: The Last Divine -->
             <div class="project-section" id="last-divine">
-                <h2>The Last Divine — Text RPG</h2>
+                <h2>The Last Divine: Text RPG</h2>
                 <p>
                     One of my earlier projects was <strong>The Last Divine</strong>, a text-based RPG built from scratch
                     with Vanilla JavaScript and JSON. I designed it around a modular game system rather than a simple

@@ -1287,18 +1287,37 @@
         /* Arcade Horizontal Floating Gallery */
         .arcade-floating-gallery {
             display: flex;
-            gap: 28px;
+            gap: 24px;
             overflow-x: auto;
+            overflow-y: hidden;
             scroll-snap-type: x mandatory;
-            padding-bottom: 24px;
+            scroll-behavior: smooth;
+            padding: 8px 4px 28px 4px;
             scrollbar-width: thin;
-            touch-action: pan-y;
+            scrollbar-color: rgba(242, 139, 157, 0.45) transparent;
+            touch-action: pan-x pan-y;
             -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+        }
+
+        .arcade-floating-gallery::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .arcade-floating-gallery::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+        }
+
+        .arcade-floating-gallery::-webkit-scrollbar-thumb {
+            background: rgba(242, 139, 157, 0.5);
+            border-radius: 999px;
         }
 
         .arcade-glass-card {
             flex: 0 0 clamp(290px, 42vw, 420px);
             scroll-snap-align: start;
+            scroll-snap-stop: always;
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
@@ -1311,6 +1330,19 @@
             min-height: 360px;
             box-shadow: 0 16px 40px rgba(242, 139, 157, 0.16);
             transition: all 260ms var(--ease-out);
+        }
+
+        @media (max-width: 640px) {
+            .arcade-floating-gallery {
+                gap: 16px;
+                padding: 4px 16px 24px 4px;
+                scroll-padding-left: 4px;
+            }
+            .arcade-glass-card {
+                flex: 0 0 85vw;
+                padding: 24px 20px;
+                min-height: auto;
+            }
         }
 
         @media (hover: hover) and (pointer: fine) {
@@ -1743,8 +1775,8 @@
                         </div>
 
                         <div class="portal-media-stage">
-                            <video src="images/projects.mp4" autoplay loop muted playsinline poster="images/cue_preview.jpg"></video>
-                            <div class="portal-overlay-badge">MULTI-TENANT RBAC • LIVE DEMO</div>
+                            <img src="images/cue.png" alt="Cue Realtime Creator Review Platform UI" loading="lazy">
+                            <div class="portal-overlay-badge">MULTI-TENANT RBAC • LIVE PLATFORM</div>
                         </div>
                     </article>
 
@@ -1808,7 +1840,7 @@
                         <!-- 05: Visual Novel Engine -->
                         <article class="portal-compact-card reveal-node" data-category="games">
                             <div class="portal-compact-media">
-                                <video src="images/sona.mp4" autoplay loop muted playsinline poster="images/vn_preview.jpg"></video>
+                                <img src="images/visual_novel.png" alt="Modular Visual Novel Engine" loading="lazy">
                                 <div class="portal-overlay-badge">DECOUPLED ENGINE • LIVE ANIME SHADER</div>
                             </div>
                             <div>
@@ -1834,7 +1866,7 @@
                         <!-- 06: The Last Divine -->
                         <article class="portal-compact-card reveal-node" data-category="games">
                             <div class="portal-compact-media">
-                                <img src="images/text_rpg_preview.jpg" alt="The Last Divine Text RPG" loading="lazy">
+                                <img src="images/text_rpg.png" alt="The Last Divine Text RPG" loading="lazy">
                                 <div class="portal-overlay-badge">VANILLA JS • ZERO DEPENDENCIES • INVENTORY ENGINE</div>
                             </div>
                             <div>
@@ -2001,7 +2033,7 @@
                 <div class="arcade-floating-gallery">
                     <div class="arcade-glass-card">
                         <div class="arcade-card-media">
-                            <img src="images/text_rpg_preview.jpg" alt="The Last Divine Text RPG Preview" loading="lazy">
+                            <img src="images/text_rpg.png" alt="The Last Divine Text RPG Preview" loading="lazy">
                         </div>
                         <div>
                             <div class="portal-num">PROTOTYPE // 01</div>
@@ -2017,7 +2049,7 @@
 
                     <div class="arcade-glass-card">
                         <div class="arcade-card-media">
-                            <video src="images/sona.mp4" autoplay loop muted playsinline poster="images/vn_preview.jpg"></video>
+                            <img src="images/visual_novel.png" alt="Visual Novel Engine Preview" loading="lazy">
                         </div>
                         <div>
                             <div class="portal-num">PROTOTYPE // 02</div>

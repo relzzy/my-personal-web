@@ -340,6 +340,18 @@
                 banner.classList.remove('show');
             }, 4000);
         }
+
+        // Video lifecycle management
+        const charVideo = document.querySelector('video.character-art');
+        if (charVideo) {
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    charVideo.pause();
+                } else {
+                    charVideo.play().catch(() => {});
+                }
+            });
+        }
     </script>
 
 </body>

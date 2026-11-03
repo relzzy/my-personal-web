@@ -1205,6 +1205,18 @@
                     window.location.href = 'index.html';
                 }
             });
+
+            // Video lifecycle management
+            const bgVideo = document.querySelector('video.bg-video');
+            if (bgVideo) {
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        bgVideo.pause();
+                    } else {
+                        bgVideo.play().catch(() => {});
+                    }
+                });
+            }
         });
     </script>
 </body>

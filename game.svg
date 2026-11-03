@@ -2318,8 +2318,22 @@
 
         playerEl.setAttribute('transform', `translate(${state.x}, ${state.y})`);
 
-        requestAnimationFrame(gameLoop);
+        if (!isGamePaused) {
+          requestAnimationFrame(gameLoop);
+        }
       }
+
+      let isGamePaused = false;
+      window.addEventListener('message', (e) => {
+        if (e.data === 'pause-game') {
+          isGamePaused = true;
+        } else if (e.data === 'resume-game') {
+          if (isGamePaused) {
+            isGamePaused = false;
+            requestAnimationFrame(gameLoop);
+          }
+        }
+      });
 
       updateCharacterFacing('down');
       requestAnimationFrame(gameLoop);

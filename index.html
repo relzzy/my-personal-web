@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,600;1,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Three.js (r128), GLTFLoader, and Model Data Assets (Zero-CORS Local & Web) -->
+    <!-- Three.js (r128) and GLTFLoader (Binary Streaming with on-demand zero-CORS local fallback) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="assets/js/GLTFLoader.js"></script>
     <script>
@@ -30,9 +30,6 @@
             document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"><\/script>');
         }
     </script>
-    <script src="assets/models/ship_in_clouds_data.js"></script>
-    <script defer src="assets/models/stylised_sky_data.js"></script>
-    <script defer src="assets/models/cloud_station_data.js"></script>
 
     <style>
         /* ==========================================================================
@@ -461,8 +458,9 @@
             height: 100vh;
             height: 100dvh;
             background: rgba(248, 232, 231, 0.98);
-            backdrop-filter: blur(32px);
-            -webkit-backdrop-filter: blur(32px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transform: translateZ(0);
             z-index: 100000;
             padding-top: calc(90px + env(safe-area-inset-top, 0px));
             padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px));
@@ -818,13 +816,14 @@
             gap: clamp(32px, 5vw, 64px);
             align-items: center;
             background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: clamp(28px, 4.5vw, 56px);
             box-shadow: 0 24px 60px rgba(70, 110, 140, 0.15);
             position: relative;
+            transform: translateZ(0);
             transition: transform 300ms var(--ease-out), box-shadow 300ms var(--ease-out), border-color 300ms var(--ease-out);
         }
 
@@ -1427,12 +1426,13 @@
 
         .profile-glass-card {
             background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: clamp(28px, 4.5vw, 48px);
             box-shadow: 0 20px 50px rgba(242, 139, 157, 0.18);
+            transform: translateZ(0);
         }
 
         .profile-spec-row {
@@ -1456,12 +1456,13 @@
         /* Live Contact Form Transmission */
         .contact-glass-form {
             background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: clamp(28px, 4.5vw, 54px);
             box-shadow: 0 24px 60px rgba(242, 139, 157, 0.22);
+            transform: translateZ(0);
         }
 
         .form-glass-input,
@@ -1599,6 +1600,129 @@
                 opacity: 1 !important;
                 transform: none !important;
             }
+        }
+
+        /* ==========================================================================
+           PERFORMANCE DIAGNOSTICS HUD
+           ========================================================================== */
+        #perf-hud {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999999;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, monospace, sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--ink-primary);
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            box-shadow: 0 12px 36px rgba(40, 60, 80, 0.16);
+            padding: 10px 14px;
+            pointer-events: auto;
+            user-select: none;
+            transition: all 220ms ease;
+            transform: translateZ(0);
+            min-width: 190px;
+        }
+
+        #perf-hud.is-minimized .perf-hud-details,
+        #perf-hud.is-minimized .perf-hud-controls {
+            display: none;
+        }
+
+        .perf-hud-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .perf-hud-status-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .perf-hud-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+            transition: all 200ms ease;
+        }
+        .perf-hud-status-dot.tier-balanced {
+            background: #3b82f6;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+        .perf-hud-status-dot.tier-performance {
+            background: #f59e0b;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+        }
+
+        .perf-hud-tier-badge {
+            background: rgba(28, 28, 36, 0.08);
+            border-radius: 5px;
+            padding: 2px 7px;
+            font-size: 10px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--ink-primary);
+        }
+
+        .perf-hud-details {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(28, 28, 36, 0.09);
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 4px 14px;
+        }
+
+        .perf-hud-details span.label {
+            color: var(--ink-secondary);
+        }
+
+        .perf-hud-details span.val {
+            font-weight: 600;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .perf-hud-controls {
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(28, 28, 36, 0.06);
+            display: flex;
+            gap: 4px;
+        }
+
+        .perf-hud-btn {
+            background: rgba(28, 28, 36, 0.05);
+            border: 1px solid rgba(28, 28, 36, 0.1);
+            border-radius: 5px;
+            padding: 3px 6px;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 150ms ease;
+            color: var(--ink-secondary);
+        }
+        .perf-hud-btn:hover {
+            background: rgba(28, 28, 36, 0.12);
+            color: var(--ink-primary);
+        }
+        .perf-hud-btn.active {
+            background: var(--ink-primary);
+            color: #fff;
+            border-color: var(--ink-primary);
         }
     </style>
 </head>
@@ -2261,6 +2385,30 @@
         </div>
     </div>
 
+    <!-- Performance Diagnostics HUD -->
+    <div id="perf-hud" class="is-minimized" title="Click to expand performance diagnostics (or press 'P')">
+        <div class="perf-hud-header" id="perf-hud-toggle">
+            <div class="perf-hud-status-wrapper">
+                <span class="perf-hud-status-dot" id="perf-status-dot"></span>
+                <span id="perf-fps-display">60 FPS</span>
+            </div>
+            <span class="perf-hud-tier-badge" id="perf-tier-badge">HIGH</span>
+        </div>
+        <div class="perf-hud-details" id="perf-hud-details">
+            <span class="label">Frame Time</span><span class="val" id="perf-dt-display">16.6 ms</span>
+            <span class="label">Draw Calls</span><span class="val" id="perf-calls-display">--</span>
+            <span class="label">Triangles</span><span class="val" id="perf-tris-display">--</span>
+            <span class="label">DPR / Res</span><span class="val" id="perf-res-display">--</span>
+            <span class="label">Shadow Mode</span><span class="val" id="perf-shadow-display">--</span>
+        </div>
+        <div class="perf-hud-controls">
+            <button class="perf-hud-btn active" data-tier="auto">Auto</button>
+            <button class="perf-hud-btn" data-tier="high">High</button>
+            <button class="perf-hud-btn" data-tier="balanced">Balanced</button>
+            <button class="perf-hud-btn" data-tier="performance">Perf</button>
+        </div>
+    </div>
+
     <!-- ==========================================================================
            6. SCRIPT: THREE.JS SURREAL 3D ENGINE, WATER, SOUND SYNTH & INTERACTIONS
            ========================================================================== -->
@@ -2349,6 +2497,7 @@
                     if (cursorRing) {
                         cursorRing.style.opacity = '1';
                     }
+                    triggerCursor();
                 });
 
                 document.addEventListener('mouseleave', () => {
@@ -2360,18 +2509,30 @@
                     if (hasMoved) {
                         if (cursorDot) cursorDot.style.opacity = '1';
                         if (cursorRing) cursorRing.style.opacity = '1';
+                        triggerCursor();
                     }
                 });
 
-                function renderCursor() {
-                    ringX += (mouseX - ringX) * 0.14;
-                    ringY += (mouseY - ringY) * 0.14;
+                let cursorRafId = null;
+                function updateCursor() {
+                    const dx = mouseX - ringX;
+                    const dy = mouseY - ringY;
+                    ringX += dx * 0.16;
+                    ringY += dy * 0.16;
                     if (cursorRing) {
                         cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
                     }
-                    requestAnimationFrame(renderCursor);
+                    if (Math.abs(dx) > 0.08 || Math.abs(dy) > 0.08) {
+                        cursorRafId = requestAnimationFrame(updateCursor);
+                    } else {
+                        cursorRafId = null;
+                    }
                 }
-                renderCursor();
+                function triggerCursor() {
+                    if (!cursorRafId) {
+                        cursorRafId = requestAnimationFrame(updateCursor);
+                    }
+                }
 
                 document.querySelectorAll('[data-cursor]').forEach(el => {
                     el.addEventListener('mouseenter', () => {
@@ -2385,25 +2546,96 @@
                 });
             }
 
-            // --- C. Three.js Surreal 3D Water & Architecture World ---
+            // --- C. Three.js Surreal 3D Water & Architecture World (Adaptive GPU Performance Engine) ---
             (function initThreeScene() {
                 const canvas = document.getElementById('webgl-stage');
                 if (!canvas || typeof THREE === 'undefined') return;
 
                 const isMobileDevice = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+
+                // ==========================================================
+                // 1. ADAPTIVE RENDERING QUALITY TIERS & CONTROLLER
+                // ==========================================================
+                const QUALITY_TIERS = {
+                    HIGH: {
+                        id: 'high',
+                        name: 'High Quality',
+                        shortName: 'HIGH',
+                        dprCap: 1.25,        // Capped to prevent 4K/5K desktop fillrate saturation
+                        mobileDprCap: 1.5,
+                        targetFps: 60,
+                        minFrameMs: 1000 / 60 - 1.0,
+                        waterSegments: 64,
+                        shadows: true,
+                        shadowMapSize: 1024,
+                        shadowThrottleMs: 60,
+                        waterWaveCount: 3
+                    },
+                    BALANCED: {
+                        id: 'balanced',
+                        name: 'Balanced',
+                        shortName: 'BALANCED',
+                        dprCap: 1.0,         // Clean 1:1 pixel rendering
+                        mobileDprCap: 1.15,
+                        targetFps: 60,
+                        minFrameMs: 1000 / 60 - 1.0,
+                        waterSegments: 36,
+                        shadows: true,
+                        shadowMapSize: 512,
+                        shadowThrottleMs: 150,
+                        waterWaveCount: 2
+                    },
+                    PERFORMANCE: {
+                        id: 'performance',
+                        name: 'Performance',
+                        shortName: 'PERF',
+                        dprCap: 0.85,        // Downscaled lightweight buffer with hardware upscale
+                        mobileDprCap: 0.85,
+                        targetFps: 30,
+                        minFrameMs: 1000 / 30 - 1.0,
+                        waterSegments: 20,
+                        shadows: false,
+                        shadowMapSize: 256,
+                        shadowThrottleMs: 0,
+                        waterWaveCount: 1
+                    }
+                };
+
+                // Initial tier selection
+                let currentTier = isMobileDevice
+                    ? QUALITY_TIERS.BALANCED
+                    : ((navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 8) ? QUALITY_TIERS.HIGH : QUALITY_TIERS.BALANCED);
+
+                let manualTierOverride = null; // null for Auto, or 'high'|'balanced'|'performance'
+                let frameTimeEma = 16.6;
+                let lastTierChangeTime = performance.now();
+                let sustainedSlowMs = 0;
+                let sustainedFastMs = 0;
+
+                // Renderer initialization
+                const effectiveInitialDpr = isMobileDevice ? currentTier.mobileDprCap : currentTier.dprCap;
                 const renderer = new THREE.WebGLRenderer({
                     canvas: canvas,
                     alpha: true,
                     antialias: !isMobileDevice,
-                    powerPreference: 'high-performance'
+                    powerPreference: 'high-performance',
+                    precision: isMobileDevice ? 'mediump' : 'highp'
                 });
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobileDevice ? 1.5 : 2));
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, effectiveInitialDpr));
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
                 renderer.toneMappingExposure = 1.15;
-                if (!isMobileDevice) {
-                    renderer.shadowMap.enabled = true;
-                    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                renderer.outputEncoding = THREE.sRGBEncoding;
+
+                // Demand-driven shadow map
+                renderer.shadowMap.enabled = currentTier.shadows;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                renderer.shadowMap.autoUpdate = false; // Demand-driven updates to save GPU cycles
+                let shadowNeedsUpdate = true;
+                let lastShadowUpdateTime = 0;
+
+                function requestShadowUpdate() {
+                    shadowNeedsUpdate = true;
                 }
 
                 const scene = new THREE.Scene();
@@ -2413,34 +2645,39 @@
                 camera.position.set(0, 3.8, 17);
                 camera.lookAt(0, 2.2, 0);
 
-                // Lighting
+                // Lighting Rig
                 const ambientLight = new THREE.AmbientLight(0xfff0ea, 1.2);
                 scene.add(ambientLight);
 
                 const sunLight = new THREE.DirectionalLight(0xfff5ea, 1.8);
                 sunLight.position.set(20, 35, 15);
-                if (!isMobileDevice) {
-                    sunLight.castShadow = true;
-                    sunLight.shadow.mapSize.width = 1024;
-                    sunLight.shadow.mapSize.height = 1024;
-                    sunLight.shadow.camera.near = 0.5;
-                    sunLight.shadow.camera.far = 80;
-                    sunLight.shadow.camera.left = -25;
-                    sunLight.shadow.camera.right = 25;
-                    sunLight.shadow.camera.top = 25;
-                    sunLight.shadow.camera.bottom = -25;
-                    sunLight.shadow.bias = -0.0005;
-                }
+                sunLight.castShadow = currentTier.shadows;
+                sunLight.shadow.mapSize.width = currentTier.shadowMapSize;
+                sunLight.shadow.mapSize.height = currentTier.shadowMapSize;
+                sunLight.shadow.camera.near = 0.5;
+                sunLight.shadow.camera.far = 80;
+                sunLight.shadow.camera.left = -25;
+                sunLight.shadow.camera.right = 25;
+                sunLight.shadow.camera.top = 25;
+                sunLight.shadow.camera.bottom = -25;
+                sunLight.shadow.bias = -0.0005;
                 scene.add(sunLight);
 
                 const fillLight = new THREE.DirectionalLight(0xd5ecf5, 1.1);
                 fillLight.position.set(-20, 20, -10);
                 scene.add(fillLight);
 
-                // 1. Procedural Reflective Water Plane (48x48 on mobile for silky 60fps, 96x96 on desktop)
-                const waterSegments = isMobileDevice ? 48 : 96;
-                const waterGeometry = new THREE.PlaneGeometry(160, 160, waterSegments, waterSegments);
-                waterGeometry.rotateX(-Math.PI / 2);
+                // ==========================================================
+                // 2. PROCEDURAL REFLECTIVE WATER PLANE (POOLED GEOMETRIES)
+                // ==========================================================
+                const waterGeoPool = {
+                    64: new THREE.PlaneGeometry(160, 160, 64, 64),
+                    36: new THREE.PlaneGeometry(160, 160, 36, 36),
+                    20: new THREE.PlaneGeometry(160, 160, 20, 20)
+                };
+                waterGeoPool[64].rotateX(-Math.PI / 2);
+                waterGeoPool[36].rotateX(-Math.PI / 2);
+                waterGeoPool[20].rotateX(-Math.PI / 2);
 
                 const waterMaterial = new THREE.ShaderMaterial({
                     uniforms: {
@@ -2448,11 +2685,13 @@
                         uDepthColor: { value: new THREE.Color(0x3a96a5) },
                         uSurfaceColor: { value: new THREE.Color(0xb2e8eb) },
                         uFogColor: { value: new THREE.Color(0xf8e8e7) },
-                        uMouse: { value: new THREE.Vector2(0, 0) }
+                        uMouse: { value: new THREE.Vector2(0, 0) },
+                        uWaveComplexity: { value: currentTier.waterWaveCount }
                     },
                     vertexShader: `
                         uniform float uTime;
                         uniform vec2 uMouse;
+                        uniform float uWaveComplexity;
                         varying vec3 vWorldPosition;
                         varying vec3 vNormal;
                         varying float vElevation;
@@ -2462,12 +2701,12 @@
                             
                             // Gerstner-like layered wave math
                             float wave1 = sin(pos.x * 0.18 + uTime * 1.2) * cos(pos.z * 0.18 + uTime * 1.2) * 0.22;
-                            float wave2 = sin(pos.x * 0.42 - uTime * 0.9) * cos(pos.z * 0.35 + uTime * 0.8) * 0.11;
-                            float wave3 = sin(pos.x * 0.85 + pos.z * 0.85 + uTime * 2.1) * 0.05;
+                            float wave2 = (uWaveComplexity >= 2.0) ? sin(pos.x * 0.42 - uTime * 0.9) * cos(pos.z * 0.35 + uTime * 0.8) * 0.11 : 0.0;
+                            float wave3 = (uWaveComplexity >= 3.0) ? sin(pos.x * 0.85 + pos.z * 0.85 + uTime * 2.1) * 0.05 : 0.0;
                             
-                            // Mouse ripple proximity
+                            // Mouse ripple proximity with range check
                             float distMouse = distance(pos.xz, uMouse);
-                            float mouseRipple = sin(distMouse * 2.5 - uTime * 4.0) * exp(-distMouse * 0.15) * 0.15;
+                            float mouseRipple = (distMouse < 18.0) ? sin(distMouse * 2.5 - uTime * 4.0) * exp(-distMouse * 0.15) * 0.15 : 0.0;
                             
                             pos.y += wave1 + wave2 + wave3 + mouseRipple;
                             vElevation = pos.y;
@@ -2490,7 +2729,8 @@
                         void main() {
                             // Fresnel reflection
                             vec3 viewDir = normalize(cameraPosition - vWorldPosition);
-                            float fresnel = pow(1.0 - max(dot(viewDir, vNormal), 0.0), 3.0);
+                            float cosTheta = clamp(dot(viewDir, vNormal), 0.0, 1.0);
+                            float fresnel = (1.0 - cosTheta) * (1.0 - cosTheta) * (1.0 - cosTheta);
                             
                             vec3 waterColor = mix(uDepthColor, uSurfaceColor, clamp(vElevation * 2.0 + 0.5, 0.0, 1.0));
                             vec3 finalColor = mix(waterColor, vec3(1.0, 0.96, 0.94), fresnel * 0.7);
@@ -2507,125 +2747,134 @@
                     wireframe: false
                 });
 
-                const water = new THREE.Mesh(waterGeometry, waterMaterial);
+                const water = new THREE.Mesh(waterGeoPool[currentTier.waterSegments] || waterGeoPool[36], waterMaterial);
                 water.position.y = 0;
                 scene.add(water);
 
+                function setQualityTier(newTier, reason = '') {
+                    if (currentTier.id === newTier.id) return;
+                    currentTier = newTier;
+                    lastTierChangeTime = performance.now();
+                    console.info(`[WebGL Quality] Switched to ${newTier.name}. ${reason}`);
+
+                    // Apply DPR
+                    const effectiveDpr = isMobileDevice ? newTier.mobileDprCap : newTier.dprCap;
+                    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, effectiveDpr));
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+
+                    // Apply Shadows
+                    if (newTier.shadows) {
+                        renderer.shadowMap.enabled = true;
+                        sunLight.castShadow = true;
+                        sunLight.shadow.mapSize.width = newTier.shadowMapSize;
+                        sunLight.shadow.mapSize.height = newTier.shadowMapSize;
+                        if (sunLight.shadow.map) {
+                            sunLight.shadow.map.dispose();
+                            sunLight.shadow.map = null;
+                        }
+                        requestShadowUpdate();
+                    } else {
+                        renderer.shadowMap.enabled = false;
+                        sunLight.castShadow = false;
+                    }
+
+                    // Apply Water geometry & shader complexity
+                    if (water && waterGeoPool[newTier.waterSegments]) {
+                        water.geometry = waterGeoPool[newTier.waterSegments];
+                    }
+                    if (waterMaterial && waterMaterial.uniforms.uWaveComplexity) {
+                        waterMaterial.uniforms.uWaveComplexity.value = newTier.waterWaveCount;
+                    }
+
+                    updateHudUI();
+                }
+
                 // ==========================================================
-                // 3-ACT IMMERSIVE SCROLL-DRIVEN 3D ENVIRONMENTS
-                // Act 01: Ship in Clouds (Bastien Genbrugge)
-                // Act 02: Stylised Sky Player Home Diorama (Sander Vander Meiren)
-                // Act 03: Cloud Station (Alexa Kruckenberg)
+                // 3. 3-ACT IMMERSIVE SCROLL-DRIVEN 3D ENVIRONMENTS
+                // Act 01: Ship in Clouds
+                // Act 02: Stylised Sky Player Home Diorama
+                // Act 03: Cloud Station
                 // ==========================================================
 
-                // --- 1. Act 01: Ship in Clouds ---
+                // --- Act 01: Ship in Clouds ---
                 const shipGroup = new THREE.Group();
                 scene.add(shipGroup);
 
-                const getShipScale = () => {
-                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
-                    return isMob ? 1.8 : 2.5;
-                };
-
+                const getShipScale = () => isMobileDevice ? 1.8 : 2.5;
                 let shipScale = getShipScale();
                 shipGroup.scale.set(shipScale, shipScale, shipScale);
 
-                const getShipBasePos = () => {
-                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
-                    return {
-                        x: isMob ? 0.3 : 2.2,
-                        y: isMob ? 2.0 : 2.4,
-                        z: isMob ? 4.0 : 5.0
-                    };
-                };
-
+                const getShipBasePos = () => ({
+                    x: isMobileDevice ? 0.3 : 2.2,
+                    y: isMobileDevice ? 2.0 : 2.4,
+                    z: isMobileDevice ? 4.0 : 5.0
+                });
                 let shipBasePos = getShipBasePos();
                 shipGroup.position.set(shipBasePos.x, shipBasePos.y, shipBasePos.z);
                 shipGroup.rotation.y = 0.42;
 
-                // --- 2. Act 02: Stylised Sky Player Home Diorama (Monumental Island Scale) ---
+                // --- Act 02: Stylised Sky Player Home Diorama ---
                 const skyPlayerGroup = new THREE.Group();
                 skyPlayerGroup.visible = false;
                 scene.add(skyPlayerGroup);
 
-                const getSkyPlayerScale = () => {
-                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
-                    return isMob ? 0.045 : 0.065;
-                };
-
+                const getSkyPlayerScale = () => isMobileDevice ? 0.045 : 0.065;
                 let skyPlayerScale = getSkyPlayerScale();
                 skyPlayerGroup.scale.set(skyPlayerScale, skyPlayerScale, skyPlayerScale);
 
-                const getSkyPlayerBasePos = () => {
-                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
-                    return {
-                        x: isMob ? 0.0 : 0.0,
-                        y: isMob ? 1.6 : 2.0,
-                        z: isMob ? -22.0 : -22.0
-                    };
-                };
-
+                const getSkyPlayerBasePos = () => ({
+                    x: 0.0,
+                    y: isMobileDevice ? 1.6 : 2.0,
+                    z: -22.0
+                });
                 let skyPlayerBasePos = getSkyPlayerBasePos();
                 skyPlayerGroup.position.set(skyPlayerBasePos.x, skyPlayerBasePos.y, skyPlayerBasePos.z);
-                skyPlayerGroup.rotation.y = 0.0; // Frontal approach: courtyard, tower & cottage face viewer
+                skyPlayerGroup.rotation.y = 0.0;
 
-                // --- 3. Act 03: Cloud Station (Grand Citadel Scale & Frontal Entrance) ---
+                // --- Act 03: Cloud Station ---
                 const cloudStationGroup = new THREE.Group();
                 cloudStationGroup.visible = false;
                 scene.add(cloudStationGroup);
 
-                const getCloudStationScale = () => {
-                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
-                    return isMob ? 2.8 : 4.2;
-                };
-
+                const getCloudStationScale = () => isMobileDevice ? 2.8 : 4.2;
                 let cloudStationScale = getCloudStationScale();
                 cloudStationGroup.scale.set(cloudStationScale, cloudStationScale, cloudStationScale);
 
-                const getCloudStationBasePos = () => {
-                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
-                    return {
-                        x: isMob ? 0.0 : 0.0,
-                        y: isMob ? 4.8 : 5.67,
-                        z: isMob ? -62.15 : -62.15
-                    };
-                };
-
+                const getCloudStationBasePos = () => ({
+                    x: 0.0,
+                    y: isMobileDevice ? 4.8 : 5.67,
+                    z: -62.15
+                });
                 let cloudStationBasePos = getCloudStationBasePos();
                 cloudStationGroup.position.set(cloudStationBasePos.x, cloudStationBasePos.y, cloudStationBasePos.z);
-                cloudStationGroup.rotation.y = 0.0; // Grand staircase and entrance portal face oncoming camera
+                cloudStationGroup.rotation.y = 0.0;
 
-                // --- 4. Continuous 3D Catmull-Rom Traversal Spline ---
+                // Spline Traversal Path
                 const createCameraSpline = (isMob) => {
                     const yBoost = isMob ? 0.6 : 0.0;
                     return new THREE.CatmullRomCurve3([
-                        // Act 01: Hero Atrium (Ship in Clouds)
-                        new THREE.Vector3(0.0, 3.0 + yBoost, 18.0),   // 0.00: Hero title framed by ship
-                        new THREE.Vector3(0.4, 3.0 + yBoost, 12.0),   // 0.08: Gliding forward
-                        new THREE.Vector3(0.8, 3.2 + yBoost, 4.0),    // 0.16: Ship sails up into misty clouds
-                        new THREE.Vector3(0.8, 3.4 + yBoost, -4.0),   // 0.23: Transitioning through clouds
-
-                        // Act 02: Sunken Prism (Stylised Sky Player Home Diorama)
-                        new THREE.Vector3(0.8, 3.2 + yBoost, -12.0),  // 0.30: Grand island emerges from turquoise mist
-                        new THREE.Vector3(0.9, 2.8 + yBoost, -17.0),  // 0.36: Approaching the front lawn & pathway
-                        new THREE.Vector3(1.0, 2.7 + yBoost, -22.5),  // 0.43: Eye-level flight past cottage & ancient tree
-                        new THREE.Vector3(0.6, 3.0 + yBoost, -28.0),  // 0.50: Clearing back cliff edge of island
-                        new THREE.Vector3(0.2, 3.5 + yBoost, -36.0),  // 0.56: Emerging into violet sanctum mist
-
-                        // Act 03: Pink Sanctum & Sunset Arcade (Cloud Station)
-                        new THREE.Vector3(0.5, 3.2 + yBoost, -45.0),  // 0.63: Approaching Cloud Station grand front facade
-                        new THREE.Vector3(0.5, 2.4 + yBoost, -51.5),  // 0.70: Entering central grand staircase
-                        new THREE.Vector3(0.8, 3.2 + yBoost, -55.0),  // 0.77: Passing through front entrance archway
-                        new THREE.Vector3(1.8, 5.8 + yBoost, -61.5),  // 0.85: Crossing aerial suspension bridge
-                        new THREE.Vector3(-1.0, 8.2 + yBoost, -67.0), // 0.93: Sweeping over observatory with orbiting fish
-                        new THREE.Vector3(0.0, 9.5 + yBoost, -76.0)   // 1.00: Rising into open twilight sunset sky
+                        new THREE.Vector3(0.0, 3.0 + yBoost, 18.0),
+                        new THREE.Vector3(0.4, 3.0 + yBoost, 12.0),
+                        new THREE.Vector3(0.8, 3.2 + yBoost, 4.0),
+                        new THREE.Vector3(0.8, 3.4 + yBoost, -4.0),
+                        new THREE.Vector3(0.8, 3.2 + yBoost, -12.0),
+                        new THREE.Vector3(0.9, 2.8 + yBoost, -17.0),
+                        new THREE.Vector3(1.0, 2.7 + yBoost, -22.5),
+                        new THREE.Vector3(0.6, 3.0 + yBoost, -28.0),
+                        new THREE.Vector3(0.2, 3.5 + yBoost, -36.0),
+                        new THREE.Vector3(0.5, 3.2 + yBoost, -45.0),
+                        new THREE.Vector3(0.5, 2.4 + yBoost, -51.5),
+                        new THREE.Vector3(0.8, 3.2 + yBoost, -55.0),
+                        new THREE.Vector3(1.8, 5.8 + yBoost, -61.5),
+                        new THREE.Vector3(-1.0, 8.2 + yBoost, -67.0),
+                        new THREE.Vector3(0.0, 9.5 + yBoost, -76.0)
                     ], false, 'centripetal');
                 };
 
                 let cameraSpline = createCameraSpline(isMobileDevice);
                 const currentLookAt = new THREE.Vector3(0, 3, 10);
 
-                // --- Dynamic Atmospheric Lights for Each Environment ---
+                // Environment Lights
                 const shipCloudLight = new THREE.PointLight(0x9bd8dc, 1.8, 28);
                 shipCloudLight.position.set(shipBasePos.x - 2.0, shipBasePos.y - 1.0, shipBasePos.z);
                 scene.add(shipCloudLight);
@@ -2642,7 +2891,9 @@
                 pinkStationLight.position.set(1.0, 5.0, -56.0);
                 scene.add(pinkStationLight);
 
-                // --- Model State & Processors ---
+                // ==========================================================
+                // 4. OPTIMIZED MODEL PROCESSORS (DRAW CALL & CULLING PASS)
+                // ==========================================================
                 let shipModel = null;
                 let shipLoaded = false;
 
@@ -2676,6 +2927,7 @@
                                 const isCloud = matName.includes('cloud') || nodeName.includes('cloud');
                                 const isAlphaCloud = matName.includes('cloud_1') || matName.includes('cloud_2') || matName.includes('cloud_3') ||
                                                      nodeName.includes('cloud_1') || nodeName.includes('cloud_2') || nodeName.includes('cloud_3');
+                                const isBoat = nodeName.includes('boot') || matName.includes('boot') || nodeName.includes('ship') || matName.includes('poly');
 
                                 if (isAlphaCloud) {
                                     child.material = new THREE.MeshStandardMaterial({
@@ -2684,14 +2936,16 @@
                                         emissive: new THREE.Color(0x334455),
                                         emissiveIntensity: 0.35,
                                         transparent: true,
-                                        opacity: 0.88,
+                                        opacity: 0.85,
                                         depthWrite: false,
                                         depthTest: true,
-                                        side: THREE.DoubleSide,
+                                        side: THREE.FrontSide, // Optimized: FrontSide prevents interior backface overdraw
                                         roughness: 0.9,
                                         metalness: 0.0,
                                         fog: true
                                     });
+                                    child.castShadow = false;
+                                    child.receiveShadow = false;
                                 } else if (isCloud) {
                                     child.material = new THREE.MeshStandardMaterial({
                                         map: diffuseTex || origMat.map || null,
@@ -2700,11 +2954,11 @@
                                         emissiveIntensity: 0.25,
                                         roughness: 0.85,
                                         metalness: 0.02,
-                                        side: THREE.DoubleSide,
+                                        side: THREE.FrontSide,
                                         fog: true
                                     });
-                                    child.castShadow = !isMobileDevice;
-                                    child.receiveShadow = !isMobileDevice;
+                                    child.castShadow = false;
+                                    child.receiveShadow = false;
                                 } else {
                                     child.material = new THREE.MeshStandardMaterial({
                                         map: diffuseTex || origMat.map || null,
@@ -2713,11 +2967,12 @@
                                         emissiveIntensity: 0.2,
                                         roughness: 0.55,
                                         metalness: 0.08,
-                                        side: THREE.DoubleSide,
+                                        side: isBoat ? THREE.FrontSide : THREE.DoubleSide,
                                         fog: true
                                     });
-                                    child.castShadow = !isMobileDevice;
-                                    child.receiveShadow = !isMobileDevice;
+                                    // Only the boat hull casts shadow, eliminating redundant shadow pass draw calls
+                                    child.castShadow = isBoat;
+                                    child.receiveShadow = isBoat;
                                 }
                             }
                         }
@@ -2725,6 +2980,7 @@
 
                     shipGroup.add(shipModel);
                     shipLoaded = true;
+                    requestShadowUpdate();
                 }
 
                 let skyPlayerModel = null;
@@ -2733,30 +2989,38 @@
                 function processSkyPlayerModel(gltf) {
                     if (skyPlayerLoaded) return;
                     skyPlayerModel = gltf.scene;
-                    // Exact Three.js geometric center offset
                     skyPlayerModel.position.set(-1.92, -41.83, -4.45);
 
                     skyPlayerModel.traverse((child) => {
                         if (child.isMesh) {
                             const mat = child.material;
+                            const nodeName = child.name ? child.name.toLowerCase() : '';
+                            const matName = (mat && mat.name) ? mat.name.toLowerCase() : '';
+
                             if (mat) {
-                                const matName = mat.name ? mat.name.toLowerCase() : '';
                                 const isFoliage = matName.includes('branch') || matName.includes('650') || matName.includes('leaf') || matName.includes('foliage');
+                                const isSolidBuilding = matName.includes('wall') || matName.includes('roof') || matName.includes('plank') || matName.includes('wooden_skel');
+
                                 if (isFoliage) {
-                                    mat.alphaTest = 0.4;
-                                    mat.transparent = false;
+                                    mat.alphaTest = 0.5;
+                                    mat.transparent = false; // Alpha test without blending saves massive rasterization fillrate
                                     mat.side = THREE.DoubleSide;
+                                    child.castShadow = false;
+                                    child.receiveShadow = false;
+                                } else {
+                                    mat.side = THREE.FrontSide; // Hardware backface culling for buildings & rocks
+                                    child.castShadow = isSolidBuilding;
+                                    child.receiveShadow = isSolidBuilding;
                                 }
                                 mat.roughness = 0.72;
                                 mat.metalness = 0.04;
                             }
-                            child.castShadow = !isMobileDevice;
-                            child.receiveShadow = !isMobileDevice;
                         }
                     });
 
                     skyPlayerGroup.add(skyPlayerModel);
                     skyPlayerLoaded = true;
+                    requestShadowUpdate();
                 }
 
                 let cloudStationModel = null;
@@ -2766,24 +3030,32 @@
                 function processCloudStationModel(gltf) {
                     if (cloudStationLoaded) return;
                     cloudStationModel = gltf.scene;
-                    // Exact Three.js geometric center offset
                     cloudStationModel.position.set(0.43, -1.83, 1.62);
 
+                    // Batch & cull shadows on 140 meshes to prevent shadow map saturation
+                    let heroMeshCount = 0;
                     cloudStationModel.traverse((child) => {
                         if (child.isMesh) {
                             const nodeName = child.name ? child.name.toLowerCase() : '';
                             const matName = (child.material && child.material.name) ? child.material.name.toLowerCase() : '';
+
                             if (nodeName.includes('sky') || matName.includes('sky')) {
                                 child.visible = false;
                                 return;
                             }
+
+                            // Only cast shadows from the primary 5 citadel structures, culling 135 redundant shadow draw calls
+                            const isMajorStructure = nodeName.includes('tower') || nodeName.includes('main') || nodeName.includes('citadel') || nodeName.includes('station');
+                            const shouldCastShadow = isMajorStructure || (heroMeshCount++ < 5);
+
                             if (child.material) {
                                 child.material.depthWrite = true;
+                                child.material.side = THREE.FrontSide;
                                 child.material.roughness = 0.65;
                                 child.material.metalness = 0.05;
                             }
-                            child.castShadow = !isMobileDevice;
-                            child.receiveShadow = !isMobileDevice;
+                            child.castShadow = shouldCastShadow;
+                            child.receiveShadow = shouldCastShadow;
                         }
                     });
 
@@ -2796,86 +3068,102 @@
 
                     cloudStationGroup.add(cloudStationModel);
                     cloudStationLoaded = true;
+                    requestShadowUpdate();
                 }
 
-                // --- Universal Zero-CORS Loader Helper ---
-                function loadModelWithFallback(b64VarName, filePath, onLoaded) {
+                // ==========================================================
+                // 5. UNIVERSAL ZERO-CORS STREAMING LOADER
+                // Streams binary .glb over HTTP; falls back to on-demand base64 on file://
+                // ==========================================================
+                function loadModelWithFallback(b64VarName, b64FileName, filePath, onLoaded) {
                     if (typeof THREE.GLTFLoader === 'undefined') return;
                     const gltfLoader = new THREE.GLTFLoader();
 
-                    function tryParse() {
-                        if (window[b64VarName]) {
-                            try {
-                                const binStr = window.atob(window[b64VarName]);
-                                const len = binStr.length;
-                                const bytes = new Uint8Array(len);
-                                for (let i = 0; i < len; i++) bytes[i] = binStr.charCodeAt(i);
-                                gltfLoader.parse(bytes.buffer, '', onLoaded, (err) => {
-                                    console.warn(b64VarName + ' parse error:', err);
-                                });
-                                return true;
-                            } catch (e) {
-                                console.warn(b64VarName + ' decode error:', e);
-                            }
-                        }
-                        return false;
-                    }
-
-                    if (tryParse()) return;
-
-                    let pollCount = 0;
-                    const pollTimer = setInterval(() => {
-                        pollCount++;
-                        if (tryParse() || pollCount > 80) {
-                            clearInterval(pollTimer);
-                        }
-                    }, 50);
-
+                    // Modern path: Direct binary GLB streaming over HTTP/HTTPS
                     if (window.location.protocol !== 'file:') {
                         gltfLoader.load(
                             filePath,
-                            (gltf) => {
-                                clearInterval(pollTimer);
-                                onLoaded(gltf);
-                            },
+                            (gltf) => onLoaded(gltf),
                             undefined,
-                            (err) => console.warn(filePath + ' fetch note:', err)
+                            (err) => {
+                                console.warn(`[GLTF] Binary streaming note for ${filePath}, attempting local fallback:`, err);
+                                loadBase64OnDemand();
+                            }
                         );
+                        return;
+                    }
+
+                    // Local file:// protocol fallback
+                    loadBase64OnDemand();
+
+                    function loadBase64OnDemand() {
+                        function tryParse() {
+                            if (window[b64VarName]) {
+                                try {
+                                    const binStr = window.atob(window[b64VarName]);
+                                    const len = binStr.length;
+                                    const bytes = new Uint8Array(len);
+                                    for (let i = 0; i < len; i++) bytes[i] = binStr.charCodeAt(i);
+                                    gltfLoader.parse(bytes.buffer, '', onLoaded, (err) => {
+                                        console.warn(b64VarName + ' parse error:', err);
+                                    });
+                                    return true;
+                                } catch (e) {
+                                    console.warn(b64VarName + ' decode error:', e);
+                                }
+                            }
+                            return false;
+                        }
+
+                        if (tryParse()) return;
+
+                        // Dynamically inject script on demand without blocking initial page load
+                        const script = document.createElement('script');
+                        script.src = `assets/models/${b64FileName}`;
+                        script.onload = () => tryParse();
+                        document.head.appendChild(script);
                     }
                 }
 
                 // Initial Act 01 load
-                loadModelWithFallback('SHIP_IN_CLOUDS_B64', 'assets/models/ship_in_clouds.glb', processShipModel);
+                loadModelWithFallback('SHIP_IN_CLOUDS_B64', 'ship_in_clouds_data.js', 'assets/models/ship_in_clouds.glb', processShipModel);
 
                 // Lazy load triggers for Act 02 & Act 03
                 let skyPlayerRequested = false;
                 function requestSkyPlayerModel() {
                     if (skyPlayerRequested) return;
                     skyPlayerRequested = true;
-                    loadModelWithFallback('STYLISED_SKY_B64', 'assets/models/stylised_sky_player_home_diorama.glb', processSkyPlayerModel);
+                    loadModelWithFallback('STYLISED_SKY_B64', 'stylised_sky_data.js', 'assets/models/stylised_sky_player_home_diorama.glb', processSkyPlayerModel);
                 }
 
                 let cloudStationRequested = false;
                 function requestCloudStationModel() {
                     if (cloudStationRequested) return;
                     cloudStationRequested = true;
-                    loadModelWithFallback('CLOUD_STATION_B64', 'assets/models/cloud_station.glb', processCloudStationModel);
+                    loadModelWithFallback('CLOUD_STATION_B64', 'cloud_station_data.js', 'assets/models/cloud_station.glb', processCloudStationModel);
                 }
 
                 if ('requestIdleCallback' in window) {
-                    requestIdleCallback(() => requestSkyPlayerModel(), { timeout: 1200 });
-                    requestIdleCallback(() => requestCloudStationModel(), { timeout: 3500 });
+                    requestIdleCallback(() => requestSkyPlayerModel(), { timeout: 1800 });
+                    requestIdleCallback(() => requestCloudStationModel(), { timeout: 4000 });
                 } else {
-                    setTimeout(requestSkyPlayerModel, 900);
-                    setTimeout(requestCloudStationModel, 2800);
+                    setTimeout(requestSkyPlayerModel, 1200);
+                    setTimeout(requestCloudStationModel, 3200);
                 }
 
-                // Mouse & Touch interaction coords
+                // Mouse & Interaction Coords with idle tracking
                 let mouseXNorm = 0, mouseYNorm = 0;
+                let lastInteractionTime = performance.now();
+
+                function markInteraction() {
+                    lastInteractionTime = performance.now();
+                }
+
                 window.addEventListener('mousemove', (e) => {
                     mouseXNorm = (e.clientX / window.innerWidth) * 2 - 1;
                     mouseYNorm = -(e.clientY / window.innerHeight) * 2 + 1;
                     waterMaterial.uniforms.uMouse.value.set(mouseXNorm * 12, -mouseYNorm * 12);
+                    markInteraction();
                 }, { passive: true });
 
                 window.addEventListener('touchmove', (e) => {
@@ -2885,7 +3173,10 @@
                         mouseYNorm = -(touch.clientY / window.innerHeight) * 2 + 1;
                         waterMaterial.uniforms.uMouse.value.set(mouseXNorm * 12, -mouseYNorm * 12);
                     }
+                    markInteraction();
                 }, { passive: true });
+
+                window.addEventListener('scroll', markInteraction, { passive: true });
 
                 // Scroll-Driven Traversal Spline & Realm Color Transitions
                 let scrollProgress = 0;
@@ -2894,11 +3185,18 @@
                 function updateScrollFlight() {
                     const maxScroll = document.body.scrollHeight - window.innerHeight;
                     targetScrollProgress = maxScroll > 0 ? (window.scrollY / maxScroll) : 0;
+                    const prevProgress = scrollProgress;
                     scrollProgress += (targetScrollProgress - scrollProgress) * 0.08;
 
                     // Lazy load triggers based on flight position
                     if (scrollProgress > 0.10) requestSkyPlayerModel();
                     if (scrollProgress > 0.22) requestCloudStationModel();
+
+                    const isMoving = Math.abs(scrollProgress - prevProgress) > 0.0003;
+                    if (isMoving) {
+                        requestShadowUpdate();
+                        markInteraction();
+                    }
 
                     // Evaluate camera position and forward tangent from 3D spline
                     const clampedProgress = Math.max(0.0, Math.min(1.0, scrollProgress));
@@ -2913,7 +3211,6 @@
                     camera.position.y += (targetY - camera.position.y) * 0.08;
                     camera.position.z += (targetZ - camera.position.z) * 0.08;
 
-                    // Forward tangent LookAt: camera faces direction of travel
                     const forwardDist = 6.0;
                     const lookTargetX = camera.position.x + tangent.x * forwardDist + (mouseXNorm * 0.8);
                     const lookTargetY = camera.position.y + tangent.y * forwardDist + (mouseYNorm * 0.5);
@@ -2926,7 +3223,6 @@
 
                     // Evolving Fog & Sky Colors Across 4 Realms
                     if (scrollProgress < 0.28) {
-                        // Realm 1: Atrium (Rose / Blush & Aqua)
                         scene.fog.color.setHex(0xf8e8e7);
                         waterMaterial.uniforms.uDepthColor.value.setHex(0x3a96a5);
                         waterMaterial.uniforms.uSurfaceColor.value.setHex(0xb2e8eb);
@@ -2936,7 +3232,6 @@
                         dioramaPointLight.intensity = 0.0;
                         pinkStationLight.intensity = 0.0;
                     } else if (scrollProgress < 0.6) {
-                        // Realm 2: Sunken Prism (Deep Ocean Turquoise / Cyan)
                         scene.fog.color.setHex(0x9bd8dc);
                         waterMaterial.uniforms.uDepthColor.value.setHex(0x0f5d72);
                         waterMaterial.uniforms.uSurfaceColor.value.setHex(0x5be3d2);
@@ -2946,7 +3241,6 @@
                         shipCloudLight.intensity = 0.0;
                         pinkStationLight.intensity = 0.0;
                     } else if (scrollProgress < 0.82) {
-                        // Realm 3: Holographic Sanctum (Violet / Periwinkle / Lavender)
                         scene.fog.color.setHex(0xd0c4f0);
                         waterMaterial.uniforms.uDepthColor.value.setHex(0x3e2b7a);
                         waterMaterial.uniforms.uSurfaceColor.value.setHex(0xa894e6);
@@ -2956,7 +3250,6 @@
                         dioramaPointLight.intensity = 0.0;
                         shipCloudLight.intensity = 0.0;
                     } else {
-                        // Realm 4: Sunset Horizon (Warm Coral / Dusk Lilac / Soft Pink)
                         scene.fog.color.setHex(0xfad3cf);
                         waterMaterial.uniforms.uDepthColor.value.setHex(0x8c3b52);
                         waterMaterial.uniforms.uSurfaceColor.value.setHex(0xfa9d8d);
@@ -2969,20 +3262,152 @@
                     waterMaterial.uniforms.uFogColor.value.copy(scene.fog.color);
                 }
 
-                // Render Loop with Mobile Battery Saver
+                // ==========================================================
+                // 6. RENDERING LIFECYCLE (VIEWPORT OCCLUSION & TAB DORMANCY)
+                // ==========================================================
                 const clock = new THREE.Clock();
                 let isPageVisible = !document.hidden;
+                let isCanvasInView = true;
+
+                // Viewport visibility observer: pause WebGL when scrolled out of view
+                const canvasObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        isCanvasInView = entry.isIntersecting;
+                    });
+                }, { threshold: 0.01 });
+                canvasObserver.observe(canvas);
 
                 document.addEventListener('visibilitychange', () => {
                     isPageVisible = !document.hidden;
                     if (isPageVisible) {
                         clock.start();
+                        lastFrameTimestamp = performance.now();
                         requestAnimationFrame(animate);
                     }
                 });
 
-                function animate() {
-                    if (!isPageVisible) return;
+                // Performance Diagnostics HUD Integration
+                const perfHud = document.getElementById('perf-hud');
+                const perfHudToggle = document.getElementById('perf-hud-toggle');
+                const perfStatusDot = document.getElementById('perf-status-dot');
+                const perfFpsDisplay = document.getElementById('perf-fps-display');
+                const perfTierBadge = document.getElementById('perf-tier-badge');
+                const perfDtDisplay = document.getElementById('perf-dt-display');
+                const perfCallsDisplay = document.getElementById('perf-calls-display');
+                const perfTrisDisplay = document.getElementById('perf-tris-display');
+                const perfResDisplay = document.getElementById('perf-res-display');
+                const perfShadowDisplay = document.getElementById('perf-shadow-display');
+
+                if (perfHudToggle && perfHud) {
+                    perfHudToggle.addEventListener('click', () => {
+                        perfHud.classList.toggle('is-minimized');
+                    });
+                }
+
+                document.querySelectorAll('.perf-hud-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        document.querySelectorAll('.perf-hud-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        const tier = btn.getAttribute('data-tier');
+                        if (tier === 'auto') {
+                            manualTierOverride = null;
+                            console.info('[WebGL Quality] Auto adaptive quality re-enabled.');
+                        } else if (tier === 'high') {
+                            manualTierOverride = 'high';
+                            setQualityTier(QUALITY_TIERS.HIGH, 'User manual override: High');
+                        } else if (tier === 'balanced') {
+                            manualTierOverride = 'balanced';
+                            setQualityTier(QUALITY_TIERS.BALANCED, 'User manual override: Balanced');
+                        } else if (tier === 'performance') {
+                            manualTierOverride = 'performance';
+                            setQualityTier(QUALITY_TIERS.PERFORMANCE, 'User manual override: Performance');
+                        }
+                    });
+                });
+
+                // Toggle HUD with key 'P'
+                window.addEventListener('keydown', (e) => {
+                    if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+                    if (e.key.toLowerCase() === 'p') {
+                        if (perfHud) perfHud.classList.toggle('is-minimized');
+                    }
+                });
+
+                function updateHudUI() {
+                    if (perfStatusDot) {
+                        perfStatusDot.className = 'perf-hud-status-dot';
+                        if (currentTier.id === 'balanced') perfStatusDot.classList.add('tier-balanced');
+                        else if (currentTier.id === 'performance') perfStatusDot.classList.add('tier-performance');
+                    }
+                    if (perfTierBadge) {
+                        perfTierBadge.textContent = manualTierOverride ? `${currentTier.shortName} (MANUAL)` : currentTier.shortName;
+                    }
+                    if (perfShadowDisplay) {
+                        perfShadowDisplay.textContent = currentTier.shadows ? `Active (${currentTier.shadowMapSize}px)` : 'Disabled (Ambient)';
+                    }
+                }
+                updateHudUI();
+
+                // ==========================================================
+                // 7. HIGH-PRECISION PACED ANIMATION LOOP
+                // ==========================================================
+                let lastFrameTimestamp = performance.now();
+                let lastHudUpdateTime = 0;
+
+                function animate(currentTime) {
+                    if (!isPageVisible || !isCanvasInView) {
+                        requestAnimationFrame(animate);
+                        return;
+                    }
+
+                    const now = currentTime || performance.now();
+                    const frameDt = now - lastFrameTimestamp;
+
+                    // Frame pacing: enforce minimum frame interval to prevent 144Hz-240Hz GPU overload
+                    const isUserIdle = (now - lastInteractionTime) > 2800;
+                    const effectiveMinFrameMs = isUserIdle ? 31.0 : currentTier.minFrameMs;
+
+                    if (frameDt < effectiveMinFrameMs) {
+                        requestAnimationFrame(animate);
+                        return;
+                    }
+
+                    lastFrameTimestamp = now;
+
+                    // Update rolling EMA frame time for dynamic quality adaptation
+                    frameTimeEma = frameTimeEma * 0.92 + frameDt * 0.08;
+
+                    // Dynamic tier adaptation with 5s cooldown
+                    if (!manualTierOverride && (now - lastTierChangeTime > 5000)) {
+                        if (frameTimeEma > 22.5) { // < 45 FPS sustained drop
+                            sustainedSlowMs += frameDt;
+                            sustainedFastMs = 0;
+                            if (sustainedSlowMs > 1600) {
+                                if (currentTier.id === 'high') {
+                                    setQualityTier(QUALITY_TIERS.BALANCED, `Frame time ${frameTimeEma.toFixed(1)}ms > 22ms threshold`);
+                                } else if (currentTier.id === 'balanced') {
+                                    setQualityTier(QUALITY_TIERS.PERFORMANCE, `Frame time ${frameTimeEma.toFixed(1)}ms > 22ms threshold`);
+                                }
+                                sustainedSlowMs = 0;
+                            }
+                        } else if (frameTimeEma < 14.5) { // > 68 FPS ample headroom
+                            sustainedFastMs += frameDt;
+                            sustainedSlowMs = 0;
+                            if (sustainedFastMs > 4500) {
+                                if (currentTier.id === 'performance') {
+                                    setQualityTier(QUALITY_TIERS.BALANCED, `Frame time ${frameTimeEma.toFixed(1)}ms has ample headroom`);
+                                } else if (currentTier.id === 'balanced' && !isMobileDevice) {
+                                    setQualityTier(QUALITY_TIERS.HIGH, `Frame time ${frameTimeEma.toFixed(1)}ms sustained 60 FPS headroom`);
+                                }
+                                sustainedFastMs = 0;
+                            }
+                        } else {
+                            sustainedSlowMs = 0;
+                            sustainedFastMs = 0;
+                        }
+                    }
 
                     const elapsedTime = clock.getElapsedTime();
                     const delta = clock.getDelta();
@@ -2997,7 +3422,6 @@
                             const shipRollZ = Math.sin(elapsedTime * 0.7) * 0.018;
                             const shipPitchX = Math.cos(elapsedTime * 0.55) * 0.012;
 
-                            // Gentle sail ascent into mist between 0.14 and 0.28
                             const fadeOut1 = THREE.MathUtils.smoothstep(scrollProgress, 0.14, 0.28);
                             const targetY = shipBasePos.y + shipHeaveY + fadeOut1 * 6.0;
                             const targetZ = shipBasePos.z - fadeOut1 * 8.0;
@@ -3026,7 +3450,6 @@
                             const islandHeaveY = Math.sin(elapsedTime * 0.5 + 1.2) * 0.08;
                             const islandSwayZ = Math.sin(elapsedTime * 0.35) * 0.012;
 
-                            // Subtle floating presence
                             skyPlayerGroup.position.y = skyPlayerBasePos.y + islandHeaveY;
                             skyPlayerGroup.rotation.z = islandSwayZ;
                         } else {
@@ -3034,7 +3457,7 @@
                         }
                     }
 
-                    // --- Act 03: Cloud Station (Direct Frontal Centerpiece) ---
+                    // --- Act 03: Cloud Station ---
                     if (cloudStationLoaded) {
                         if (scrollProgress >= 0.50) {
                             cloudStationGroup.visible = true;
@@ -3050,10 +3473,38 @@
                     }
 
                     updateScrollFlight();
+
+                    // Demand-driven shadow map pass
+                    if (currentTier.shadows) {
+                        if (shadowNeedsUpdate || (now - lastShadowUpdateTime > currentTier.shadowThrottleMs && Math.abs(targetScrollProgress - scrollProgress) > 0.0005)) {
+                            renderer.shadowMap.needsUpdate = true;
+                            shadowNeedsUpdate = false;
+                            lastShadowUpdateTime = now;
+                        }
+                    }
+
+                    // Render Main Frame
                     renderer.render(scene, camera);
+
+                    // Telemetry update (throttled to 4Hz for zero DOM overhead)
+                    if (now - lastHudUpdateTime > 250) {
+                        lastHudUpdateTime = now;
+                        const fps = Math.round(1000 / frameTimeEma);
+                        if (perfFpsDisplay) perfFpsDisplay.textContent = `${fps} FPS`;
+                        if (perfDtDisplay) perfDtDisplay.textContent = `${frameTimeEma.toFixed(1)} ms`;
+                        if (perfCallsDisplay) perfCallsDisplay.textContent = `${renderer.info.render.calls}`;
+                        if (perfTrisDisplay) perfTrisDisplay.textContent = (renderer.info.render.triangles || 0).toLocaleString();
+                        if (perfResDisplay) {
+                            const pixelRatio = renderer.getPixelRatio();
+                            const w = Math.round(window.innerWidth * pixelRatio);
+                            const h = Math.round(window.innerHeight * pixelRatio);
+                            perfResDisplay.textContent = `${w}×${h} (${pixelRatio.toFixed(2)}x)`;
+                        }
+                    }
+
                     requestAnimationFrame(animate);
                 }
-                animate();
+                animate(performance.now());
 
                 window.addEventListener('resize', () => {
                     const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
@@ -3073,7 +3524,11 @@
 
                     camera.aspect = window.innerWidth / window.innerHeight;
                     camera.updateProjectionMatrix();
+
+                    const effectiveDpr = isMob ? currentTier.mobileDprCap : currentTier.dprCap;
+                    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, effectiveDpr));
                     renderer.setSize(window.innerWidth, window.innerHeight);
+                    requestShadowUpdate();
                 }, { passive: true });
             })();
 
@@ -3246,6 +3701,20 @@
                         document.exitFullscreen();
                     }
                 });
+            }
+
+            // Power-saver: Pause game SVG loop when pavilion is scrolled out of viewport
+            if (gamePavilion && gameIframe) {
+                const gameObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        try {
+                            if (gameIframe.contentWindow) {
+                                gameIframe.contentWindow.postMessage(entry.isIntersecting ? 'resume-game' : 'pause-game', '*');
+                            }
+                        } catch(err) {}
+                    });
+                }, { threshold: 0.05 });
+                gameObserver.observe(gamePavilion);
             }
 
             // --- H. Live Contact Transmission to Render Backend ---

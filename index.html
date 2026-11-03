@@ -22,8 +22,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,600;1,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Three.js (r128) from verified CDN -->
+    <!-- Three.js (r128), GLTFLoader, and Model Data Assets (Zero-CORS Local & Web) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="assets/js/GLTFLoader.js"></script>
+    <script>
+        if (typeof THREE !== 'undefined' && typeof THREE.GLTFLoader === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"><\/script>');
+        }
+    </script>
+    <script src="assets/models/ship_in_clouds_data.js"></script>
+    <script defer src="assets/models/stylised_sky_data.js"></script>
+    <script defer src="assets/models/cloud_station_data.js"></script>
 
     <style>
         /* ==========================================================================
@@ -200,7 +209,7 @@
             background-color: var(--ink-primary);
             border-radius: 50%;
             pointer-events: none;
-            z-index: 99999;
+            z-index: 2147483647;
             transform: translate(-50%, -50%);
             transition: opacity 250ms var(--ease-out), background-color 250ms var(--ease-out);
             will-change: transform;
@@ -219,13 +228,13 @@
             -webkit-backdrop-filter: blur(4px);
             border-radius: 50%;
             pointer-events: none;
-            z-index: 99998;
+            z-index: 2147483646;
             transform: translate(-50%, -50%);
             transition: width 240ms var(--ease-out), 
                         height 240ms var(--ease-out), 
                         background 240ms var(--ease-out), 
-                        border-color 240ms var(--ease-out);
-            display: flex;
+                        border-color 240ms var(--ease-out),
+                        opacity 250ms var(--ease-out);
             align-items: center;
             justify-content: center;
             will-change: transform, width, height;
@@ -454,7 +463,7 @@
             background: rgba(248, 232, 231, 0.98);
             backdrop-filter: blur(32px);
             -webkit-backdrop-filter: blur(32px);
-            z-index: 99999;
+            z-index: 100000;
             padding-top: calc(90px + env(safe-area-inset-top, 0px));
             padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px));
             padding-left: calc(var(--gutter) + env(safe-area-inset-left, 0px));
@@ -491,6 +500,14 @@
             box-shadow: 0 4px 14px rgba(180, 150, 160, 0.15);
             cursor: pointer;
             touch-action: manipulation;
+            transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .drawer-close-btn:hover {
+                background: #fff;
+                transform: scale(1.06);
+            }
         }
 
         .drawer-close-btn:active {
@@ -511,6 +528,15 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            cursor: pointer;
+            transition: transform 200ms var(--ease-out), color 200ms var(--ease-out);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .mobile-nav-link:hover {
+                transform: translateX(8px);
+                color: var(--accent-ocean);
+            }
         }
 
         .mobile-nav-link em {
@@ -1530,7 +1556,7 @@
             padding: 18px 24px;
             max-width: 420px;
             box-shadow: 0 20px 50px rgba(242, 139, 157, 0.35);
-            z-index: 999999;
+            z-index: 100001;
             transform: translateY(160%);
             opacity: 0;
             transition: transform 380ms var(--ease-spring), opacity 300ms var(--ease-out);
@@ -1641,14 +1667,14 @@
 
     <!-- Mobile Drawer -->
     <div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
-        <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close Navigation Menu">✕</button>
+        <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close Navigation Menu" data-cursor="CLOSE">✕</button>
         <div class="mobile-nav-links">
-            <a href="#projects" class="mobile-nav-link"><span>Selected <em>Projects</em></span> <span>↘</span></a>
-            <a href="#sanctum" class="mobile-nav-link"><span>The <em>Room</em> (Game)</span> <span>↘</span></a>
-            <a href="#arcade" class="mobile-nav-link"><span>Playable <em>Arcade</em></span> <span>↘</span></a>
-            <a href="#about" class="mobile-nav-link"><span>About <em>Relzzy</em></span> <span>↘</span></a>
-            <a href="#contact" class="mobile-nav-link"><span>Initiate <em>Contact</em></span> <span>↘</span></a>
-            <a href="persona.html" class="mobile-nav-link" style="color: var(--accent-ocean);"><span>🎭 Persona <em>Theme</em></span> <span>↘</span></a>
+            <a href="#projects" class="mobile-nav-link" data-cursor="PROJECTS"><span>Selected <em>Projects</em></span> <span>↘</span></a>
+            <a href="#sanctum" class="mobile-nav-link" data-cursor="PLAY"><span>The <em>Room</em> (Game)</span> <span>↘</span></a>
+            <a href="#arcade" class="mobile-nav-link" data-cursor="ARCADE"><span>Playable <em>Arcade</em></span> <span>↘</span></a>
+            <a href="#about" class="mobile-nav-link" data-cursor="ABOUT"><span>About <em>Relzzy</em></span> <span>↘</span></a>
+            <a href="#contact" class="mobile-nav-link" data-cursor="CONTACT"><span>Initiate <em>Contact</em></span> <span>↘</span></a>
+            <a href="persona.html" class="mobile-nav-link" style="color: var(--accent-ocean);" data-cursor="PERSONA"><span>🎭 Persona <em>Theme</em></span> <span>↘</span></a>
         </div>
         <div style="font-size: 0.88rem; color: var(--ink-muted); border-top: 1px solid var(--glass-border-subtle); padding-top: 24px;">
             Systems Architect • ML Specialist • Creative WebGL Production
@@ -2203,8 +2229,16 @@
             </div>
 
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; font-size: 0.88rem; color: var(--ink-secondary); border-top: 1px solid var(--glass-border-subtle); padding-top: 28px;">
-                <div>© 2026 Relzzy (Abhinav Kumar). All rights reserved.</div>
-                <div style="display: flex; gap: 24px;">
+                <div>
+                    <div>© 2026 Relzzy (Abhinav Kumar). All rights reserved.</div>
+                    <div style="margin-top: 8px; font-size: 0.80rem; color: var(--ink-muted); line-height: 1.6;">
+                        3D Scene Assets (CC-BY 4.0): 
+                        <a href="https://sketchfab.com/3d-models/ship-in-clouds-c475323dc7f24e26ba2009c08c8e1941" target="_blank" rel="noopener noreferrer" style="color: var(--accent-ocean); text-decoration: underline;" data-cursor="MODEL"><em>Ship in Clouds</em></a> by <a href="https://sketchfab.com/bastienBGR" target="_blank" rel="noopener noreferrer" style="color: var(--accent-ocean); text-decoration: underline;" data-cursor="ARTIST">Bastien Genbrugge</a> · 
+                        <a href="https://sketchfab.com/3d-models/stylised-sky-player-home-dioroma-6597e6c9a5184f07a638ac33c08c2ad5" target="_blank" rel="noopener noreferrer" style="color: var(--accent-ocean); text-decoration: underline;" data-cursor="MODEL"><em>Stylised Sky Diorama</em></a> by <a href="https://sketchfab.com/Sander.Vander.Meiren" target="_blank" rel="noopener noreferrer" style="color: var(--accent-ocean); text-decoration: underline;" data-cursor="ARTIST">Sander Vander Meiren</a> · 
+                        <a href="https://sketchfab.com/3d-models/cloud-station-26f81b24d83441ba88c7e80a52adbaaf" target="_blank" rel="noopener noreferrer" style="color: var(--accent-ocean); text-decoration: underline;" data-cursor="MODEL"><em>Cloud Station</em></a> by <a href="https://sketchfab.com/AlexaKruckenberg" target="_blank" rel="noopener noreferrer" style="color: var(--accent-ocean); text-decoration: underline;" data-cursor="ARTIST">Alexa Kruckenberg</a>.
+                    </div>
+                </div>
+                <div style="display: flex; gap: 24px; flex-wrap: wrap;">
                     <a href="#hero" data-cursor="TOP">Back to Top ↑</a>
                     <a href="persona.html" data-cursor="THEME">Persona Theme 🎭</a>
                     <a href="game.html" data-cursor="GAME">Standalone Game</a>
@@ -2297,12 +2331,35 @@
                 let mouseY = window.innerHeight / 2;
                 let ringX = mouseX;
                 let ringY = mouseY;
+                let hasMoved = false;
 
                 window.addEventListener('mousemove', (e) => {
                     mouseX = e.clientX;
                     mouseY = e.clientY;
+                    if (!hasMoved) {
+                        hasMoved = true;
+                        ringX = mouseX;
+                        ringY = mouseY;
+                        if (cursorRing) cursorRing.style.transform = `translate(${ringX}px, ${ringY}px)`;
+                    }
                     if (cursorDot) {
                         cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+                        cursorDot.style.opacity = '1';
+                    }
+                    if (cursorRing) {
+                        cursorRing.style.opacity = '1';
+                    }
+                });
+
+                document.addEventListener('mouseleave', () => {
+                    if (cursorDot) cursorDot.style.opacity = '0';
+                    if (cursorRing) cursorRing.style.opacity = '0';
+                });
+
+                document.addEventListener('mouseenter', () => {
+                    if (hasMoved) {
+                        if (cursorDot) cursorDot.style.opacity = '1';
+                        if (cursorRing) cursorRing.style.opacity = '1';
                     }
                 });
 
@@ -2344,6 +2401,10 @@
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobileDevice ? 1.5 : 2));
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
                 renderer.toneMappingExposure = 1.15;
+                if (!isMobileDevice) {
+                    renderer.shadowMap.enabled = true;
+                    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                }
 
                 const scene = new THREE.Scene();
                 scene.fog = new THREE.FogExp2(0xf8e8e7, 0.015);
@@ -2358,6 +2419,18 @@
 
                 const sunLight = new THREE.DirectionalLight(0xfff5ea, 1.8);
                 sunLight.position.set(20, 35, 15);
+                if (!isMobileDevice) {
+                    sunLight.castShadow = true;
+                    sunLight.shadow.mapSize.width = 1024;
+                    sunLight.shadow.mapSize.height = 1024;
+                    sunLight.shadow.camera.near = 0.5;
+                    sunLight.shadow.camera.far = 80;
+                    sunLight.shadow.camera.left = -25;
+                    sunLight.shadow.camera.right = 25;
+                    sunLight.shadow.camera.top = 25;
+                    sunLight.shadow.camera.bottom = -25;
+                    sunLight.shadow.bias = -0.0005;
+                }
                 scene.add(sunLight);
 
                 const fillLight = new THREE.DirectionalLight(0xd5ecf5, 1.1);
@@ -2438,142 +2511,364 @@
                 water.position.y = 0;
                 scene.add(water);
 
-                // 2. Surreal Roman Architectural Arches (Plaster Stone Material)
-                const archGroup = new THREE.Group();
+                // ==========================================================
+                // 3-ACT IMMERSIVE SCROLL-DRIVEN 3D ENVIRONMENTS
+                // Act 01: Ship in Clouds (Bastien Genbrugge)
+                // Act 02: Stylised Sky Player Home Diorama (Sander Vander Meiren)
+                // Act 03: Cloud Station (Alexa Kruckenberg)
+                // ==========================================================
 
-                const stoneMaterial = new THREE.MeshStandardMaterial({
-                    color: 0xf0dfd7,
-                    roughness: 0.78,
-                    metalness: 0.05
-                });
+                // --- 1. Act 01: Ship in Clouds ---
+                const shipGroup = new THREE.Group();
+                scene.add(shipGroup);
 
-                function createArch(x, z, scale = 1, rotationY = 0) {
-                    const arch = new THREE.Group();
-                    
-                    // Left Pillar
-                    const p1 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 8, 0.8), stoneMaterial);
-                    p1.position.set(-2, 4, 0);
-                    arch.add(p1);
+                const getShipScale = () => {
+                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+                    return isMob ? 1.8 : 2.5;
+                };
 
-                    // Right Pillar
-                    const p2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 8, 0.8), stoneMaterial);
-                    p2.position.set(2, 4, 0);
-                    arch.add(p2);
+                let shipScale = getShipScale();
+                shipGroup.scale.set(shipScale, shipScale, shipScale);
 
-                    // Arch Curved Top
-                    const ringGeom = new THREE.TorusGeometry(2, 0.4, 16, 32, Math.PI);
-                    const ring = new THREE.Mesh(ringGeom, stoneMaterial);
-                    ring.position.set(0, 8, 0);
-                    arch.add(ring);
+                const getShipBasePos = () => {
+                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+                    return {
+                        x: isMob ? 0.3 : 2.2,
+                        y: isMob ? 2.0 : 2.4,
+                        z: isMob ? 4.0 : 5.0
+                    };
+                };
 
-                    // Top Arch Header
-                    const header = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.9, 1.1), stoneMaterial);
-                    header.position.set(0, 8.8, 0);
-                    arch.add(header);
+                let shipBasePos = getShipBasePos();
+                shipGroup.position.set(shipBasePos.x, shipBasePos.y, shipBasePos.z);
+                shipGroup.rotation.y = 0.42;
 
-                    arch.scale.set(scale, scale, scale);
-                    arch.position.set(x, -0.5, z);
-                    arch.rotation.y = rotationY;
-                    return arch;
+                // --- 2. Act 02: Stylised Sky Player Home Diorama (Monumental Island Scale) ---
+                const skyPlayerGroup = new THREE.Group();
+                skyPlayerGroup.visible = false;
+                scene.add(skyPlayerGroup);
+
+                const getSkyPlayerScale = () => {
+                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+                    return isMob ? 0.045 : 0.065;
+                };
+
+                let skyPlayerScale = getSkyPlayerScale();
+                skyPlayerGroup.scale.set(skyPlayerScale, skyPlayerScale, skyPlayerScale);
+
+                const getSkyPlayerBasePos = () => {
+                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+                    return {
+                        x: isMob ? 0.0 : 0.0,
+                        y: isMob ? 1.6 : 2.0,
+                        z: isMob ? -22.0 : -22.0
+                    };
+                };
+
+                let skyPlayerBasePos = getSkyPlayerBasePos();
+                skyPlayerGroup.position.set(skyPlayerBasePos.x, skyPlayerBasePos.y, skyPlayerBasePos.z);
+                skyPlayerGroup.rotation.y = 0.0; // Frontal approach: courtyard, tower & cottage face viewer
+
+                // --- 3. Act 03: Cloud Station (Grand Citadel Scale & Frontal Entrance) ---
+                const cloudStationGroup = new THREE.Group();
+                cloudStationGroup.visible = false;
+                scene.add(cloudStationGroup);
+
+                const getCloudStationScale = () => {
+                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+                    return isMob ? 2.8 : 4.2;
+                };
+
+                let cloudStationScale = getCloudStationScale();
+                cloudStationGroup.scale.set(cloudStationScale, cloudStationScale, cloudStationScale);
+
+                const getCloudStationBasePos = () => {
+                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+                    return {
+                        x: isMob ? 0.0 : 0.0,
+                        y: isMob ? 4.8 : 5.67,
+                        z: isMob ? -62.15 : -62.15
+                    };
+                };
+
+                let cloudStationBasePos = getCloudStationBasePos();
+                cloudStationGroup.position.set(cloudStationBasePos.x, cloudStationBasePos.y, cloudStationBasePos.z);
+                cloudStationGroup.rotation.y = 0.0; // Grand staircase and entrance portal face oncoming camera
+
+                // --- 4. Continuous 3D Catmull-Rom Traversal Spline ---
+                const createCameraSpline = (isMob) => {
+                    const yBoost = isMob ? 0.6 : 0.0;
+                    return new THREE.CatmullRomCurve3([
+                        // Act 01: Hero Atrium (Ship in Clouds)
+                        new THREE.Vector3(0.0, 3.0 + yBoost, 18.0),   // 0.00: Hero title framed by ship
+                        new THREE.Vector3(0.4, 3.0 + yBoost, 12.0),   // 0.08: Gliding forward
+                        new THREE.Vector3(0.8, 3.2 + yBoost, 4.0),    // 0.16: Ship sails up into misty clouds
+                        new THREE.Vector3(0.8, 3.4 + yBoost, -4.0),   // 0.23: Transitioning through clouds
+
+                        // Act 02: Sunken Prism (Stylised Sky Player Home Diorama)
+                        new THREE.Vector3(0.8, 3.2 + yBoost, -12.0),  // 0.30: Grand island emerges from turquoise mist
+                        new THREE.Vector3(0.9, 2.8 + yBoost, -17.0),  // 0.36: Approaching the front lawn & pathway
+                        new THREE.Vector3(1.0, 2.7 + yBoost, -22.5),  // 0.43: Eye-level flight past cottage & ancient tree
+                        new THREE.Vector3(0.6, 3.0 + yBoost, -28.0),  // 0.50: Clearing back cliff edge of island
+                        new THREE.Vector3(0.2, 3.5 + yBoost, -36.0),  // 0.56: Emerging into violet sanctum mist
+
+                        // Act 03: Pink Sanctum & Sunset Arcade (Cloud Station)
+                        new THREE.Vector3(0.5, 3.2 + yBoost, -45.0),  // 0.63: Approaching Cloud Station grand front facade
+                        new THREE.Vector3(0.5, 2.4 + yBoost, -51.5),  // 0.70: Entering central grand staircase
+                        new THREE.Vector3(0.8, 3.2 + yBoost, -55.0),  // 0.77: Passing through front entrance archway
+                        new THREE.Vector3(1.8, 5.8 + yBoost, -61.5),  // 0.85: Crossing aerial suspension bridge
+                        new THREE.Vector3(-1.0, 8.2 + yBoost, -67.0), // 0.93: Sweeping over observatory with orbiting fish
+                        new THREE.Vector3(0.0, 9.5 + yBoost, -76.0)   // 1.00: Rising into open twilight sunset sky
+                    ], false, 'centripetal');
+                };
+
+                let cameraSpline = createCameraSpline(isMobileDevice);
+                const currentLookAt = new THREE.Vector3(0, 3, 10);
+
+                // --- Dynamic Atmospheric Lights for Each Environment ---
+                const shipCloudLight = new THREE.PointLight(0x9bd8dc, 1.8, 28);
+                shipCloudLight.position.set(shipBasePos.x - 2.0, shipBasePos.y - 1.0, shipBasePos.z);
+                scene.add(shipCloudLight);
+
+                const shipSunRimLight = new THREE.DirectionalLight(0xffeedd, 1.2);
+                shipSunRimLight.position.set(shipBasePos.x + 8.0, shipBasePos.y + 12.0, shipBasePos.z + 5.0);
+                scene.add(shipSunRimLight);
+
+                const dioramaPointLight = new THREE.PointLight(0x5be3d2, 0.0, 30);
+                dioramaPointLight.position.set(1.0, 3.5, -22.5);
+                scene.add(dioramaPointLight);
+
+                const pinkStationLight = new THREE.PointLight(0xff9ec7, 0.0, 35);
+                pinkStationLight.position.set(1.0, 5.0, -56.0);
+                scene.add(pinkStationLight);
+
+                // --- Model State & Processors ---
+                let shipModel = null;
+                let shipLoaded = false;
+
+                function processShipModel(gltf) {
+                    if (shipLoaded) return;
+                    shipModel = gltf.scene;
+                    shipModel.position.set(0, 0, 2.7);
+
+                    const textureCache = new Map();
+                    shipModel.traverse((child) => {
+                        if (child.isMesh) {
+                            const nodeName = child.name ? child.name.toLowerCase() : '';
+                            const matName = (child.material && child.material.name) ? child.material.name.toLowerCase() : '';
+
+                            if (nodeName.includes('sky') || matName === 'material') {
+                                child.visible = false;
+                                return;
+                            }
+
+                            const origMat = child.material;
+                            if (origMat) {
+                                const diffuseTex = origMat.emissiveMap || origMat.map;
+                                if (diffuseTex && !textureCache.has(diffuseTex.uuid)) {
+                                    diffuseTex.generateMipmaps = true;
+                                    diffuseTex.minFilter = THREE.LinearMipmapLinearFilter;
+                                    diffuseTex.magFilter = THREE.LinearFilter;
+                                    diffuseTex.encoding = THREE.sRGBEncoding;
+                                    textureCache.set(diffuseTex.uuid, diffuseTex);
+                                }
+
+                                const isCloud = matName.includes('cloud') || nodeName.includes('cloud');
+                                const isAlphaCloud = matName.includes('cloud_1') || matName.includes('cloud_2') || matName.includes('cloud_3') ||
+                                                     nodeName.includes('cloud_1') || nodeName.includes('cloud_2') || nodeName.includes('cloud_3');
+
+                                if (isAlphaCloud) {
+                                    child.material = new THREE.MeshStandardMaterial({
+                                        map: origMat.map || diffuseTex || null,
+                                        color: new THREE.Color(0xffffff),
+                                        emissive: new THREE.Color(0x334455),
+                                        emissiveIntensity: 0.35,
+                                        transparent: true,
+                                        opacity: 0.88,
+                                        depthWrite: false,
+                                        depthTest: true,
+                                        side: THREE.DoubleSide,
+                                        roughness: 0.9,
+                                        metalness: 0.0,
+                                        fog: true
+                                    });
+                                } else if (isCloud) {
+                                    child.material = new THREE.MeshStandardMaterial({
+                                        map: diffuseTex || origMat.map || null,
+                                        color: new THREE.Color(0xffffff),
+                                        emissive: new THREE.Color(0x223344),
+                                        emissiveIntensity: 0.25,
+                                        roughness: 0.85,
+                                        metalness: 0.02,
+                                        side: THREE.DoubleSide,
+                                        fog: true
+                                    });
+                                    child.castShadow = !isMobileDevice;
+                                    child.receiveShadow = !isMobileDevice;
+                                } else {
+                                    child.material = new THREE.MeshStandardMaterial({
+                                        map: diffuseTex || origMat.map || null,
+                                        color: new THREE.Color(0xffffff),
+                                        emissive: new THREE.Color(0x111111),
+                                        emissiveIntensity: 0.2,
+                                        roughness: 0.55,
+                                        metalness: 0.08,
+                                        side: THREE.DoubleSide,
+                                        fog: true
+                                    });
+                                    child.castShadow = !isMobileDevice;
+                                    child.receiveShadow = !isMobileDevice;
+                                }
+                            }
+                        }
+                    });
+
+                    shipGroup.add(shipModel);
+                    shipLoaded = true;
                 }
 
-                // Place classical colonnade arches
-                archGroup.add(createArch(-7.5, 2, 1.1, Math.PI / 12));
-                archGroup.add(createArch(-12, -4, 1.3, Math.PI / 8));
-                archGroup.add(createArch(7.5, -6, 1.4, -Math.PI / 10));
-                archGroup.add(createArch(13, -15, 1.6, -Math.PI / 6));
-                scene.add(archGroup);
+                let skyPlayerModel = null;
+                let skyPlayerLoaded = false;
 
-                // 3. Submerged Steps emerging from the water
-                const stairsGroup = new THREE.Group();
-                for (let i = 0; i < 7; i++) {
-                    const step = new THREE.Mesh(new THREE.BoxGeometry(7 - i * 0.4, 0.35, 1.2), stoneMaterial);
-                    step.position.set(0, -0.4 + i * 0.32, 2 - i * 0.9);
-                    stairsGroup.add(step);
+                function processSkyPlayerModel(gltf) {
+                    if (skyPlayerLoaded) return;
+                    skyPlayerModel = gltf.scene;
+                    // Exact Three.js geometric center offset
+                    skyPlayerModel.position.set(-1.92, -41.83, -4.45);
+
+                    skyPlayerModel.traverse((child) => {
+                        if (child.isMesh) {
+                            const mat = child.material;
+                            if (mat) {
+                                const matName = mat.name ? mat.name.toLowerCase() : '';
+                                const isFoliage = matName.includes('branch') || matName.includes('650') || matName.includes('leaf') || matName.includes('foliage');
+                                if (isFoliage) {
+                                    mat.alphaTest = 0.4;
+                                    mat.transparent = false;
+                                    mat.side = THREE.DoubleSide;
+                                }
+                                mat.roughness = 0.72;
+                                mat.metalness = 0.04;
+                            }
+                            child.castShadow = !isMobileDevice;
+                            child.receiveShadow = !isMobileDevice;
+                        }
+                    });
+
+                    skyPlayerGroup.add(skyPlayerModel);
+                    skyPlayerLoaded = true;
                 }
-                stairsGroup.position.set(0, 0, 2);
-                scene.add(stairsGroup);
 
-                // 4. Floating Pearlescent Iridescent Sphere (Chromatic Dispersion)
-                const pearlGeometry = new THREE.SphereGeometry(2.3, 64, 64);
-                const pearlMaterial = new THREE.ShaderMaterial({
-                    uniforms: {
-                        uTime: { value: 0 }
-                    },
-                    vertexShader: `
-                        varying vec3 vNormal;
-                        varying vec3 vViewPosition;
+                let cloudStationModel = null;
+                let cloudStationLoaded = false;
+                let cloudStationMixer = null;
 
-                        void main() {
-                            vNormal = normalize(normalMatrix * normal);
-                            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-                            vViewPosition = -mvPosition.xyz;
-                            gl_Position = projectionMatrix * mvPosition;
+                function processCloudStationModel(gltf) {
+                    if (cloudStationLoaded) return;
+                    cloudStationModel = gltf.scene;
+                    // Exact Three.js geometric center offset
+                    cloudStationModel.position.set(0.43, -1.83, 1.62);
+
+                    cloudStationModel.traverse((child) => {
+                        if (child.isMesh) {
+                            const nodeName = child.name ? child.name.toLowerCase() : '';
+                            const matName = (child.material && child.material.name) ? child.material.name.toLowerCase() : '';
+                            if (nodeName.includes('sky') || matName.includes('sky')) {
+                                child.visible = false;
+                                return;
+                            }
+                            if (child.material) {
+                                child.material.depthWrite = true;
+                                child.material.roughness = 0.65;
+                                child.material.metalness = 0.05;
+                            }
+                            child.castShadow = !isMobileDevice;
+                            child.receiveShadow = !isMobileDevice;
                         }
-                    `,
-                    fragmentShader: `
-                        uniform float uTime;
-                        varying vec3 vNormal;
-                        varying vec3 vViewPosition;
+                    });
 
-                        void main() {
-                            vec3 viewDir = normalize(vViewPosition);
-                            float NdotV = dot(vNormal, viewDir);
-                            float fresnel = clamp(1.0 - NdotV, 0.0, 1.0);
+                    if (gltf.animations && gltf.animations.length > 0) {
+                        cloudStationMixer = new THREE.AnimationMixer(cloudStationModel);
+                        const clip = gltf.animations[0];
+                        const action = cloudStationMixer.clipAction(clip);
+                        action.play();
+                    }
 
-                            // Iridescent thin-film chromatic spectrum
-                            vec3 rainbow = 0.5 + 0.5 * cos(6.28318 * (fresnel * 1.4 + vec3(0.0, 0.33, 0.67) + uTime * 0.15));
-                            
-                            // Pearl soft body
-                            vec3 pearlBase = vec3(0.98, 0.94, 0.96);
-                            vec3 finalColor = mix(pearlBase, rainbow, fresnel * 0.85);
+                    cloudStationGroup.add(cloudStationModel);
+                    cloudStationLoaded = true;
+                }
 
-                            // Specular light highlight
-                            vec3 lightDir = normalize(vec3(0.6, 1.0, 0.5));
-                            vec3 halfVector = normalize(lightDir + viewDir);
-                            float spec = pow(max(dot(vNormal, halfVector), 0.0), 48.0);
-                            finalColor += vec3(spec * 0.9);
+                // --- Universal Zero-CORS Loader Helper ---
+                function loadModelWithFallback(b64VarName, filePath, onLoaded) {
+                    if (typeof THREE.GLTFLoader === 'undefined') return;
+                    const gltfLoader = new THREE.GLTFLoader();
 
-                            gl_FragColor = vec4(finalColor, 0.96);
+                    function tryParse() {
+                        if (window[b64VarName]) {
+                            try {
+                                const binStr = window.atob(window[b64VarName]);
+                                const len = binStr.length;
+                                const bytes = new Uint8Array(len);
+                                for (let i = 0; i < len; i++) bytes[i] = binStr.charCodeAt(i);
+                                gltfLoader.parse(bytes.buffer, '', onLoaded, (err) => {
+                                    console.warn(b64VarName + ' parse error:', err);
+                                });
+                                return true;
+                            } catch (e) {
+                                console.warn(b64VarName + ' decode error:', e);
+                            }
                         }
-                    `,
-                    transparent: true
-                });
+                        return false;
+                    }
 
-                const pearlSphere = new THREE.Mesh(pearlGeometry, pearlMaterial);
-                pearlSphere.position.set(4.2, 3.4, 0);
-                scene.add(pearlSphere);
+                    if (tryParse()) return;
 
-                // 5. Floating Smooth Organic River Boulders
-                const rockGeom = new THREE.DodecahedronGeometry(1.6, 2);
-                const rockMat = new THREE.MeshStandardMaterial({
-                    color: 0xc8b6a8,
-                    roughness: 0.85,
-                    metalness: 0.02
-                });
-                const rock1 = new THREE.Mesh(rockGeom, rockMat);
-                rock1.scale.set(1.4, 0.9, 1.2);
-                rock1.position.set(6, 0.2, 4);
-                scene.add(rock1);
+                    let pollCount = 0;
+                    const pollTimer = setInterval(() => {
+                        pollCount++;
+                        if (tryParse() || pollCount > 80) {
+                            clearInterval(pollTimer);
+                        }
+                    }, 50);
 
-                const rock2 = new THREE.Mesh(rockGeom, rockMat);
-                rock2.scale.set(0.9, 0.7, 0.8);
-                rock2.position.set(-5.5, 0.1, 5);
-                scene.add(rock2);
+                    if (window.location.protocol !== 'file:') {
+                        gltfLoader.load(
+                            filePath,
+                            (gltf) => {
+                                clearInterval(pollTimer);
+                                onLoaded(gltf);
+                            },
+                            undefined,
+                            (err) => console.warn(filePath + ' fetch note:', err)
+                        );
+                    }
+                }
 
-                // 6. Liquid Chromatic Ribbons in Deep Ocean (Realm 2 Projects Space)
-                const ribbonGeom = new THREE.TorusKnotGeometry(4.2, 0.65, 128, 32, 2, 3);
-                const ribbonMat = new THREE.MeshPhysicalMaterial({
-                    color: 0xffffff,
-                    metalness: 0.95,
-                    roughness: 0.1,
-                    clearcoat: 1.0,
-                    clearcoatRoughness: 0.1,
-                    reflectivity: 1.0
-                });
-                const ribbonMesh = new THREE.Mesh(ribbonGeom, ribbonMat);
-                ribbonMesh.position.set(0, 3, -30);
-                scene.add(ribbonMesh);
+                // Initial Act 01 load
+                loadModelWithFallback('SHIP_IN_CLOUDS_B64', 'assets/models/ship_in_clouds.glb', processShipModel);
+
+                // Lazy load triggers for Act 02 & Act 03
+                let skyPlayerRequested = false;
+                function requestSkyPlayerModel() {
+                    if (skyPlayerRequested) return;
+                    skyPlayerRequested = true;
+                    loadModelWithFallback('STYLISED_SKY_B64', 'assets/models/stylised_sky_player_home_diorama.glb', processSkyPlayerModel);
+                }
+
+                let cloudStationRequested = false;
+                function requestCloudStationModel() {
+                    if (cloudStationRequested) return;
+                    cloudStationRequested = true;
+                    loadModelWithFallback('CLOUD_STATION_B64', 'assets/models/cloud_station.glb', processCloudStationModel);
+                }
+
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(() => requestSkyPlayerModel(), { timeout: 1200 });
+                    requestIdleCallback(() => requestCloudStationModel(), { timeout: 3500 });
+                } else {
+                    setTimeout(requestSkyPlayerModel, 900);
+                    setTimeout(requestCloudStationModel, 2800);
+                }
 
                 // Mouse & Touch interaction coords
                 let mouseXNorm = 0, mouseYNorm = 0;
@@ -2592,43 +2887,84 @@
                     }
                 }, { passive: true });
 
-                // Scroll-Driven Camera Flight & Realm Color Interpolation
+                // Scroll-Driven Traversal Spline & Realm Color Transitions
                 let scrollProgress = 0;
+                let targetScrollProgress = 0;
+
                 function updateScrollFlight() {
                     const maxScroll = document.body.scrollHeight - window.innerHeight;
-                    scrollProgress = maxScroll > 0 ? (window.scrollY / maxScroll) : 0;
+                    targetScrollProgress = maxScroll > 0 ? (window.scrollY / maxScroll) : 0;
+                    scrollProgress += (targetScrollProgress - scrollProgress) * 0.08;
 
-                    // Camera travels along a gentle 3D curve through the realms
-                    const targetX = Math.sin(scrollProgress * Math.PI * 1.5) * 5 + (mouseXNorm * 0.8);
-                    const targetY = THREE.MathUtils.lerp(3.8, 1.8, scrollProgress) + (mouseYNorm * 0.4);
-                    const targetZ = THREE.MathUtils.lerp(17, -55, scrollProgress);
+                    // Lazy load triggers based on flight position
+                    if (scrollProgress > 0.10) requestSkyPlayerModel();
+                    if (scrollProgress > 0.22) requestCloudStationModel();
 
-                    camera.position.x += (targetX - camera.position.x) * 0.05;
-                    camera.position.y += (targetY - camera.position.y) * 0.05;
-                    camera.position.z += (targetZ - camera.position.z) * 0.05;
-                    camera.lookAt(targetX * 0.4, 2.0 - scrollProgress * 1.5, targetZ - 12);
+                    // Evaluate camera position and forward tangent from 3D spline
+                    const clampedProgress = Math.max(0.0, Math.min(1.0, scrollProgress));
+                    const splinePos = cameraSpline.getPointAt(clampedProgress);
+                    const tangent = cameraSpline.getTangentAt(Math.min(0.999, clampedProgress));
+
+                    const targetX = splinePos.x + (mouseXNorm * 0.5);
+                    const targetY = splinePos.y + (mouseYNorm * 0.3);
+                    const targetZ = splinePos.z;
+
+                    camera.position.x += (targetX - camera.position.x) * 0.08;
+                    camera.position.y += (targetY - camera.position.y) * 0.08;
+                    camera.position.z += (targetZ - camera.position.z) * 0.08;
+
+                    // Forward tangent LookAt: camera faces direction of travel
+                    const forwardDist = 6.0;
+                    const lookTargetX = camera.position.x + tangent.x * forwardDist + (mouseXNorm * 0.8);
+                    const lookTargetY = camera.position.y + tangent.y * forwardDist + (mouseYNorm * 0.5);
+                    const lookTargetZ = camera.position.z + tangent.z * forwardDist;
+
+                    currentLookAt.x += (lookTargetX - currentLookAt.x) * 0.08;
+                    currentLookAt.y += (lookTargetY - currentLookAt.y) * 0.08;
+                    currentLookAt.z += (lookTargetZ - currentLookAt.z) * 0.08;
+                    camera.lookAt(currentLookAt);
 
                     // Evolving Fog & Sky Colors Across 4 Realms
                     if (scrollProgress < 0.28) {
-                        // Realm 1: Atrium (Rose / Blush)
+                        // Realm 1: Atrium (Rose / Blush & Aqua)
                         scene.fog.color.setHex(0xf8e8e7);
                         waterMaterial.uniforms.uDepthColor.value.setHex(0x3a96a5);
                         waterMaterial.uniforms.uSurfaceColor.value.setHex(0xb2e8eb);
+                        shipCloudLight.color.setHex(0x9bd8dc);
+                        shipCloudLight.intensity = THREE.MathUtils.lerp(1.8, 0.4, THREE.MathUtils.smoothstep(scrollProgress, 0.18, 0.28));
+                        shipSunRimLight.color.setHex(0xffeedd);
+                        dioramaPointLight.intensity = 0.0;
+                        pinkStationLight.intensity = 0.0;
                     } else if (scrollProgress < 0.6) {
                         // Realm 2: Sunken Prism (Deep Ocean Turquoise / Cyan)
                         scene.fog.color.setHex(0x9bd8dc);
                         waterMaterial.uniforms.uDepthColor.value.setHex(0x0f5d72);
                         waterMaterial.uniforms.uSurfaceColor.value.setHex(0x5be3d2);
+                        shipSunRimLight.color.setHex(0x5be3d2);
+                        dioramaPointLight.color.setHex(0x5be3d2);
+                        dioramaPointLight.intensity = 2.4;
+                        shipCloudLight.intensity = 0.0;
+                        pinkStationLight.intensity = 0.0;
                     } else if (scrollProgress < 0.82) {
-                        // Realm 3: Holographic Sanctum (Violet / Periwinkle)
+                        // Realm 3: Holographic Sanctum (Violet / Periwinkle / Lavender)
                         scene.fog.color.setHex(0xd0c4f0);
                         waterMaterial.uniforms.uDepthColor.value.setHex(0x3e2b7a);
                         waterMaterial.uniforms.uSurfaceColor.value.setHex(0xa894e6);
+                        shipSunRimLight.color.setHex(0xd0c4f0);
+                        pinkStationLight.color.setHex(0xd0c4f0);
+                        pinkStationLight.intensity = 2.4;
+                        dioramaPointLight.intensity = 0.0;
+                        shipCloudLight.intensity = 0.0;
                     } else {
-                        // Realm 4: Sunset Horizon (Warm Coral / Dusk Lilac)
+                        // Realm 4: Sunset Horizon (Warm Coral / Dusk Lilac / Soft Pink)
                         scene.fog.color.setHex(0xfad3cf);
                         waterMaterial.uniforms.uDepthColor.value.setHex(0x8c3b52);
                         waterMaterial.uniforms.uSurfaceColor.value.setHex(0xfa9d8d);
+                        shipSunRimLight.color.setHex(0xfad3cf);
+                        pinkStationLight.color.setHex(0xff88aa);
+                        pinkStationLight.intensity = 2.8;
+                        dioramaPointLight.intensity = 0.0;
+                        shipCloudLight.intensity = 0.0;
                     }
                     waterMaterial.uniforms.uFogColor.value.copy(scene.fog.color);
                 }
@@ -2649,17 +2985,69 @@
                     if (!isPageVisible) return;
 
                     const elapsedTime = clock.getElapsedTime();
+                    const delta = clock.getDelta();
 
                     waterMaterial.uniforms.uTime.value = elapsedTime;
-                    pearlMaterial.uniforms.uTime.value = elapsedTime;
 
-                    // Floating sphere gentle levitation
-                    pearlSphere.position.y = 3.4 + Math.sin(elapsedTime * 0.9) * 0.25;
-                    pearlSphere.rotation.y = elapsedTime * 0.15;
+                    // --- Act 01: Ship in Clouds ---
+                    if (shipLoaded) {
+                        if (scrollProgress < 0.28) {
+                            shipGroup.visible = true;
+                            const shipHeaveY = Math.sin(elapsedTime * 0.85) * 0.14;
+                            const shipRollZ = Math.sin(elapsedTime * 0.7) * 0.018;
+                            const shipPitchX = Math.cos(elapsedTime * 0.55) * 0.012;
 
-                    // Ribbon mesh rotation in deep space
-                    ribbonMesh.rotation.x = elapsedTime * 0.2;
-                    ribbonMesh.rotation.y = elapsedTime * 0.25;
+                            // Gentle sail ascent into mist between 0.14 and 0.28
+                            const fadeOut1 = THREE.MathUtils.smoothstep(scrollProgress, 0.14, 0.28);
+                            const targetY = shipBasePos.y + shipHeaveY + fadeOut1 * 6.0;
+                            const targetZ = shipBasePos.z - fadeOut1 * 8.0;
+                            const targetTiltY = 0.42 + (mouseXNorm * 0.18) + fadeOut1 * 0.3;
+                            const targetTiltX = shipPitchX + (-mouseYNorm * 0.12) - fadeOut1 * 0.15;
+                            const targetShiftX = shipBasePos.x + (mouseXNorm * 0.45);
+
+                            shipGroup.position.y += (targetY - shipGroup.position.y) * 0.06;
+                            shipGroup.position.x += (targetShiftX - shipGroup.position.x) * 0.06;
+                            shipGroup.position.z += (targetZ - shipGroup.position.z) * 0.06;
+                            shipGroup.rotation.y += (targetTiltY - shipGroup.rotation.y) * 0.06;
+                            shipGroup.rotation.x += (targetTiltX - shipGroup.rotation.x) * 0.06;
+                            shipGroup.rotation.z = shipRollZ;
+
+                            shipCloudLight.position.x = shipGroup.position.x - 2.0;
+                            shipCloudLight.position.y = shipGroup.position.y - 1.0;
+                        } else {
+                            shipGroup.visible = false;
+                        }
+                    }
+
+                    // --- Act 02: Stylised Sky Player Home Diorama ---
+                    if (skyPlayerLoaded) {
+                        if (scrollProgress >= 0.18 && scrollProgress <= 0.62) {
+                            skyPlayerGroup.visible = true;
+                            const islandHeaveY = Math.sin(elapsedTime * 0.5 + 1.2) * 0.08;
+                            const islandSwayZ = Math.sin(elapsedTime * 0.35) * 0.012;
+
+                            // Subtle floating presence
+                            skyPlayerGroup.position.y = skyPlayerBasePos.y + islandHeaveY;
+                            skyPlayerGroup.rotation.z = islandSwayZ;
+                        } else {
+                            skyPlayerGroup.visible = false;
+                        }
+                    }
+
+                    // --- Act 03: Cloud Station (Direct Frontal Centerpiece) ---
+                    if (cloudStationLoaded) {
+                        if (scrollProgress >= 0.50) {
+                            cloudStationGroup.visible = true;
+                            const stationHeaveY = Math.sin(elapsedTime * 0.4 + 2.5) * 0.10;
+                            cloudStationGroup.position.y = cloudStationBasePos.y + stationHeaveY;
+
+                            if (cloudStationMixer) {
+                                cloudStationMixer.update(delta);
+                            }
+                        } else {
+                            cloudStationGroup.visible = false;
+                        }
+                    }
 
                     updateScrollFlight();
                     renderer.render(scene, camera);
@@ -2668,6 +3056,21 @@
                 animate();
 
                 window.addEventListener('resize', () => {
+                    const isMob = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
+                    cameraSpline = createCameraSpline(isMob);
+
+                    shipScale = getShipScale();
+                    shipGroup.scale.set(shipScale, shipScale, shipScale);
+                    shipBasePos = getShipBasePos();
+
+                    skyPlayerScale = getSkyPlayerScale();
+                    skyPlayerGroup.scale.set(skyPlayerScale, skyPlayerScale, skyPlayerScale);
+                    skyPlayerBasePos = getSkyPlayerBasePos();
+
+                    cloudStationScale = getCloudStationScale();
+                    cloudStationGroup.scale.set(cloudStationScale, cloudStationScale, cloudStationScale);
+                    cloudStationBasePos = getCloudStationBasePos();
+
                     camera.aspect = window.innerWidth / window.innerHeight;
                     camera.updateProjectionMatrix();
                     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -2741,18 +3144,24 @@
                     mobileToggle.addEventListener('click', () => {
                         const isOpen = mobileDrawer.classList.contains('open');
                         mobileDrawer.classList.toggle('open', !isOpen);
+                        mobileDrawer.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+                        if (cursorRing) cursorRing.classList.remove('is-hovering');
                     });
                 }
 
                 if (drawerCloseBtn) {
                     drawerCloseBtn.addEventListener('click', () => {
                         mobileDrawer.classList.remove('open');
+                        mobileDrawer.setAttribute('aria-hidden', 'true');
+                        if (cursorRing) cursorRing.classList.remove('is-hovering');
                     });
                 }
 
                 document.querySelectorAll('.mobile-nav-link').forEach(link => {
                     link.addEventListener('click', () => {
                         mobileDrawer.classList.remove('open');
+                        mobileDrawer.setAttribute('aria-hidden', 'true');
+                        if (cursorRing) cursorRing.classList.remove('is-hovering');
                     });
                 });
             }

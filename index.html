@@ -458,9 +458,8 @@
             height: 100vh;
             height: 100dvh;
             background: rgba(248, 232, 231, 0.98);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            transform: translateZ(0);
+            backdrop-filter: blur(32px);
+            -webkit-backdrop-filter: blur(32px);
             z-index: 100000;
             padding-top: calc(90px + env(safe-area-inset-top, 0px));
             padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px));
@@ -1724,9 +1723,242 @@
             color: #fff;
             border-color: var(--ink-primary);
         }
+
+        /* Hide Performance HUD on mobile to keep original clean mobile experience */
+        @media (max-width: 768px), (pointer: coarse) {
+            #perf-hud {
+                display: none !important;
+            }
+        }
+
+        /* ==========================================================================
+           ETHEREAL ANIMATED PRELOADER SCREEN
+           ========================================================================== */
+        #ethereal-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            background: #f8e8e7;
+            z-index: 2147483647;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 700ms cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: all;
+        }
+
+        #ethereal-loader.is-loaded {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 320px;
+            padding: 24px;
+        }
+
+        .loader-chime-ring {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-orb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--ink-primary);
+            box-shadow: 0 0 20px rgba(42, 42, 54, 0.28);
+            animation: loaderOrbBreathe 2.2s ease-in-out infinite;
+        }
+
+        .loader-ring-pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 1.5px solid rgba(42, 42, 54, 0.35);
+            animation: loaderRingExpand 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+        }
+
+        .loader-ring-pulse.outer {
+            animation-delay: 0.6s;
+            border-color: rgba(42, 42, 54, 0.2);
+        }
+
+        @keyframes loaderOrbBreathe {
+            0%, 100% { transform: scale(0.85); opacity: 0.75; }
+            50% { transform: scale(1.18); opacity: 1; }
+        }
+
+        @keyframes loaderRingExpand {
+            0% { transform: scale(0.5); opacity: 0.95; }
+            100% { transform: scale(1.75); opacity: 0; }
+        }
+
+        .loader-brand {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--ink-primary);
+            margin-bottom: 8px;
+        }
+
+        .loader-status {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--ink-secondary);
+            margin-bottom: 22px;
+            min-height: 26px;
+            letter-spacing: 0.02em;
+        }
+
+        .loader-progress-track {
+            width: 180px;
+            height: 2px;
+            background: rgba(42, 42, 54, 0.12);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .loader-progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--ink-primary);
+            transition: width 240ms cubic-bezier(0.1, 0.8, 0.2, 1);
+        }
+
+        .loader-percent {
+            font-family: 'Space Grotesk', monospace, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--ink-muted);
+        }
     </style>
 </head>
 <body>
+
+    <!-- ==========================================================================
+         0. ETHEREAL ANIMATED PRELOADER SCREEN
+         ========================================================================== -->
+    <div id="ethereal-loader" role="status" aria-live="polite" aria-label="Loading experience">
+        <div class="loader-content">
+            <div class="loader-chime-ring">
+                <div class="loader-orb"></div>
+                <div class="loader-ring-pulse"></div>
+                <div class="loader-ring-pulse outer"></div>
+            </div>
+            <div class="loader-brand">
+                <span>relzzy studio</span>
+                <span style="font-size: 0.95rem; opacity: 0.7;">®</span>
+            </div>
+            <div class="loader-status" id="loader-status">Calibrating Ethereal Architecture...</div>
+            <div class="loader-progress-track">
+                <div class="loader-progress-bar" id="loader-progress-bar"></div>
+            </div>
+            <div class="loader-percent" id="loader-percent">0%</div>
+        </div>
+    </div>
+    <script>
+        (function() {
+            const loader = document.getElementById('ethereal-loader');
+            const bar = document.getElementById('loader-progress-bar');
+            const percent = document.getElementById('loader-percent');
+            const status = document.getElementById('loader-status');
+            if (!loader || !bar || !percent) return;
+
+            let curProgress = 0;
+            let targetProgress = 24;
+            let isCompleted = false;
+
+            const stages = [
+                { p: 15, msg: 'Calibrating Ethereal Architecture...' },
+                { p: 45, msg: 'Synchronising Atmospheric Light...' },
+                { p: 75, msg: 'Summoning Celestial Vessel...' },
+                { p: 95, msg: 'Entering Ethereal Sanctuary...' },
+                { p: 100, msg: 'Sanctuary Awakened.' }
+            ];
+
+            function setStageMessage(val) {
+                if (!status) return;
+                for (let i = stages.length - 1; i >= 0; i--) {
+                    if (val >= stages[i].p) {
+                        status.textContent = stages[i].msg;
+                        break;
+                    }
+                }
+            }
+
+            const tick = setInterval(() => {
+                if (isCompleted) return;
+                if (curProgress < targetProgress) {
+                    curProgress += Math.min(2.8, (targetProgress - curProgress) * 0.22 + 0.6);
+                    if (curProgress > 99) curProgress = 99;
+                    bar.style.width = curProgress.toFixed(1) + '%';
+                    percent.textContent = Math.round(curProgress) + '%';
+                    setStageMessage(curProgress);
+                }
+            }, 30);
+
+            document.addEventListener('DOMContentLoaded', () => {
+                if (!isCompleted) targetProgress = Math.max(targetProgress, 65);
+            });
+
+            window.addEventListener('load', () => {
+                if (!isCompleted) targetProgress = Math.max(targetProgress, 88);
+            });
+
+            window.dismissEtherealLoader = function() {
+                if (isCompleted) return;
+                isCompleted = true;
+                clearInterval(tick);
+                curProgress = 100;
+                bar.style.width = '100%';
+                percent.textContent = '100%';
+                setStageMessage(100);
+
+                setTimeout(() => {
+                    loader.classList.add('is-loaded');
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 750);
+                }, 320);
+            };
+
+            // Safety timeout: dismiss after 2.8s even if network or GLTF stalls
+            setTimeout(() => {
+                if (!isCompleted && window.dismissEtherealLoader) {
+                    window.dismissEtherealLoader();
+                }
+            }, 2800);
+        })();
+    </script>
 
     <!-- ==========================================================================
          A. THREE.JS 3D CANVAS & CINEMATIC FILM GRAIN
@@ -2554,7 +2786,8 @@
                 const isMobileDevice = window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches;
 
                 // ==========================================================
-                // 1. ADAPTIVE RENDERING QUALITY TIERS & CONTROLLER
+                // 1. ADAPTIVE RENDERING QUALITY TIERS & CONTROLLER (Desktop only)
+                // (Mobile strictly preserves original 100% smooth baseline)
                 // ==========================================================
                 const QUALITY_TIERS = {
                     HIGH: {
@@ -2562,7 +2795,6 @@
                         name: 'High Quality',
                         shortName: 'HIGH',
                         dprCap: 1.25,        // Capped to prevent 4K/5K desktop fillrate saturation
-                        mobileDprCap: 1.5,
                         targetFps: 60,
                         minFrameMs: 1000 / 60 - 1.0,
                         waterSegments: 64,
@@ -2576,7 +2808,6 @@
                         name: 'Balanced',
                         shortName: 'BALANCED',
                         dprCap: 1.0,         // Clean 1:1 pixel rendering
-                        mobileDprCap: 1.15,
                         targetFps: 60,
                         minFrameMs: 1000 / 60 - 1.0,
                         waterSegments: 36,
@@ -2590,7 +2821,6 @@
                         name: 'Performance',
                         shortName: 'PERF',
                         dprCap: 0.85,        // Downscaled lightweight buffer with hardware upscale
-                        mobileDprCap: 0.85,
                         targetFps: 30,
                         minFrameMs: 1000 / 30 - 1.0,
                         waterSegments: 20,
@@ -2601,10 +2831,10 @@
                     }
                 };
 
-                // Initial tier selection
-                let currentTier = isMobileDevice
-                    ? QUALITY_TIERS.BALANCED
-                    : ((navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 8) ? QUALITY_TIERS.HIGH : QUALITY_TIERS.BALANCED);
+                // Initial tier selection (Desktop only)
+                let currentTier = (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 8)
+                    ? QUALITY_TIERS.HIGH
+                    : QUALITY_TIERS.BALANCED;
 
                 let manualTierOverride = null; // null for Auto, or 'high'|'balanced'|'performance'
                 let frameTimeEma = 16.6;
@@ -2612,30 +2842,32 @@
                 let sustainedSlowMs = 0;
                 let sustainedFastMs = 0;
 
-                // Renderer initialization
-                const effectiveInitialDpr = isMobileDevice ? currentTier.mobileDprCap : currentTier.dprCap;
+                // Renderer initialization (exact original mobile configuration preserved)
                 const renderer = new THREE.WebGLRenderer({
                     canvas: canvas,
                     alpha: true,
                     antialias: !isMobileDevice,
-                    powerPreference: 'high-performance',
-                    precision: isMobileDevice ? 'mediump' : 'highp'
+                    powerPreference: 'high-performance'
                 });
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, effectiveInitialDpr));
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobileDevice ? 1.5 : currentTier.dprCap));
                 renderer.toneMapping = THREE.ACESFilmicToneMapping;
                 renderer.toneMappingExposure = 1.15;
                 renderer.outputEncoding = THREE.sRGBEncoding;
 
-                // Demand-driven shadow map
-                renderer.shadowMap.enabled = currentTier.shadows;
-                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-                renderer.shadowMap.autoUpdate = false; // Demand-driven updates to save GPU cycles
+                // Demand-driven shadow map: completely disabled on mobile (original setting)
                 let shadowNeedsUpdate = true;
                 let lastShadowUpdateTime = 0;
+                if (!isMobileDevice) {
+                    renderer.shadowMap.enabled = currentTier.shadows;
+                    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                    renderer.shadowMap.autoUpdate = false; // Demand-driven updates to save GPU cycles
+                } else {
+                    renderer.shadowMap.enabled = false;
+                }
 
                 function requestShadowUpdate() {
-                    shadowNeedsUpdate = true;
+                    if (!isMobileDevice) shadowNeedsUpdate = true;
                 }
 
                 const scene = new THREE.Scene();
@@ -2651,16 +2883,20 @@
 
                 const sunLight = new THREE.DirectionalLight(0xfff5ea, 1.8);
                 sunLight.position.set(20, 35, 15);
-                sunLight.castShadow = currentTier.shadows;
-                sunLight.shadow.mapSize.width = currentTier.shadowMapSize;
-                sunLight.shadow.mapSize.height = currentTier.shadowMapSize;
-                sunLight.shadow.camera.near = 0.5;
-                sunLight.shadow.camera.far = 80;
-                sunLight.shadow.camera.left = -25;
-                sunLight.shadow.camera.right = 25;
-                sunLight.shadow.camera.top = 25;
-                sunLight.shadow.camera.bottom = -25;
-                sunLight.shadow.bias = -0.0005;
+                if (!isMobileDevice && currentTier.shadows) {
+                    sunLight.castShadow = true;
+                    sunLight.shadow.mapSize.width = currentTier.shadowMapSize;
+                    sunLight.shadow.mapSize.height = currentTier.shadowMapSize;
+                    sunLight.shadow.camera.near = 0.5;
+                    sunLight.shadow.camera.far = 80;
+                    sunLight.shadow.camera.left = -25;
+                    sunLight.shadow.camera.right = 25;
+                    sunLight.shadow.camera.top = 25;
+                    sunLight.shadow.camera.bottom = -25;
+                    sunLight.shadow.bias = -0.0005;
+                } else {
+                    sunLight.castShadow = false;
+                }
                 scene.add(sunLight);
 
                 const fillLight = new THREE.DirectionalLight(0xd5ecf5, 1.1);
@@ -2668,16 +2904,22 @@
                 scene.add(fillLight);
 
                 // ==========================================================
-                // 2. PROCEDURAL REFLECTIVE WATER PLANE (POOLED GEOMETRIES)
+                // 2. PROCEDURAL REFLECTIVE WATER PLANE
+                // Mobile: exact original 48x48 geometry; Desktop: pooled adaptive tiers
                 // ==========================================================
-                const waterGeoPool = {
+                const waterGeoMobile = isMobileDevice ? new THREE.PlaneGeometry(160, 160, 48, 48) : null;
+                if (waterGeoMobile) waterGeoMobile.rotateX(-Math.PI / 2);
+
+                const waterGeoPool = isMobileDevice ? {} : {
                     64: new THREE.PlaneGeometry(160, 160, 64, 64),
                     36: new THREE.PlaneGeometry(160, 160, 36, 36),
                     20: new THREE.PlaneGeometry(160, 160, 20, 20)
                 };
-                waterGeoPool[64].rotateX(-Math.PI / 2);
-                waterGeoPool[36].rotateX(-Math.PI / 2);
-                waterGeoPool[20].rotateX(-Math.PI / 2);
+                if (!isMobileDevice) {
+                    waterGeoPool[64].rotateX(-Math.PI / 2);
+                    waterGeoPool[36].rotateX(-Math.PI / 2);
+                    waterGeoPool[20].rotateX(-Math.PI / 2);
+                }
 
                 const waterMaterial = new THREE.ShaderMaterial({
                     uniforms: {
@@ -2686,7 +2928,7 @@
                         uSurfaceColor: { value: new THREE.Color(0xb2e8eb) },
                         uFogColor: { value: new THREE.Color(0xf8e8e7) },
                         uMouse: { value: new THREE.Vector2(0, 0) },
-                        uWaveComplexity: { value: currentTier.waterWaveCount }
+                        uWaveComplexity: { value: isMobileDevice ? 3.0 : currentTier.waterWaveCount }
                     },
                     vertexShader: `
                         uniform float uTime;
@@ -2747,19 +2989,19 @@
                     wireframe: false
                 });
 
-                const water = new THREE.Mesh(waterGeoPool[currentTier.waterSegments] || waterGeoPool[36], waterMaterial);
+                const water = new THREE.Mesh(isMobileDevice ? waterGeoMobile : (waterGeoPool[currentTier.waterSegments] || waterGeoPool[36]), waterMaterial);
                 water.position.y = 0;
                 scene.add(water);
 
                 function setQualityTier(newTier, reason = '') {
+                    if (isMobileDevice) return; // Strict lock: mobile view remains untouched with original baseline
                     if (currentTier.id === newTier.id) return;
                     currentTier = newTier;
                     lastTierChangeTime = performance.now();
                     console.info(`[WebGL Quality] Switched to ${newTier.name}. ${reason}`);
 
                     // Apply DPR
-                    const effectiveDpr = isMobileDevice ? newTier.mobileDprCap : newTier.dprCap;
-                    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, effectiveDpr));
+                    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, newTier.dprCap));
                     renderer.setSize(window.innerWidth, window.innerHeight);
 
                     // Apply Shadows
@@ -2971,8 +3213,8 @@
                                         fog: true
                                     });
                                     // Only the boat hull casts shadow, eliminating redundant shadow pass draw calls
-                                    child.castShadow = isBoat;
-                                    child.receiveShadow = isBoat;
+                                    child.castShadow = !isMobileDevice && isBoat;
+                                    child.receiveShadow = !isMobileDevice && isBoat;
                                 }
                             }
                         }
@@ -2981,6 +3223,9 @@
                     shipGroup.add(shipModel);
                     shipLoaded = true;
                     requestShadowUpdate();
+                    if (window.dismissEtherealLoader) {
+                        window.dismissEtherealLoader();
+                    }
                 }
 
                 let skyPlayerModel = null;
@@ -3009,8 +3254,8 @@
                                     child.receiveShadow = false;
                                 } else {
                                     mat.side = THREE.FrontSide; // Hardware backface culling for buildings & rocks
-                                    child.castShadow = isSolidBuilding;
-                                    child.receiveShadow = isSolidBuilding;
+                                    child.castShadow = !isMobileDevice && isSolidBuilding;
+                                    child.receiveShadow = !isMobileDevice && isSolidBuilding;
                                 }
                                 mat.roughness = 0.72;
                                 mat.metalness = 0.04;
@@ -3054,8 +3299,8 @@
                                 child.material.roughness = 0.65;
                                 child.material.metalness = 0.05;
                             }
-                            child.castShadow = shouldCastShadow;
-                            child.receiveShadow = shouldCastShadow;
+                            child.castShadow = !isMobileDevice && shouldCastShadow;
+                            child.receiveShadow = !isMobileDevice && shouldCastShadow;
                         }
                     });
 
@@ -3365,47 +3610,50 @@
                     const now = currentTime || performance.now();
                     const frameDt = now - lastFrameTimestamp;
 
-                    // Frame pacing: enforce minimum frame interval to prevent 144Hz-240Hz GPU overload
-                    const isUserIdle = (now - lastInteractionTime) > 2800;
-                    const effectiveMinFrameMs = isUserIdle ? 31.0 : currentTier.minFrameMs;
+                    // Frame pacing: desktop only (enforce minimum frame interval to prevent 144Hz-240Hz GPU overload)
+                    if (!isMobileDevice) {
+                        const isUserIdle = (now - lastInteractionTime) > 2800;
+                        const effectiveMinFrameMs = isUserIdle ? 31.0 : currentTier.minFrameMs;
 
-                    if (frameDt < effectiveMinFrameMs) {
-                        requestAnimationFrame(animate);
-                        return;
+                        if (frameDt < effectiveMinFrameMs) {
+                            requestAnimationFrame(animate);
+                            return;
+                        }
                     }
 
                     lastFrameTimestamp = now;
 
-                    // Update rolling EMA frame time for dynamic quality adaptation
-                    frameTimeEma = frameTimeEma * 0.92 + frameDt * 0.08;
+                    // Update rolling EMA frame time & dynamic tier adaptation (Desktop only)
+                    if (!isMobileDevice) {
+                        frameTimeEma = frameTimeEma * 0.92 + frameDt * 0.08;
 
-                    // Dynamic tier adaptation with 5s cooldown
-                    if (!manualTierOverride && (now - lastTierChangeTime > 5000)) {
-                        if (frameTimeEma > 22.5) { // < 45 FPS sustained drop
-                            sustainedSlowMs += frameDt;
-                            sustainedFastMs = 0;
-                            if (sustainedSlowMs > 1600) {
-                                if (currentTier.id === 'high') {
-                                    setQualityTier(QUALITY_TIERS.BALANCED, `Frame time ${frameTimeEma.toFixed(1)}ms > 22ms threshold`);
-                                } else if (currentTier.id === 'balanced') {
-                                    setQualityTier(QUALITY_TIERS.PERFORMANCE, `Frame time ${frameTimeEma.toFixed(1)}ms > 22ms threshold`);
+                        if (!manualTierOverride && (now - lastTierChangeTime > 5000)) {
+                            if (frameTimeEma > 22.5) { // < 45 FPS sustained drop
+                                sustainedSlowMs += frameDt;
+                                sustainedFastMs = 0;
+                                if (sustainedSlowMs > 1600) {
+                                    if (currentTier.id === 'high') {
+                                        setQualityTier(QUALITY_TIERS.BALANCED, `Frame time ${frameTimeEma.toFixed(1)}ms > 22ms threshold`);
+                                    } else if (currentTier.id === 'balanced') {
+                                        setQualityTier(QUALITY_TIERS.PERFORMANCE, `Frame time ${frameTimeEma.toFixed(1)}ms > 22ms threshold`);
+                                    }
+                                    sustainedSlowMs = 0;
                                 }
+                            } else if (frameTimeEma < 14.5) { // > 68 FPS ample headroom
+                                sustainedFastMs += frameDt;
                                 sustainedSlowMs = 0;
-                            }
-                        } else if (frameTimeEma < 14.5) { // > 68 FPS ample headroom
-                            sustainedFastMs += frameDt;
-                            sustainedSlowMs = 0;
-                            if (sustainedFastMs > 4500) {
-                                if (currentTier.id === 'performance') {
-                                    setQualityTier(QUALITY_TIERS.BALANCED, `Frame time ${frameTimeEma.toFixed(1)}ms has ample headroom`);
-                                } else if (currentTier.id === 'balanced' && !isMobileDevice) {
-                                    setQualityTier(QUALITY_TIERS.HIGH, `Frame time ${frameTimeEma.toFixed(1)}ms sustained 60 FPS headroom`);
+                                if (sustainedFastMs > 4500) {
+                                    if (currentTier.id === 'performance') {
+                                        setQualityTier(QUALITY_TIERS.BALANCED, `Frame time ${frameTimeEma.toFixed(1)}ms has ample headroom`);
+                                    } else if (currentTier.id === 'balanced') {
+                                        setQualityTier(QUALITY_TIERS.HIGH, `Frame time ${frameTimeEma.toFixed(1)}ms sustained 60 FPS headroom`);
+                                    }
+                                    sustainedFastMs = 0;
                                 }
+                            } else {
+                                sustainedSlowMs = 0;
                                 sustainedFastMs = 0;
                             }
-                        } else {
-                            sustainedSlowMs = 0;
-                            sustainedFastMs = 0;
                         }
                     }
 
@@ -3474,8 +3722,8 @@
 
                     updateScrollFlight();
 
-                    // Demand-driven shadow map pass
-                    if (currentTier.shadows) {
+                    // Demand-driven shadow map pass (Desktop only)
+                    if (!isMobileDevice && currentTier.shadows) {
                         if (shadowNeedsUpdate || (now - lastShadowUpdateTime > currentTier.shadowThrottleMs && Math.abs(targetScrollProgress - scrollProgress) > 0.0005)) {
                             renderer.shadowMap.needsUpdate = true;
                             shadowNeedsUpdate = false;
@@ -3525,10 +3773,13 @@
                     camera.aspect = window.innerWidth / window.innerHeight;
                     camera.updateProjectionMatrix();
 
-                    const effectiveDpr = isMob ? currentTier.mobileDprCap : currentTier.dprCap;
-                    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, effectiveDpr));
+                    if (isMob) {
+                        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+                    } else {
+                        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, currentTier.dprCap));
+                        requestShadowUpdate();
+                    }
                     renderer.setSize(window.innerWidth, window.innerHeight);
-                    requestShadowUpdate();
                 }, { passive: true });
             })();
 

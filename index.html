@@ -20,7 +20,8 @@
     <!-- Fonts: Cormorant Garamond (Expressive Luxury Serif Italic) + Space Grotesk (Modern Architectural Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,600;1,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,600;1,700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/arcade-player.css">
 
     <!-- Three.js (r128) and GLTFLoader (Binary Streaming with on-demand zero-CORS local fallback) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -1175,6 +1176,37 @@
             border: none;
         }
 
+        .focus-garden-canvas-wrap {
+            position: relative;
+            width: 100%;
+            height: 780px;
+            background: #0a1410;
+            overflow: hidden;
+        }
+
+        .focus-garden-canvas-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            background: #0a1410;
+        }
+
+        @media (max-width: 900px) {
+            .focus-garden-canvas-wrap {
+                height: 860px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .focus-garden-canvas-wrap {
+                height: 980px;
+            }
+        }
+
         /* Mobile Touch Controller */
         .mobile-touch-hud {
             position: absolute;
@@ -2317,6 +2349,54 @@
                                 <a href="https://www.linkedin.com/in/kumar-abhinav-38645638b" target="_blank" rel="noopener noreferrer" class="portal-btn-secondary" data-cursor="CONNECT">
                                     <span>LinkedIn Profile ↗</span>
                                 </a>
+                            </div>
+                        </article>
+
+                        <!-- 09: Focus Garden (Live Interactive Sanctuary Pavilion) -->
+                        <article class="portal-compact-card reveal-node" data-category="fullstack" style="grid-column: 1 / -1; padding: clamp(24px, 3.5vw, 36px);">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                                <div>
+                                    <div class="portal-num">APP // 09</div>
+                                    <h3 class="portal-title" style="font-size: clamp(1.8rem, 3vw, 2.3rem);">Focus Garden <em>(Interactive Sanctuary)</em></h3>
+                                    <p class="portal-desc" style="max-width: 820px; font-size: 0.96rem;">
+                                        An interactive productivity sanctuary fusing customizable <strong>Pomodoro interval cycles</strong> with a 
+                                        <strong>gamified virtual nursery</strong>. Start a focus session below, add tasks, watch procedural SVG plants grow through 7 stages, and level up your garden directly from this page.
+                                    </p>
+                                    <div class="portal-tech-pills" style="margin-top: 12px;">
+                                        <span class="tech-pill">Vanilla JS (Zero-Dep)</span>
+                                        <span class="tech-pill">Live Interactive Embed</span>
+                                        <span class="tech-pill">SVG Procedural Art</span>
+                                        <span class="tech-pill">Web Audio API</span>
+                                        <span class="tech-pill">LocalStorage Sync</span>
+                                        <span class="tech-pill">Stats &amp; Streaks</span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                    <a href="focus-garden/index.html" target="_blank" rel="noopener noreferrer" class="portal-btn-primary" data-cursor="LAUNCH" style="padding: 10px 18px; font-size: 0.88rem;">
+                                        <span>Open Standalone ↗</span>
+                                    </a>
+                                    <a href="project.html#focus-garden" class="portal-btn-secondary" data-cursor="SPECS">
+                                        <span>Full Specs ↗</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Embedded Interactive Pavilion Frame -->
+                            <div class="game-pavilion-frame" id="focus-garden-pavilion" style="background: #0a1410; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 35px rgba(198, 244, 114, 0.18); border: 2px solid rgba(198, 244, 114, 0.35); margin-top: 18px;">
+                                <div class="game-pavilion-hud" style="background: rgba(10, 20, 16, 0.95); border-bottom: 1px solid rgba(198, 244, 114, 0.2);">
+                                    <div class="hud-status">
+                                        <span class="pulse-circle" style="background: #c8f56f; box-shadow: 0 0 10px #c8f56f;"></span>
+                                        <span style="color: #eafac9; font-weight: 700; letter-spacing: 0.8px;">FOCUS GARDEN // LIVE POMODORO &amp; BOTANICAL ENGINE</span>
+                                    </div>
+                                    <div class="hud-actions">
+                                        <button class="btn-hud-tool" id="btn-focus-fullscreen" type="button" data-cursor="EXPAND" style="border-color: rgba(198, 244, 114, 0.35); color: #c8f56f;">⛶ Fullscreen</button>
+                                        <a href="focus-garden/index.html" target="_blank" rel="noopener noreferrer" class="btn-hud-tool" data-cursor="RAW" style="border-color: rgba(198, 244, 114, 0.25); color: #a9c3ab;">Standalone ↗</a>
+                                    </div>
+                                </div>
+
+                                <div class="focus-garden-canvas-wrap">
+                                    <iframe id="focus-garden-iframe" src="./focus-garden/index.html" allow="autoplay" title="Focus Garden Live Interactive App"></iframe>
+                                </div>
                             </div>
                         </article>
 
@@ -3943,11 +4023,24 @@
                 btn.addEventListener('mouseleave', onUp);
             });
 
-            // Fullscreen
+            // Fullscreen for Game Pavilion
             if (btnFullscreen && gamePavilion) {
                 btnFullscreen.addEventListener('click', () => {
                     if (!document.fullscreenElement) {
                         gamePavilion.requestFullscreen().catch(() => {});
+                    } else {
+                        document.exitFullscreen();
+                    }
+                });
+            }
+
+            // Fullscreen for Focus Garden Pavilion
+            const btnFocusFullscreen = document.getElementById('btn-focus-fullscreen');
+            const focusGardenPavilion = document.getElementById('focus-garden-pavilion');
+            if (btnFocusFullscreen && focusGardenPavilion) {
+                btnFocusFullscreen.addEventListener('click', () => {
+                    if (!document.fullscreenElement) {
+                        focusGardenPavilion.requestFullscreen().catch(() => {});
                     } else {
                         document.exitFullscreen();
                     }
@@ -4062,5 +4155,6 @@
             if (toast) toast.classList.remove('show');
         }
     </script>
+    <script src="assets/js/arcade-player.js" defer></script>
 </body>
 </html>

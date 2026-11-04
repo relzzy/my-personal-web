@@ -1,0 +1,14 @@
+{
+  "name": "focus-garden",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Focus Garden — grow a virtual garden by completing Pomodoro focus sessions.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/test.mjs",
+    "check": "node --check src/main.js && node --check src/storage.js && node --check src/sfx.js && node --check src/timer.js && node --check src/tasks.js && node --check src/garden.js && node --check src/stats.js && node --check serve.mjs",
+    "dev": "node --watch serve.mjs",
+    "start": "npm run build && node serve.mjs"
+  }
+}

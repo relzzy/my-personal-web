@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Focus Garden — Grow by focusing</title>
+  <meta name="description" content="A Pomodoro timer that grows a virtual garden." />
+  <meta name="theme-color" content="#0a1410" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Ctext x='50%' y='75%' font-size='90' text-anchor='middle' dominant-baseline='middle'%3E%F0%9F%9F%AF%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/style.css" />
+  <link rel="stylesheet" href="../assets/css/arcade-player.css" />
+  <script>
+    try {
+      if (window.self !== window.top) {
+        document.documentElement.classList.add('is-embedded');
+      }
+    } catch (e) {
+      document.documentElement.classList.add('is-embedded');
+    }
+  </script>
+</head>
+<body>
+
+  <!-- toasts -->
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="portfolio-back-pill" title="Return to portfolio">← Portfolio</a>
+      <span class="brand-leaf" aria-hidden="true">🌿</span>
+      <h1 class="brand-name">Focus Garden</h1>
+      <p class="brand-sub">Complete focus sessions to grow your garden.</p>
+    </div>
+    <div class="header-right">
+      <div id="level-badge" class="level-badge" title="Garden level">
+        <span class="level-emoji" id="level-emoji">🌿</span>
+        <span class="level-text"><span class="level-word">Level</span><span class="level-num" id="level-num">1</span></span>
+        <span class="level-stage" id="level-stage">Seed</span>
+      </div>
+      <span class="focus-time" id="focus-time">0m focused</span>
+    </div>
+  </header>
+
+  <main class="app-grid">
+
+    <!-- timer -->
+    <section class="card card-timer" aria-labelledby="timer-title">
+      <div class="card-head">
+        <h2 id="timer-title">Pomodoro</h2>
+        <button id="settings-btn" class="icon-btn" type="button" aria-label="Timer settings" title="Adjust timer">⚙️</button>
+      </div>
+
+      <div class="timer-body">
+        <div class="ring-wrap" id="ring-wrap" data-mode="focus">
+          <svg viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+            <circle class="ring-bg" cx="120" cy="120" r="100"/>
+            <circle class="ring-progress" id="ring-progress" cx="120" cy="120" r="100"/>
+          </svg>
+          <div class="timer-readout">
+            <div class="timer-time" id="timer-time" aria-live="off">25:00</div>
+            <div class="timer-phase" id="timer-phase">Focus</div>
+          </div>
+        </div>
+
+        <div class="cycle-dots" id="cycle-dots" role="img" aria-label="Pomodoro cycles completed this round">
+          <span class="dot" title="1"></span>
+          <span class="dot" title="2"></span>
+          <span class="dot" title="3"></span>
+          <span class="dot" title="4"></span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="start-btn" class="btn btn-primary" type="button">▶&nbsp;Start</button>
+        <button id="pause-btn" class="btn btn-ghost" type="button">⏸&nbsp;Pause</button>
+        <button id="reset-btn" class="btn btn-ghost" type="button">↺&nbsp;Reset</button>
+      </div>
+    </section>
+
+    <!-- tasks -->
+    <section class="card card-tasks" aria-labelledby="tasks-title">
+      <div class="card-head">
+        <h2 id="tasks-title">Today's Tasks</h2>
+        <span class="progress-pill" id="task-progress">0% done</span>
+      </div>
+
+      <form id="task-add-form" class="task-add" aria-label="Add a task">
+        <input id="task-input" type="text" placeholder="What needs your focus?" maxlength="120" autocomplete="off" />
+        <select id="task-priority" aria-label="Task priority" title="Priority">
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
+        </select>
+        <button class="btn btn-sm btn-primary" type="submit">Add</button>
+      </form>
+
+      <div class="filters" role="group" aria-label="Task filter">
+        <button class="filter-btn" data-filter="all" aria-pressed="true">All</button>
+        <button class="filter-btn" data-filter="active" aria-pressed="false">Active</button>
+        <button class="filter-btn" data-filter="completed" aria-pressed="false">Done</button>
+      </div>
+
+      <ul id="task-list" class="task-list" aria-label="Task list"></ul>
+    </section>
+
+    <!-- garden -->
+    <section class="card card-garden" aria-labelledby="garden-title">
+      <div class="card-head">
+        <h2 id="garden-title">Garden</h2>
+        <span class="xp-pill" id="garden-xp-pill">0 XP</span>
+      </div>
+
+      <div class="garden-stage-wrap" id="garden-stage-wrap" aria-label="Current plant growth stage"></div>
+      <div class="garden-meta">
+        <span class="garden-level" id="garden-level" title="Garden level">Level 1</span>
+        <span class="garden-stage" id="garden-stage-label">Seed</span>
+      </div>
+
+      <div class="xp-bar-wrap" aria-hidden="true">
+        <div class="xp-bar-track"><div id="xp-bar" class="xp-bar-fill" style="width: 0%"></div></div>
+        <span class="xp-bar-label" id="xp-bar-label">next level in 60 XP</span>
+      </div>
+
+      <h3 class="section-title">Plant collection</h3>
+      <div id="garden-collection" class="collection" role="group" aria-label="Select plant"></div>
+    </section>
+
+    <!-- stats -->
+    <section class="card card-stats" aria-labelledby="stats-title">
+      <div class="card-head">
+        <h2 id="stats-title">Growth Stats</h2>
+      </div>
+
+      <div class="stat-row stat-grid">
+        <div class="stat-box" title="Total completed focus sessions">
+          <div class="stat-value" id="stat-sessions">0</div>
+          <div class="stat-label">Sessions</div>
+        </div>
+        <div class="stat-box" title="Total productive focus time">
+          <div class="stat-value" id="stat-hours">0m</div>
+          <div class="stat-label">Productive time</div>
+        </div>
+        <div class="stat-box" title="Days in a row with at least one session">
+          <div class="stat-value"><span id="stat-streak">0</span><span class="streak-fire" aria-hidden="true">🔥</span></div>
+          <div class="stat-label">Streak</div>
+        </div>
+        <div class="stat-box stat-box--small" title="Garden level">
+          <div class="stat-value" id="stat-level-num">1</div>
+          <div class="stat-label">Level</div>
+        </div>
+      </div>
+
+      <h3 class="section-title">This week</h3>
+      <div class="weekly-chart" id="weekly-chart" role="img" aria-label="Focus minutes per day this week"></div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p class="hint">Earn 4 XP per minute of focused time. One session a day keeps your streak alive. Breaks keep you sharp.</p>
+    <button id="reset-all-btn" class="icon-btn icon-btn--link" type="button" title="Reset all garden data">reset everything</button>
+  </footer>
+
+  <!-- settings modal -->
+  <div id="settings-modal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" id="settings-backdrop"></div>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="modal-head">
+        <h2 id="settings-title">⚙️ Timer settings</h2>
+        <button id="settings-close" class="icon-btn" type="button" aria-label="Close settings">×</button>
+      </div>
+      <div class="settings-grid">
+        <label class="setting-row">
+          <span class="setting-label">Focus</span>
+          <input id="set-focus" type="number" min="1" max="120" step="1" class="setting-input" aria-label="Focus duration in minutes" />
+          <small>min</small>
+        </label>
+        <label class="setting-row">
+          <span class="setting-label">Short break</span>
+          <input id="set-short" type="number" min="1" max="60" step="1" class="setting-input" aria-label="Short break duration in minutes" />
+          <small>min</small>
+        </label>
+        <label class="setting-row">
+          <span class="setting-label">Long break</span>
+          <input id="set-long" type="number" min="1" max="120" step="1" class="setting-input" aria-label="Long break duration in minutes" />
+          <small>min</small>
+        </label>
+        <label class="setting-row">
+          <span class="setting-label">Cycles per round</span>
+          <input id="set-cycles" type="number" min="1" max="8" step="1" class="setting-input" aria-label="Number of focus cycles before a long break" />
+          <small>cycles</small>
+        </label>
+      </div>
+      <div class="settings-grid settings-gap">
+        <label class="setting-row">
+          <span class="setting-label">Sound</span>
+          <input id="set-sound" type="checkbox" class="setting-check" aria-label="Play completion chime" />
+        </label>
+      </div>
+      <button id="settings-save" class="btn btn-primary btn-w-full" type="button">Save settings</button>
+    </div>
+  </div>
+
+  <script src="src/bundle.js"></script>
+  <script src="../assets/js/arcade-player.js" defer></script>
+</body>
+</html>

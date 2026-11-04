@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,900&family=Poppins:wght@400;600;700;900&family=Titillium+Web:ital,wght@0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/arcade-player.css">
 
     <style>
         /* ========================================
@@ -306,6 +307,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 14px 18px;
+            font-size: 1.02rem;
+            letter-spacing: 1.2px;
+            width: 95%;
         }
 
         /* DIFFERENT SIZES & INDENTATIONS FOR PERSONA 3 MENU RHYTHM */
@@ -360,6 +365,12 @@
             padding: 13px 17px;
             font-size: 0.98rem;
             letter-spacing: 1.1px;
+        }
+        .index-list .index-item:nth-child(9) {
+            width: 96%;
+            padding: 15px 19px;
+            font-size: 1.02rem;
+            letter-spacing: 1.2px;
         }
 
         /* Number Badge */
@@ -831,7 +842,7 @@
         <div class="project-index-container">
             <div class="menu-header">
                 <h2>PROJECTS</h2>
-                <span class="sub-tag">08 ITEMS</span>
+                <span class="sub-tag">09 ITEMS</span>
             </div>
             
             <div class="index-list">
@@ -873,6 +884,11 @@
                 <button class="index-item" data-target="web3">
                     <div><span class="num">08</span> WEB3 &amp; COMMUNITY</div>
                     <span class="action-tag">COMM</span>
+                </button>
+
+                <button class="index-item" data-target="focus-garden">
+                    <div><span class="num">09</span> FOCUS GARDEN</div>
+                    <span class="action-tag">APP</span>
                 </button>
             </div>
 
@@ -1134,6 +1150,65 @@
                 </p>
             </div>
 
+            <!-- 09: Focus Garden -->
+            <div class="project-section" id="focus-garden">
+                <h2>Focus Garden: Gamified Pomodoro Productivity App</h2>
+                <p>
+                    <strong>Focus Garden</strong> is a complete, self-contained productivity application that marries a
+                    structured <strong>Pomodoro interval timer</strong> with a <strong>virtual botanical nursery</strong>.
+                    Designed to combat attention fatigue and encourage deep work, Focus Garden gamifies focused sessions
+                    by transforming productive minutes into tangible garden growth, leveling up flora from modest seeds
+                    to vibrant blooms.
+                </p>
+                <p>
+                    Engineered with a <strong>zero-dependency vanilla JavaScript architecture</strong>, the entire application
+                    executes client-side with instant startup, zero external framework overhead, procedural SVG rendering,
+                    Web Audio synthesis, and automated local data persistence.
+                </p>
+                <h3>System Architecture &amp; Core Features</h3>
+                <ul class="numbered-list">
+                    <li>
+                        <strong>Configurable Pomodoro Cycle Engine:</strong> Implements a robust state machine governing
+                        <strong>Focus, Short Break, and Long Break</strong> intervals. Features interactive pause/resume,
+                        smooth SVG radial progress countdown rings, configurable round limits, and automated phase transitions.
+                    </li>
+                    <li>
+                        <strong>Procedural SVG Botanical Nursery &amp; XP Progression:</strong> Focused minutes earn 
+                        <strong>4 XP per minute</strong>, driving growth through <strong>7 distinct developmental stages</strong>
+                        (Seed, Sprout, Young Plant, Growing, Mature, Budding, In Bloom). Features unlocking rare botanical specimens
+                        including <em>Fern, Mint, Orchid, Cactus</em>, and the prestigious <em>Golden Blossom</em>, rendered in real time
+                        via procedurally generated SVG vectors with radiant color gradients and atmospheric glows.
+                    </li>
+                    <li>
+                        <strong>Interactive Daily Task Board &amp; Priority Matrix:</strong> Integrated task manager supporting
+                        rapid item creation, 3-tier priority categorization (<strong>Low, Medium, High</strong>), reactive completion
+                        tracking, and dynamic filtering (All, Active, Completed) to keep daily focus grounded.
+                    </li>
+                    <li>
+                        <strong>Analytics, Consistency Streaks &amp; Weekly Histograms:</strong> Automated productivity tracking
+                        monitoring total sessions completed, aggregate focused hours, daily consistency streaks with fire badges,
+                        and an interactive Monday-through-Sunday weekly focus minute bar chart.
+                    </li>
+                    <li>
+                        <strong>Synthesized Zero-Asset Audio Engine:</strong> Employs the browser's native <strong>Web Audio API</strong>
+                        to synthesize melodic completion chimes and ambient notification frequencies in real time, requiring zero
+                        external audio files or bandwidth.
+                    </li>
+                    <li>
+                        <strong>Zero-Dependency Resilience &amp; Local Persistence:</strong> All user configurations, ongoing tasks,
+                        unlocked plant species, XP progress, and historical stats synchronize seamlessly into <code>localStorage</code>
+                        with automated schema clamping and sanity validation.
+                    </li>
+                </ul>
+                <p>
+                    Focus Garden is fully integrated into this web portfolio and is playable immediately in any modern browser without installations.
+                </p>
+                <div class="link-group">
+                    <a href="focus-garden/index.html" target="_blank" rel="noopener noreferrer"><span class="link-icon">🌿</span> Launch Focus Garden</a>
+                    <a href="index.html#projects"><span class="link-icon">⚡</span> View in Main Portfolio</a>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -1184,7 +1259,7 @@
                 showProject('ai-project');
             }
 
-            // Keyboard Shortcuts (1-8 for project switching, ESC for home)
+            // Keyboard Shortcuts (1-9 for project switching, ESC for home)
             const projectKeyMap = {
                 '1': 'ai-project',
                 '2': 'cue-platform',
@@ -1193,7 +1268,8 @@
                 '5': 'vn-engine',
                 '6': 'last-divine',
                 '7': 'game-dev',
-                '8': 'web3'
+                '8': 'web3',
+                '9': 'focus-garden'
             };
 
             window.addEventListener('keydown', (e) => {
@@ -1219,6 +1295,7 @@
             }
         });
     </script>
+    <script src="assets/js/arcade-player.js" defer></script>
 </body>
 
 </html>

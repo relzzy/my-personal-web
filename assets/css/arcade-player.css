@@ -1,0 +1,664 @@
+/* ==========================================================================
+   RELZZY ARCADE // RETRO SOUND SYSTEM v1.0
+   Old-School Arcade Cabinet MP3 Player
+   ========================================================================== */
+
+:root {
+    --arc-cyan: #00f0ff;
+    --arc-magenta: #ff0055;
+    --arc-amber: #ffb700;
+    --arc-green: #39ff14;
+    --arc-bg: #070b14;
+    --arc-panel: #0d1527;
+    --arc-screen: #02060d;
+    --arc-border: rgba(0, 240, 255, 0.35);
+    --arc-border-pink: rgba(255, 0, 85, 0.35);
+    --arc-glow: 0 0 15px rgba(0, 240, 255, 0.45);
+    --arc-glow-pink: 0 0 15px rgba(255, 0, 85, 0.5);
+    --arc-font: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+/* Base Container Fixed Bottom-Left (to avoid overlapping FPS HUD at bottom-right) */
+#arcade-player {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 999998;
+    font-family: var(--arc-font);
+    color: #e6f7ff;
+    user-select: none;
+    -webkit-user-select: none;
+    line-height: 1.4;
+    filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.75));
+    transition: all 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Subtle CRT Scanlines Texture */
+.arc-scanlines {
+    position: relative;
+    overflow: hidden;
+}
+.arc-scanlines::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+    background-size: 100% 3px, 6px 100%;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* ==========================================================================
+   1. MINI / COLLAPSED BAR MODE
+   ========================================================================== */
+.arc-mini-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, rgba(7, 11, 20, 0.94) 0%, rgba(13, 21, 39, 0.96) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 2px solid var(--arc-cyan);
+    border-radius: 40px;
+    padding: 7px 12px 7px 10px;
+    box-shadow: -4px 4px 0px #000, 0 0 20px rgba(0, 240, 255, 0.35);
+    cursor: pointer;
+    transition: all 220ms ease;
+}
+
+.arc-mini-bar:hover {
+    transform: translateY(-2px);
+    border-color: var(--arc-magenta);
+    box-shadow: -4px 4px 0px #000, 0 0 25px rgba(255, 0, 85, 0.45);
+}
+
+/* Mini Cabinet Token/Icon */
+.arc-mini-token {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--arc-cyan) 0%, #0055aa 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px var(--arc-cyan);
+    flex-shrink: 0;
+    animation: arcTokenPulse 3s ease-in-out infinite alternate;
+}
+@keyframes arcTokenPulse {
+    0% { transform: scale(0.96); filter: drop-shadow(0 0 4px var(--arc-cyan)); }
+    100% { transform: scale(1.04); filter: drop-shadow(0 0 10px var(--arc-magenta)); }
+}
+
+.arc-mini-token svg {
+    width: 18px;
+    height: 18px;
+    fill: #000;
+}
+
+/* Mini Ticker & Equalizer */
+.arc-mini-info {
+    display: flex;
+    flex-direction: column;
+    max-width: 170px;
+    overflow: hidden;
+}
+.arc-mini-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--arc-amber);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.arc-mini-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.5px;
+}
+
+/* Mini Visualizer Waves */
+.arc-mini-eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 18px;
+    margin: 0 4px;
+}
+.arc-mini-eq span {
+    width: 3px;
+    height: 4px;
+    background: var(--arc-cyan);
+    border-radius: 1px;
+    transition: height 0.15s ease;
+}
+.arc-playing .arc-mini-eq span:nth-child(1) { animation: arcEqWave 0.7s infinite alternate ease-in-out; }
+.arc-playing .arc-mini-eq span:nth-child(2) { animation: arcEqWave 0.5s infinite alternate ease-in-out 0.15s; }
+.arc-playing .arc-mini-eq span:nth-child(3) { animation: arcEqWave 0.8s infinite alternate ease-in-out 0.3s; }
+.arc-playing .arc-mini-eq span:nth-child(4) { animation: arcEqWave 0.6s infinite alternate ease-in-out 0.1s; }
+@keyframes arcEqWave {
+    0% { height: 4px; background: var(--arc-cyan); }
+    100% { height: 18px; background: var(--arc-magenta); }
+}
+
+/* Mini Action Buttons */
+.arc-mini-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.arc-mini-btn {
+    background: none;
+    border: none;
+    color: var(--arc-cyan);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 50%;
+    transition: all 180ms ease;
+}
+.arc-mini-btn:hover {
+    color: #fff;
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 8px var(--arc-cyan));
+}
+.arc-mini-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+.arc-mini-play-btn {
+    background: rgba(255, 0, 85, 0.2);
+    border: 1px solid var(--arc-magenta);
+    color: #fff;
+    padding: 7px;
+}
+.arc-mini-play-btn:hover {
+    background: var(--arc-magenta);
+    box-shadow: 0 0 12px var(--arc-magenta);
+}
+.arc-mini-play-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.arc-expand-btn {
+    background: rgba(0, 240, 255, 0.12);
+    border: 1px solid var(--arc-cyan);
+    color: var(--arc-cyan);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 180ms ease;
+}
+.arc-expand-btn:hover {
+    background: var(--arc-cyan);
+    color: #000;
+    box-shadow: 0 0 10px var(--arc-cyan);
+}
+
+/* ==========================================================================
+   2. EXPANDED ARCADE CONSOLE MODE
+   ========================================================================== */
+.arc-console {
+    display: none;
+    width: 360px;
+    background: linear-gradient(180deg, #0d1527 0%, #060a14 100%);
+    border: 2px solid var(--arc-cyan);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: -8px 8px 0px #000, 0 0 35px rgba(0, 240, 255, 0.35);
+    position: relative;
+    overflow: hidden;
+    animation: arcConsolePop 280ms cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+
+@keyframes arcConsolePop {
+    0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Console Header Bar */
+.arc-console-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--arc-border);
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+}
+.arc-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.arc-header-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--arc-green);
+    box-shadow: 0 0 8px var(--arc-green);
+    animation: arcBlink 1.4s infinite;
+}
+@keyframes arcBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+.arc-header-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--arc-cyan);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+}
+.arc-close-btn {
+    background: rgba(255, 0, 85, 0.15);
+    border: 1px solid var(--arc-magenta);
+    color: var(--arc-magenta);
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 800;
+    transition: all 180ms ease;
+}
+.arc-close-btn:hover {
+    background: var(--arc-magenta);
+    color: #fff;
+    box-shadow: 0 0 12px var(--arc-magenta);
+    transform: scale(1.05);
+}
+
+/* CRT Display Screen */
+.arc-screen {
+    background: var(--arc-screen);
+    border: 2px solid #002244;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 240, 255, 0.15);
+    position: relative;
+}
+
+.arc-screen-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.65rem;
+    color: var(--arc-amber);
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+}
+.arc-badge-mode {
+    background: rgba(255, 183, 0, 0.15);
+    border: 1px solid var(--arc-amber);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+.arc-track-title {
+    font-size: 0.96rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+}
+.arc-track-artist {
+    font-size: 0.72rem;
+    color: #7ebbf7;
+    margin-top: 2px;
+    letter-spacing: 0.8px;
+}
+
+/* 8-Column Equalizer Visualizer */
+.arc-spectrum {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 4px;
+    height: 28px;
+    margin-top: 10px;
+    padding-top: 4px;
+    border-top: 1px dashed rgba(0, 240, 255, 0.2);
+}
+.arc-spectrum-bar {
+    flex: 1;
+    height: 6px;
+    background: linear-gradient(180deg, var(--arc-magenta) 0%, var(--arc-cyan) 60%, #004488 100%);
+    border-radius: 2px;
+    transition: height 0.1s ease;
+}
+.arc-playing .arc-spectrum-bar:nth-child(1) { animation: arcSpec 0.6s infinite alternate ease-in-out; }
+.arc-playing .arc-spectrum-bar:nth-child(2) { animation: arcSpec 0.8s infinite alternate ease-in-out 0.1s; }
+.arc-playing .arc-spectrum-bar:nth-child(3) { animation: arcSpec 0.5s infinite alternate ease-in-out 0.25s; }
+.arc-playing .arc-spectrum-bar:nth-child(4) { animation: arcSpec 0.9s infinite alternate ease-in-out 0.15s; }
+.arc-playing .arc-spectrum-bar:nth-child(5) { animation: arcSpec 0.7s infinite alternate ease-in-out 0.3s; }
+.arc-playing .arc-spectrum-bar:nth-child(6) { animation: arcSpec 0.5s infinite alternate ease-in-out 0.05s; }
+.arc-playing .arc-spectrum-bar:nth-child(7) { animation: arcSpec 0.8s infinite alternate ease-in-out 0.2s; }
+.arc-playing .arc-spectrum-bar:nth-child(8) { animation: arcSpec 0.6s infinite alternate ease-in-out 0.35s; }
+@keyframes arcSpec {
+    0% { height: 4px; }
+    50% { height: 16px; }
+    100% { height: 26px; }
+}
+
+/* ==========================================================================
+   3. PROGRESSION BAR (INTERACTABLE SCRUBBER)
+   ========================================================================== */
+.arc-progress-wrap {
+    margin-bottom: 14px;
+}
+.arc-progress-bar-container {
+    position: relative;
+    width: 100%;
+    height: 12px;
+    background: #02060f;
+    border: 1px solid var(--arc-border);
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.8);
+    transition: border-color 0.2s ease;
+}
+.arc-progress-bar-container:hover {
+    border-color: var(--arc-cyan);
+}
+.arc-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #0088cc 0%, var(--arc-cyan) 80%, var(--arc-magenta) 100%);
+    border-radius: 5px;
+    position: relative;
+    pointer-events: none;
+    transition: width 0.08s linear;
+}
+.arc-progress-thumb {
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    background: #ffffff;
+    border: 2px solid var(--arc-magenta);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--arc-magenta);
+    pointer-events: none;
+    transition: transform 0.15s ease;
+}
+.arc-progress-bar-container:hover .arc-progress-thumb {
+    transform: translateY(-50%) scale(1.2);
+}
+
+.arc-time-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #8da4c4;
+    margin-top: 4px;
+}
+.arc-time-current {
+    color: var(--arc-cyan);
+}
+
+/* ==========================================================================
+   4. ARCADE BUTTON BANK (PREV, -10S, PLAY/PAUSE, +10S, NEXT)
+   ========================================================================== */
+.arc-controls-bank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.arc-btn {
+    background: linear-gradient(180deg, #182847 0%, #0d1629 100%);
+    border: 1px solid var(--arc-border);
+    color: var(--arc-cyan);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 10px;
+    box-shadow: -2px 3px 0px #000, inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition: all 120ms ease;
+    user-select: none;
+}
+.arc-btn:hover {
+    border-color: var(--arc-cyan);
+    color: #fff;
+    box-shadow: -2px 3px 0px #000, 0 0 12px rgba(0, 240, 255, 0.4);
+    transform: translateY(-1px);
+}
+.arc-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 0 0 #000;
+}
+.arc-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+.arc-btn-tag {
+    font-size: 0.58rem;
+    font-weight: 800;
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+}
+
+/* Skip 10s & Rewind 10s Buttons */
+.arc-btn-skip {
+    padding: 6px 9px;
+    position: relative;
+}
+.arc-btn-skip svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* Primary Big Play/Pause Button */
+.arc-btn-play {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ff0055 0%, #990033 100%);
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    box-shadow: -3px 4px 0px #000, 0 0 20px rgba(255, 0, 85, 0.7);
+    padding: 0;
+    transition: all 140ms ease;
+}
+.arc-btn-play:hover {
+    border-color: var(--arc-cyan);
+    box-shadow: -3px 4px 0px #000, 0 0 30px rgba(255, 0, 85, 0.9);
+    transform: scale(1.06);
+}
+.arc-btn-play:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 #000;
+}
+.arc-btn-play svg {
+    width: 24px;
+    height: 24px;
+    fill: #ffffff;
+}
+
+/* ==========================================================================
+   5. VOLUME & PLAYLIST DRAWER
+   ========================================================================== */
+.arc-footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid rgba(0, 240, 255, 0.2);
+    padding-top: 10px;
+}
+
+/* Volume Slider */
+.arc-vol-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+}
+.arc-vol-btn {
+    background: none;
+    border: none;
+    color: var(--arc-cyan);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    transition: transform 0.15s ease;
+}
+.arc-vol-btn:hover {
+    color: #fff;
+    transform: scale(1.15);
+}
+.arc-vol-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+.arc-vol-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #02060f;
+    border: 1px solid var(--arc-border);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+}
+.arc-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--arc-cyan);
+    box-shadow: 0 0 6px var(--arc-cyan);
+    cursor: pointer;
+}
+
+/* Playlist Selector */
+.arc-playlist-select {
+    background: #02060f;
+    border: 1px solid var(--arc-border);
+    color: var(--arc-cyan);
+    font-family: var(--arc-font);
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    max-width: 150px;
+    transition: border-color 0.2s ease;
+}
+.arc-playlist-select:hover,
+.arc-playlist-select:focus {
+    border-color: var(--arc-cyan);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+.arc-playlist-select option {
+    background: #0d1527;
+    color: #fff;
+}
+
+/* Switch Display State */
+#arcade-player.is-expanded .arc-mini-bar {
+    display: none;
+}
+#arcade-player.is-expanded .arc-console {
+    display: block;
+}
+
+/* Mobile Tweaks */
+@media (max-width: 600px) {
+    #arcade-player {
+        bottom: 12px;
+        left: 10px;
+        right: 10px;
+        max-width: calc(100vw - 20px);
+    }
+    .arc-mini-bar {
+        width: 100%;
+        padding: 6px 10px;
+        gap: 8px;
+        justify-content: space-between;
+    }
+    .arc-mini-token {
+        width: 28px;
+        height: 28px;
+    }
+    .arc-mini-token svg {
+        width: 14px;
+        height: 14px;
+    }
+    .arc-mini-info {
+        max-width: 110px;
+    }
+    .arc-mini-label {
+        font-size: 0.55rem;
+    }
+    .arc-mini-title {
+        font-size: 0.72rem;
+    }
+    .arc-mini-eq {
+        display: none; /* Hide mini visualizer bars on narrow screens to keep controls spacious */
+    }
+    .arc-mini-btn {
+        padding: 5px;
+    }
+    .arc-mini-btn svg {
+        width: 15px;
+        height: 15px;
+    }
+    .arc-mini-play-btn {
+        padding: 6px;
+    }
+    .arc-mini-play-btn svg {
+        width: 15px;
+        height: 15px;
+    }
+    .arc-expand-btn {
+        padding: 4px 6px;
+        font-size: 0.65rem;
+    }
+    .arc-console {
+        width: 100%;
+        max-height: 82vh;
+        overflow-y: auto;
+    }
+}

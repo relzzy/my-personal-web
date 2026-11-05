@@ -23,7 +23,7 @@
             return;
         }
     } catch (e) {
-        return;
+        // Do not abort if window.top access was restricted by browser security
     }
 
     const STORAGE_KEY = 'relzzy_arcade_player_state';
@@ -319,22 +319,33 @@
                 });
         }
 
-        async prefetchPlaylistMetadata(playlistId, apiKey) {
+        prefetchPlaylistMetadata(playlistId, apiKey) {
             try {
                 const endpoint = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${encodeURIComponent(playlistId)}&key=${encodeURIComponent(apiKey)}`;
-                const res = await fetch(endpoint);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.items && Array.isArray(data.items)) {
-                        this.playlistItems = data.items.map((item, idx) => ({
-                            index: idx,
-                            videoId: item.snippet?.resourceId?.videoId,
-                            title: item.snippet?.title || `Track ${idx + 1}`,
-                            artist: item.snippet?.videoOwnerChannelTitle || item.snippet?.channelTitle || 'YouTube'
-                        }));
-                        this.onTrackUpdate(this.getCurrentTrackInfo());
-                    }
-                }
+                const self = this;
+                fetch(endpoint)
+                    .then((res) => {
+                        if (res && res.ok) return res.json();
+                        return null;
+                    })
+                    .then((data) => {
+                        if (data && data.items && Array.isArray(data.items)) {
+                            self.playlistItems = data.items.map((item, idx) => {
+                                const snippet = (item && item.snippet) ? item.snippet : {};
+                                const resId = snippet.resourceId || {};
+                                return {
+                                    index: idx,
+                                    videoId: resId.videoId || '',
+                                    title: snippet.title || `Track ${idx + 1}`,
+                                    artist: snippet.videoOwnerChannelTitle || snippet.channelTitle || 'YouTube'
+                                };
+                            });
+                            self.onTrackUpdate(self.getCurrentTrackInfo());
+                        }
+                    })
+                    .catch((e) => {
+                        console.warn('[ArcadePlayer] YouTube Data API v3 prefetch error:', e);
+                    });
             } catch (e) {
                 console.warn('[ArcadePlayer] YouTube Data API v3 prefetch skipped:', e);
             }
@@ -1062,8 +1073,8 @@
                     }
                 });
 
-                const playlistId = this.config.youtube?.playlistId || DEFAULT_CONFIG.youtube.playlistId;
-                const apiKey = this.config.youtube?.apiKey || '';
+                const playlistId = (this.config.youtube && this.config.youtube.playlistId) ? this.config.youtube.playlistId : DEFAULT_CONFIG.youtube.playlistId;
+                const apiKey = (this.config.youtube && this.config.youtube.apiKey) ? this.config.youtube.apiKey : '';
                 this.ytController.init(playlistId, apiKey);
             } else {
                 this.dom.ytLoadingOverlay.classList.add('is-hidden');
@@ -1383,7 +1394,19 @@
     // -------------------------------------------------------------------------
     function init() {
         if (window.__relzzyArcadePlayer) return;
-        window.__relzzyArcadePlayer = new ArcadePlayer();
+        if (!document.body) {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                window.addEventListener('load', init);
+            }
+            return;
+        }
+        try {
+            window.__relzzyArcadePlayer = new ArcadePlayer();
+        } catch (err) {
+            console.error('[ArcadePlayer] Initialization error:', err);
+        }
     }
 
     if (document.readyState === 'loading') {

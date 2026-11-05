@@ -23,11 +23,12 @@
     position: fixed;
     bottom: 24px;
     left: 24px;
-    z-index: 999998;
+    z-index: 10000000;
     font-family: var(--arc-font);
     color: #e6f7ff;
     user-select: none;
     -webkit-user-select: none;
+    -moz-user-select: none;
     line-height: 1.4;
     filter: drop-shadow(0 12px 35px rgba(0, 0, 0, 0.75));
     transition: all 360ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -58,6 +59,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    background: #090e1b;
+    background: rgba(9, 14, 27, 0.96);
     background: linear-gradient(135deg, rgba(7, 11, 20, 0.94) 0%, rgba(13, 21, 39, 0.96) 100%);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);

@@ -214,21 +214,21 @@
    2. EXPANDED ARCADE CONSOLE MODE
    ========================================================================== */
 .arc-console {
-    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
     width: 360px;
     background: linear-gradient(180deg, #0d1527 0%, #060a14 100%);
     border: 2px solid var(--arc-cyan);
     border-radius: 16px;
     padding: 16px;
     box-shadow: -8px 8px 0px #000, 0 0 35px rgba(0, 240, 255, 0.35);
-    position: relative;
     overflow: hidden;
-    animation: arcConsolePop 280ms cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
-}
-
-@keyframes arcConsolePop {
-    0% { opacity: 0; transform: translateY(20px) scale(0.95); }
-    100% { opacity: 1; transform: translateY(0) scale(1); }
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(16px) scale(0.96);
+    transition: opacity 260ms cubic-bezier(0.2, 0.9, 0.3, 1), transform 260ms cubic-bezier(0.2, 0.9, 0.3, 1);
+    z-index: -1;
 }
 
 /* Console Header Bar */
@@ -286,6 +286,79 @@
     transform: scale(1.05);
 }
 
+/* ==========================================================================
+   MODE SELECTOR DECK: [ LOCAL ] [ YOUTUBE ]
+   ========================================================================== */
+.arc-mode-switch-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+.arc-mode-selector {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #030712;
+    border: 1px solid var(--arc-border);
+    border-radius: 8px;
+    padding: 3px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.85);
+    width: 100%;
+}
+.arc-mode-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: #5c7594;
+    font-family: var(--arc-font);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 180ms ease;
+    user-select: none;
+}
+.arc-mode-btn:hover {
+    color: #e6f7ff;
+    border-color: rgba(0, 240, 255, 0.3);
+    background: rgba(0, 240, 255, 0.05);
+}
+.arc-mode-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #1e293b;
+    transition: all 180ms ease;
+}
+/* Local mode active */
+.arc-mode-btn.is-active[data-mode="local"] {
+    background: rgba(0, 240, 255, 0.14);
+    border-color: var(--arc-cyan);
+    color: var(--arc-cyan);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.35), inset 0 0 6px rgba(0, 240, 255, 0.2);
+}
+.arc-mode-btn.is-active[data-mode="local"] .arc-mode-indicator {
+    background: var(--arc-cyan);
+    box-shadow: 0 0 6px var(--arc-cyan);
+}
+/* YouTube mode active */
+.arc-mode-btn.is-active[data-mode="youtube"] {
+    background: rgba(255, 0, 85, 0.16);
+    border-color: var(--arc-magenta);
+    color: #ff3377;
+    box-shadow: 0 0 12px rgba(255, 0, 85, 0.4), inset 0 0 6px rgba(255, 0, 85, 0.2);
+}
+.arc-mode-btn.is-active[data-mode="youtube"] .arc-mode-indicator {
+    background: var(--arc-magenta);
+    box-shadow: 0 0 6px var(--arc-magenta);
+}
+
 /* CRT Display Screen */
 .arc-screen {
     background: var(--arc-screen);
@@ -295,6 +368,7 @@
     margin-bottom: 14px;
     box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 240, 255, 0.15);
     position: relative;
+    transition: all 240ms ease;
 }
 
 .arc-screen-top {
@@ -361,6 +435,113 @@
     0% { height: 4px; }
     50% { height: 16px; }
     100% { height: 26px; }
+}
+
+/* Badge mode variants */
+.arc-badge-mode.is-yt {
+    background: rgba(255, 0, 85, 0.18);
+    border-color: var(--arc-magenta);
+    color: #ff3377;
+    text-shadow: 0 0 6px rgba(255, 0, 85, 0.5);
+}
+.arc-badge-mode.is-error {
+    background: rgba(255, 0, 85, 0.25);
+    border-color: #ff0055;
+    color: #ff4477;
+    animation: arcBlink 1s infinite;
+}
+
+/* ==========================================================================
+   YOUTUBE CRT SCREEN CONTAINER
+   Strictly complies with YouTube's minimum 200x200 viewport requirements.
+   ========================================================================== */
+.arc-yt-screen {
+    display: none;
+    margin-top: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--arc-border-pink);
+    box-shadow: 0 0 16px rgba(255, 0, 85, 0.25);
+    position: relative;
+}
+#arcade-player.mode-youtube .arc-yt-screen {
+    display: block;
+}
+
+.arc-yt-wrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    min-width: 200px;
+    min-height: 200px;
+    background: #02040a;
+}
+.arc-yt-wrapper iframe,
+.arc-yt-wrapper #arc-yt-player {
+    width: 100% !important;
+    height: 200px !important;
+    min-width: 200px !important;
+    min-height: 200px !important;
+    display: block;
+    border: 0;
+}
+
+/* Loading & Buffering Overlay */
+.arc-yt-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(3, 7, 16, 0.94);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    z-index: 4;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--arc-cyan);
+    letter-spacing: 1px;
+    transition: opacity 250ms ease;
+    pointer-events: none;
+}
+.arc-yt-overlay.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+.arc-yt-spinner {
+    width: 26px;
+    height: 26px;
+    border: 2px solid rgba(0, 240, 255, 0.2);
+    border-top-color: var(--arc-magenta);
+    border-right-color: var(--arc-cyan);
+    border-radius: 50%;
+    animation: arcSpin 0.75s linear infinite;
+}
+@keyframes arcSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* Mini Bar Mode Tag */
+.arc-mini-mode-tag {
+    font-size: 0.55rem;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-right: 4px;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    vertical-align: middle;
+}
+#arcade-player.mode-local .arc-mini-mode-tag {
+    background: rgba(0, 240, 255, 0.15);
+    color: var(--arc-cyan);
+    border: 1px solid rgba(0, 240, 255, 0.35);
+}
+#arcade-player.mode-youtube .arc-mini-mode-tag {
+    background: rgba(255, 0, 85, 0.18);
+    color: #ff3377;
+    border: 1px solid rgba(255, 0, 85, 0.4);
 }
 
 /* ==========================================================================
@@ -601,7 +782,11 @@
     display: none;
 }
 #arcade-player.is-expanded .arc-console {
-    display: block;
+    position: relative;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+    z-index: 1;
 }
 
 /* Mobile Tweaks */
@@ -658,7 +843,14 @@
     }
     .arc-console {
         width: 100%;
-        max-height: 82vh;
+        max-height: 88vh;
         overflow-y: auto;
+    }
+    .arc-yt-wrapper,
+    .arc-yt-wrapper iframe,
+    .arc-yt-wrapper #arc-yt-player {
+        min-width: 200px !important;
+        min-height: 200px !important;
+        height: 200px !important;
     }
 }

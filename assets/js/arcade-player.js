@@ -1,12 +1,17 @@
 /**
- * RELZZY ARCADE // RETRO SOUND SYSTEM v1.0
- * Persistent Old-School Arcade Cabinet MP3 Player
+ * RELZZY ARCADE // SOUND SYSTEM v2.0
+ * Futuristic Retro-Arcade Cabinet Music Player
+ * 
  * Features:
- *  - Old-school arcade cabinet styling & pure SVG controls
- *  - Persistent state across all pages via localStorage (track, time, volume, play state)
- *  - Interactive scrubbable progression bar
- *  - +10s Forward, -10s Reverse, Next, Prev, Volume, Playlist drawer
- *  - Built-in Web Audio synth fallback when local MP3s are pending
+ *  - Dual playback modes:
+ *      * LOCAL MODE: Plays hosted MP3 files with built-in retro chiptune synth fallback
+ *      * YOUTUBE MODE: Streams personal YouTube playlist using official YouTube IFrame Player API
+ *  - Pure SVG arcade micro-switch controls with neon glow styling
+ *  - Two-way playback, seeking, volume, and track metadata synchronization
+ *  - Strictly complies with YouTube Terms of Service & minimum 200x200 viewport requirements
+ *  - Zero overlapping audio when switching modes
+ *  - Persistent state across all pages via localStorage
+ *  - Central configuration via assets/js/arcade-config.js (or inline fallback)
  */
 
 (() => {
@@ -21,35 +26,71 @@
         return;
     }
 
-    // -------------------------------------------------------------------------
-    // 1. PLAYLIST CONFIGURATION
-    // Drop your copyright-free MP3 files into assets/audio/ and list them here:
-    // -------------------------------------------------------------------------
-    const PLAYLIST = [
-        {
-            title: "Neon Horizon // Cyber Highway",
-            artist: "Relzzy Arcade (Chiptune)",
-            src: "assets/audio/neon-horizon.mp3",
-            duration: 174,
-            synthPreset: "synthwave"
-        },
-        {
-            title: "Midnight Quest // 8-Bit Dungeon",
-            artist: "Pixel Master (Retro Chiptune)",
-            src: "assets/audio/midnight-quest.mp3",
-            duration: 148,
-            synthPreset: "chiptune"
-        },
-        {
-            title: "Ethereal Rain // Cyber Sanctuary",
-            artist: "Lofi Dreamer (Ambient)",
-            src: "assets/audio/ethereal-rain.mp3",
-            duration: 192,
-            synthPreset: "ambient"
-        }
-    ];
-
     const STORAGE_KEY = 'relzzy_arcade_player_state';
+
+    // -------------------------------------------------------------------------
+    // 1. CONFIGURATION FALLBACK & URL PARSER
+    // -------------------------------------------------------------------------
+    const DEFAULT_CONFIG = {
+        defaultMode: 'local',
+        youtube: {
+            playlistId: "PLw-VjHDlEOgvtnnnqWlTqByAtC7tXBg6D",
+            apiKey: ""
+        },
+        localPlaylist: [
+            {
+                title: "Neon Horizon // Cyber Highway",
+                artist: "Relzzy Arcade (Chiptune)",
+                src: "assets/audio/neon-horizon.mp3",
+                duration: 174,
+                synthPreset: "synthwave"
+            },
+            {
+                title: "Midnight Quest // 8-Bit Dungeon",
+                artist: "Pixel Master (Retro Chiptune)",
+                src: "assets/audio/midnight-quest.mp3",
+                duration: 148,
+                synthPreset: "chiptune"
+            },
+            {
+                title: "Ethereal Rain // Cyber Sanctuary",
+                artist: "Lofi Dreamer (Ambient)",
+                src: "assets/audio/ethereal-rain.mp3",
+                duration: 192,
+                synthPreset: "ambient"
+            }
+        ]
+    };
+
+    function getPlayerConfig() {
+        if (window.ARCADE_CONFIG && typeof window.ARCADE_CONFIG === 'object') {
+            return window.ARCADE_CONFIG;
+        }
+        return DEFAULT_CONFIG;
+    }
+
+    /**
+     * Extracts YouTube playlist ID from raw ID or various YouTube URL formats.
+     */
+    function extractPlaylistId(input) {
+        if (!input || typeof input !== 'string') return '';
+        const trimmed = input.trim();
+        try {
+            if (trimmed.includes('http://') || trimmed.includes('https://') || trimmed.includes('youtube.com') || trimmed.includes('youtu.be')) {
+                const url = new URL(trimmed.startsWith('http') ? trimmed : `https://${trimmed}`);
+                const listParam = url.searchParams.get('list');
+                if (listParam) return listParam;
+            }
+        } catch (e) {}
+
+        const match = trimmed.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) return match[1];
+
+        const rawMatch = trimmed.match(/^[a-zA-Z0-9_-]+$/);
+        if (rawMatch) return trimmed;
+
+        return trimmed;
+    }
 
     // -------------------------------------------------------------------------
     // 2. SVG ICON DEFINITIONS
@@ -69,7 +110,7 @@
     };
 
     // -------------------------------------------------------------------------
-    // 3. RETRO CHIPTUNE / SYNTH ENGINE (FALLBACK WHEN MP3 IS NOT FOUND)
+    // 3. RETRO CHIPTUNE / SYNTH ENGINE (FALLBACK WHEN LOCAL MP3 IS MISSING)
     // -------------------------------------------------------------------------
     class ArcadeSynth {
         constructor() {
@@ -161,16 +202,366 @@
     }
 
     // -------------------------------------------------------------------------
-    // 4. MAIN ARCADE PLAYER CONTROLLER
+    // 4. YOUTUBE IFRAME API LOADER (SINGLETON ASYNC PROMISE)
+    // -------------------------------------------------------------------------
+    let ytApiLoadingPromise = null;
+    function loadYouTubeIframeApi() {
+        if (window.YT && window.YT.Player) {
+            return Promise.resolve(window.YT);
+        }
+        if (ytApiLoadingPromise) {
+            return ytApiLoadingPromise;
+        }
+
+        ytApiLoadingPromise = new Promise((resolve, reject) => {
+            const previousCallback = window.onYouTubeIframeAPIReady;
+            window.onYouTubeIframeAPIReady = () => {
+                if (typeof previousCallback === 'function') {
+                    try { previousCallback(); } catch (e) {}
+                }
+                resolve(window.YT);
+            };
+
+            const existing = document.querySelector('script[src*="youtube.com/iframe_api"]');
+            if (!existing) {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                tag.async = true;
+                tag.onerror = () => {
+                    reject(new Error('Failed to load YouTube IFrame API (Network error or Adblocker)'));
+                };
+                const firstScript = document.getElementsByTagName('script')[0];
+                if (firstScript && firstScript.parentNode) {
+                    firstScript.parentNode.insertBefore(tag, firstScript);
+                } else {
+                    document.head.appendChild(tag);
+                }
+            }
+        });
+
+        return ytApiLoadingPromise;
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. YOUTUBE AUDIO CONTROLLER
+    // -------------------------------------------------------------------------
+    class YouTubeAudioController {
+        constructor(options = {}) {
+            this.containerId = options.containerId || 'arc-yt-player';
+            this.onStateChange = options.onStateChange || (() => {});
+            this.onTrackUpdate = options.onTrackUpdate || (() => {});
+            this.onTimeUpdate = options.onTimeUpdate || (() => {});
+            this.onError = options.onError || (() => {});
+            this.onReady = options.onReady || (() => {});
+
+            this.player = null;
+            this.isReady = false;
+            this.isPlaying = false;
+            this.playlistId = '';
+            this.playlistItems = [];
+            this.trackIndex = 0;
+            this.currentTime = 0;
+            this.duration = 0;
+            this.pollTimer = null;
+            this.skipTimeout = null;
+        }
+
+        init(playlistRawId, apiKey = '') {
+            this.playlistId = extractPlaylistId(playlistRawId);
+            if (!this.playlistId) {
+                console.warn('[ArcadePlayer] No valid YouTube playlist ID specified.');
+                this.onError('ERR // NO PLAYLIST ID');
+                return Promise.reject(new Error('Invalid Playlist ID'));
+            }
+
+            // Optional: If an API key is provided, prefetch full playlist item titles
+            if (apiKey && apiKey.trim() && apiKey !== 'YOUR_API_KEY_HERE') {
+                this.prefetchPlaylistMetadata(this.playlistId, apiKey.trim());
+            }
+
+            return loadYouTubeIframeApi()
+                .then((YT) => {
+                    return new Promise((resolve) => {
+                        this.player = new YT.Player(this.containerId, {
+                            width: '100%',
+                            height: '200',
+                            playerVars: {
+                                listType: 'playlist',
+                                list: this.playlistId,
+                                autoplay: 0,
+                                controls: 1, // Native YouTube controls remain fully accessible
+                                modestbranding: 1,
+                                playsinline: 1, // Plays inline on mobile browsers
+                                rel: 0,
+                                enablejsapi: 1,
+                                origin: window.location.origin
+                            },
+                            events: {
+                                onReady: (event) => {
+                                    this.isReady = true;
+                                    this.onReady();
+                                    this.syncTrackInfo();
+                                    resolve(event);
+                                },
+                                onStateChange: (event) => {
+                                    this.handleStateChange(event);
+                                },
+                                onError: (event) => {
+                                    this.handleError(event);
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch((err) => {
+                    console.error('[ArcadePlayer] YouTube API initialization failed:', err);
+                    this.onError('ERR // YT OFFLINE');
+                });
+        }
+
+        async prefetchPlaylistMetadata(playlistId, apiKey) {
+            try {
+                const endpoint = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${encodeURIComponent(playlistId)}&key=${encodeURIComponent(apiKey)}`;
+                const res = await fetch(endpoint);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.items && Array.isArray(data.items)) {
+                        this.playlistItems = data.items.map((item, idx) => ({
+                            index: idx,
+                            videoId: item.snippet?.resourceId?.videoId,
+                            title: item.snippet?.title || `Track ${idx + 1}`,
+                            artist: item.snippet?.videoOwnerChannelTitle || item.snippet?.channelTitle || 'YouTube'
+                        }));
+                        this.onTrackUpdate(this.getCurrentTrackInfo());
+                    }
+                }
+            } catch (e) {
+                console.warn('[ArcadePlayer] YouTube Data API v3 prefetch skipped:', e);
+            }
+        }
+
+        handleStateChange(event) {
+            const YTState = window.YT ? window.YT.PlayerState : {
+                ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5
+            };
+
+            switch (event.data) {
+                case YTState.PLAYING:
+                    this.isPlaying = true;
+                    this.startPolling();
+                    this.syncTrackInfo();
+                    this.onStateChange(true);
+                    break;
+
+                case YTState.PAUSED:
+                    this.isPlaying = false;
+                    this.stopPolling();
+                    this.onStateChange(false);
+                    break;
+
+                case YTState.BUFFERING:
+                    this.syncTrackInfo();
+                    break;
+
+                case YTState.CUED:
+                    this.isPlaying = false;
+                    this.stopPolling();
+                    this.syncTrackInfo();
+                    this.onStateChange(false);
+                    break;
+
+                case YTState.ENDED:
+                    // Playlist naturally transitions, but ensure UI tracks advance
+                    this.syncTrackInfo();
+                    break;
+            }
+        }
+
+        handleError(event) {
+            const code = event.data;
+            console.warn('[ArcadePlayer] YouTube Player Error:', code);
+
+            let msg = 'ERR // STREAM';
+            if (code === 2) msg = 'ERR // INVALID ID';
+            else if (code === 5) msg = 'ERR // HTML5 ERROR';
+            else if (code === 100) msg = 'ERR // NOT FOUND';
+            else if (code === 101 || code === 150) msg = 'ERR // RESTRICTED';
+
+            this.onError(msg);
+
+            // If video is restricted or deleted, gracefully auto-skip to the next video
+            if (code === 100 || code === 101 || code === 150) {
+                if (this.skipTimeout) clearTimeout(this.skipTimeout);
+                this.skipTimeout = setTimeout(() => {
+                    this.nextTrack();
+                }, 1500);
+            }
+        }
+
+        syncTrackInfo() {
+            if (!this.player || typeof this.player.getVideoData !== 'function') return;
+
+            try {
+                const data = this.player.getVideoData();
+                const index = typeof this.player.getPlaylistIndex === 'function' ? this.player.getPlaylistIndex() : -1;
+                if (index >= 0) this.trackIndex = index;
+
+                const trackInfo = {
+                    title: (data && data.title) ? data.title : `Track ${this.trackIndex + 1}`,
+                    artist: (data && data.author) ? data.author : 'YouTube Stream',
+                    index: this.trackIndex,
+                    items: this.playlistItems
+                };
+                this.onTrackUpdate(trackInfo);
+            } catch (e) {}
+        }
+
+        startPolling() {
+            this.stopPolling();
+            this.pollTimer = setInterval(() => {
+                if (!this.player || !this.isPlaying) return;
+                try {
+                    const curr = this.player.getCurrentTime();
+                    const dur = this.player.getDuration();
+                    if (Number.isFinite(curr)) this.currentTime = curr;
+                    if (Number.isFinite(dur) && dur > 0) this.duration = dur;
+                    this.onTimeUpdate(this.currentTime, this.duration);
+                } catch (e) {}
+            }, 250);
+        }
+
+        stopPolling() {
+            if (this.pollTimer) {
+                clearInterval(this.pollTimer);
+                this.pollTimer = null;
+            }
+        }
+
+        getCurrentTrackInfo() {
+            if (this.playlistItems[this.trackIndex]) {
+                return {
+                    title: this.playlistItems[this.trackIndex].title,
+                    artist: this.playlistItems[this.trackIndex].artist,
+                    index: this.trackIndex,
+                    items: this.playlistItems
+                };
+            }
+            return {
+                title: 'Loading YouTube Track...',
+                artist: 'YouTube Audio Stream',
+                index: this.trackIndex,
+                items: this.playlistItems
+            };
+        }
+
+        play() {
+            if (!this.player || !this.isReady) return;
+            try {
+                this.player.playVideo();
+            } catch (e) {}
+        }
+
+        pause() {
+            if (!this.player || !this.isReady) return;
+            try {
+                this.player.pauseVideo();
+            } catch (e) {}
+        }
+
+        togglePlay() {
+            if (this.isPlaying) {
+                this.pause();
+            } else {
+                this.play();
+            }
+        }
+
+        nextTrack() {
+            if (!this.player || !this.isReady) return;
+            try {
+                this.player.nextVideo();
+            } catch (e) {}
+        }
+
+        prevTrack() {
+            if (!this.player || !this.isReady) return;
+            try {
+                this.player.previousVideo();
+            } catch (e) {}
+        }
+
+        playTrackAt(index) {
+            if (!this.player || !this.isReady) return;
+            try {
+                this.player.playVideoAt(index);
+            } catch (e) {}
+        }
+
+        seekTo(seconds) {
+            if (!this.player || !this.isReady) return;
+            try {
+                this.player.seekTo(seconds, true);
+                this.currentTime = seconds;
+                this.onTimeUpdate(this.currentTime, this.duration);
+            } catch (e) {}
+        }
+
+        skip(deltaSeconds) {
+            this.seekTo(Math.max(0, this.currentTime + deltaSeconds));
+        }
+
+        setVolume(fraction) {
+            if (!this.player || !this.isReady) return;
+            try {
+                const vol = Math.max(0, Math.min(100, Math.round(fraction * 100)));
+                this.player.setVolume(vol);
+            } catch (e) {}
+        }
+
+        setMuted(isMuted) {
+            if (!this.player || !this.isReady) return;
+            try {
+                if (isMuted) {
+                    this.player.mute();
+                } else {
+                    this.player.unMute();
+                }
+            } catch (e) {}
+        }
+
+        destroy() {
+            this.stopPolling();
+            if (this.skipTimeout) clearTimeout(this.skipTimeout);
+            if (this.player && typeof this.player.destroy === 'function') {
+                try {
+                    this.player.destroy();
+                } catch (e) {}
+            }
+            this.player = null;
+            this.isReady = false;
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. MAIN ARCADE PLAYER CONTROLLER (DUAL MODE ORCHESTRATOR)
     // -------------------------------------------------------------------------
     class ArcadePlayer {
         constructor() {
-            this.playlist = PLAYLIST;
-            this.trackIndex = 0;
+            this.config = getPlayerConfig();
+            this.mode = this.config.defaultMode || 'local'; // 'local' | 'youtube'
+
+            // Local Audio & Synth instances
+            this.localPlaylist = this.config.localPlaylist || DEFAULT_CONFIG.localPlaylist;
+            this.localTrackIndex = 0;
             this.audio = new Audio();
             this.synth = new ArcadeSynth();
             this.isUsingSynth = false;
 
+            // YouTube Controller instance
+            this.ytController = null;
+            this.ytInitialized = false;
+
+            // Shared Playback State
             this.isPlaying = false;
             this.isExpanded = false;
             this.currentTime = 0;
@@ -180,14 +571,19 @@
             this.isScrubbing = false;
 
             this.syncTimer = null;
+            this.savedWasPlaying = false;
 
             this.loadState();
             this.buildDOM();
             this.bindEvents();
             this.setupNavigationPersistence();
 
-            // Setup track from saved state
-            this.setTrack(this.trackIndex, false);
+            // Setup initial playback state
+            if (this.mode === 'youtube') {
+                this.initYouTubeMode(false);
+            } else {
+                this.setLocalTrack(this.localTrackIndex, false);
+            }
 
             // Attempt resume if it was actively playing before page reload
             if (this.savedWasPlaying) {
@@ -195,14 +591,17 @@
             }
         }
 
-        // --- State Management via localStorage ---
+        // --- State Persistence via localStorage ---
         loadState() {
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (raw) {
                     const data = JSON.parse(raw);
-                    if (Number.isInteger(data.trackIndex) && data.trackIndex >= 0 && data.trackIndex < this.playlist.length) {
-                        this.trackIndex = data.trackIndex;
+                    if (data.mode === 'local' || data.mode === 'youtube') {
+                        this.mode = data.mode;
+                    }
+                    if (Number.isInteger(data.trackIndex) && data.trackIndex >= 0) {
+                        this.localTrackIndex = data.trackIndex % this.localPlaylist.length;
                     }
                     if (Number.isFinite(data.currentTime) && data.currentTime >= 0) {
                         this.currentTime = data.currentTime;
@@ -222,7 +621,8 @@
         saveState() {
             try {
                 const state = {
-                    trackIndex: this.trackIndex,
+                    mode: this.mode,
+                    trackIndex: this.mode === 'youtube' && this.ytController ? this.ytController.trackIndex : this.localTrackIndex,
                     currentTime: this.currentTime,
                     isPlaying: this.isPlaying,
                     volume: this.volume,
@@ -235,25 +635,25 @@
         }
 
         setupNavigationPersistence() {
-            // Save state rapidly while playing
             this.syncTimer = setInterval(() => {
                 if (this.isPlaying) {
                     this.saveState();
                 }
             }, 350);
 
-            // Save on beforeunload / pagehide
             window.addEventListener('beforeunload', () => this.saveState());
             window.addEventListener('pagehide', () => this.saveState());
 
-            // Intercept internal link clicks to grab the exact audio timestamp right before navigation
+            // Intercept internal link clicks to grab the exact timestamp right before navigation
             document.addEventListener('click', (e) => {
                 const link = e.target.closest('a');
                 if (link && link.href) {
                     const isInternal = link.href.startsWith(window.location.origin) || !link.href.includes('://');
                     if (isInternal && !link.target && !link.href.includes('#')) {
-                        if (!this.isUsingSynth && this.audio) {
+                        if (this.mode === 'local' && !this.isUsingSynth && this.audio) {
                             this.currentTime = this.audio.currentTime;
+                        } else if (this.mode === 'youtube' && this.ytController) {
+                            this.currentTime = this.ytController.currentTime;
                         }
                         this.saveState();
                     }
@@ -261,7 +661,7 @@
             }, { capture: true });
         }
 
-        // --- Build DOM Elements ---
+        // --- DOM Construction ---
         buildDOM() {
             let container = document.getElementById('arcade-player');
             if (!container) {
@@ -270,9 +670,7 @@
                 document.body.appendChild(container);
             }
 
-            if (this.isExpanded) {
-                container.classList.add('is-expanded');
-            }
+            container.className = `mode-${this.mode}` + (this.isExpanded ? ' is-expanded' : '');
 
             container.innerHTML = `
                 <!-- 1. Collapsed Mini Bar -->
@@ -281,7 +679,9 @@
                         ${ICONS.token}
                     </div>
                     <div class="arc-mini-info">
-                        <span class="arc-mini-label">ARCADE SOUND</span>
+                        <span class="arc-mini-label">
+                            <span class="arc-mini-mode-tag" id="arc-mini-mode-tag">${this.mode.toUpperCase()}</span>ARCADE SOUND
+                        </span>
                         <span class="arc-mini-title" id="arc-mini-title">Track Title</span>
                     </div>
                     <div class="arc-mini-eq">
@@ -316,8 +716,22 @@
                         </button>
                     </div>
 
+                    <!-- Dual Mode Selector Deck: [ LOCAL ] [ YOUTUBE ] -->
+                    <div class="arc-mode-switch-wrap">
+                        <div class="arc-mode-selector" role="tablist" aria-label="Audio Playback Source">
+                            <button class="arc-mode-btn ${this.mode === 'local' ? 'is-active' : ''}" id="arc-mode-local" data-mode="local" type="button" role="tab" aria-selected="${this.mode === 'local'}" title="Switch to Local MP3 / Retro Synth Player">
+                                <span class="arc-mode-indicator"></span>
+                                <span>LOCAL</span>
+                            </button>
+                            <button class="arc-mode-btn ${this.mode === 'youtube' ? 'is-active' : ''}" id="arc-mode-youtube" data-mode="youtube" type="button" role="tab" aria-selected="${this.mode === 'youtube'}" title="Switch to YouTube Playlist Stream">
+                                <span class="arc-mode-indicator"></span>
+                                <span>YOUTUBE</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- CRT Display Screen -->
-                    <div class="arc-screen">
+                    <div class="arc-screen" id="arc-screen">
                         <div class="arc-screen-top">
                             <span class="arc-badge-mode" id="arc-badge-mode">CH-01 // STEREO</span>
                             <span id="arc-time-display">00:00 / 00:00</span>
@@ -325,8 +739,19 @@
                         <div class="arc-track-title" id="arc-full-title">Loading track...</div>
                         <div class="arc-track-artist" id="arc-full-artist">Artist</div>
 
+                        <!-- Official YouTube Embedded Video Viewport (Strictly >= 200x200) -->
+                        <div class="arc-yt-screen" id="arc-yt-screen">
+                            <div class="arc-yt-wrapper" id="arc-yt-wrapper">
+                                <div id="arc-yt-player"></div>
+                                <div class="arc-yt-overlay" id="arc-yt-loading">
+                                    <div class="arc-yt-spinner"></div>
+                                    <span id="arc-yt-status-text">CONNECTING YOUTUBE STREAM...</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- 8-Column Spectrum Visualizer -->
-                        <div class="arc-spectrum" aria-hidden="true">
+                        <div class="arc-spectrum" id="arc-spectrum" aria-hidden="true">
                             <div class="arc-spectrum-bar"></div>
                             <div class="arc-spectrum-bar"></div>
                             <div class="arc-spectrum-bar"></div>
@@ -388,7 +813,7 @@
                         </div>
 
                         <select class="arc-playlist-select" id="arc-playlist-select" aria-label="Select Track">
-                            ${this.playlist.map((t, idx) => `<option value="${idx}">${idx + 1}. ${t.title.split('//')[0].trim()}</option>`).join('')}
+                            <!-- Populated dynamically based on active mode -->
                         </select>
                     </div>
                 </div>
@@ -397,16 +822,22 @@
             this.dom = {
                 container,
                 miniBar: container.querySelector('#arc-mini-bar'),
+                miniModeTag: container.querySelector('#arc-mini-mode-tag'),
                 miniTitle: container.querySelector('#arc-mini-title'),
                 miniPrev: container.querySelector('#arc-mini-prev'),
                 miniPlay: container.querySelector('#arc-mini-play'),
                 miniNext: container.querySelector('#arc-mini-next'),
                 expandBtn: container.querySelector('#arc-expand-btn'),
                 minimizeBtn: container.querySelector('#arc-minimize-btn'),
+                modeBtnLocal: container.querySelector('#arc-mode-local'),
+                modeBtnYoutube: container.querySelector('#arc-mode-youtube'),
                 badgeMode: container.querySelector('#arc-badge-mode'),
                 timeDisplay: container.querySelector('#arc-time-display'),
                 fullTitle: container.querySelector('#arc-full-title'),
                 fullArtist: container.querySelector('#arc-full-artist'),
+                ytScreen: container.querySelector('#arc-yt-screen'),
+                ytLoadingOverlay: container.querySelector('#arc-yt-loading'),
+                ytStatusText: container.querySelector('#arc-yt-status-text'),
                 progressContainer: container.querySelector('#arc-progress-container'),
                 progressFill: container.querySelector('#arc-progress-fill'),
                 timeCurrent: container.querySelector('#arc-time-current'),
@@ -420,6 +851,8 @@
                 volSlider: container.querySelector('#arc-vol-slider'),
                 playlistSelect: container.querySelector('#arc-playlist-select')
             };
+
+            this.updatePlaylistDropdown();
         }
 
         // --- Bind User Interactions ---
@@ -438,6 +871,14 @@
                 this.setExpanded(false);
             });
 
+            // Mode Selector Switches: [ LOCAL ] [ YOUTUBE ]
+            this.dom.modeBtnLocal.addEventListener('click', () => {
+                this.switchMode('local');
+            });
+            this.dom.modeBtnYoutube.addEventListener('click', () => {
+                this.switchMode('youtube');
+            });
+
             // Mini Bar Prev & Next
             this.dom.miniPrev.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -449,12 +890,12 @@
             });
 
             // Play / Pause Buttons
-            const togglePlay = () => this.togglePlay();
+            const togglePlayHandler = () => this.togglePlay();
             this.dom.miniPlay.addEventListener('click', (e) => {
                 e.stopPropagation();
-                togglePlay();
+                togglePlayHandler();
             });
-            this.dom.btnPlay.addEventListener('click', togglePlay);
+            this.dom.btnPlay.addEventListener('click', togglePlayHandler);
 
             // Previous / Next Track
             this.dom.btnPrev.addEventListener('click', () => this.prevTrack());
@@ -472,16 +913,22 @@
                 this.toggleMute();
             });
 
-            // Playlist Selection
+            // Playlist Selection Dropdown
             this.dom.playlistSelect.addEventListener('change', (e) => {
-                this.setTrack(parseInt(e.target.value, 10), true);
+                const idx = parseInt(e.target.value, 10);
+                if (this.mode === 'local') {
+                    this.setLocalTrack(idx, true);
+                } else if (this.mode === 'youtube' && this.ytController) {
+                    this.ytController.playTrackAt(idx);
+                }
             });
 
             // Scrubber Click & Drag
             this.setupScrubber();
 
-            // Native HTML5 Audio Events
+            // Native HTML5 Audio Events (Local Mode)
             this.audio.addEventListener('loadedmetadata', () => {
+                if (this.mode !== 'local') return;
                 if (Number.isFinite(this.audio.duration)) {
                     this.duration = this.audio.duration;
                 }
@@ -492,29 +939,206 @@
             });
 
             this.audio.addEventListener('timeupdate', () => {
-                if (!this.isScrubbing && !this.isUsingSynth) {
+                if (this.mode === 'local' && !this.isScrubbing && !this.isUsingSynth) {
                     this.currentTime = this.audio.currentTime;
-                    this.duration = this.audio.duration || this.playlist[this.trackIndex].duration || 180;
+                    this.duration = this.audio.duration || this.localPlaylist[this.localTrackIndex].duration || 180;
                     this.updateUI();
                 }
             });
 
             this.audio.addEventListener('ended', () => {
-                this.nextTrack(true);
+                if (this.mode === 'local') {
+                    this.nextTrack(true);
+                }
             });
 
             this.audio.addEventListener('error', () => {
-                // Audio file not found or unplayable -> fallback to retro chiptune synth!
-                console.log('[ArcadePlayer] MP3 file not found or unplayable. Activating retro arcade synthesizer fallback.');
+                if (this.mode !== 'local') return;
+                // MP3 file not found or unplayable -> fallback to retro chiptune synth!
+                console.log('[ArcadePlayer] Local MP3 pending/unplayable. Activating retro arcade synthesizer fallback.');
                 this.isUsingSynth = true;
-                this.dom.badgeMode.textContent = `SYNTH // ${this.playlist[this.trackIndex].synthPreset.toUpperCase()}`;
+                this.dom.badgeMode.className = 'arc-badge-mode';
+                this.dom.badgeMode.textContent = `SYNTH // ${this.localPlaylist[this.localTrackIndex].synthPreset.toUpperCase()}`;
                 if (this.isPlaying) {
-                    this.synth.start(this.playlist[this.trackIndex].synthPreset);
+                    this.synth.start(this.localPlaylist[this.localTrackIndex].synthPreset);
                 }
             });
         }
 
-        // --- Scrubbing Logic ---
+        // --- Mode Switching Logic (Zero Audio Overlap Guarantee) ---
+        switchMode(targetMode, autoPlay = false) {
+            if (this.mode === targetMode && this.ytInitialized) return;
+
+            // 1. Immediately pause and stop the existing mode's audio
+            if (this.mode === 'local') {
+                this.audio.pause();
+                this.synth.stop();
+                this.stopSynthTimer();
+            } else if (this.mode === 'youtube' && this.ytController) {
+                this.ytController.pause();
+            }
+
+            this.isPlaying = false;
+            this.currentTime = 0;
+            this.setPlayVisuals(false);
+
+            // 2. Switch mode identifier and CSS classes
+            this.mode = targetMode;
+            this.dom.container.className = `mode-${this.mode}` + (this.isExpanded ? ' is-expanded' : '');
+            this.dom.miniModeTag.textContent = this.mode.toUpperCase();
+
+            // 3. Update Mode Switch Deck buttons
+            if (this.mode === 'local') {
+                this.dom.modeBtnLocal.classList.add('is-active');
+                this.dom.modeBtnLocal.setAttribute('aria-selected', 'true');
+                this.dom.modeBtnYoutube.classList.remove('is-active');
+                this.dom.modeBtnYoutube.setAttribute('aria-selected', 'false');
+                this.updatePlaylistDropdown();
+                this.setLocalTrack(this.localTrackIndex, autoPlay);
+            } else {
+                this.dom.modeBtnYoutube.classList.add('is-active');
+                this.dom.modeBtnYoutube.setAttribute('aria-selected', 'true');
+                this.dom.modeBtnLocal.classList.remove('is-active');
+                this.dom.modeBtnLocal.setAttribute('aria-selected', 'false');
+                this.initYouTubeMode(autoPlay);
+            }
+
+            this.saveState();
+        }
+
+        // --- YouTube Mode Initialization ---
+        initYouTubeMode(autoPlay = false) {
+            this.dom.badgeMode.className = 'arc-badge-mode is-yt';
+            this.dom.badgeMode.textContent = 'YT // CONNECTING';
+            this.dom.ytLoadingOverlay.classList.remove('is-hidden');
+            this.dom.ytStatusText.textContent = 'CONNECTING YOUTUBE STREAM...';
+
+            if (!this.ytController) {
+                this.ytController = new YouTubeAudioController({
+                    containerId: 'arc-yt-player',
+                    onReady: () => {
+                        this.ytInitialized = true;
+                        this.dom.ytLoadingOverlay.classList.add('is-hidden');
+                        this.dom.badgeMode.className = 'arc-badge-mode is-yt';
+                        this.dom.badgeMode.textContent = 'YT // READY';
+                        this.ytController.setVolume(this.isMuted ? 0 : this.volume);
+                        this.updatePlaylistDropdown();
+                        if (autoPlay) {
+                            this.play();
+                        }
+                    },
+                    onStateChange: (isPlaying) => {
+                        this.isPlaying = isPlaying;
+                        this.setPlayVisuals(isPlaying);
+                        if (isPlaying) {
+                            this.dom.badgeMode.className = 'arc-badge-mode is-yt';
+                            this.dom.badgeMode.textContent = `YT // CH-0${(this.ytController.trackIndex % 99) + 1}`;
+                            this.dom.ytLoadingOverlay.classList.add('is-hidden');
+                        }
+                        this.saveState();
+                    },
+                    onTrackUpdate: (trackInfo) => {
+                        this.dom.miniTitle.textContent = trackInfo.title;
+                        this.dom.fullTitle.textContent = trackInfo.title;
+                        this.dom.fullArtist.textContent = trackInfo.artist;
+                        if (this.isPlaying) {
+                            this.dom.badgeMode.className = 'arc-badge-mode is-yt';
+                            this.dom.badgeMode.textContent = `YT // CH-0${(trackInfo.index % 99) + 1}`;
+                        }
+                        this.updatePlaylistDropdown();
+                        this.dom.playlistSelect.value = trackInfo.index;
+                    },
+                    onTimeUpdate: (curr, dur) => {
+                        if (!this.isScrubbing) {
+                            this.currentTime = curr;
+                            this.duration = dur;
+                            this.updateUI();
+                        }
+                    },
+                    onError: (msg) => {
+                        this.dom.badgeMode.className = 'arc-badge-mode is-error';
+                        this.dom.badgeMode.textContent = msg;
+                        this.dom.ytStatusText.textContent = msg;
+                    }
+                });
+
+                const playlistId = this.config.youtube?.playlistId || DEFAULT_CONFIG.youtube.playlistId;
+                const apiKey = this.config.youtube?.apiKey || '';
+                this.ytController.init(playlistId, apiKey);
+            } else {
+                this.dom.ytLoadingOverlay.classList.add('is-hidden');
+                this.dom.badgeMode.className = 'arc-badge-mode is-yt';
+                this.dom.badgeMode.textContent = `YT // CH-0${(this.ytController.trackIndex % 99) + 1}`;
+                const info = this.ytController.getCurrentTrackInfo();
+                this.dom.miniTitle.textContent = info.title;
+                this.dom.fullTitle.textContent = info.title;
+                this.dom.fullArtist.textContent = info.artist;
+                this.updatePlaylistDropdown();
+                if (autoPlay) {
+                    this.play();
+                } else {
+                    this.updateUI();
+                }
+            }
+        }
+
+        // --- Local Track Management ---
+        setLocalTrack(index, autoPlay = false) {
+            this.localTrackIndex = (index + this.localPlaylist.length) % this.localPlaylist.length;
+            const track = this.localPlaylist[this.localTrackIndex];
+
+            this.dom.playlistSelect.value = this.localTrackIndex;
+            this.dom.miniTitle.textContent = track.title;
+            this.dom.fullTitle.textContent = track.title;
+            this.dom.fullArtist.textContent = track.artist;
+            this.dom.badgeMode.className = 'arc-badge-mode';
+            this.dom.badgeMode.textContent = `CH-0${this.localTrackIndex + 1} // STEREO`;
+
+            this.isUsingSynth = false;
+            this.synth.stop();
+            this.stopSynthTimer();
+
+            this.duration = track.duration || 180;
+            const isSubdir = window.location.pathname.includes('/focus-garden');
+            this.audio.src = isSubdir ? ('../' + track.src) : track.src;
+            this.audio.volume = this.isMuted ? 0 : this.volume;
+
+            if (autoPlay) {
+                this.currentTime = 0;
+                this.play();
+            } else {
+                this.updateUI();
+            }
+            this.saveState();
+        }
+
+        updatePlaylistDropdown() {
+            if (this.mode === 'local') {
+                this.dom.playlistSelect.innerHTML = this.localPlaylist
+                    .map((t, idx) => `<option value="${idx}">${idx + 1}. ${t.title.split('//')[0].trim()}</option>`)
+                    .join('');
+                this.dom.playlistSelect.value = this.localTrackIndex;
+            } else {
+                if (this.ytController && this.ytController.playlistItems.length > 0) {
+                    this.dom.playlistSelect.innerHTML = this.ytController.playlistItems
+                        .map((item, idx) => `<option value="${idx}">${idx + 1}. ${item.title.substring(0, 24)}</option>`)
+                        .join('');
+                    this.dom.playlistSelect.value = this.ytController.trackIndex;
+                } else {
+                    const currTitle = this.dom.fullTitle.textContent || 'Current Stream';
+                    this.dom.playlistSelect.innerHTML = `
+                        <option value="0">1. ${currTitle.substring(0, 24)}</option>
+                        <option value="1">2. YouTube Track 2</option>
+                        <option value="2">3. YouTube Track 3</option>
+                    `;
+                    if (this.ytController) {
+                        this.dom.playlistSelect.value = this.ytController.trackIndex;
+                    }
+                }
+            }
+        }
+
+        // --- Scrubbing Controls ---
         setupScrubber() {
             const container = this.dom.progressContainer;
 
@@ -558,34 +1182,7 @@
             }, { passive: true });
         }
 
-        // --- Playback Controls ---
-        setTrack(index, autoPlay = false) {
-            this.trackIndex = (index + this.playlist.length) % this.playlist.length;
-            const track = this.playlist[this.trackIndex];
-
-            this.dom.playlistSelect.value = this.trackIndex;
-            this.dom.miniTitle.textContent = track.title;
-            this.dom.fullTitle.textContent = track.title;
-            this.dom.fullArtist.textContent = track.artist;
-            this.dom.badgeMode.textContent = `CH-0${this.trackIndex + 1} // STEREO`;
-
-            this.isUsingSynth = false;
-            this.synth.stop();
-
-            this.duration = track.duration || 180;
-            const isSubdir = window.location.pathname.includes('/focus-garden');
-            this.audio.src = isSubdir ? ('../' + track.src) : track.src;
-            this.audio.volume = this.isMuted ? 0 : this.volume;
-
-            if (autoPlay) {
-                this.currentTime = 0;
-                this.play();
-            } else {
-                this.updateUI();
-            }
-            this.saveState();
-        }
-
+        // --- Playback Commands ---
         togglePlay() {
             if (this.isPlaying) {
                 this.pause();
@@ -596,53 +1193,67 @@
 
         play() {
             this.isPlaying = true;
-            this.dom.container.classList.add('arc-playing');
-            this.dom.miniPlay.innerHTML = ICONS.pause;
-            this.dom.btnPlay.innerHTML = ICONS.pause;
+            this.setPlayVisuals(true);
 
-            if (this.isUsingSynth) {
-                this.synth.start(this.playlist[this.trackIndex].synthPreset);
-                this.startSynthTimer();
-            } else {
-                const playPromise = this.audio.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch((err) => {
-                        console.warn('[ArcadePlayer] Autoplay or playback restricted:', err.message);
-                        // If error is source error, it triggers 'error' event; if autoplay policy:
-                        this.isPlaying = false;
-                        this.dom.container.classList.remove('arc-playing');
-                        this.dom.miniPlay.innerHTML = ICONS.play;
-                        this.dom.btnPlay.innerHTML = ICONS.play;
-                    });
+            if (this.mode === 'local') {
+                if (this.isUsingSynth) {
+                    this.synth.start(this.localPlaylist[this.localTrackIndex].synthPreset);
+                    this.startSynthTimer();
+                } else {
+                    const playPromise = this.audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch((err) => {
+                            console.warn('[ArcadePlayer] Local audio autoplay restricted:', err.message);
+                            this.isPlaying = false;
+                            this.setPlayVisuals(false);
+                        });
+                    }
                 }
+            } else if (this.mode === 'youtube' && this.ytController) {
+                this.ytController.play();
             }
+
             this.saveState();
         }
 
         pause() {
             this.isPlaying = false;
-            this.dom.container.classList.remove('arc-playing');
-            this.dom.miniPlay.innerHTML = ICONS.play;
-            this.dom.btnPlay.innerHTML = ICONS.play;
+            this.setPlayVisuals(false);
 
-            if (this.isUsingSynth) {
-                this.synth.stop();
-                this.stopSynthTimer();
-            } else {
-                this.audio.pause();
+            if (this.mode === 'local') {
+                if (this.isUsingSynth) {
+                    this.synth.stop();
+                    this.stopSynthTimer();
+                } else {
+                    this.audio.pause();
+                }
+            } else if (this.mode === 'youtube' && this.ytController) {
+                this.ytController.pause();
             }
+
             this.saveState();
         }
 
+        setPlayVisuals(playing) {
+            if (playing) {
+                this.dom.container.classList.add('arc-playing');
+                this.dom.miniPlay.innerHTML = ICONS.pause;
+                this.dom.btnPlay.innerHTML = ICONS.pause;
+            } else {
+                this.dom.container.classList.remove('arc-playing');
+                this.dom.miniPlay.innerHTML = ICONS.play;
+                this.dom.btnPlay.innerHTML = ICONS.play;
+            }
+        }
+
         resumePlayback() {
-            // Attempt autoplay resume across pages
             const resumeAttempt = () => {
                 if (this.savedWasPlaying) {
                     this.play();
                 }
             };
-            // Try immediately, or on first interaction if blocked by policy
             resumeAttempt();
+
             const onFirstGesture = () => {
                 if (this.savedWasPlaying && !this.isPlaying) {
                     this.play();
@@ -657,11 +1268,17 @@
         seekTo(seconds) {
             const target = Math.max(0, Math.min(seconds, this.duration || 180));
             this.currentTime = target;
-            if (!this.isUsingSynth && this.audio) {
-                try {
-                    this.audio.currentTime = target;
-                } catch (e) {}
+
+            if (this.mode === 'local') {
+                if (!this.isUsingSynth && this.audio) {
+                    try {
+                        this.audio.currentTime = target;
+                    } catch (e) {}
+                }
+            } else if (this.mode === 'youtube' && this.ytController) {
+                this.ytController.seekTo(target);
             }
+
             this.updateUI();
             this.saveState();
         }
@@ -671,17 +1288,30 @@
         }
 
         prevTrack() {
-            this.setTrack(this.trackIndex - 1, this.isPlaying);
+            if (this.mode === 'local') {
+                this.setLocalTrack(this.localTrackIndex - 1, this.isPlaying);
+            } else if (this.mode === 'youtube' && this.ytController) {
+                this.ytController.prevTrack();
+            }
         }
 
         nextTrack(fromEnded = false) {
-            this.setTrack(this.trackIndex + 1, fromEnded || this.isPlaying);
+            if (this.mode === 'local') {
+                this.setLocalTrack(this.localTrackIndex + 1, fromEnded || this.isPlaying);
+            } else if (this.mode === 'youtube' && this.ytController) {
+                this.ytController.nextTrack();
+            }
         }
 
         setVolume(val) {
             this.volume = Math.max(0, Math.min(1, val));
             this.isMuted = false;
+
             this.audio.volume = this.volume;
+            if (this.ytController) {
+                this.ytController.setVolume(this.volume);
+            }
+
             this.dom.volSlider.value = this.volume;
             this.dom.volBtn.innerHTML = this.volume === 0 ? ICONS.volumeMute : ICONS.volumeHigh;
             this.saveState();
@@ -690,6 +1320,9 @@
         toggleMute() {
             this.isMuted = !this.isMuted;
             this.audio.volume = this.isMuted ? 0 : this.volume;
+            if (this.ytController) {
+                this.ytController.setMuted(this.isMuted);
+            }
             this.dom.volBtn.innerHTML = this.isMuted ? ICONS.volumeMute : ICONS.volumeHigh;
             this.saveState();
         }
@@ -746,7 +1379,7 @@
     }
 
     // -------------------------------------------------------------------------
-    // 5. INITIALIZE ON DOM READY
+    // 7. INITIALIZE ON DOM READY
     // -------------------------------------------------------------------------
     function init() {
         if (window.__relzzyArcadePlayer) return;

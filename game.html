@@ -408,7 +408,7 @@
             const active = document.activeElement;
             if (active !== gameFrame) {
                 const k = e.key.toLowerCase();
-                if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'e', 'escape', 'enter'].includes(k)) {
+                if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'e', 'escape', 'enter', ' ', 'space'].includes(k)) {
                     try {
                         gameFrame.contentWindow.dispatchEvent(new KeyboardEvent('keydown', {
                             key: e.key,
@@ -424,7 +424,7 @@
             const active = document.activeElement;
             if (active !== gameFrame) {
                 const k = e.key.toLowerCase();
-                if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'e', 'escape', 'enter'].includes(k)) {
+                if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'e', 'escape', 'enter', ' ', 'space'].includes(k)) {
                     try {
                         gameFrame.contentWindow.dispatchEvent(new KeyboardEvent('keyup', {
                             key: e.key,

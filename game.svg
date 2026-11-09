@@ -2480,11 +2480,11 @@
     <!-- Dynamic 3D Perspective Geometry Layer (Rendered & Updated in Real-Time) -->
     <g id="street-dynamic"></g>
 
-    <!-- In-World Re-enter Luxury Apartment Badge (Visible when near Z=20) -->
-    <g id="prompt-street-lobby" style="cursor: pointer; display: none;" transform="translate(480, 560)">
-      <rect x="-115" y="-16" width="230" height="32" rx="8" fill="#0b0f19" opacity="0.95" stroke="#facc15" stroke-width="1.8" filter="url(#shadow)" />
-      <text x="0" y="5" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle" font-family="'Segoe UI', sans-serif">
-        [E] <tspan fill="#facc15">ENTER APARTMENT BUILDING</tspan>
+    <!-- In-World Re-enter Luxury Apartment Badge (Visible when near entrance) -->
+    <g id="prompt-street-lobby" pointer-events="all" style="cursor: pointer; display: none;" transform="translate(480, 560)">
+      <rect pointer-events="all" x="-125" y="-18" width="250" height="36" rx="8" fill="#0b0f19" opacity="0.95" stroke="#facc15" stroke-width="2" filter="url(#shadow)" />
+      <text pointer-events="none" x="0" y="5" font-size="12.5" font-weight="bold" fill="#ffffff" text-anchor="middle" font-family="'Segoe UI', sans-serif">
+        [E] <tspan fill="#facc15">RE-ENTER LUXURY LOBBY</tspan>
       </text>
     </g>
 
@@ -2500,10 +2500,10 @@
     </g>
 
     <!-- First-Person Street HUD Status Badge (Bottom Center) -->
-    <g id="street-hud" transform="translate(480, 615)">
-      <rect x="-280" y="-18" width="560" height="26" rx="6" fill="#090d16" opacity="0.94" stroke="#334155" stroke-width="1.2" />
-      <text x="0" y="-1" fill="#94a3b8" font-size="11.5" font-family="'Segoe UI', monospace" text-anchor="middle">
-        <tspan fill="#38bdf8" font-weight="bold">TOKYO EXTERIOR</tspan> | Walk: <tspan fill="#ffffff" font-weight="bold">[W/S]</tspan> | Turn: <tspan fill="#38bdf8" font-weight="bold">[A/D]</tspan> | Interact: <tspan fill="#facc15">[E]</tspan>
+    <g id="street-hud" pointer-events="all" style="cursor: pointer;" transform="translate(480, 615)">
+      <rect pointer-events="all" x="-280" y="-18" width="560" height="26" rx="6" fill="#090d16" opacity="0.94" stroke="#334155" stroke-width="1.2" />
+      <text pointer-events="none" id="street-hud-text" x="0" y="-1" fill="#94a3b8" font-size="11.5" font-family="'Segoe UI', monospace" text-anchor="middle">
+        <tspan fill="#38bdf8" font-weight="bold">TOKYO EXTERIOR</tspan> | Walk: <tspan fill="#ffffff" font-weight="bold">[W/S]</tspan> | Turn: <tspan fill="#38bdf8" font-weight="bold">[A/D]</tspan> | <tspan fill="#facc15" id="street-hud-action" font-weight="bold">[E] RE-ENTER LOBBY</tspan>
       </text>
     </g>
   </g>
@@ -4109,6 +4109,8 @@
       const doorLobbyToStreet = document.getElementById('door-lobby-to-street');
       const promptLobbyStreet = document.getElementById('prompt-lobby-street');
       const promptStreetLobby = document.getElementById('prompt-street-lobby');
+      const streetHudEl = document.getElementById('street-hud');
+      const streetHudActionEl = document.getElementById('street-hud-action');
       const locationLabel = document.getElementById('location-label');
 
       const interactPrompt = document.getElementById('interact-prompt');
@@ -4690,11 +4692,27 @@
       if (doorLobbyToStairs) doorLobbyToStairs.addEventListener('click', () => handleDoorClick('lobby-to-stairs'));
       if (doorLobbyToStreet) doorLobbyToStreet.addEventListener('click', () => handleDoorClick('lobby-to-street'));
       if (promptLobbyStreet) promptLobbyStreet.addEventListener('click', () => handleDoorClick('lobby-to-street'));
-      if (promptStreetLobby) promptStreetLobby.addEventListener('click', () => {
-        if (state.currentZone === 'street') {
-          switchRoom('lobby', 480, 480);
-        }
-      });
+      if (promptStreetLobby) {
+        promptStreetLobby.addEventListener('click', (e) => {
+          if (state.currentZone === 'street') {
+            e.stopPropagation();
+            switchRoom('lobby', 480, 480);
+          }
+        });
+      }
+      if (streetHudEl) {
+        streetHudEl.addEventListener('click', (e) => {
+          if (state.currentZone === 'street') {
+            const nearEntrance = (Math.abs(streetCam.x) <= 85 && streetCam.z <= 95) ||
+                                 (promptStreetLobby && promptStreetLobby.style.display === 'block') ||
+                                 (state.activeDoor && state.activeDoor.id === 'street-to-lobby');
+            if (nearEntrance) {
+              e.stopPropagation();
+              switchRoom('lobby', 480, 480);
+            }
+          }
+        });
+      }
 
       if (promptBalconyDoor) promptBalconyDoor.addEventListener('click', () => handleDoorClick('balcony-door'));
       if (promptBathroomDoor) promptBathroomDoor.addEventListener('click', () => handleDoorClick('bathroom-door'));
@@ -4789,14 +4807,26 @@
 
         // [E] KEY ACTION: Check Door Transition FIRST or Computer Interaction
         if (key === 'e' || key === ' ' || key === 'enter' || e.code === 'KeyE' || e.code === 'Space' || e.code === 'Enter') {
-          // 1. Door Transition (only when near!)
+          // 1. Street Mode: Check if near apartment entrance!
+          if (state.currentZone === 'street' && !state.modalOpen) {
+            const nearEntrance = (Math.abs(streetCam.x) <= 85 && streetCam.z <= 95) ||
+                                 (promptStreetLobby && promptStreetLobby.style.display === 'block') ||
+                                 (state.activeDoor && state.activeDoor.id === 'street-to-lobby');
+            if (nearEntrance) {
+              e.preventDefault();
+              switchRoom('lobby', 480, 480);
+              return;
+            }
+          }
+
+          // 2. Door Transition in 2D rooms (only when near!)
           if (state.activeDoor && !state.modalOpen) {
             e.preventDefault();
             switchRoom(state.activeDoor.targetZone, state.activeDoor.spawnX, state.activeDoor.spawnY);
             return;
           }
 
-          // 2. Computer Interaction (only when near in bedroom!)
+          // 3. Computer Interaction (only when near in bedroom!)
           if (state.isNearComputer && !state.modalOpen) {
             e.preventDefault();
             openComputerModal();
@@ -5620,10 +5650,31 @@
               streetSkyPanEl.setAttribute('transform', 'translate(' + panX.toFixed(1) + ', 0)');
             }
 
-            // Apartment Entrance Prompt when near (X near 0, Z <= 50)
-            const nearEntrance = Math.abs(streetCam.x) <= 45 && streetCam.z <= 50;
+            // Apartment Entrance Prompt & State when near (X near 0, Z <= 95)
+            const nearEntrance = Math.abs(streetCam.x) <= 85 && streetCam.z <= 95;
             if (promptStreetLobby) {
               promptStreetLobby.style.display = nearEntrance ? 'block' : 'none';
+            }
+            if (nearEntrance) {
+              state.activeDoor = {
+                id: 'street-to-lobby',
+                targetZone: 'lobby',
+                spawnX: 480,
+                spawnY: 480,
+                sound: 'door'
+              };
+            } else if (state.activeDoor && state.activeDoor.id === 'street-to-lobby') {
+              state.activeDoor = null;
+            }
+
+            if (streetHudActionEl) {
+              if (nearEntrance) {
+                streetHudActionEl.textContent = '[E] RE-ENTER LOBBY';
+                streetHudActionEl.setAttribute('fill', '#facc15');
+              } else {
+                streetHudActionEl.textContent = 'Explore (Walk Back to Enter)';
+                streetHudActionEl.setAttribute('fill', '#64748b');
+              }
             }
 
             renderStreet3D();

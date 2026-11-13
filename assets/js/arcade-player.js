@@ -32,9 +32,17 @@
     // 1. CONFIGURATION FALLBACK & URL PARSER
     // -------------------------------------------------------------------------
     const DEFAULT_CONFIG = {
-        defaultMode: 'local',
+        defaultMode: 'youtube',
         youtube: {
-            playlistId: "PLw-VjHDlEOgvtnnnqWlTqByAtC7tXBg6D",
+            playlistId: "https://www.youtube.com/watch?v=VgPo3q01kbg&list=PLJP99BZ60TE4",
+            tracks: [
+                { videoId: "VgPo3q01kbg", title: "R O U N D 5 ｜ Alien Stage", artist: "VIVINOS" },
+                { videoId: "ZSLmP-af8W0", title: "燈 - 崎山蒼志 (呪術廻戦 第2期 ED)", artist: "TOHO animation" },
+                { videoId: "ED1zGslwM8o", title: "【MAD】呪術廻戦 懐玉・玉折 (青のすみか)", artist: "a_mi" },
+                { videoId: "zsBBWBEZkFQ", title: "【Ado】MIRROR", artist: "Ado" },
+                { videoId: "NahQKl3z3mg", title: "PnB Rock - Unforgettable (Freestyle)", artist: "PnB Rock" },
+                { videoId: "x47TgeRJtH0", title: "The Neighbourhood - Reflections", artist: "The Neighbourhood" }
+            ],
             apiKey: ""
         },
         localPlaylist: [
@@ -248,6 +256,7 @@
     class YouTubeAudioController {
         constructor(options = {}) {
             this.containerId = options.containerId || 'arc-yt-player';
+            this.presetTracks = options.presetTracks || [];
             this.onStateChange = options.onStateChange || (() => {});
             this.onTrackUpdate = options.onTrackUpdate || (() => {});
             this.onTimeUpdate = options.onTimeUpdate || (() => {});
@@ -259,19 +268,39 @@
             this.isPlaying = false;
             this.playlistId = '';
             this.playlistItems = [];
+            this.pendingTrackIndex = null;
             this.trackIndex = 0;
             this.currentTime = 0;
             this.duration = 0;
             this.pollTimer = null;
             this.skipTimeout = null;
+
+            if (Array.isArray(this.presetTracks) && this.presetTracks.length > 0) {
+                this.playlistItems = this.presetTracks.map((item, idx) => ({
+                    index: idx,
+                    videoId: item.videoId || item.id || '',
+                    title: item.title || `Track ${idx + 1}`,
+                    artist: item.artist || 'YouTube'
+                }));
+            }
         }
 
-        init(playlistRawId, apiKey = '') {
+        init(playlistRawId, apiKey = '', presetTracks = []) {
             this.playlistId = extractPlaylistId(playlistRawId);
             if (!this.playlistId) {
                 console.warn('[ArcadePlayer] No valid YouTube playlist ID specified.');
                 this.onError('ERR // NO PLAYLIST ID');
                 return Promise.reject(new Error('Invalid Playlist ID'));
+            }
+
+            if (Array.isArray(presetTracks) && presetTracks.length > 0) {
+                this.presetTracks = presetTracks;
+                this.playlistItems = presetTracks.map((item, idx) => ({
+                    index: idx,
+                    videoId: item.videoId || item.id || '',
+                    title: item.title || `Track ${idx + 1}`,
+                    artist: item.artist || 'YouTube'
+                }));
             }
 
             // Optional: If an API key is provided, prefetch full playlist item titles
@@ -299,8 +328,16 @@
                             events: {
                                 onReady: (event) => {
                                     this.isReady = true;
-                                    this.onReady();
+                                    if (typeof this.pendingTrackIndex === 'number') {
+                                        const pending = this.pendingTrackIndex;
+                                        this.pendingTrackIndex = null;
+                                        try {
+                                            this.player.playVideoAt(pending);
+                                        } catch (e) {}
+                                    }
+                                    this.syncPlaylistFromPlayer();
                                     this.syncTrackInfo();
+                                    this.onReady();
                                     resolve(event);
                                 },
                                 onStateChange: (event) => {
@@ -351,6 +388,73 @@
             }
         }
 
+        syncPlaylistFromPlayer() {
+            if (!this.player || typeof this.player.getPlaylist !== 'function') return;
+            try {
+                const ids = this.player.getPlaylist();
+                if (Array.isArray(ids) && ids.length > 0) {
+                    let updated = false;
+
+                    if (this.playlistItems.length !== ids.length) {
+                        this.playlistItems = ids.map((id, idx) => {
+                            const existing = this.playlistItems[idx];
+                            if (existing && existing.videoId === id && existing.title && !existing.title.startsWith('Track ')) {
+                                return existing;
+                            }
+                            const preset = (this.presetTracks || []).find(p => (p.videoId === id || p.id === id));
+                            if (preset) {
+                                return { index: idx, videoId: id, title: preset.title, artist: preset.artist || 'YouTube' };
+                            }
+                            return { index: idx, videoId: id, title: `Track ${idx + 1}`, artist: 'YouTube' };
+                        });
+                        updated = true;
+                    }
+
+                    const currentIdx = typeof this.player.getPlaylistIndex === 'function' ? this.player.getPlaylistIndex() : this.trackIndex;
+                    if (currentIdx >= 0 && typeof this.player.getVideoData === 'function') {
+                        const data = this.player.getVideoData();
+                        if (data && data.title && this.playlistItems[currentIdx]) {
+                            if (this.playlistItems[currentIdx].title !== data.title) {
+                                this.playlistItems[currentIdx].title = data.title;
+                                if (data.author) this.playlistItems[currentIdx].artist = data.author;
+                                updated = true;
+                            }
+                        }
+                    }
+
+                    this.fetchMissingOEmbedTitles();
+
+                    if (updated && typeof this.onTrackUpdate === 'function') {
+                        this.onTrackUpdate(this.getCurrentTrackInfo());
+                    }
+                }
+            } catch (e) {}
+        }
+
+        fetchMissingOEmbedTitles() {
+            if (!Array.isArray(this.playlistItems)) return;
+            this.playlistItems.forEach((item) => {
+                if (item.videoId && (!item.title || item.title.startsWith('Track ') || item.title === 'Current Stream')) {
+                    if (item._fetching) return;
+                    item._fetching = true;
+                    try {
+                        fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(item.videoId)}&format=json`)
+                            .then(r => (r && r.ok) ? r.json() : null)
+                            .then(data => {
+                                if (data && data.title) {
+                                    item.title = data.title;
+                                    if (data.author_name) item.artist = data.author_name;
+                                    if (typeof this.onTrackUpdate === 'function') {
+                                        this.onTrackUpdate(this.getCurrentTrackInfo());
+                                    }
+                                }
+                            })
+                            .catch(() => {});
+                    } catch (e) {}
+                }
+            });
+        }
+
         handleStateChange(event) {
             const YTState = window.YT ? window.YT.PlayerState : {
                 ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5
@@ -360,6 +464,7 @@
                 case YTState.PLAYING:
                     this.isPlaying = true;
                     this.startPolling();
+                    this.syncPlaylistFromPlayer();
                     this.syncTrackInfo();
                     this.onStateChange(true);
                     break;
@@ -371,18 +476,21 @@
                     break;
 
                 case YTState.BUFFERING:
+                    this.syncPlaylistFromPlayer();
                     this.syncTrackInfo();
                     break;
 
                 case YTState.CUED:
                     this.isPlaying = false;
                     this.stopPolling();
+                    this.syncPlaylistFromPlayer();
                     this.syncTrackInfo();
                     this.onStateChange(false);
                     break;
 
                 case YTState.ENDED:
                     // Playlist naturally transitions, but ensure UI tracks advance
+                    this.syncPlaylistFromPlayer();
                     this.syncTrackInfo();
                     break;
             }
@@ -417,9 +525,24 @@
                 const index = typeof this.player.getPlaylistIndex === 'function' ? this.player.getPlaylistIndex() : -1;
                 if (index >= 0) this.trackIndex = index;
 
+                this.syncPlaylistFromPlayer();
+
+                let activeTitle = (data && data.title) ? data.title : '';
+                let activeArtist = (data && data.author) ? data.author : '';
+
+                if (!activeTitle && this.playlistItems[this.trackIndex]) {
+                    activeTitle = this.playlistItems[this.trackIndex].title;
+                    activeArtist = this.playlistItems[this.trackIndex].artist;
+                }
+
+                if (!activeTitle) {
+                    activeTitle = `Track ${this.trackIndex + 1}`;
+                    activeArtist = 'YouTube Stream';
+                }
+
                 const trackInfo = {
-                    title: (data && data.title) ? data.title : `Track ${this.trackIndex + 1}`,
-                    artist: (data && data.author) ? data.author : 'YouTube Stream',
+                    title: activeTitle,
+                    artist: activeArtist,
                     index: this.trackIndex,
                     items: this.playlistItems
                 };
@@ -502,7 +625,11 @@
         }
 
         playTrackAt(index) {
-            if (!this.player || !this.isReady) return;
+            this.trackIndex = index;
+            if (!this.player || !this.isReady) {
+                this.pendingTrackIndex = index;
+                return;
+            }
             try {
                 this.player.playVideoAt(index);
             } catch (e) {}
@@ -863,6 +990,15 @@
                 playlistSelect: container.querySelector('#arc-playlist-select')
             };
 
+            const initialYtTrack = (this.config.youtube && this.config.youtube.tracks && this.config.youtube.tracks[0])
+                ? this.config.youtube.tracks[0]
+                : ((DEFAULT_CONFIG.youtube && DEFAULT_CONFIG.youtube.tracks) ? DEFAULT_CONFIG.youtube.tracks[0] : null);
+            if (this.mode === 'youtube' && initialYtTrack) {
+                this.dom.miniTitle.textContent = initialYtTrack.title;
+                this.dom.fullTitle.textContent = initialYtTrack.title;
+                this.dom.fullArtist.textContent = initialYtTrack.artist;
+            }
+
             this.updatePlaylistDropdown();
         }
 
@@ -1025,8 +1161,10 @@
             this.dom.ytStatusText.textContent = 'CONNECTING YOUTUBE STREAM...';
 
             if (!this.ytController) {
+                const presetTracks = (this.config.youtube && this.config.youtube.tracks) ? this.config.youtube.tracks : DEFAULT_CONFIG.youtube.tracks;
                 this.ytController = new YouTubeAudioController({
                     containerId: 'arc-yt-player',
+                    presetTracks: presetTracks,
                     onReady: () => {
                         this.ytInitialized = true;
                         this.dom.ytLoadingOverlay.classList.add('is-hidden');
@@ -1075,7 +1213,7 @@
 
                 const playlistId = (this.config.youtube && this.config.youtube.playlistId) ? this.config.youtube.playlistId : DEFAULT_CONFIG.youtube.playlistId;
                 const apiKey = (this.config.youtube && this.config.youtube.apiKey) ? this.config.youtube.apiKey : '';
-                this.ytController.init(playlistId, apiKey);
+                this.ytController.init(playlistId, apiKey, presetTracks);
             } else {
                 this.dom.ytLoadingOverlay.classList.add('is-hidden');
                 this.dom.badgeMode.className = 'arc-badge-mode is-yt';
@@ -1130,21 +1268,34 @@
                     .join('');
                 this.dom.playlistSelect.value = this.localTrackIndex;
             } else {
-                if (this.ytController && this.ytController.playlistItems.length > 0) {
-                    this.dom.playlistSelect.innerHTML = this.ytController.playlistItems
-                        .map((item, idx) => `<option value="${idx}">${idx + 1}. ${item.title.substring(0, 24)}</option>`)
+                let tracks = [];
+                if (this.ytController && Array.isArray(this.ytController.playlistItems) && this.ytController.playlistItems.length > 0) {
+                    tracks = this.ytController.playlistItems;
+                } else if (this.config.youtube && Array.isArray(this.config.youtube.tracks) && this.config.youtube.tracks.length > 0) {
+                    tracks = this.config.youtube.tracks;
+                } else if (DEFAULT_CONFIG.youtube && Array.isArray(DEFAULT_CONFIG.youtube.tracks)) {
+                    tracks = DEFAULT_CONFIG.youtube.tracks;
+                }
+
+                if (tracks.length > 0) {
+                    const activeIndex = (this.ytController && Number.isInteger(this.ytController.trackIndex))
+                        ? this.ytController.trackIndex
+                        : 0;
+
+                    this.dom.playlistSelect.innerHTML = tracks
+                        .map((item, idx) => {
+                            const rawTitle = item.title || `Track ${idx + 1}`;
+                            const displayTitle = rawTitle.length > 32 ? rawTitle.substring(0, 30) + '…' : rawTitle;
+                            return `<option value="${idx}">${idx + 1}. ${displayTitle}</option>`;
+                        })
                         .join('');
-                    this.dom.playlistSelect.value = this.ytController.trackIndex;
+                    this.dom.playlistSelect.value = activeIndex;
                 } else {
-                    const currTitle = this.dom.fullTitle.textContent || 'Current Stream';
-                    this.dom.playlistSelect.innerHTML = `
-                        <option value="0">1. ${currTitle.substring(0, 24)}</option>
-                        <option value="1">2. YouTube Track 2</option>
-                        <option value="2">3. YouTube Track 3</option>
-                    `;
-                    if (this.ytController) {
-                        this.dom.playlistSelect.value = this.ytController.trackIndex;
-                    }
+                    const currTitle = (this.dom.fullTitle && this.dom.fullTitle.textContent && this.dom.fullTitle.textContent !== 'Loading track...')
+                        ? this.dom.fullTitle.textContent
+                        : 'YouTube Stream';
+                    this.dom.playlistSelect.innerHTML = `<option value="0">1. ${currTitle.substring(0, 30)}</option>`;
+                    this.dom.playlistSelect.value = 0;
                 }
             }
         }

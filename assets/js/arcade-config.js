@@ -28,6 +28,16 @@ const ARCADE_CONFIG = {
         //   - "https://www.youtube.com/watch?v=xxx&list=PLw-VjHDlEOgvtnnnqWlTqByAtC7tXBg6D"
         playlistId: "https://www.youtube.com/watch?v=VgPo3q01kbg&list=PLJP99BZ60TE4",
 
+        // Pre-cached playlist tracks for instant loading with full titles:
+        tracks: [
+            { videoId: "VgPo3q01kbg", title: "R O U N D 5 ｜ Alien Stage", artist: "VIVINOS" },
+            { videoId: "ZSLmP-af8W0", title: "燈 - 崎山蒼志 (呪術廻戦 第2期 ED)", artist: "TOHO animation" },
+            { videoId: "ED1zGslwM8o", title: "【MAD】呪術廻戦 懐玉・玉折 (青のすみか)", artist: "a_mi" },
+            { videoId: "zsBBWBEZkFQ", title: "【Ado】MIRROR", artist: "Ado" },
+            { videoId: "NahQKl3z3mg", title: "PnB Rock - Unforgettable (Freestyle)", artist: "PnB Rock" },
+            { videoId: "x47TgeRJtH0", title: "The Neighbourhood - Reflections", artist: "The Neighbourhood" }
+        ],
+
         // Optional: YouTube Data API v3 key
         // Core YouTube playlist playback works 100% WITHOUT an API key.
         // Never commit secret API keys to public repositories.

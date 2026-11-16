@@ -423,6 +423,63 @@
             100% { transform: scaleY(1); }
         }
 
+        /* 3D Background Models Toggle Button */
+        .btn-3d-toggle {
+            height: 40px;
+            padding: 0 14px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--ink-primary);
+            box-shadow: 0 4px 14px rgba(180, 150, 160, 0.15);
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: all 200ms var(--ease-out);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .btn-3d-toggle:hover {
+                background: rgba(255, 255, 255, 0.9);
+                transform: translateY(-1px);
+            }
+        }
+        .btn-3d-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .btn-3d-toggle.is-disabled {
+            background: rgba(248, 232, 231, 0.8);
+            border-color: rgba(42, 42, 54, 0.2);
+            color: var(--ink-muted);
+        }
+
+        .btn-3d-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 9999px;
+            background: rgba(58, 150, 165, 0.15);
+            color: #247b88;
+            letter-spacing: 0.04em;
+        }
+
+        .btn-3d-toggle.is-disabled .btn-3d-badge {
+            background: rgba(42, 42, 54, 0.1);
+            color: var(--ink-muted);
+        }
+
+        @media (max-width: 540px) {
+            .btn-3d-text { display: none; }
+            .btn-3d-toggle { padding: 0 10px; }
+        }
+
         .btn-circle-menu {
             width: 42px;
             height: 42px;
@@ -541,6 +598,116 @@
             font-family: var(--font-serif);
             font-weight: 400;
             font-style: italic;
+        }
+
+        /* Mobile Drawer 3D Models Control Card */
+        .drawer-performance-section {
+            margin-top: 28px;
+            margin-bottom: 24px;
+        }
+
+        .drawer-perf-card {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 8px 24px rgba(180, 150, 160, 0.12);
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: background 200ms var(--ease-out), transform 200ms var(--ease-out);
+        }
+
+        .drawer-perf-card:active {
+            transform: scale(0.985);
+        }
+
+        .drawer-perf-info {
+            flex: 1;
+        }
+
+        .drawer-perf-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .drawer-perf-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--ink-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .drawer-perf-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 200ms var(--ease-out);
+        }
+
+        .drawer-perf-badge.is-active {
+            background: rgba(58, 150, 165, 0.15);
+            color: #247b88;
+            border: 1px solid rgba(58, 150, 165, 0.3);
+        }
+
+        .drawer-perf-badge.is-off {
+            background: rgba(42, 42, 54, 0.1);
+            color: var(--ink-muted);
+            border: 1px solid rgba(42, 42, 54, 0.2);
+        }
+
+        .drawer-perf-desc {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-style: italic;
+            font-size: 0.98rem;
+            color: var(--ink-secondary);
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .drawer-perf-switch {
+            width: 52px;
+            height: 30px;
+            min-width: 52px;
+            border-radius: 9999px;
+            background: rgba(42, 42, 54, 0.2);
+            border: none;
+            padding: 3px;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: background 240ms cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+        }
+
+        .drawer-perf-switch.is-active {
+            background: #2a2a36;
+        }
+
+        .switch-knob {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+            transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(0);
+        }
+
+        .drawer-perf-switch.is-active .switch-knob {
+            transform: translateX(22px);
         }
 
         /* ==========================================================================
@@ -1966,6 +2133,16 @@
                 if (!isCompleted) targetProgress = Math.max(targetProgress, 88);
             });
 
+            // Fast-track preloader dismissal when 3D models are disabled for instant load
+            try {
+                if (localStorage.getItem('relzzy_3d_models') === 'disabled') {
+                    targetProgress = 95;
+                    setTimeout(() => {
+                        if (window.dismissEtherealLoader) window.dismissEtherealLoader();
+                    }, 450);
+                }
+            } catch(e) {}
+
             window.dismissEtherealLoader = function() {
                 if (isCompleted) return;
                 isCompleted = true;
@@ -2025,6 +2202,13 @@
             </nav>
 
             <div class="nav-actions">
+                <!-- 3D Background Models Toggle -->
+                <button class="btn-3d-toggle" id="btn-3d-toggle" aria-label="Toggle 3D Background Models" title="3D Background Models: Visible (Click to remove if lagging)" data-cursor="3D">
+                    <span class="btn-3d-icon">🧊</span>
+                    <span class="btn-3d-text">3D</span>
+                    <span class="btn-3d-badge" id="header-3d-badge">ON</span>
+                </button>
+
                 <!-- Procedural Ocean Breeze & Harmonic Synth -->
                 <button class="btn-ambient-sound" id="btn-sound" aria-label="Toggle Ambient Audio" title="Procedural Ocean Breeze &amp; Crystal Chime" data-cursor="SOUND">
                     <div class="sound-wave-bars">
@@ -2064,6 +2248,25 @@
             <a href="#contact" class="mobile-nav-link" data-cursor="CONTACT"><span>Initiate <em>Contact</em></span> <span>↘</span></a>
             <a href="persona.html" class="mobile-nav-link" style="color: var(--accent-ocean);" data-cursor="PERSONA"><span>🎭 Persona <em>Theme</em></span> <span>↘</span></a>
         </div>
+
+        <!-- Mobile 3D Models Performance Switch Card -->
+        <div class="drawer-performance-section">
+            <div class="drawer-perf-card">
+                <div class="drawer-perf-info">
+                    <div class="drawer-perf-header">
+                        <span class="drawer-perf-title">3D Background Models</span>
+                        <span class="drawer-perf-badge is-active" id="drawer-3d-badge">Active</span>
+                    </div>
+                    <p class="drawer-perf-desc">
+                        Turn off floating 3D models for maximum smoothness and battery life.
+                    </p>
+                </div>
+                <button class="drawer-perf-switch is-active" id="drawer-3d-switch" role="switch" aria-checked="true" aria-label="Toggle 3D background models">
+                    <span class="switch-knob"></span>
+                </button>
+            </div>
+        </div>
+
         <div style="font-size: 0.88rem; color: var(--ink-muted); border-top: 1px solid var(--glass-border-subtle); padding-top: 24px;">
             Systems Architect • ML Specialist • Creative WebGL Production
         </div>
@@ -3450,30 +3653,136 @@
                     }
                 }
 
-                // Initial Act 01 load
-                loadModelWithFallback('SHIP_IN_CLOUDS_B64', 'ship_in_clouds_data.js', 'assets/models/ship_in_clouds.glb', processShipModel);
+                // ==========================================================
+                // 3D BACKGROUND MODELS VISIBILITY & SMOOTH-MODE CONTROLLER
+                // ==========================================================
+                let modelsVisible = localStorage.getItem('relzzy_3d_models') !== 'disabled';
+
+                function sync3DModelToggles(isVisible, userInitiated = false) {
+                    const btnHeader = document.getElementById('btn-3d-toggle');
+                    const badgeHeader = document.getElementById('header-3d-badge');
+                    const switchDrawer = document.getElementById('drawer-3d-switch');
+                    const badgeDrawer = document.getElementById('drawer-3d-badge');
+
+                    if (btnHeader) {
+                        btnHeader.classList.toggle('is-disabled', !isVisible);
+                        btnHeader.setAttribute('aria-pressed', isVisible ? 'true' : 'false');
+                        btnHeader.title = isVisible 
+                            ? '3D Background Models: Visible (Click to remove for max smoothness)' 
+                            : '3D Background Models: Removed (Click to enable 3D world)';
+                    }
+                    if (badgeHeader) {
+                        badgeHeader.textContent = isVisible ? 'ON' : 'OFF';
+                    }
+
+                    if (switchDrawer) {
+                        switchDrawer.classList.toggle('is-active', isVisible);
+                        switchDrawer.setAttribute('aria-checked', isVisible ? 'true' : 'false');
+                    }
+                    if (badgeDrawer) {
+                        badgeDrawer.textContent = isVisible ? 'Active' : 'Off (Lite)';
+                        badgeDrawer.className = isVisible ? 'drawer-perf-badge is-active' : 'drawer-perf-badge is-off';
+                    }
+
+                    if (userInitiated && typeof showToast === 'function') {
+                        if (isVisible) {
+                            showToast('✨ 3D Background Models Active', 'Floating 3D celestial ship, island, and cloud station are now visible.');
+                        } else {
+                            showToast('⚡ Smooth Mode: 3D Models Removed', '3D models removed from background to eliminate lag and maximize frame rate.');
+                        }
+                    }
+                }
+
+                window.set3DModelsVisible = function(visible, userInitiated = false) {
+                    modelsVisible = visible;
+                    try {
+                        localStorage.setItem('relzzy_3d_models', visible ? 'enabled' : 'disabled');
+                    } catch(e) {}
+
+                    // Instantly update model visibility
+                    if (shipGroup) shipGroup.visible = visible && (scrollProgress < 0.28);
+                    if (skyPlayerGroup) skyPlayerGroup.visible = visible && (scrollProgress >= 0.18 && scrollProgress <= 0.62);
+                    if (cloudStationGroup) cloudStationGroup.visible = visible && (scrollProgress >= 0.50);
+
+                    // If turning models ON, trigger loads if not yet loaded
+                    if (visible) {
+                        if (!shipLoaded) {
+                            loadModelWithFallback('SHIP_IN_CLOUDS_B64', 'ship_in_clouds_data.js', 'assets/models/ship_in_clouds.glb', processShipModel);
+                        }
+                        if (scrollProgress > 0.10 && !skyPlayerRequested) {
+                            requestSkyPlayerModel();
+                        }
+                        if (scrollProgress > 0.22 && !cloudStationRequested) {
+                            requestCloudStationModel();
+                        }
+                        requestShadowUpdate();
+                    }
+
+                    sync3DModelToggles(modelsVisible, userInitiated);
+                };
+
+                window.toggle3DModels = function(userInitiated = true) {
+                    window.set3DModelsVisible(!modelsVisible, userInitiated);
+                };
+
+                // Initialize UI state
+                sync3DModelToggles(modelsVisible, false);
+
+                const btnHeader3D = document.getElementById('btn-3d-toggle');
+                if (btnHeader3D) {
+                    btnHeader3D.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.toggle3DModels(true);
+                    });
+                }
+
+                const switchDrawer3D = document.getElementById('drawer-3d-switch');
+                if (switchDrawer3D) {
+                    switchDrawer3D.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.toggle3DModels(true);
+                    });
+                }
+
+                const cardDrawer3D = document.querySelector('.drawer-perf-card');
+                if (cardDrawer3D) {
+                    cardDrawer3D.addEventListener('click', (e) => {
+                        if (e.target.closest('#drawer-3d-switch')) return;
+                        window.toggle3DModels(true);
+                    });
+                }
+
+                // Initial Act 01 load (only triggered if models are enabled)
+                if (modelsVisible) {
+                    loadModelWithFallback('SHIP_IN_CLOUDS_B64', 'ship_in_clouds_data.js', 'assets/models/ship_in_clouds.glb', processShipModel);
+                } else {
+                    if (window.dismissEtherealLoader) {
+                        window.dismissEtherealLoader();
+                    }
+                }
 
                 // Lazy load triggers for Act 02 & Act 03
                 let skyPlayerRequested = false;
                 function requestSkyPlayerModel() {
-                    if (skyPlayerRequested) return;
+                    if (skyPlayerRequested || !modelsVisible) return;
                     skyPlayerRequested = true;
                     loadModelWithFallback('STYLISED_SKY_B64', 'stylised_sky_data.js', 'assets/models/stylised_sky_player_home_diorama.glb', processSkyPlayerModel);
                 }
 
                 let cloudStationRequested = false;
                 function requestCloudStationModel() {
-                    if (cloudStationRequested) return;
+                    if (cloudStationRequested || !modelsVisible) return;
                     cloudStationRequested = true;
                     loadModelWithFallback('CLOUD_STATION_B64', 'cloud_station_data.js', 'assets/models/cloud_station.glb', processCloudStationModel);
                 }
 
                 if ('requestIdleCallback' in window) {
-                    requestIdleCallback(() => requestSkyPlayerModel(), { timeout: 1800 });
-                    requestIdleCallback(() => requestCloudStationModel(), { timeout: 4000 });
+                    requestIdleCallback(() => { if (modelsVisible) requestSkyPlayerModel(); }, { timeout: 1800 });
+                    requestIdleCallback(() => { if (modelsVisible) requestCloudStationModel(); }, { timeout: 4000 });
                 } else {
-                    setTimeout(requestSkyPlayerModel, 1200);
-                    setTimeout(requestCloudStationModel, 3200);
+                    setTimeout(() => { if (modelsVisible) requestSkyPlayerModel(); }, 1200);
+                    setTimeout(() => { if (modelsVisible) requestCloudStationModel(); }, 3200);
                 }
 
                 // Mouse & Interaction Coords with idle tracking
@@ -3513,9 +3822,11 @@
                     const prevProgress = scrollProgress;
                     scrollProgress += (targetScrollProgress - scrollProgress) * 0.08;
 
-                    // Lazy load triggers based on flight position
-                    if (scrollProgress > 0.10) requestSkyPlayerModel();
-                    if (scrollProgress > 0.22) requestCloudStationModel();
+                    // Lazy load triggers based on flight position (only when models enabled)
+                    if (modelsVisible) {
+                        if (scrollProgress > 0.10) requestSkyPlayerModel();
+                        if (scrollProgress > 0.22) requestCloudStationModel();
+                    }
 
                     const isMoving = Math.abs(scrollProgress - prevProgress) > 0.0003;
                     if (isMoving) {
@@ -3583,6 +3894,12 @@
                         pinkStationLight.intensity = 2.8;
                         dioramaPointLight.intensity = 0.0;
                         shipCloudLight.intensity = 0.0;
+                    }
+                    if (!modelsVisible) {
+                        shipCloudLight.intensity = 0.0;
+                        shipSunRimLight.intensity = 0.0;
+                        dioramaPointLight.intensity = 0.0;
+                        pinkStationLight.intensity = 0.0;
                     }
                     waterMaterial.uniforms.uFogColor.value.copy(scene.fog.color);
                 }
@@ -3743,7 +4060,7 @@
                     waterMaterial.uniforms.uTime.value = elapsedTime;
 
                     // --- Act 01: Ship in Clouds ---
-                    if (shipLoaded) {
+                    if (modelsVisible && shipLoaded) {
                         if (scrollProgress < 0.28) {
                             shipGroup.visible = true;
                             const shipHeaveY = Math.sin(elapsedTime * 0.85) * 0.14;
@@ -3769,10 +4086,12 @@
                         } else {
                             shipGroup.visible = false;
                         }
+                    } else {
+                        shipGroup.visible = false;
                     }
 
                     // --- Act 02: Stylised Sky Player Home Diorama ---
-                    if (skyPlayerLoaded) {
+                    if (modelsVisible && skyPlayerLoaded) {
                         if (scrollProgress >= 0.18 && scrollProgress <= 0.62) {
                             skyPlayerGroup.visible = true;
                             const islandHeaveY = Math.sin(elapsedTime * 0.5 + 1.2) * 0.08;
@@ -3783,10 +4102,12 @@
                         } else {
                             skyPlayerGroup.visible = false;
                         }
+                    } else {
+                        skyPlayerGroup.visible = false;
                     }
 
                     // --- Act 03: Cloud Station ---
-                    if (cloudStationLoaded) {
+                    if (modelsVisible && cloudStationLoaded) {
                         if (scrollProgress >= 0.50) {
                             cloudStationGroup.visible = true;
                             const stationHeaveY = Math.sin(elapsedTime * 0.4 + 2.5) * 0.10;
@@ -3798,12 +4119,14 @@
                         } else {
                             cloudStationGroup.visible = false;
                         }
+                    } else {
+                        cloudStationGroup.visible = false;
                     }
 
                     updateScrollFlight();
 
                     // Demand-driven shadow map pass (Desktop only)
-                    if (!isMobileDevice && currentTier.shadows) {
+                    if (!isMobileDevice && currentTier.shadows && modelsVisible) {
                         if (shadowNeedsUpdate || (now - lastShadowUpdateTime > currentTier.shadowThrottleMs && Math.abs(targetScrollProgress - scrollProgress) > 0.0005)) {
                             renderer.shadowMap.needsUpdate = true;
                             shadowNeedsUpdate = false;

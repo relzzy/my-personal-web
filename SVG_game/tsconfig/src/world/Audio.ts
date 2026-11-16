@@ -500,5 +500,26 @@ export class AudioManager {
     osc.start(now)
     osc.stop(now + 0.42)
   }
+
+  playSlideSound(): void {
+    if (!this.ctx) return
+    const now = this.ctx.currentTime
+
+    // Whoosh / friction sweep down a smooth metal slide
+    const osc = this.ctx.createOscillator()
+    const gain = this.ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(420, now)
+    osc.frequency.exponentialRampToValueAtTime(140, now + 0.45)
+
+    gain.gain.setValueAtTime(0.12, now)
+    gain.gain.linearRampToValueAtTime(0.18, now + 0.1)
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48)
+
+    osc.connect(gain)
+    gain.connect(this.ctx.destination)
+    osc.start(now)
+    osc.stop(now + 0.5)
+  }
 }
 

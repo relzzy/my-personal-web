@@ -534,7 +534,7 @@ function buildParkProps(
   const rockerRes = buildSpringRocker(group, -1.5, -29.2, colliders, interactions, messages, audio)
   animators.push(rockerRes.update)
 
-  buildPlaygroundSlide(group, -5.5, -32.5, colliders)
+  buildPlaygroundSlide(group, -4.8, -33.6, Math.PI, colliders, interactions, messages, audio)
   buildSandbox(group, -2.5, -33.5, colliders)
 
   // 7. NATURE, MATURE TREES & FLOWER BEDS
@@ -565,9 +565,9 @@ function buildParkProps(
   group.add(maple1)
   colliders.add({ minX: -6.0, minY: 0, minZ: -18.0, maxX: -5.0, maxY: 5.5, maxZ: -17.0 })
 
-  const maple2 = buildGreenTree(-6.5, -34.0, 1.1)
+  const maple2 = buildGreenTree(-6.8, -34.8, 1.05)
   group.add(maple2)
-  colliders.add({ minX: -7.0, minY: 0, minZ: -34.5, maxX: -6.0, maxY: 5.5, maxZ: -33.5 })
+  colliders.add({ minX: -7.3, minY: 0, minZ: -35.3, maxX: -6.3, maxY: 5.5, maxZ: -34.3 })
 
   // Cypress / Cedar background trees behind restroom
   for (const pos of [{ x: 8.5, z: -28.0 }, { x: 8.5, z: -31.5 }, { x: 8.5, z: -35.0 }]) {
@@ -1501,9 +1501,19 @@ function buildSpringRocker(
   return { update }
 }
 
-function buildPlaygroundSlide(group: THREE.Group, x: number, z: number, colliders: CollisionWorld): void {
+function buildPlaygroundSlide(
+  group: THREE.Group,
+  x: number,
+  z: number,
+  rotY = Math.PI,
+  colliders?: CollisionWorld,
+  interactions?: InteractionSystem,
+  messages?: MessageBus,
+  audio?: AudioManager,
+): void {
   const slide = new THREE.Group()
   slide.position.set(x, 0.15, z)
+  slide.rotation.y = rotY
 
   // Ladder steps and platform (H: 2.1m)
   const h = 2.1
@@ -1531,7 +1541,7 @@ function buildPlaygroundSlide(group: THREE.Group, x: number, z: number, collider
   hoop.position.set(0, h + 0.4, 0)
   slide.add(platMesh, hoop)
 
-  // Polished Stainless Steel Slide Chute (running forward in -Z direction)
+  // Polished Stainless Steel Slide Chute (running forward)
   const chuteLen = 3.6
   const chuteGeo = new THREE.BoxGeometry(0.65, 0.06, chuteLen)
   const chute = new THREE.Mesh(chuteGeo, slideChuteMat)
@@ -1550,7 +1560,30 @@ function buildPlaygroundSlide(group: THREE.Group, x: number, z: number, collider
   slide.add(chute, railL, railR)
   group.add(slide)
 
-  colliders.add({ minX: x - 0.6, minY: 0, minZ: z - chuteLen + 0.2, maxX: x + 0.6, maxY: 2.4, maxZ: z + 0.6 })
+  if (colliders) {
+    if (Math.abs(rotY - Math.PI) < 0.2) {
+      // Facing North (+Z) into open playground
+      colliders.add({ minX: x - 0.55, minY: 0, minZ: z - 0.6, maxX: x + 0.55, maxY: 2.4, maxZ: z + chuteLen - 0.2 })
+    } else {
+      // Facing South (-Z)
+      colliders.add({ minX: x - 0.55, minY: 0, minZ: z - chuteLen + 0.2, maxX: x + 0.55, maxY: 2.4, maxZ: z + 0.6 })
+    }
+  }
+
+  if (interactions && messages) {
+    const triggerZ = Math.abs(rotY - Math.PI) < 0.2 ? z + 1.6 : z - 1.6
+    interactions.add({
+      id: 'playground-slide',
+      x,
+      z: triggerZ,
+      radius: 2.2,
+      prompt: 'Ride Playground Slide [すべり台]',
+      onInteract: () => {
+        if (audio) audio.playSlideSound()
+        messages.show('You climb the ladder to the red platform and whoosh down the stainless steel slide into the park grass! Wheee!')
+      },
+    })
+  }
 }
 
 function buildSandbox(group: THREE.Group, x: number, z: number, colliders: CollisionWorld): void {

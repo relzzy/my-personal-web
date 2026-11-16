@@ -137,6 +137,8 @@ async function init(): Promise<void> {
         audio.playCatMeow()
       } else if (prompt.includes('signal') || prompt.includes('crossing') || prompt.includes('button')) {
         audio.playCrosswalkChime()
+      } else if (prompt.includes('slide')) {
+        audio.playSlideSound()
       }
       interactions.use()
     }

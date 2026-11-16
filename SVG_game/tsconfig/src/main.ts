@@ -5,6 +5,7 @@ import { CollisionWorld } from './game/Collision'
 import { InteractionSystem } from './game/Interaction'
 import { MessageBus } from './game/Messages'
 import { Player } from './game/Player'
+import { Settings } from './game/Settings'
 import { getLocationName, isRoad } from './world/Layout'
 import { buildStreets } from './world/Streets'
 import { buildBuildings } from './world/Buildings'
@@ -20,14 +21,15 @@ async function init(): Promise<void> {
   scene.background = new THREE.Color(0x0c1017)
   scene.fog = new THREE.FogExp2(0x0c1017, 0.022)
 
-  const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, 90)
+  const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, Settings.isHigh() ? 180 : 90)
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     powerPreference: 'high-performance',
   })
   renderer.setSize(window.innerWidth, window.innerHeight)
-  const basePixelRatio = Math.min(window.devicePixelRatio || 1, 1.0)
+  const getBasePixelRatio = () => (Settings.isHigh() ? Math.min(window.devicePixelRatio || 1, 1.5) : Math.min(window.devicePixelRatio || 1, 1.0))
+  let basePixelRatio = getBasePixelRatio()
   renderer.setPixelRatio(basePixelRatio)
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.15
@@ -76,7 +78,7 @@ async function init(): Promise<void> {
   player.applyCamera(camera)
 
   // 4. BUILD THE 3D WORLD
-  const lightManager = new LightManager(scene)
+  const lightManager = new LightManager(scene, Settings.getQuality())
   buildStreets(scene, colliders)
   const buildingsRes = buildBuildings(scene, colliders, interactions, messages, audio, lightManager)
   const propsRes = buildProps(scene, colliders, interactions, messages, player, audio, lightManager)
@@ -107,12 +109,79 @@ async function init(): Promise<void> {
     document.body.requestPointerLock()
   }
 
+  let currentScale = 1.0
+  let lowFpsDuration = 0
+  let highFpsDuration = 0
+
+  // 6.1 GRAPHICS QUALITY UI & SETTINGS
+  const qualityBtn = document.getElementById('quality-btn') as HTMLButtonElement | null
+  const overlayQualityBtn = document.getElementById('overlay-quality-btn') as HTMLButtonElement | null
+
+  const updateQualityUi = () => {
+    const isHigh = Settings.isHigh()
+    if (qualityBtn) {
+      qualityBtn.textContent = isHigh ? '✨ Graphics: High' : '⚡ Graphics: Low'
+      qualityBtn.classList.toggle('high', isHigh)
+    }
+    if (overlayQualityBtn) {
+      overlayQualityBtn.textContent = isHigh ? '✨ High (Full Distance & Lighting)' : '⚡ Low (Optimized for Laptops)'
+      overlayQualityBtn.classList.toggle('high', isHigh)
+    }
+  }
+
+  const applyQualitySettings = () => {
+    const isHigh = Settings.isHigh()
+    camera.far = isHigh ? 180 : 90
+    camera.updateProjectionMatrix()
+    basePixelRatio = getBasePixelRatio()
+    currentScale = 1.0
+    renderer.setPixelRatio(basePixelRatio)
+    lightManager.setQuality(Settings.getQuality())
+    shadowNeedsUpdate = true
+  }
+
+  const onToggleQuality = () => {
+    const next = Settings.toggleQuality()
+    messages.show(
+      next === 'high'
+        ? 'Graphics: High (Ultra) — Full lighting, extended draw distance & unculled interiors enabled!'
+        : 'Graphics: Low (Performance) — Light pooling & interior distance culling enabled.',
+      4.0
+    )
+  }
+
+  if (qualityBtn) {
+    qualityBtn.addEventListener('click', (e) => {
+      e.stopPropagation()
+      onToggleQuality()
+    })
+  }
+
+  if (overlayQualityBtn) {
+    overlayQualityBtn.addEventListener('click', (e) => {
+      e.stopPropagation()
+      onToggleQuality()
+    })
+  }
+
+  Settings.onChange(() => {
+    applyQualitySettings()
+    updateQualityUi()
+  })
+  updateQualityUi()
+
   const overlayEl = document.getElementById('overlay')
   if (overlayEl) {
-    overlayEl.addEventListener('click', startPlaying)
+    overlayEl.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('#overlay-quality-btn, #quality-btn, #exit-btn')) return
+      startPlaying()
+    })
   }
-  window.addEventListener('click', () => {
-    if (!playing) startPlaying()
+  window.addEventListener('click', (e) => {
+    if (!playing) {
+      if ((e.target as HTMLElement).closest('#overlay-quality-btn, #quality-btn, #exit-btn')) return
+      startPlaying()
+    }
   })
 
   window.addEventListener('mousemove', (e) => {
@@ -121,8 +190,12 @@ async function init(): Promise<void> {
     }
   })
 
-  // Keyboard interaction (E key)
+  // Keyboard interaction (E key & G key)
   window.addEventListener('keydown', (e) => {
+    if (e.code === 'KeyG') {
+      onToggleQuality()
+      return
+    }
     if (e.code === 'KeyE') {
       const prompt = interactions.prompt().toLowerCase()
       if (prompt.includes('buy') || prompt.includes('coffee') || prompt.includes('tea')) {
@@ -143,10 +216,6 @@ async function init(): Promise<void> {
       interactions.use()
     }
   })
-
-  let currentScale = 1.0
-  let lowFpsDuration = 0
-  let highFpsDuration = 0
 
   // Window resize handler
   window.addEventListener('resize', () => {
@@ -198,24 +267,26 @@ async function init(): Promise<void> {
         fpsEl.textContent = `${currentFps} FPS`
       }
 
-      // Adaptive fillrate protection for low-end hardware
-      if (currentFps < 22) {
-        lowFpsDuration++
-        highFpsDuration = 0
-        if (lowFpsDuration >= 2 && currentScale > 0.82) {
-          currentScale = 0.82
-          renderer.setPixelRatio(basePixelRatio * currentScale)
+      // Adaptive fillrate protection for low-end hardware (Low mode only)
+      if (!Settings.isHigh()) {
+        if (currentFps < 22) {
+          lowFpsDuration++
+          highFpsDuration = 0
+          if (lowFpsDuration >= 2 && currentScale > 0.82) {
+            currentScale = 0.82
+            renderer.setPixelRatio(basePixelRatio * currentScale)
+          }
+        } else if (currentFps >= 48) {
+          highFpsDuration++
+          lowFpsDuration = 0
+          if (highFpsDuration >= 3 && currentScale < 1.0) {
+            currentScale = 1.0
+            renderer.setPixelRatio(basePixelRatio * currentScale)
+          }
+        } else {
+          lowFpsDuration = 0
+          highFpsDuration = 0
         }
-      } else if (currentFps >= 48) {
-        highFpsDuration++
-        lowFpsDuration = 0
-        if (highFpsDuration >= 3 && currentScale < 1.0) {
-          currentScale = 1.0
-          renderer.setPixelRatio(basePixelRatio * currentScale)
-        }
-      } else {
-        lowFpsDuration = 0
-        highFpsDuration = 0
       }
     }
 

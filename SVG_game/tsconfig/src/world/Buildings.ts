@@ -47,6 +47,7 @@ import {
 import { CollisionWorld } from '../game/Collision'
 import { InteractionSystem } from '../game/Interaction'
 import { MessageBus } from '../game/Messages'
+import { Settings } from '../game/Settings'
 import type { AudioManager } from './Audio'
 import type { LightManager } from './LightManager'
 
@@ -996,9 +997,9 @@ function buildApartmentLobby(
   let doorPlayed = false
 
   const update = (dt: number, p: { x: number; z: number }): void => {
-    // Distance culling: hide interior props when player is more than 28m away
+    // Distance culling: hide interior props when player is more than 28m away (in low graphics mode)
     const distSq = (p.x - spec.x) ** 2 + (p.z - spec.z) ** 2
-    interiorGroup.visible = distSq < 784
+    interiorGroup.visible = Settings.isHigh() || distSq < 784
 
     // Proximity to front glass doors
     const distToDoor = Math.hypot(p.x - spec.x, p.z - (spec.z - innerD / 2))
@@ -1506,9 +1507,9 @@ function buildKonbiniStore(
   let chimePlayed = false
 
   const update = (dt: number, p: { x: number; z: number }): void => {
-    // Distance culling: hide interior props when player is more than 28m away
+    // Distance culling: hide interior props when player is more than 28m away (in low graphics mode)
     const distSq = (p.x - spec.x) ** 2 + (p.z - spec.z) ** 2
-    interiorGroup.visible = distSq < 784
+    interiorGroup.visible = Settings.isHigh() || distSq < 784
 
     const distToDoor = Math.hypot(p.x - (spec.x - innerW / 2), p.z - spec.z)
     const doorTarget = distToDoor < 2.8 ? 1.0 : 0.0
@@ -2404,9 +2405,9 @@ function buildRamenShop(
   let time = 0
 
   const update = (dt: number, p: { x: number; z: number }): void => {
-    // Distance culling: hide interior props when player is more than 28m away
+    // Distance culling: hide interior props when player is more than 28m away (in low graphics mode)
     const distSq = (p.x - spec.x) ** 2 + (p.z - spec.z) ** 2
-    interiorGroup.visible = distSq < 784
+    interiorGroup.visible = Settings.isHigh() || distSq < 784
 
     time += dt
 

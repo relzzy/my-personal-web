@@ -41,6 +41,7 @@ import { CollisionWorld } from '../game/Collision'
 import { InteractionSystem } from '../game/Interaction'
 import { MessageBus } from '../game/Messages'
 import type { Player } from '../game/Player'
+import { Settings } from '../game/Settings'
 import type { AudioManager } from './Audio'
 import type { LightManager } from './LightManager'
 
@@ -589,15 +590,20 @@ function buildParkProps(
 
   return {
     update(dt: number) {
-      detailTimer += dt
-      if (detailTimer > 0.1) {
-        detailTimer = 0
-        const distSq = (player.x - 0) * (player.x - 0) + (player.z - (-22.5)) * (player.z - (-22.5))
-        isParkNearby = distSq < 1764 // 42m
-        detailGroup.visible = isParkNearby
-      }
-      if (isParkNearby) {
+      if (Settings.isHigh()) {
+        detailGroup.visible = true
         petalRes.update(dt)
+      } else {
+        detailTimer += dt
+        if (detailTimer > 0.1) {
+          detailTimer = 0
+          const distSq = (player.x - 0) * (player.x - 0) + (player.z - (-22.5)) * (player.z - (-22.5))
+          isParkNearby = distSq < 1764 // 42m
+          detailGroup.visible = isParkNearby
+        }
+        if (isParkNearby) {
+          petalRes.update(dt)
+        }
       }
       for (const a of animators) a(dt)
     },

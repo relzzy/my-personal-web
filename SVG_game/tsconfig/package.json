@@ -1,0 +1,20 @@
+{
+  "name": "tokyo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "deploy": "tsc --noEmit && vite build && rm -rf ../../tokyo && cp -r dist ../../tokyo",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.187.0",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.3"
+  }
+}

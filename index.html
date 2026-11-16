@@ -2196,6 +2196,7 @@
             <nav class="nav-center" aria-label="Main Navigation">
                 <a href="#projects" class="nav-link-item" data-cursor="VIEW">Projects</a>
                 <a href="#sanctum" class="nav-link-item" data-cursor="PLAY">The Room</a>
+                <a href="tokyo/index.html" class="nav-link-item" target="_blank" rel="noopener noreferrer" data-cursor="3D" style="color: #6ee7b7; font-weight: 700;" title="Play Tokyo Night Walk 3D Demo">3D Tokyo ↗</a>
                 <a href="#arcade" class="nav-link-item" data-cursor="EXPLORE">Arcade</a>
                 <a href="#about" class="nav-link-item" data-cursor="READ">About</a>
                 <a href="#contact" class="nav-link-item" data-cursor="TRANSMIT">Contact</a>
@@ -2242,6 +2243,7 @@
         <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close Navigation Menu" data-cursor="CLOSE">✕</button>
         <div class="mobile-nav-links">
             <a href="#projects" class="mobile-nav-link" data-cursor="PROJECTS"><span>Selected <em>Projects</em></span> <span>↘</span></a>
+            <a href="tokyo/index.html" class="mobile-nav-link" target="_blank" rel="noopener noreferrer" data-cursor="3D" style="color: #6ee7b7;"><span>🎮 Tokyo <em>3D Walk</em> (Game Demo)</span> <span>↗</span></a>
             <a href="#sanctum" class="mobile-nav-link" data-cursor="PLAY"><span>The <em>Room</em> (Game)</span> <span>↘</span></a>
             <a href="#arcade" class="mobile-nav-link" data-cursor="ARCADE"><span>Playable <em>Arcade</em></span> <span>↘</span></a>
             <a href="#about" class="mobile-nav-link" data-cursor="ABOUT"><span>About <em>Relzzy</em></span> <span>↘</span></a>
@@ -2287,10 +2289,16 @@
                     <span class="sans-line">unexpected</span>
                 </h1>
 
-                <a href="#projects" class="hero-capsule-cta" data-cursor="VIEW">
-                    <span>View our work</span>
-                    <span class="arrow">↘</span>
-                </a>
+                <div style="display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; align-items: center;">
+                    <a href="#projects" class="hero-capsule-cta" data-cursor="VIEW">
+                        <span>View our work</span>
+                        <span class="arrow">↘</span>
+                    </a>
+                    <a href="tokyo/index.html" target="_blank" rel="noopener noreferrer" class="hero-capsule-cta" style="background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.45); color: #6ee7b7;" data-cursor="PLAY" title="Explore Tokyo Night Walk 3D Demo">
+                        <span>🎮 Play 3D Tokyo Demo</span>
+                        <span class="arrow">↗</span>
+                    </a>
+                </div>
             </div>
 
             <div class="container hero-bottom-bar">
@@ -2509,24 +2517,27 @@
                         <!-- 07: 3D Indie Game Narrative -->
                         <article class="portal-compact-card reveal-node" data-category="games">
                             <div class="portal-compact-media">
-                                <img src="images/indie_game_preview.jpg" alt="3D Indie Adventure Worldbuilding" loading="lazy">
-                                <div class="portal-overlay-badge">SURREAL 3D ATMOSPHERE • ATMOSPHERIC WORLDBUILDING</div>
+                                <img src="images/indie_game_preview.jpg" alt="Tokyo Night Walk 3D Game Worldbuilding" loading="lazy">
+                                <div class="portal-overlay-badge">FIRST-PERSON 3D • TOKYO MIDNIGHT ENGINE</div>
                             </div>
                             <div>
                                 <div class="portal-num">SYSTEM // 07</div>
-                                <h3 class="portal-title" style="font-size: 1.8rem;">3D Indie Game &amp; <em>Narrative Design</em></h3>
+                                <h3 class="portal-title" style="font-size: 1.8rem;">Tokyo Night Walk — <em>3D Game Demo</em></h3>
                                 <p class="portal-desc">
-                                    Worldbuilding, lore architecture, and dialogue writing pipelines targeted toward a future 
-                                    standalone 3D indie game combining atmospheric storytelling with technical depth.
+                                    Interactive first-person 3D exploration across a midnight Tokyo neighbourhood. Built with Three.js, procedural audio synthesis, physics colliders, enterable konbini and ramen shops, alley wildlife interactions, and authentic retro streetscapes.
                                 </p>
                                 <div class="portal-tech-pills">
-                                    <span class="tech-pill">Worldbuilding</span>
-                                    <span class="tech-pill">Script Writing</span>
-                                    <span class="tech-pill">3D Mechanics</span>
+                                    <span class="tech-pill">Three.js</span>
+                                    <span class="tech-pill">TypeScript</span>
+                                    <span class="tech-pill">WebGL / 3D</span>
+                                    <span class="tech-pill">Web Audio API</span>
                                 </div>
                             </div>
-                            <div style="margin-top: 16px;">
-                                <span style="font-size: 0.88rem; color: var(--ink-muted);">In Active Pre-Production</span>
+                            <div style="margin-top: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                <a href="tokyo/index.html" target="_blank" rel="noopener noreferrer" class="portal-btn-primary" data-cursor="PLAY" style="padding: 10px 18px; font-size: 0.88rem; background: linear-gradient(135deg, #10b981, #059669); border-color: #10b981;">
+                                    <span>🎮 Play 3D Game Demo ↗</span>
+                                </a>
+                                <span style="font-size: 0.82rem; color: #10b981; font-weight: 600;">● Live Playable Demo</span>
                             </div>
                         </article>
 
@@ -2743,6 +2754,23 @@
                             <span>Request Access ↓</span>
                         </a>
                     </div>
+
+                    <div class="arcade-glass-card" style="border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 12px 30px rgba(16, 185, 129, 0.15);">
+                        <div class="arcade-card-media" style="position: relative;">
+                            <img src="images/indie_game_preview.jpg" alt="Tokyo Night Walk 3D Game Preview" loading="lazy">
+                            <div style="position: absolute; top: 12px; right: 12px; background: rgba(16, 185, 129, 0.9); color: #fff; font-size: 0.72rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; letter-spacing: 0.5px;">LIVE 3D DEMO</div>
+                        </div>
+                        <div>
+                            <div class="portal-num">PROTOTYPE // 04</div>
+                            <h3 class="portal-title" style="font-size: 1.8rem;">Tokyo Night Walk — <em>3D Game</em></h3>
+                            <p class="portal-desc">
+                                First-person 3D exploration across midnight Tokyo streets. Enter convenience stores and ramen shops, pet stray kittens, and experience procedural audio.
+                            </p>
+                        </div>
+                        <a href="tokyo/index.html" target="_blank" rel="noopener noreferrer" class="portal-btn-primary" data-cursor="PLAY" style="background: linear-gradient(135deg, #10b981, #059669); border-color: #10b981;">
+                            <span>🎮 Play 3D Demo ↗</span>
+                        </a>
+                    </div>
                 </div>
 
                 <!-- About Me Split -->
@@ -2879,6 +2907,7 @@
                 </div>
                 <div style="display: flex; gap: 24px; flex-wrap: wrap;">
                     <a href="#hero" data-cursor="TOP">Back to Top ↑</a>
+                    <a href="tokyo/index.html" target="_blank" data-cursor="3D GAME" style="color: #10b981; font-weight: 600;">3D Tokyo Walk ↗</a>
                     <a href="persona.html" data-cursor="THEME">Persona Theme 🎭</a>
                     <a href="game.html" data-cursor="GAME">Standalone Game</a>
                     <a href="https://github.com/relzzy" target="_blank" rel="noopener noreferrer">GitHub</a>

@@ -8,6 +8,7 @@ export class Minimap {
   private lastX = -9999
   private lastZ = -9999
   private lastYaw = -9999
+  private lastTime = 0
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -17,14 +18,21 @@ export class Minimap {
   }
 
   update(player: Player, force = false): void {
+    const now = performance.now()
+    // Throttle minimap repaints to max 20 FPS (50ms interval) to save significant CPU cycles
+    if (!force && now - this.lastTime < 50) {
+      return
+    }
+
     if (
       !force &&
-      Math.abs(player.x - this.lastX) < 0.012 &&
-      Math.abs(player.z - this.lastZ) < 0.012 &&
-      Math.abs(player.yaw - this.lastYaw) < 0.008
+      Math.abs(player.x - this.lastX) < 0.04 &&
+      Math.abs(player.z - this.lastZ) < 0.04 &&
+      Math.abs(player.yaw - this.lastYaw) < 0.02
     ) {
       return
     }
+    this.lastTime = now
     this.lastX = player.x
     this.lastZ = player.z
     this.lastYaw = player.yaw
@@ -71,12 +79,37 @@ export class Minimap {
     ctx.fillRect(toScreenX(4), toScreenY(19.5), 9.5 * this.scale, 3 * this.scale)
     ctx.fillRect(toScreenX(-4), toScreenY(21.5), 8 * this.scale, 3 * this.scale)
 
-    // Pocket Park
-    ctx.fillStyle = '#142a1e'
-    ctx.fillRect(toScreenX(-8.5), toScreenY(-36), 16.5 * this.scale, 24 * this.scale)
+    // Pocket Park Base Ground (Fine gravel / earth)
+    ctx.fillStyle = '#222920'
+    ctx.fillRect(toScreenX(-8.5), toScreenY(-36.5), 18 * this.scale, 29 * this.scale)
     ctx.strokeStyle = '#2d5a3c'
+    ctx.lineWidth = 1.5
+    ctx.strokeRect(toScreenX(-8.5), toScreenY(-36.5), 18 * this.scale, 29 * this.scale)
+
+    // Paved Walkways on Minimap
+    ctx.fillStyle = '#343836'
+    // North entrance path
+    ctx.fillRect(toScreenX(-1.6), toScreenY(-18.6), 3.2 * this.scale, 11.1 * this.scale)
+    // Central plaza
+    ctx.fillRect(toScreenX(-3.1), toScreenY(-24.4), 6.2 * this.scale, 5.8 * this.scale)
+    // West path
+    ctx.fillRect(toScreenX(-8.5), toScreenY(-23.3), 5.4 * this.scale, 2.6 * this.scale)
+    // South path to playground
+    ctx.fillRect(toScreenX(-0.5), toScreenY(-30.7), 3.0 * this.scale, 6.5 * this.scale)
+
+    // Green Lawn Islands on Minimap
+    ctx.fillStyle = '#1a3d24'
+    // Sakura lawn
+    ctx.fillRect(toScreenX(2.3), toScreenY(-19.6), 5.8 * this.scale, 7.2 * this.scale)
+    // West lawn
+    ctx.fillRect(toScreenX(-7.4), toScreenY(-17.6), 4.8 * this.scale, 6.2 * this.scale)
+
+    // Restroom building on Minimap
+    ctx.fillStyle = '#475569'
+    ctx.strokeStyle = '#94a3b8'
     ctx.lineWidth = 1
-    ctx.strokeRect(toScreenX(-8.5), toScreenY(-36), 16.5 * this.scale, 24 * this.scale)
+    ctx.fillRect(toScreenX(4.1), toScreenY(-34.1), 4.2 * this.scale, 3.2 * this.scale)
+    ctx.strokeRect(toScreenX(4.1), toScreenY(-34.1), 4.2 * this.scale, 3.2 * this.scale)
 
     // Road Centerlines & Crosswalks
     ctx.fillStyle = '#ffffff'
@@ -146,10 +179,15 @@ export class Minimap {
       }
     }
 
-    // Park label
+    // Park label & icons
     ctx.font = '10px "Yu Gothic UI", sans-serif'
-    ctx.fillStyle = '#65d48a'
-    ctx.fillText('🌸 桜公園', toScreenX(-0.25), toScreenY(-24))
+    ctx.fillStyle = '#f472b6'
+    ctx.fillText('🌸 桜公園', toScreenX(0.5), toScreenY(-19))
+    ctx.fillStyle = '#38bdf8'
+    ctx.fillText('🛝 遊具', toScreenX(-2.5), toScreenY(-29))
+    ctx.fillStyle = '#94a3b8'
+    ctx.font = '8px "Yu Gothic UI", sans-serif'
+    ctx.fillText('🚻', toScreenX(6.2), toScreenY(-32.5))
 
     ctx.restore()
 

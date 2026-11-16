@@ -13,12 +13,16 @@ export class Hud {
     this.overlayEl = document.getElementById('overlay')
   }
 
+  private lastPrompt = ''
+  private lastToast = ''
+
   update(locationText: string, promptText: string, toastText: string): void {
     if (this.locEl && this.locEl.textContent !== locationText) {
       this.locEl.textContent = locationText
     }
 
-    if (this.promptEl) {
+    if (this.promptEl && this.lastPrompt !== promptText) {
+      this.lastPrompt = promptText
       if (promptText) {
         this.promptEl.innerHTML = `<kbd>E</kbd> ${promptText}`
         this.crosshairEl?.classList.add('active')
@@ -28,7 +32,8 @@ export class Hud {
       }
     }
 
-    if (this.toastEl) {
+    if (this.toastEl && this.lastToast !== toastText) {
+      this.lastToast = toastText
       this.toastEl.textContent = toastText
     }
   }

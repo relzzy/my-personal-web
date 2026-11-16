@@ -5,6 +5,7 @@ import {
   alleyMat,
   parkMat,
   pathMat,
+  parkGrassMat,
   lineMat,
   yellowMat,
   postMat,
@@ -89,31 +90,63 @@ export function buildStreets(scene: THREE.Scene, colliders: CollisionWorld): THR
   mAlley2.receiveShadow = true
   group.add(mAlley2)
 
-  // 4. POCKET PARK (Sakura Park: X [-8.5, 8], Z [-36, -12])
-  const parkGeo = new THREE.BoxGeometry(16.5, 0.15, 24)
+  // 4. POCKET PARK (Sakura Park: X [-8.5, 9.5], Z [-36.5, -7.5])
+  // Base earthen clay/gravel ground (真砂土)
+  const parkGeo = new THREE.BoxGeometry(18, 0.15, 29)
   const parkMesh = new THREE.Mesh(parkGeo, parkMat)
-  parkMesh.position.set(-0.25, 0.075, -24)
+  parkMesh.position.set(0.5, 0.075, -22)
   parkMesh.receiveShadow = true
   group.add(parkMesh)
 
-  // Park stepping stone path
-  const stones = [
-    { x: -9.5, z: -15, w: 2.2, d: 1.2 },
-    { x: -7.5, z: -17, w: 1.8, d: 1.8 },
-    { x: -5.5, z: -20, w: 2.0, d: 1.6 },
-    { x: -3.5, z: -23, w: 2.2, d: 2.0 },
-    { x: -1.0, z: -25, w: 2.4, d: 2.2 },
-    { x: 1.5, z: -25, w: 2.2, d: 1.8 },
-    { x: 4.0, z: -23, w: 2.0, d: 1.8 },
-    { x: 2.0, z: -19, w: 2.2, d: 1.8 },
-    { x: 0.0, z: -15, w: 2.0, d: 2.0 },
+  // Paved interlocking brick plazas and walkways (Y = 0.158)
+  const pavedSections = [
+    // North Entrance Plaza (seamless connection to Main Street sidewalk at Z = -7.5)
+    { x: 0.0, z: -9.5, w: 5.6, d: 4.0 },
+    // West Entrance Apron (connecting to South Street sidewalk at X = -8.5)
+    { x: -7.2, z: -22.0, w: 2.8, d: 3.6 },
+    // Central Social Plaza (around seating, fountain, and lantern)
+    { x: 0.0, z: -21.5, w: 6.2, d: 5.8 },
+    // North-South connecting promenade (North entrance to Central plaza)
+    { x: 0.0, z: -15.0, w: 3.2, d: 7.2 },
+    // West cross-walkway (Central plaza to West entrance)
+    { x: -4.2, z: -22.0, w: 3.4, d: 2.6 },
+    // South walkway (Central plaza down toward Playground & Restroom)
+    { x: 1.0, z: -27.5, w: 3.0, d: 6.5 },
+    // Restroom approach plaza (South-East corner)
+    { x: 6.0, z: -32.0, w: 4.5, d: 3.8 },
   ]
-  for (const st of stones) {
-    const sGeo = new THREE.BoxGeometry(st.w, 0.015, st.d)
-    const sMesh = new THREE.Mesh(sGeo, pathMat)
-    sMesh.position.set(st.x, 0.158, st.z)
-    sMesh.receiveShadow = true
-    group.add(sMesh)
+  for (const p of pavedSections) {
+    const pGeo = new THREE.BoxGeometry(p.w, 0.012, p.d)
+    const pMesh = new THREE.Mesh(pGeo, pathMat)
+    pMesh.position.set(p.x, 0.156, p.z)
+    pMesh.receiveShadow = true
+    group.add(pMesh)
+  }
+
+  // Raised Grass Lawn Mounds (芝生マウンド) with low granite curbs
+  const lawnMounds = [
+    // East Grand Sakura Lawn Island
+    { x: 5.2, z: -16.0, w: 5.8, d: 7.2 },
+    // West Green Maple & Pine Lawn Island
+    { x: -5.0, z: -14.5, w: 4.8, d: 6.2 },
+    // South Greenery Buffer Lawn
+    { x: -3.5, z: -33.2, w: 7.4, d: 4.2 },
+  ]
+  const curbMat = new THREE.MeshStandardMaterial({ color: 0x5a6068, roughness: 0.9 })
+  for (const lm of lawnMounds) {
+    // Low stone curb
+    const curbGeo = new THREE.BoxGeometry(lm.w + 0.3, 0.06, lm.d + 0.3)
+    const curb = new THREE.Mesh(curbGeo, curbMat)
+    curb.position.set(lm.x, 0.17, lm.z)
+    curb.receiveShadow = true
+    group.add(curb)
+
+    // Lush grass top
+    const lawnGeo = new THREE.BoxGeometry(lm.w, 0.065, lm.d)
+    const lawn = new THREE.Mesh(lawnGeo, parkGrassMat)
+    lawn.position.set(lm.x, 0.18, lm.z)
+    lawn.receiveShadow = true
+    group.add(lawn)
   }
 
   // 5. CURBS & TACTILE PAVING

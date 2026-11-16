@@ -54,7 +54,7 @@ export function getLocationName(x: number, z: number): string {
     return 'Kissaten Mame — Cafe'
   }
   // Pocket Park
-  if (x >= -8.5 && x <= 8 && z >= -34 && z <= -12) {
+  if (x >= -8.5 && x <= 9.5 && z >= -36.5 && z <= -7.5) {
     return 'Sakura Pocket Park (桜公園)'
   }
   // Residential Alley

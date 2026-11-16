@@ -48,6 +48,7 @@ import { CollisionWorld } from '../game/Collision'
 import { InteractionSystem } from '../game/Interaction'
 import { MessageBus } from '../game/Messages'
 import type { AudioManager } from './Audio'
+import type { LightManager } from './LightManager'
 
 export interface BuildingsResult {
   group: THREE.Group
@@ -63,6 +64,7 @@ export function buildBuildings(
   interactions: InteractionSystem,
   messages: MessageBus,
   audio?: AudioManager,
+  lightManager?: LightManager,
 ): BuildingsResult {
   const root = new THREE.Group()
   root.name = 'buildings'
@@ -108,7 +110,7 @@ export function buildBuildings(
     // 1. COLLIDERS & STRUCTURAL SHELL
     if (spec.id === 'b-sunheights') {
       // STARTING APARTMENT: Special hollow enterable ground floor lobby!
-      const lobbyRes = buildApartmentLobby(bGroup, spec, colliders, interactions, messages, wallMat, trimMat, audio)
+      const lobbyRes = buildApartmentLobby(bGroup, spec, colliders, interactions, messages, wallMat, trimMat, audio, lightManager)
       lobbyLight = lobbyRes.light
       animators.push(lobbyRes.update)
 
@@ -125,7 +127,7 @@ export function buildBuildings(
       addUpperWindowsAndBalconies(bGroup, spec, floorH, trimMat, balconyMat)
     } else if (spec.id === 'b-konbini') {
       // CONVENIENCE STORE: Enterable storefront with interior!
-      const kRes = buildKonbiniStore(bGroup, spec, colliders, interactions, messages, wallMat, trimMat, audio)
+      const kRes = buildKonbiniStore(bGroup, spec, colliders, interactions, messages, wallMat, trimMat, audio, lightManager)
       konbiniLight = kRes.light
       animators.push(kRes.update)
 
@@ -141,7 +143,7 @@ export function buildBuildings(
       addUpperWindowsAndBalconies(bGroup, spec, floorH, trimMat, balconyMat)
     } else if (spec.id === 'b-ramen') {
       // RAMEN SHOP: Traditional facade & enterable counter
-      const rRes = buildRamenShop(bGroup, spec, colliders, interactions, messages, wallMat, trimMat, audio)
+      const rRes = buildRamenShop(bGroup, spec, colliders, interactions, messages, wallMat, trimMat, audio, lightManager)
       ramenLight = rRes.light
       animators.push(rRes.update)
 
@@ -175,7 +177,7 @@ export function buildBuildings(
       })
 
       // Ground floor storefront / entrance feature
-      const sfRes = buildStandardStorefront(bGroup, spec, trimMat, interactions, messages, audio)
+      const sfRes = buildStandardStorefront(bGroup, spec, trimMat, interactions, messages, audio, lightManager)
       if (sfRes?.update) animators.push(sfRes.update)
 
       // Upper windows and balconies
@@ -216,9 +218,14 @@ function buildApartmentLobby(
   _wallMat: THREE.Material,
   trimMat: THREE.Material,
   audio?: AudioManager,
+  lightManager?: LightManager,
 ): { light: THREE.PointLight; update: (dt: number, p: { x: number; z: number }) => void } {
   const floorH = 3.2
   const halfW = spec.w / 2
+
+  const interiorGroup = new THREE.Group()
+  interiorGroup.name = 'lobby-interior-props'
+  group.add(interiorGroup)
 
   // Lobby Interior Dimensions
   const innerW = 7.6
@@ -253,13 +260,13 @@ function buildApartmentLobby(
   const trayMat = new THREE.MeshStandardMaterial({ color: 0xf0ece2, roughness: 0.6 })
   const tray = new THREE.Mesh(trayGeo, trayMat)
   tray.position.set(spec.x, floorH - 0.04, spec.z)
-  group.add(tray)
+  interiorGroup.add(tray)
 
   // Glowing perimeter cove LED strip
   const coveEdgeGeo = new THREE.BoxGeometry(trayW + 0.12, 0.02, trayD + 0.12)
   const coveEdge = new THREE.Mesh(coveEdgeGeo, lampMat)
   coveEdge.position.set(spec.x, floorH - 0.07, spec.z)
-  group.add(coveEdge)
+  interiorGroup.add(coveEdge)
 
   // 4 Recessed Downlight Fixtures
   for (const dx of [-1.8, 1.8]) {
@@ -270,7 +277,7 @@ function buildApartmentLobby(
       const bulbMesh = new THREE.Mesh(new THREE.CircleGeometry(0.09, 12), lampMat)
       bulbMesh.rotateX(Math.PI / 2)
       bulbMesh.position.set(spec.x + dx, floorH - 0.041, spec.z + dz)
-      group.add(downMesh, bulbMesh)
+      interiorGroup.add(downMesh, bulbMesh)
     }
   }
 
@@ -431,7 +438,7 @@ function buildApartmentLobby(
   const mailHousingMat = new THREE.MeshStandardMaterial({ color: 0x4a525d, roughness: 0.3, metalness: 0.6 })
   const mailHousing = new THREE.Mesh(mailHousingGeo, mailHousingMat)
   mailHousing.position.set(mailBankX, floorY + 1.25, mailBankZ)
-  group.add(mailHousing)
+  interiorGroup.add(mailHousing)
 
   // Detailed textured mailbox front face (24 individual numbered units)
   const mailFrontMat = new THREE.MeshStandardMaterial({
@@ -442,24 +449,24 @@ function buildApartmentLobby(
   const mailFront = new THREE.Mesh(new THREE.PlaneGeometry(mailL, mailH), mailFrontMat)
   mailFront.rotateY(Math.PI / 2)
   mailFront.position.set(mailBankX + mailW / 2 + 0.005, floorY + 1.25, mailBankZ)
-  group.add(mailFront)
+  interiorGroup.add(mailFront)
 
   // Stainless steel mail sorting counter ledge underneath
   const ledgeGeo = new THREE.BoxGeometry(0.38, 0.04, mailL + 0.1)
   const ledgeMesh = new THREE.Mesh(ledgeGeo, metalMat)
   ledgeMesh.position.set(westWallX + 0.19, floorY + 0.56, mailBankZ)
-  group.add(ledgeMesh)
+  interiorGroup.add(ledgeMesh)
 
   // Junk Mail / Flyer Recycling Bin (不要チラシ回収BOX)
   const flyerBinGeo = new THREE.BoxGeometry(0.32, 0.45, 0.45)
   const flyerBinMat = new THREE.MeshStandardMaterial({ color: 0x22553b, roughness: 0.4 })
   const flyerBin = new THREE.Mesh(flyerBinGeo, flyerBinMat)
   flyerBin.position.set(westWallX + 0.18, floorY + 0.23, mailBankZ + mailL / 2 - 0.3)
-  group.add(flyerBin)
+  interiorGroup.add(flyerBin)
 
   const binSlot = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.06), metalMat)
   binSlot.position.set(westWallX + 0.18, floorY + 0.46, mailBankZ + mailL / 2 - 0.3)
-  group.add(binSlot)
+  interiorGroup.add(binSlot)
 
   // (B) Electronic Takkyubin Delivery Lockers (宅配ボックス)
   const lockW = 0.44
@@ -473,7 +480,7 @@ function buildApartmentLobby(
     new THREE.MeshStandardMaterial({ color: 0x1f2630, roughness: 0.35, metalness: 0.5 }),
   )
   lockerHousing.position.set(lockBankX, floorY + lockH / 2, lockBankZ)
-  group.add(lockerHousing)
+  interiorGroup.add(lockerHousing)
 
   // Textured locker front face with touch panel and lockers
   const lockFrontMat = new THREE.MeshStandardMaterial({
@@ -484,7 +491,7 @@ function buildApartmentLobby(
   const lockFront = new THREE.Mesh(new THREE.PlaneGeometry(lockL, lockH), lockFrontMat)
   lockFront.rotateY(Math.PI / 2)
   lockFront.position.set(lockBankX + lockW / 2 + 0.005, floorY + lockH / 2, lockBankZ)
-  group.add(lockFront)
+  interiorGroup.add(lockFront)
 
   colliders.add({
     minX: spec.x - innerW / 2,
@@ -529,26 +536,26 @@ function buildApartmentLobby(
   const deskBase = new THREE.Mesh(new THREE.BoxGeometry(deskW, deskH, deskL), deskBaseMat)
   deskBase.position.set(deskX, floorY + deskH / 2, deskZ)
   deskBase.castShadow = true
-  group.add(deskBase)
+  interiorGroup.add(deskBase)
 
   // Undercounter Warm LED Glow Strip (Luxury cove light beneath counter edge)
   const deskGlowGeo = new THREE.BoxGeometry(0.04, 0.02, deskL - 0.04)
   const deskGlow = new THREE.Mesh(deskGlowGeo, lampMat)
   deskGlow.position.set(deskX - deskW / 2 - 0.01, floorY + deskH - 0.02, deskZ)
-  group.add(deskGlow)
+  interiorGroup.add(deskGlow)
 
   // Polished White Quartz Countertop Slab
   const slabGeo = new THREE.BoxGeometry(deskW + 0.08, 0.06, deskL + 0.08)
   const slabMat = new THREE.MeshStandardMaterial({ color: 0xf5f7fb, roughness: 0.18, metalness: 0.08 })
   const slab = new THREE.Mesh(slabGeo, slabMat)
   slab.position.set(deskX, floorY + deskH + 0.03, deskZ)
-  group.add(slab)
+  interiorGroup.add(slab)
 
   // Countertop Clear Glass Partition Screen with Speech Cutout
   const glassScreenGeo = new THREE.BoxGeometry(0.02, 0.45, deskL * 0.75)
   const glassScreen = new THREE.Mesh(glassScreenGeo, shopGlassMat)
   glassScreen.position.set(deskX - deskW / 2 + 0.05, floorY + deskH + 0.28, deskZ + 0.2)
-  group.add(glassScreen)
+  interiorGroup.add(glassScreen)
 
   // Brass Reception Service Call Bell (卓上コールベル)
   const bellBase = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.02, 12), metalMat)
@@ -560,7 +567,7 @@ function buildApartmentLobby(
   bellBase.position.set(deskX - deskW / 4, floorY + deskH + 0.07, deskZ - 0.5)
   bellDome.position.set(deskX - deskW / 4, floorY + deskH + 0.08, deskZ - 0.5)
   bellPin.position.set(deskX - deskW / 4, floorY + deskH + 0.125, deskZ - 0.5)
-  group.add(bellBase, bellDome, bellPin)
+  interiorGroup.add(bellBase, bellDome, bellPin)
 
   // Resident Guest Logbook (受付簿) open on counter
   const bookBase = new THREE.Mesh(
@@ -573,7 +580,7 @@ function buildApartmentLobby(
   )
   bookBase.position.set(deskX - deskW / 4, floorY + deskH + 0.065, deskZ - 0.1)
   bookPages.position.set(deskX - deskW / 4, floorY + deskH + 0.075, deskZ - 0.1)
-  group.add(bookBase, bookPages)
+  interiorGroup.add(bookBase, bookPages)
 
   // Silver Pen in Stand
   const penStand = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.02, 0.03, 8), metalMat)
@@ -581,7 +588,7 @@ function buildApartmentLobby(
   const pen = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.14, 6), metalMat)
   pen.position.set(deskX - deskW / 4 + 0.18, floorY + deskH + 0.14, deskZ - 0.1)
   pen.rotateZ(0.15)
-  group.add(penStand, pen)
+  interiorGroup.add(penStand, pen)
 
   // Intercom Office Telephone Console (内線電話機)
   const phoneBody = new THREE.Mesh(
@@ -594,7 +601,7 @@ function buildApartmentLobby(
     new THREE.MeshStandardMaterial({ color: 0x11161d, roughness: 0.3 }),
   )
   phoneHandset.position.set(deskX + 0.02, floorY + deskH + 0.11, deskZ + 0.6)
-  group.add(phoneBody, phoneHandset)
+  interiorGroup.add(phoneBody, phoneHandset)
 
   // Banker's Desk Lamp with Emerald Green Shade
   const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.07, 0.02, 10), metalMat)
@@ -606,19 +613,31 @@ function buildApartmentLobby(
     new THREE.MeshStandardMaterial({ color: 0x0a4a2b, roughness: 0.3, metalness: 0.2 }),
   )
   lampShade.position.set(deskX + 0.12, floorY + deskH + 0.33, deskZ - 0.6)
-  group.add(lampBase, lampPole, lampShade)
+  interiorGroup.add(lampBase, lampPole, lampShade)
 
   // Warm local glow from desk lamp
   const deskLampLight = new THREE.PointLight(0xffdfa0, 1.2, 3.5)
   deskLampLight.position.set(deskX + 0.12, floorY + deskH + 0.3, deskZ - 0.6)
-  group.add(deskLampLight)
+  if (lightManager) {
+    lightManager.register({
+      x: deskX + 0.12,
+      y: floorY + deskH + 0.3,
+      z: deskZ - 0.6,
+      color: 0xffdfa0,
+      intensity: 1.2,
+      distance: 3.5,
+      zone: 'Lobby',
+    })
+  } else {
+    interiorGroup.add(deskLampLight)
+  }
 
   // Brass Concierge Desk Plate (管理事務室)
   const deskSignMat = signMaterial('管理事務室', '#18202c', '#d4af37', 'CONCIERGE & MGMT', 256, 128)
   const deskPlate = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.12), deskSignMat)
   deskPlate.rotateY(-Math.PI / 2)
   deskPlate.position.set(deskX - deskW / 2 - 0.005, floorY + deskH + 0.08, deskZ - 0.8)
-  group.add(deskPlate)
+  interiorGroup.add(deskPlate)
 
   // Ergonomic Mesh Swivel Chair behind counter
   const chairBase = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.04, 6), metalMat)
@@ -635,7 +654,7 @@ function buildApartmentLobby(
     new THREE.MeshStandardMaterial({ color: 0x222a36, roughness: 0.6 }),
   )
   chairBack.position.set(deskX + 0.64, floorY + 0.74, deskZ + 0.1)
-  group.add(chairBase, chairPost, chairSeat, chairBack)
+  interiorGroup.add(chairBase, chairPost, chairSeat, chairBack)
 
   // Wall-Mounted Key Cabinet (キーキャビネット)
   const keyCab = new THREE.Mesh(
@@ -643,7 +662,7 @@ function buildApartmentLobby(
     new THREE.MeshStandardMaterial({ color: 0x3d2817, roughness: 0.6 }),
   )
   keyCab.position.set(eastWallX - 0.05, floorY + 1.5, deskZ - 0.6)
-  group.add(keyCab)
+  interiorGroup.add(keyCab)
 
   // Security CCTV Quad-Display (防犯カメラ モニター)
   const cctv = new THREE.Mesh(
@@ -657,7 +676,7 @@ function buildApartmentLobby(
   )
   cctvScreen.rotateY(-Math.PI / 2)
   cctvScreen.position.set(eastWallX - 0.075, floorY + 1.65, deskZ + 0.6)
-  group.add(cctv, cctvScreen)
+  interiorGroup.add(cctv, cctvScreen)
 
   // Resident Notice Board (サンハイツ管理組合 掲示板)
   const nbMat = new THREE.MeshStandardMaterial({
@@ -667,7 +686,7 @@ function buildApartmentLobby(
   const noticeBoard = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 0.8), nbMat)
   noticeBoard.rotateY(-Math.PI / 2)
   noticeBoard.position.set(eastWallX - 0.015, floorY + 1.65, deskZ - 0.2)
-  group.add(noticeBoard)
+  interiorGroup.add(noticeBoard)
 
   colliders.add({
     minX: deskX - deskW / 2 - 0.1,
@@ -717,7 +736,7 @@ function buildApartmentLobby(
   const dirMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 1.05), dirMat)
   dirMesh.rotateY(-Math.PI / 2)
   dirMesh.position.set(eastWallX - 0.015, floorY + 1.6, spec.z - 2.2)
-  group.add(dirMesh)
+  interiorGroup.add(dirMesh)
 
   // Contemporary Upholstered Waiting Bench (Cognac leather & dark walnut)
   const benchL = 1.4
@@ -739,10 +758,10 @@ function buildApartmentLobby(
     for (const lz of [-benchL / 2 + 0.08, benchL / 2 - 0.08]) {
       const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.015, 0.22, 8), metalMat)
       leg.position.set(benchX + lx, floorY + 0.11, benchZ + lz)
-      group.add(leg)
+      interiorGroup.add(leg)
     }
   }
-  group.add(bBase, bCushion)
+  interiorGroup.add(bBase, bCushion)
 
   colliders.add({
     minX: benchX - benchW / 2,
@@ -760,7 +779,7 @@ function buildApartmentLobby(
   const plantX = spec.x - innerW / 2 + 0.8
   const plantZ = spec.z - innerD / 2 + 0.9
   pot.position.set(plantX, floorY + 0.275, plantZ)
-  group.add(pot)
+  interiorGroup.add(pot)
 
   // Lush green leaves
   const leafMat = new THREE.MeshStandardMaterial({ color: 0x2e6f40, roughness: 0.4 })
@@ -770,7 +789,7 @@ function buildApartmentLobby(
     const leaf = new THREE.Mesh(leafGeo, leafMat)
     leaf.position.set(plantX, floorY + 0.55, plantZ)
     leaf.rotateY((l * Math.PI * 2) / 7)
-    group.add(leaf)
+    interiorGroup.add(leaf)
   }
 
   // =========================================================================
@@ -788,7 +807,7 @@ function buildApartmentLobby(
   fR.position.set(spec.x + elevW / 2 + 0.06, floorY + elevH / 2, elevZ)
   const fT = new THREE.Mesh(new THREE.BoxGeometry(elevW + 0.24, 0.12, 0.08), frameMat)
   fT.position.set(spec.x, floorY + elevH + 0.06, elevZ)
-  group.add(fL, fR, fT)
+  interiorGroup.add(fL, fR, fT)
 
   // Sliding Elevator Doors
   const elevLeftGeo = new THREE.BoxGeometry(0.98, elevH, 0.06)
@@ -798,14 +817,14 @@ function buildApartmentLobby(
   const elevRight = new THREE.Mesh(elevRightGeo, elevDoorMat)
   elevLeft.position.set(spec.x - 0.5, floorY + elevH / 2, elevZ)
   elevRight.position.set(spec.x + 0.5, floorY + elevH / 2, elevZ)
-  group.add(elevLeft, elevRight)
+  interiorGroup.add(elevLeft, elevRight)
 
   // Digital Floor Indicator (Floor "1F ▲" Amber Glowing Display)
   const indGeo = new THREE.PlaneGeometry(0.45, 0.22)
   const indMat = new THREE.MeshBasicMaterial({ color: 0xffaa22 })
   const indMesh = new THREE.Mesh(indGeo, indMat)
   indMesh.position.set(spec.x, floorY + elevH + 0.22, elevZ + 0.05)
-  group.add(indMesh)
+  interiorGroup.add(indMesh)
 
   // Wall Call Station with Circular Illuminated Call Button
   const callPlate = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.28, 0.03), metalMat)
@@ -813,7 +832,7 @@ function buildApartmentLobby(
   const callBtn = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.02, 10), lampMat)
   callBtn.rotateX(Math.PI / 2)
   callBtn.position.set(spec.x + elevW / 2 + 0.35, floorY + 1.28, elevZ + 0.05)
-  group.add(callPlate, callBtn)
+  interiorGroup.add(callPlate, callBtn)
 
   // 3D ELEVATOR CAB INTERIOR (Visible & Steppable Behind Doors)
   const cabW = 2.0
@@ -824,19 +843,19 @@ function buildApartmentLobby(
   // Cab Floor
   const cabFloorMesh = new THREE.Mesh(new THREE.BoxGeometry(cabW, 0.04, cabD), floorMat)
   cabFloorMesh.position.set(spec.x, floorY + 0.02, cabCenterZ)
-  group.add(cabFloorMesh)
+  interiorGroup.add(cabFloorMesh)
 
   // Cab Ceiling
   const cabCeilMesh = new THREE.Mesh(new THREE.BoxGeometry(cabW, 0.08, cabD), metalMat)
   cabCeilMesh.position.set(spec.x, floorY + cabH, cabCenterZ)
-  group.add(cabCeilMesh)
+  interiorGroup.add(cabCeilMesh)
 
   // Cab Back Mirror Wall
   const mirrorGeo = new THREE.BoxGeometry(cabW - 0.1, cabH - 0.2, 0.04)
   const mirrorMat = new THREE.MeshStandardMaterial({ color: 0xccd6e0, roughness: 0.05, metalness: 0.9 })
   const mirror = new THREE.Mesh(mirrorGeo, mirrorMat)
   mirror.position.set(spec.x, floorY + cabH / 2, cabCenterZ + cabD / 2 - 0.02)
-  group.add(mirror)
+  interiorGroup.add(mirror)
 
   // Cab Left & Right Stainless Walls
   const cabWallGeo = new THREE.BoxGeometry(0.04, cabH, cabD)
@@ -844,24 +863,36 @@ function buildApartmentLobby(
   cabLWall.position.set(spec.x - cabW / 2 + 0.02, floorY + cabH / 2, cabCenterZ)
   const cabRWall = new THREE.Mesh(cabWallGeo, elevDoorMat)
   cabRWall.position.set(spec.x + cabW / 2 - 0.02, floorY + cabH / 2, cabCenterZ)
-  group.add(cabLWall, cabRWall)
+  interiorGroup.add(cabLWall, cabRWall)
 
   // Cab Horizontal Safety Handrail Bar
   const railGeo = new THREE.CylinderGeometry(0.02, 0.02, cabW - 0.2, 8)
   railGeo.rotateZ(Math.PI / 2)
   const rail = new THREE.Mesh(railGeo, metalMat)
   rail.position.set(spec.x, floorY + 0.9, cabCenterZ + cabD / 2 - 0.1)
-  group.add(rail)
+  interiorGroup.add(rail)
 
   // Inside Floor Button Column
   const inBtnCol = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.7, 0.14), metalMat)
   inBtnCol.position.set(spec.x + cabW / 2 - 0.06, floorY + 1.25, cabCenterZ - 0.2)
-  group.add(inBtnCol)
+  interiorGroup.add(inBtnCol)
 
   // Inside Cab Warm Ceiling Spotlight
   const cabLight = new THREE.PointLight(0xfffae0, 2.0, 5.5)
   cabLight.position.set(spec.x, floorY + cabH - 0.15, cabCenterZ)
-  group.add(cabLight)
+  if (lightManager) {
+    lightManager.register({
+      x: spec.x,
+      y: floorY + cabH - 0.15,
+      z: cabCenterZ,
+      color: 0xfffae0,
+      intensity: 2.0,
+      distance: 5.5,
+      zone: 'Lobby',
+    })
+  } else {
+    interiorGroup.add(cabLight)
+  }
 
   // Elevator Cab Perimeter Colliders
   colliders.add({
@@ -914,23 +945,61 @@ function buildApartmentLobby(
   // Central Warm Ambient Downlight
   const light = new THREE.PointLight(0xffe8cf, 2.2, 16, 1.1)
   light.position.set(spec.x, floorH - 0.25, spec.z)
-  group.add(light)
 
   // Reception Desk Focused Warm Spot
   const receptionLight = new THREE.PointLight(0xffe0b0, 1.8, 8, 1.2)
   receptionLight.position.set(deskX, floorH - 0.25, deskZ)
-  group.add(receptionLight)
 
   // Elevator Hall Downlight
   const elevatorHallLight = new THREE.PointLight(0xffe6c8, 1.8, 8, 1.2)
   elevatorHallLight.position.set(spec.x, floorH - 0.25, elevZ - 1.2)
-  group.add(elevatorHallLight)
+
+  if (lightManager) {
+    lightManager.register({
+      x: spec.x,
+      y: floorH - 0.25,
+      z: spec.z,
+      color: 0xffe8cf,
+      intensity: 2.2,
+      distance: 16,
+      decay: 1.1,
+      zone: 'Lobby',
+    })
+    lightManager.register({
+      x: deskX,
+      y: floorH - 0.25,
+      z: deskZ,
+      color: 0xffe0b0,
+      intensity: 1.8,
+      distance: 8,
+      decay: 1.2,
+      zone: 'Lobby',
+    })
+    lightManager.register({
+      x: spec.x,
+      y: floorH - 0.25,
+      z: elevZ - 1.2,
+      color: 0xffe6c8,
+      intensity: 1.8,
+      distance: 8,
+      decay: 1.2,
+      zone: 'Lobby',
+    })
+  } else {
+    group.add(light)
+    group.add(receptionLight)
+    group.add(elevatorHallLight)
+  }
 
   let doorProgress = 0
   let elevProgress = 0
   let doorPlayed = false
 
   const update = (dt: number, p: { x: number; z: number }): void => {
+    // Distance culling: hide interior props when player is more than 28m away
+    const distSq = (p.x - spec.x) ** 2 + (p.z - spec.z) ** 2
+    interiorGroup.visible = distSq < 784
+
     // Proximity to front glass doors
     const distToDoor = Math.hypot(p.x - spec.x, p.z - (spec.z - innerD / 2))
     const doorTarget = distToDoor < 2.6 ? 1.0 : 0.0
@@ -947,10 +1016,12 @@ function buildApartmentLobby(
     dRight.position.x = spec.x + 0.65 + doorProgress * 0.75
 
     // Elevator doors
-    const elevTarget = elevOpen ? 1.0 : 0.0
-    elevProgress += (elevTarget - elevProgress) * Math.min(1, dt * 4)
-    elevLeft.position.x = spec.x - 0.5 - elevProgress * 0.75
-    elevRight.position.x = spec.x + 0.5 + elevProgress * 0.75
+    if (interiorGroup.visible) {
+      const elevTarget = elevOpen ? 1.0 : 0.0
+      elevProgress += (elevTarget - elevProgress) * Math.min(1, dt * 4)
+      elevLeft.position.x = spec.x - 0.5 - elevProgress * 0.75
+      elevRight.position.x = spec.x + 0.5 + elevProgress * 0.75
+    }
   }
 
   return { light, update }
@@ -968,6 +1039,7 @@ function buildKonbiniStore(
   wallMat: THREE.Material,
   trimMat: THREE.Material,
   audio?: AudioManager,
+  lightManager?: LightManager,
 ): { light: THREE.PointLight; update: (dt: number, p: { x: number; z: number }) => void } {
   const floorH = 3.2
   const innerW = 9.8
@@ -975,6 +1047,10 @@ function buildKonbiniStore(
   const floorY = 0.15
   const wallH = floorH - floorY
   const wallThick = 0.35
+
+  const interiorGroup = new THREE.Group()
+  interiorGroup.name = 'konbini-interior-props'
+  group.add(interiorGroup)
 
   // 1. FLOOR & CEILING
   const floorGeo = new THREE.BoxGeometry(innerW, 0.05, innerD)
@@ -1107,7 +1183,7 @@ function buildKonbiniStore(
   const coolerMat = new THREE.MeshStandardMaterial({ color: 0x141a22, roughness: 0.3, metalness: 0.5 })
   const coolerMesh = new THREE.Mesh(coolerGeo, coolerMat)
   coolerMesh.position.set(spec.x + innerW / 2 - 0.5, floorY + 1.2, spec.z)
-  group.add(coolerMesh)
+  interiorGroup.add(coolerMesh)
 
   // Glowing cooler doors with rows of drinks & handles
   const coolerDoorsMat = new THREE.MeshBasicMaterial({
@@ -1117,7 +1193,7 @@ function buildKonbiniStore(
   const coolerFront = new THREE.Mesh(new THREE.PlaneGeometry(coolerW, 2.2), coolerDoorsMat)
   coolerFront.rotateY(-Math.PI / 2)
   coolerFront.position.set(spec.x + innerW / 2 - 0.84, floorY + 1.2, spec.z)
-  group.add(coolerFront)
+  interiorGroup.add(coolerFront)
 
   colliders.add({
     minX: spec.x + innerW / 2 - 1.1,
@@ -1140,8 +1216,8 @@ function buildKonbiniStore(
   })
 
   // 5. DETAILED MULTI-TIER GONDOLA SHELVES (NO PLAIN BOXES!)
-  buildGondolaShelf(group, spec.x + 0.8, floorY, spec.z + 1.8, colliders)
-  buildGondolaShelf(group, spec.x + 0.8, floorY, spec.z - 2.2, colliders)
+  buildGondolaShelf(interiorGroup, spec.x + 0.8, floorY, spec.z + 1.8, colliders)
+  buildGondolaShelf(interiorGroup, spec.x + 0.8, floorY, spec.z - 2.2, colliders)
 
   interactions.add({
     id: 'konbini-shelf-noodles',
@@ -1179,14 +1255,14 @@ function buildKonbiniStore(
   })
   const counter = new THREE.Mesh(counterGeo, counterBodyMat)
   counter.position.set(spec.x - 2.2, floorY + counterH / 2, spec.z - 3.4)
-  group.add(counter)
+  interiorGroup.add(counter)
 
   // Countertop slab (Dark granite/wood laminate)
   const topSlabGeo = new THREE.BoxGeometry(counterW + 0.08, 0.06, counterL + 0.08)
   const topSlabMat = new THREE.MeshStandardMaterial({ color: 0x1f2328, roughness: 0.25, metalness: 0.15 })
   const topSlab = new THREE.Mesh(topSlabGeo, topSlabMat)
   topSlab.position.set(spec.x - 2.2, floorY + counterH + 0.03, spec.z - 3.4)
-  group.add(topSlab)
+  interiorGroup.add(topSlab)
 
   colliders.add({
     minX: spec.x - 2.2 - counterW / 2 - 0.1,
@@ -1207,7 +1283,7 @@ function buildKonbiniStore(
   )
   posScreen.position.set(spec.x - 2.2, floorY + counterH + 0.3, spec.z - 3.8)
   posScreen.rotateX(-0.2)
-  group.add(posStand, posScreen)
+  interiorGroup.add(posStand, posScreen)
 
   // Customer Payment Terminal (Card/Suica tap pad)
   const payPad = new THREE.Mesh(
@@ -1216,14 +1292,14 @@ function buildKonbiniStore(
   )
   payPad.position.set(spec.x - 1.85, floorY + counterH + 0.09, spec.z - 3.6)
   payPad.rotateX(0.15)
-  group.add(payPad)
+  interiorGroup.add(payPad)
 
   // Blue Coin Change Tray (カルトン)
   const trayGeo = new THREE.BoxGeometry(0.18, 0.02, 0.14)
   const trayMat = new THREE.MeshStandardMaterial({ color: 0x0077cc, roughness: 0.3 })
   const changeTray = new THREE.Mesh(trayGeo, trayMat)
   changeTray.position.set(spec.x - 1.85, floorY + counterH + 0.07, spec.z - 4.0)
-  group.add(changeTray)
+  interiorGroup.add(changeTray)
 
   // (B) HOT FOOD WARMER SHOWCASE (ホットスナック)
   const warmerW = 0.95
@@ -1272,29 +1348,41 @@ function buildKonbiniStore(
   // Glowing warm amber heat lamp inside warmer
   const warmerLight = new THREE.PointLight(0xff7711, 2.2, 4.5)
   warmerLight.position.set(0, warmerH - 0.1, 0)
-  warmer.add(warmerLight)
+  if (lightManager) {
+    lightManager.register({
+      x: spec.x - 2.0,
+      y: floorY + counterH + 0.06 + warmerH - 0.1,
+      z: spec.z - 2.3,
+      color: 0xff7711,
+      intensity: 2.2,
+      distance: 4.5,
+      zone: 'Konbini',
+    })
+  } else {
+    warmer.add(warmerLight)
+  }
 
-  group.add(warmer)
+  interiorGroup.add(warmer)
 
   // (C) Commercial Double Microwave
   const microGeo = new THREE.BoxGeometry(0.52, 0.45, 0.48)
   const microMesh = new THREE.Mesh(microGeo, metalMat)
   microMesh.position.set(spec.x - 2.8, floorY + counterH + 0.28, spec.z - 4.5)
-  group.add(microMesh)
+  interiorGroup.add(microMesh)
 
   // (D) FamiCafe Coffee Espresso Machine
   const coffeeGeo = new THREE.BoxGeometry(0.42, 0.62, 0.42)
   const coffeeMat = new THREE.MeshStandardMaterial({ color: 0x1f2328, roughness: 0.3, metalness: 0.6 })
   const coffee = new THREE.Mesh(coffeeGeo, coffeeMat)
   coffee.position.set(spec.x - 2.8, floorY + counterH + 0.36, spec.z - 1.8)
-  group.add(coffee)
+  interiorGroup.add(coffee)
 
   // 7. WIRE MAGAZINE RACK BY FRONT WINDOW
   const magGeo = new THREE.BoxGeometry(0.35, 1.25, 2.6)
   const magMat = new THREE.MeshStandardMaterial({ color: 0x3d444e, metalness: 0.6, roughness: 0.3 })
   const magMesh = new THREE.Mesh(magGeo, magMat)
   magMesh.position.set(spec.x - innerW / 2 + 0.65, floorY + 0.65, spec.z + 3.4)
-  group.add(magMesh)
+  interiorGroup.add(magMesh)
 
   // Colorful manga and magazine book spines
   const colors = [0xd92618, 0x1868d4, 0x1f8838, 0xf2a65a, 0x8a2be2, 0xff69b4]
@@ -1305,7 +1393,7 @@ function buildKonbiniStore(
     )
     book.position.set(spec.x - innerW / 2 + 0.68, floorY + 0.85, spec.z + 2.3 + m * 0.3)
     book.rotateZ(0.2)
-    group.add(book)
+    interiorGroup.add(book)
   }
 
   // 8. GREEN ATM MACHINE
@@ -1313,7 +1401,7 @@ function buildKonbiniStore(
   const atmMat = new THREE.MeshStandardMaterial({ color: 0x0f5934, roughness: 0.35 })
   const atm = new THREE.Mesh(atmGeo, atmMat)
   atm.position.set(spec.x - innerW / 2 + 0.55, floorY + 0.98, spec.z - 4.6)
-  group.add(atm)
+  interiorGroup.add(atm)
 
   const atmScreen = new THREE.Mesh(
     new THREE.PlaneGeometry(0.44, 0.32),
@@ -1321,7 +1409,7 @@ function buildKonbiniStore(
   )
   atmScreen.rotateY(Math.PI / 2)
   atmScreen.position.set(spec.x - innerW / 2 + 0.94, floorY + 1.35, spec.z - 4.6)
-  group.add(atmScreen)
+  interiorGroup.add(atmScreen)
 
   interactions.add({
     id: 'konbini-famichiki',
@@ -1349,17 +1437,51 @@ function buildKonbiniStore(
   // Store Central Main Daylight Light
   const light = new THREE.PointLight(0xffffff, 2.8, 18, 1.1)
   light.position.set(spec.x, floorH - 0.35, spec.z)
-  group.add(light)
 
   // Counter Area Fill Light
   const counterLight = new THREE.PointLight(0xfff5ea, 2.0, 9, 1.2)
   counterLight.position.set(spec.x - 2.0, floorH - 0.35, spec.z - 3.2)
-  group.add(counterLight)
 
   // Aisle Back Fill Light
   const aisleLight = new THREE.PointLight(0xf0f8ff, 2.0, 14, 1.2)
   aisleLight.position.set(spec.x + 1.8, floorH - 0.35, spec.z)
-  group.add(aisleLight)
+
+  if (lightManager) {
+    lightManager.register({
+      x: spec.x,
+      y: floorH - 0.35,
+      z: spec.z,
+      color: 0xffffff,
+      intensity: 2.8,
+      distance: 18,
+      decay: 1.1,
+      zone: 'Konbini',
+    })
+    lightManager.register({
+      x: spec.x - 2.0,
+      y: floorH - 0.35,
+      z: spec.z - 3.2,
+      color: 0xfff5ea,
+      intensity: 2.0,
+      distance: 9,
+      decay: 1.2,
+      zone: 'Konbini',
+    })
+    lightManager.register({
+      x: spec.x + 1.8,
+      y: floorH - 0.35,
+      z: spec.z,
+      color: 0xf0f8ff,
+      intensity: 2.0,
+      distance: 14,
+      decay: 1.2,
+      zone: 'Konbini',
+    })
+  } else {
+    group.add(light)
+    group.add(counterLight)
+    group.add(aisleLight)
+  }
 
   // 4 Suspended Fluorescent Ceiling Luminaires
   for (let zOff = -3.2; zOff <= 3.2; zOff += 2.2) {
@@ -1377,13 +1499,17 @@ function buildKonbiniStore(
     tube2.position.set(0, -0.04, 0.08)
     fixtureGroup.add(tube1, tube2)
 
-    group.add(fixtureGroup)
+    interiorGroup.add(fixtureGroup)
   }
 
   let doorProgress = 0
   let chimePlayed = false
 
   const update = (dt: number, p: { x: number; z: number }): void => {
+    // Distance culling: hide interior props when player is more than 28m away
+    const distSq = (p.x - spec.x) ** 2 + (p.z - spec.z) ** 2
+    interiorGroup.visible = distSq < 784
+
     const distToDoor = Math.hypot(p.x - (spec.x - innerW / 2), p.z - spec.z)
     const doorTarget = distToDoor < 2.8 ? 1.0 : 0.0
 
@@ -1566,6 +1692,7 @@ function buildRamenShop(
   _wallMat: THREE.Material,
   trimMat: THREE.Material,
   audio?: AudioManager,
+  lightManager?: LightManager,
 ): { light: THREE.PointLight; update: (dt: number, p: { x: number; z: number }) => void } {
   const floorH = 3.2
   const innerW = 5.8
@@ -1573,6 +1700,10 @@ function buildRamenShop(
   const floorY = 0.15
   const wallH = floorH - floorY
   const wallThick = 0.35
+
+  const interiorGroup = new THREE.Group()
+  interiorGroup.name = 'ramen-interior-props'
+  group.add(interiorGroup)
 
   // 1. FLOOR (Non-slip Charcoal Japanese Ceramic Restaurant Tiles)
   const floorMat = new THREE.MeshStandardMaterial({
@@ -1731,7 +1862,19 @@ function buildRamenShop(
 
     const signSpot = new THREE.PointLight(0xfffae0, 1.2, 2.5)
     signSpot.position.set(spec.x + sx, floorH - 0.16, spec.z - innerD / 2 - 0.25)
-    group.add(signSpot)
+    if (lightManager) {
+      lightManager.register({
+        x: spec.x + sx,
+        y: floorH - 0.16,
+        z: spec.z - innerD / 2 - 0.25,
+        color: 0xfffae0,
+        intensity: 1.2,
+        distance: 2.5,
+        zone: 'Street',
+      })
+    } else {
+      group.add(signSpot)
+    }
   }
 
   // =========================================================================
@@ -1784,7 +1927,19 @@ function buildRamenShop(
     // Warm inner amber paper glow
     const lanternInnerLight = new THREE.PointLight(0xff5522, 1.4, 4.2)
     lanternInnerLight.position.set(0, 0, 0)
-    lGroup.add(lanternInnerLight)
+    if (lightManager) {
+      lightManager.register({
+        x: x,
+        y: lanternY,
+        z: lanternZ,
+        color: 0xff5522,
+        intensity: 1.4,
+        distance: 4.2,
+        zone: 'Street',
+      })
+    } else {
+      lGroup.add(lanternInnerLight)
+    }
 
     return lGroup
   }
@@ -1877,21 +2032,21 @@ function buildRamenShop(
   const cBodyMat = new THREE.MeshStandardMaterial({ color: 0x2b1c12, roughness: 0.6 })
   const cBody = new THREE.Mesh(cBodyGeo, cBodyMat)
   cBody.position.set(barX, floorY + barH / 2, barZ)
-  group.add(cBody)
+  interiorGroup.add(cBody)
 
   // Polished Hinoki Wood Countertop (Customer dining surface)
   const topGeo = new THREE.BoxGeometry(barW + 0.12, 0.06, barD + 0.08)
   const topMat = new THREE.MeshStandardMaterial({ color: 0xad7542, roughness: 0.28, metalness: 0.05 })
   const topSlab = new THREE.Mesh(topGeo, topMat)
   topSlab.position.set(barX, floorY + barH + 0.03, barZ)
-  group.add(topSlab)
+  interiorGroup.add(topSlab)
 
   // Raised Upper Server Ledge (Where chef places steaming ramen bowls)
   const ledgeGeo = new THREE.BoxGeometry(barW + 0.12, 0.18, 0.24)
   const ledgeMat = new THREE.MeshStandardMaterial({ color: 0x8a542a, roughness: 0.35 })
   const ledge = new THREE.Mesh(ledgeGeo, ledgeMat)
   ledge.position.set(barX, floorY + barH + 0.12, barZ + barD / 2 - 0.12)
-  group.add(ledge)
+  interiorGroup.add(ledge)
 
   // 4 Bar Stools (Turned dark wood with padded black leather swivel cushion)
   const stoolMat = new THREE.MeshStandardMaterial({ color: 0x18181c, roughness: 0.5 })
@@ -1915,7 +2070,7 @@ function buildRamenShop(
     const sCushion = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.08, 14), stoolMat)
     sCushion.position.set(sx, floorY + 0.53, sz)
 
-    group.add(sBase, sPost, footring, sCushion)
+    interiorGroup.add(sBase, sPost, footring, sCushion)
   }
 
   // =========================================================================
@@ -1934,7 +2089,7 @@ function buildRamenShop(
     new THREE.MeshStandardMaterial({ color: 0x181818, roughness: 0.15, side: THREE.DoubleSide }),
   )
   bMesh.position.set(bowlX, bowlY + bowlH / 2, bowlZ)
-  group.add(bMesh)
+  interiorGroup.add(bMesh)
 
   // Rich Tonkotsu Broth surface
   const broth = new THREE.Mesh(
@@ -1943,7 +2098,7 @@ function buildRamenShop(
   )
   broth.rotateX(-Math.PI / 2)
   broth.position.set(bowlX, bowlY + bowlH - 0.015, bowlZ)
-  group.add(broth)
+  interiorGroup.add(broth)
 
   // Wavy yellow noodles
   const noodleMesh = new THREE.Mesh(
@@ -1952,7 +2107,7 @@ function buildRamenShop(
   )
   noodleMesh.rotateX(Math.PI / 2)
   noodleMesh.position.set(bowlX + 0.02, bowlY + bowlH - 0.008, bowlZ)
-  group.add(noodleMesh)
+  interiorGroup.add(noodleMesh)
 
   // Two Braised Chashu Pork Slices
   for (let c = 0; c < 2; c++) {
@@ -1961,7 +2116,7 @@ function buildRamenShop(
       new THREE.MeshStandardMaterial({ color: 0x9b4625, roughness: 0.7 }),
     )
     chashu.position.set(bowlX - 0.04 + c * 0.05, bowlY + bowlH, bowlZ - 0.03 + c * 0.04)
-    group.add(chashu)
+    interiorGroup.add(chashu)
   }
 
   // Soft-boiled Ajitama (Halved egg with golden yolk)
@@ -1975,7 +2130,7 @@ function buildRamenShop(
     new THREE.MeshStandardMaterial({ color: 0xffa500, roughness: 0.3 }),
   )
   eggYolk.position.set(bowlX + 0.05, bowlY + bowlH + 0.002, bowlZ - 0.04)
-  group.add(eggWhite, eggYolk)
+  interiorGroup.add(eggWhite, eggYolk)
 
   // Crispy Nori Seaweed Sheet standing up
   const nori = new THREE.Mesh(
@@ -1984,7 +2139,7 @@ function buildRamenShop(
   )
   nori.rotateY(-0.3)
   nori.position.set(bowlX - 0.07, bowlY + bowlH + 0.04, bowlZ - 0.05)
-  group.add(nori)
+  interiorGroup.add(nori)
 
   // Chopped Green Scallions / Negi
   const negi = new THREE.Mesh(
@@ -1992,14 +2147,14 @@ function buildRamenShop(
     new THREE.MeshStandardMaterial({ color: 0x228b22, roughness: 0.8 }),
   )
   negi.position.set(bowlX, bowlY + bowlH + 0.002, bowlZ + 0.04)
-  group.add(negi)
+  interiorGroup.add(negi)
 
   // Animated Rising Steam Quads from Ramen Bowl
   const steamPuffs: THREE.Mesh[] = []
   for (let sp = 0; sp < 4; sp++) {
     const sQuad = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.22), steamMat)
     sQuad.position.set(bowlX + (Math.random() - 0.5) * 0.08, bowlY + 0.12 + sp * 0.16, bowlZ)
-    group.add(sQuad)
+    interiorGroup.add(sQuad)
     steamPuffs.push(sQuad)
   }
 
@@ -2020,7 +2175,7 @@ function buildRamenShop(
   // Stainless Pepper Shaker
   const pepper = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.09, 8), metalMat)
   pepper.position.set(spec.x + 1.18, bowlY + 0.045, barZ)
-  group.add(shoyu, rayu, pepper)
+  interiorGroup.add(shoyu, rayu, pepper)
 
   // Wooden Box of Disposable Chopsticks (割り箸 Waribashi)
   const chopBox = new THREE.Mesh(
@@ -2034,7 +2189,7 @@ function buildRamenShop(
     new THREE.MeshStandardMaterial({ color: 0xf5f5ee, roughness: 0.8 }),
   )
   chopsticks.position.set(spec.x + 1.4, bowlY + 0.2, barZ)
-  group.add(chopBox, chopsticks)
+  interiorGroup.add(chopBox, chopsticks)
 
   // Stainless Cold Water Pitcher & Drinking Glasses
   const pitcher = new THREE.Mesh(
@@ -2047,7 +2202,7 @@ function buildRamenShop(
     shopGlassMat,
   )
   glassCup.position.set(spec.x - 1.22, bowlY + 0.045, barZ)
-  group.add(pitcher, glassCup)
+  interiorGroup.add(pitcher, glassCup)
 
   // =========================================================================
   // 11. KITCHEN BEHIND COUNTER (STAINLESS COOKING VATS, BROTH POTS & STEAM)
@@ -2062,7 +2217,7 @@ function buildRamenShop(
     new THREE.MeshStandardMaterial({ color: 0x8a929c, roughness: 0.35, metalness: 0.75 }),
   )
   kitCounter.position.set(spec.x, floorY + kitH / 2, kitZ)
-  group.add(kitCounter)
+  interiorGroup.add(kitCounter)
 
   // Commercial Stainless Exhaust Hood (レンジフード) above kitchen
   const hood = new THREE.Mesh(
@@ -2070,12 +2225,24 @@ function buildRamenShop(
     new THREE.MeshStandardMaterial({ color: 0x6e7682, roughness: 0.3, metalness: 0.8 }),
   )
   hood.position.set(spec.x, floorH - 0.45, kitZ)
-  group.add(hood)
+  interiorGroup.add(hood)
 
   // Task light inside exhaust hood
   const hoodLight = new THREE.PointLight(0xfff0dd, 2.2, 5.5)
   hoodLight.position.set(spec.x, floorH - 0.65, kitZ)
-  group.add(hoodLight)
+  if (lightManager) {
+    lightManager.register({
+      x: spec.x,
+      y: floorH - 0.65,
+      z: kitZ,
+      color: 0xfff0dd,
+      intensity: 2.2,
+      distance: 5.5,
+      zone: 'Ramen',
+    })
+  } else {
+    interiorGroup.add(hoodLight)
+  }
 
   // Two Large Boiling Tonkotsu Broth Stockpots (寸胴鍋 Zundo-nabe)
   const potGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.48, 14)
@@ -2098,13 +2265,13 @@ function buildRamenShop(
     const h2 = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.008, 4, 8), metalMat)
     h2.position.set(px + 0.25, floorY + kitH + 0.4, kitZ - 0.05)
 
-    group.add(zundo, pBroth, h1, h2)
+    interiorGroup.add(zundo, pBroth, h1, h2)
 
     // Billowing steam from boiling stockpots
     for (let s = 0; s < 3; s++) {
       const pSteam = new THREE.Mesh(new THREE.PlaneGeometry(0.35, 0.35), steamMat)
       pSteam.position.set(px + (Math.random() - 0.5) * 0.1, floorY + kitH + 0.55 + s * 0.25, kitZ - 0.05)
-      group.add(pSteam)
+      interiorGroup.add(pSteam)
       steamPuffs.push(pSteam)
     }
   }
@@ -2113,7 +2280,7 @@ function buildRamenShop(
   const vatGeo = new THREE.BoxGeometry(0.55, 0.35, 0.48)
   const vat = new THREE.Mesh(vatGeo, metalMat)
   vat.position.set(spec.x + 0.7, floorY + kitH + 0.18, kitZ - 0.05)
-  group.add(vat)
+  interiorGroup.add(vat)
 
   // 2 Tebo noodle strainers hanging on vat rim
   for (let t = 0; t < 2; t++) {
@@ -2123,7 +2290,7 @@ function buildRamenShop(
     )
     teboHandle.rotateX(0.3)
     teboHandle.position.set(spec.x + 0.6 + t * 0.18, floorY + kitH + 0.42, kitZ - 0.2)
-    group.add(teboHandle)
+    interiorGroup.add(teboHandle)
   }
 
   // Stack of Clean Donburi Ramen Bowls on Back Shelf
@@ -2133,7 +2300,7 @@ function buildRamenShop(
       new THREE.MeshStandardMaterial({ color: b % 2 === 0 ? 0xd82618 : 0xf8f8f8, roughness: 0.2 }),
     )
     sBowl.position.set(spec.x + 1.5, floorY + kitH + 0.04 + b * 0.05, kitZ)
-    group.add(sBowl)
+    interiorGroup.add(sBowl)
   }
 
   // =========================================================================
@@ -2151,7 +2318,7 @@ function buildRamenShop(
     const tagMat = signMaterial(label, '#e2caa0', '#1c1208', undefined, 256, 64)
     const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.85), tagMat)
     tag.position.set(spec.x - 1.6 + idx * 0.64, floorY + 2.05, spec.z + innerD / 2 - wallThick - 0.02)
-    group.add(tag)
+    interiorGroup.add(tag)
   })
 
   // Colliders for Counter and Kitchen
@@ -2195,22 +2362,52 @@ function buildRamenShop(
       new THREE.MeshStandardMaterial({ color: 0x18241a, roughness: 0.4 }),
     )
     shade.position.set(spec.x + px, floorH - 0.82, barZ)
-    group.add(cord, shade)
+    interiorGroup.add(cord, shade)
 
     // Warm downlight pool
     const pLight = new THREE.PointLight(0xffa544, 1.8, 6.5, 1.2)
     pLight.position.set(spec.x + px, floorH - 0.9, barZ)
-    group.add(pLight)
+    if (lightManager) {
+      lightManager.register({
+        x: spec.x + px,
+        y: floorH - 0.9,
+        z: barZ,
+        color: 0xffa544,
+        intensity: 1.8,
+        distance: 6.5,
+        decay: 1.2,
+        zone: 'Ramen',
+      })
+    } else {
+      interiorGroup.add(pLight)
+    }
   }
 
   // Central Store Warm Ambient Light
   const light = new THREE.PointLight(0xff9944, 2.2, 14, 1.1)
   light.position.set(spec.x, floorH - 0.35, spec.z)
-  group.add(light)
+  if (lightManager) {
+    lightManager.register({
+      x: spec.x,
+      y: floorH - 0.35,
+      z: spec.z,
+      color: 0xff9944,
+      intensity: 2.2,
+      distance: 14,
+      decay: 1.1,
+      zone: 'Ramen',
+    })
+  } else {
+    group.add(light)
+  }
 
   let time = 0
 
-  const update = (dt: number, _p: { x: number; z: number }): void => {
+  const update = (dt: number, p: { x: number; z: number }): void => {
+    // Distance culling: hide interior props when player is more than 28m away
+    const distSq = (p.x - spec.x) ** 2 + (p.z - spec.z) ** 2
+    interiorGroup.visible = distSq < 784
+
     time += dt
 
     // Gentle lantern sway in night breeze
@@ -2218,13 +2415,15 @@ function buildRamenShop(
     l1.rotation.z = sway
     l2.rotation.z = -sway
 
-    // Animate rising steam particles
-    steamPuffs.forEach((puff, i) => {
-      const cycle = (time * 0.55 + i * 0.18) % 1.0
-      puff.position.y += dt * 0.25
-      puff.scale.setScalar(0.75 + cycle * 0.85)
-      puff.rotation.z += dt * 0.15
-    })
+    // Animate rising steam particles only when visible
+    if (interiorGroup.visible) {
+      steamPuffs.forEach((puff, i) => {
+        const cycle = (time * 0.55 + i * 0.18) % 1.0
+        puff.position.y += dt * 0.25
+        puff.scale.setScalar(0.75 + cycle * 0.85)
+        puff.rotation.z += dt * 0.15
+      })
+    }
   }
 
   return { light, update }
@@ -2434,7 +2633,7 @@ function buildSakeBarrel(): THREE.Group {
 }
 
 // --- Helper Wall Blade Sign (突き出し看板 / 袖看板) ---
-function buildBladeSign(type: 'dental' | 'pharmacy'): THREE.Group {
+function buildBladeSign(type: 'dental' | 'pharmacy', skipPointLight = false): THREE.Group {
   const g = new THREE.Group()
 
   // Projecting wrought-iron mounting bracket
@@ -2489,10 +2688,12 @@ function buildBladeSign(type: 'dental' | 'pharmacy'): THREE.Group {
     }
   }
 
-  // Soft glow light
-  const bladeLight = new THREE.PointLight(type === 'dental' ? 0x9be8f5 : 0x8ef5cf, 0.8, 3.5)
-  bladeLight.position.set(0, 0, 0.45)
-  g.add(bladeLight)
+  // Soft glow light (avoid adding PointLight if lightManager is in use)
+  if (!skipPointLight) {
+    const bladeLight = new THREE.PointLight(type === 'dental' ? 0x9be8f5 : 0x8ef5cf, 0.8, 3.5)
+    bladeLight.position.set(0, 0, 0.45)
+    g.add(bladeLight)
+  }
 
   return g
 }
@@ -2552,6 +2753,7 @@ function buildStandardStorefront(
   interactions: InteractionSystem,
   messages: MessageBus,
   audio?: AudioManager,
+  lightManager?: LightManager,
 ): { update?: (dt: number, p: { x: number; z: number }) => void } | void {
   const floorH = 3.2
   const halfW = spec.w / 2
@@ -2673,9 +2875,23 @@ function buildStandardStorefront(
     sfGroup.add(canopyMesh)
 
     // Recessed under-canopy entry spotlight
-    const canopyLight = new THREE.PointLight(0xf2fbff, 1.4, 4.0, 1.2)
-    canopyLight.position.set(doorX, 2.38, 0.45)
-    sfGroup.add(canopyLight)
+    if (lightManager) {
+      const wPos = toWorld(doorX, 0.45)
+      lightManager.register({
+        x: wPos.x,
+        y: 2.38,
+        z: wPos.z,
+        color: 0xf2fbff,
+        intensity: 1.4,
+        distance: 4.0,
+        decay: 1.2,
+        zone: 'Street',
+      })
+    } else {
+      const canopyLight = new THREE.PointLight(0xf2fbff, 1.4, 4.0, 1.2)
+      canopyLight.position.set(doorX, 2.38, 0.45)
+      sfGroup.add(canopyLight)
+    }
 
     // Charcoal welcome runner mat outside sliding door
     const matMat = new THREE.MeshStandardMaterial({ color: 0x1d363d, roughness: 0.95 })
@@ -2709,12 +2925,26 @@ function buildStandardStorefront(
       sfGroup.add(arm, head)
     }
 
-    const signDownlight = new THREE.PointLight(0xdcf6fa, 1.9, 7.5, 1.2)
-    signDownlight.position.set(0, 3.15, 0.5)
-    sfGroup.add(signDownlight)
+    if (lightManager) {
+      const wPos = toWorld(0, 0.5)
+      lightManager.register({
+        x: wPos.x,
+        y: 3.15,
+        z: wPos.z,
+        color: 0xdcf6fa,
+        intensity: 1.9,
+        distance: 7.5,
+        decay: 1.2,
+        zone: 'Street',
+      })
+    } else {
+      const signDownlight = new THREE.PointLight(0xdcf6fa, 1.9, 7.5, 1.2)
+      signDownlight.position.set(0, 3.15, 0.5)
+      sfGroup.add(signDownlight)
+    }
 
     // Corner Blade Sign (突き出し看板)
-    const blade = buildBladeSign('dental')
+    const blade = buildBladeSign('dental', !!lightManager)
     blade.position.set(storeW / 2 + 0.1, 2.4, 0.25)
     sfGroup.add(blade)
 
@@ -2819,9 +3049,23 @@ function buildStandardStorefront(
     sfGroup.add(signMesh)
 
     // Storefront Downlight pool illuminating pavement
-    const cleanersLight = new THREE.PointLight(0xe8f2ff, 2.0, 7.5, 1.2)
-    cleanersLight.position.set(0, 3.15, 0.6)
-    sfGroup.add(cleanersLight)
+    if (lightManager) {
+      const wPos = toWorld(0, 0.6)
+      lightManager.register({
+        x: wPos.x,
+        y: 3.15,
+        z: wPos.z,
+        color: 0xe8f2ff,
+        intensity: 2.0,
+        distance: 7.5,
+        decay: 1.2,
+        zone: 'Street',
+      })
+    } else {
+      const cleanersLight = new THREE.PointLight(0xe8f2ff, 2.0, 7.5, 1.2)
+      cleanersLight.position.set(0, 3.15, 0.6)
+      sfGroup.add(cleanersLight)
+    }
 
     // Sidewalk Accessories
     const aFrame = buildStorefrontAFrame('cleaners')
@@ -2928,9 +3172,23 @@ function buildStandardStorefront(
     lanternGroup.add(lantern)
 
     // Warm orange lantern glow
-    const lanternLight = new THREE.PointLight(0xff7722, 1.8, 5.0, 1.2)
-    lanternLight.position.set(0, 0, 0)
-    lanternGroup.add(lanternLight)
+    if (lightManager) {
+      const wPos = toWorld(1.1, 0.5)
+      lightManager.register({
+        x: wPos.x,
+        y: 2.3,
+        z: wPos.z,
+        color: 0xff7722,
+        intensity: 1.8,
+        distance: 5.0,
+        decay: 1.2,
+        zone: 'Street',
+      })
+    } else {
+      const lanternLight = new THREE.PointLight(0xff7722, 1.8, 5.0, 1.2)
+      lanternLight.position.set(0, 0, 0)
+      lanternGroup.add(lanternLight)
+    }
     sfGroup.add(lanternGroup)
 
     // Fascia Sign
@@ -2945,9 +3203,23 @@ function buildStandardStorefront(
     sfGroup.add(signMesh)
 
     // Warm tavern amber ambient downlight pool
-    const tavernLight = new THREE.PointLight(0xff9933, 2.2, 8.0, 1.2)
-    tavernLight.position.set(0, 3.1, 0.55)
-    sfGroup.add(tavernLight)
+    if (lightManager) {
+      const wPos = toWorld(0, 0.55)
+      lightManager.register({
+        x: wPos.x,
+        y: 3.1,
+        z: wPos.z,
+        color: 0xff9933,
+        intensity: 2.2,
+        distance: 8.0,
+        decay: 1.2,
+        zone: 'Street',
+      })
+    } else {
+      const tavernLight = new THREE.PointLight(0xff9933, 2.2, 8.0, 1.2)
+      tavernLight.position.set(0, 3.1, 0.55)
+      sfGroup.add(tavernLight)
+    }
 
     // Sidewalk Chalkboard A-Frame Sign
     const aFrame = buildStorefrontAFrame('izakaya')
@@ -3038,14 +3310,28 @@ function buildStandardStorefront(
     sfGroup.add(signMesh)
 
     // Projecting Blade Sign (Green Cross)
-    const blade = buildBladeSign('pharmacy')
+    const blade = buildBladeSign('pharmacy', !!lightManager)
     blade.position.set(storeW / 2 + 0.1, 2.4, 0.25)
     sfGroup.add(blade)
 
     // Medical Storefront Light pool
-    const medLight = new THREE.PointLight(0xdaf8f0, 1.9, 7.0, 1.1)
-    medLight.position.set(0, 3.15, 0.5)
-    sfGroup.add(medLight)
+    if (lightManager) {
+      const wPos = toWorld(0, 0.5)
+      lightManager.register({
+        x: wPos.x,
+        y: 3.15,
+        z: wPos.z,
+        color: 0xdaf8f0,
+        intensity: 1.9,
+        distance: 7.0,
+        decay: 1.1,
+        zone: 'Street',
+      })
+    } else {
+      const medLight = new THREE.PointLight(0xdaf8f0, 1.9, 7.0, 1.1)
+      medLight.position.set(0, 3.15, 0.5)
+      sfGroup.add(medLight)
+    }
 
     // Sidewalk Accessories
     const aFrame = buildStorefrontAFrame('pharmacy')
@@ -3125,9 +3411,23 @@ function buildStandardStorefront(
     sfGroup.add(signMesh)
 
     // Warm bookstore light pool
-    const bookLight = new THREE.PointLight(0xffe6c4, 2.0, 7.5, 1.2)
-    bookLight.position.set(0, 3.15, 0.5)
-    sfGroup.add(bookLight)
+    if (lightManager) {
+      const wPos = toWorld(0, 0.5)
+      lightManager.register({
+        x: wPos.x,
+        y: 3.15,
+        z: wPos.z,
+        color: 0xffe6c4,
+        intensity: 2.0,
+        distance: 7.5,
+        decay: 1.2,
+        zone: 'Street',
+      })
+    } else {
+      const bookLight = new THREE.PointLight(0xffe6c4, 2.0, 7.5, 1.2)
+      bookLight.position.set(0, 3.15, 0.5)
+      sfGroup.add(bookLight)
+    }
 
     // Outdoor Sidewalk Book Display Wagon (店頭ワゴンセール)
     const bookWagon = buildBookWagon()
@@ -3224,9 +3524,23 @@ function buildStandardStorefront(
     sfGroup.add(signMesh)
 
     // Warm deep amber cafe glow pool
-    const cafeLight = new THREE.PointLight(0xffaa44, 2.0, 7.5, 1.2)
-    cafeLight.position.set(0, 3.15, 0.5)
-    sfGroup.add(cafeLight)
+    if (lightManager) {
+      const wPos = toWorld(0, 0.5)
+      lightManager.register({
+        x: wPos.x,
+        y: 3.15,
+        z: wPos.z,
+        color: 0xffaa44,
+        intensity: 2.0,
+        distance: 7.5,
+        decay: 1.2,
+        zone: 'Street',
+      })
+    } else {
+      const cafeLight = new THREE.PointLight(0xffaa44, 2.0, 7.5, 1.2)
+      cafeLight.position.set(0, 3.15, 0.5)
+      sfGroup.add(cafeLight)
+    }
 
     // Sidewalk Chalkboard Easel
     const aFrame = buildStorefrontAFrame('cafe')
@@ -3297,9 +3611,23 @@ function buildStandardStorefront(
   sfGroup.add(canopy)
 
   // Recessed warm entry ceiling light
-  const entryLight = new THREE.PointLight(0xfff0db, 1.4, 5.5, 1.2)
-  entryLight.position.set(0, 2.42, 0.4)
-  sfGroup.add(entryLight)
+  if (lightManager) {
+    const wPos = toWorld(0, 0.4)
+    lightManager.register({
+      x: wPos.x,
+      y: 2.42,
+      z: wPos.z,
+      color: 0xfff0db,
+      intensity: 1.4,
+      distance: 5.5,
+      decay: 1.2,
+      zone: 'Street',
+    })
+  } else {
+    const entryLight = new THREE.PointLight(0xfff0db, 1.4, 5.5, 1.2)
+    entryLight.position.set(0, 2.42, 0.4)
+    sfGroup.add(entryLight)
+  }
 
   // Stainless umbrella stand
   const umbStand = buildUmbrellaStand()

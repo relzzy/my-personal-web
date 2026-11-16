@@ -421,4 +421,84 @@ export class AudioManager {
       osc2.stop(t + 0.36)
     }
   }
+
+  playFountainDrinkSound(): void {
+    if (!this.ctx) return
+    const now = this.ctx.currentTime
+
+    // 1. Water bubbling trickle (frequency modulated short bubbles)
+    for (let i = 0; i < 4; i++) {
+      const t = now + i * 0.08
+      const osc = this.ctx.createOscillator()
+      const gain = this.ctx.createGain()
+      const freq = 600 + Math.random() * 400
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(freq, t)
+      osc.frequency.exponentialRampToValueAtTime(freq + 250, t + 0.06)
+
+      gain.gain.setValueAtTime(0.08, t)
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06)
+
+      osc.connect(gain)
+      gain.connect(this.ctx.destination)
+      osc.start(t)
+      osc.stop(t + 0.07)
+    }
+
+    // 2. Refreshing gulp / swallow sound
+    const gulp = this.ctx.createOscillator()
+    const gulpGain = this.ctx.createGain()
+    gulp.frequency.setValueAtTime(260, now + 0.35)
+    gulp.frequency.exponentialRampToValueAtTime(110, now + 0.5)
+    gulpGain.gain.setValueAtTime(0.12, now + 0.35)
+    gulpGain.gain.exponentialRampToValueAtTime(0.001, now + 0.52)
+    gulp.connect(gulpGain)
+    gulpGain.connect(this.ctx.destination)
+    gulp.start(now + 0.35)
+    gulp.stop(now + 0.53)
+  }
+
+  playSwingCreakSound(): void {
+    if (!this.ctx) return
+    const now = this.ctx.currentTime
+
+    // Metallic chain link creak / friction squeak
+    const osc = this.ctx.createOscillator()
+    const gain = this.ctx.createGain()
+    osc.type = 'sawtooth'
+    osc.frequency.setValueAtTime(980, now)
+    osc.frequency.linearRampToValueAtTime(1420, now + 0.08)
+    osc.frequency.exponentialRampToValueAtTime(650, now + 0.22)
+
+    gain.gain.setValueAtTime(0.05, now)
+    gain.gain.linearRampToValueAtTime(0.08, now + 0.08)
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24)
+
+    osc.connect(gain)
+    gain.connect(this.ctx.destination)
+    osc.start(now)
+    osc.stop(now + 0.25)
+  }
+
+  playSpringRockerSound(): void {
+    if (!this.ctx) return
+    const now = this.ctx.currentTime
+
+    // Heavy coiled spring "boing" oscillation
+    const osc = this.ctx.createOscillator()
+    const gain = this.ctx.createGain()
+    osc.type = 'triangle'
+    osc.frequency.setValueAtTime(180, now)
+    osc.frequency.linearRampToValueAtTime(320, now + 0.06)
+    osc.frequency.exponentialRampToValueAtTime(90, now + 0.38)
+
+    gain.gain.setValueAtTime(0.16, now)
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4)
+
+    osc.connect(gain)
+    gain.connect(this.ctx.destination)
+    osc.start(now)
+    osc.stop(now + 0.42)
+  }
 }
+

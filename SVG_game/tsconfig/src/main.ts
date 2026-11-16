@@ -9,6 +9,7 @@ import { getLocationName, isRoad } from './world/Layout'
 import { buildStreets } from './world/Streets'
 import { buildBuildings } from './world/Buildings'
 import { buildProps } from './world/Props'
+import { LightManager } from './world/LightManager'
 import { AudioManager } from './world/Audio'
 import { Minimap } from './ui/Minimap'
 import { Hud } from './ui/Hud'
@@ -19,14 +20,15 @@ async function init(): Promise<void> {
   scene.background = new THREE.Color(0x0c1017)
   scene.fog = new THREE.FogExp2(0x0c1017, 0.022)
 
-  const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, 180)
+  const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, 90)
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     powerPreference: 'high-performance',
   })
   renderer.setSize(window.innerWidth, window.innerHeight)
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25))
+  const basePixelRatio = Math.min(window.devicePixelRatio || 1, 1.0)
+  renderer.setPixelRatio(basePixelRatio)
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.15
   renderer.shadowMap.enabled = true
@@ -74,9 +76,10 @@ async function init(): Promise<void> {
   player.applyCamera(camera)
 
   // 4. BUILD THE 3D WORLD
+  const lightManager = new LightManager(scene)
   buildStreets(scene, colliders)
-  const buildingsRes = buildBuildings(scene, colliders, interactions, messages, audio)
-  const propsRes = buildProps(scene, colliders, interactions, messages, player, audio)
+  const buildingsRes = buildBuildings(scene, colliders, interactions, messages, audio, lightManager)
+  const propsRes = buildProps(scene, colliders, interactions, messages, player, audio, lightManager)
 
   // 5. MINIMAP SETUP
   const mapCanvas = document.getElementById('minimap') as HTMLCanvasElement
@@ -139,11 +142,16 @@ async function init(): Promise<void> {
     }
   })
 
+  let currentScale = 1.0
+  let lowFpsDuration = 0
+  let highFpsDuration = 0
+
   // Window resize handler
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
+    renderer.setPixelRatio(basePixelRatio * currentScale)
     shadowNeedsUpdate = true
   })
 
@@ -187,6 +195,26 @@ async function init(): Promise<void> {
       if (fpsEl) {
         fpsEl.textContent = `${currentFps} FPS`
       }
+
+      // Adaptive fillrate protection for low-end hardware
+      if (currentFps < 22) {
+        lowFpsDuration++
+        highFpsDuration = 0
+        if (lowFpsDuration >= 2 && currentScale > 0.82) {
+          currentScale = 0.82
+          renderer.setPixelRatio(basePixelRatio * currentScale)
+        }
+      } else if (currentFps >= 48) {
+        highFpsDuration++
+        lowFpsDuration = 0
+        if (highFpsDuration >= 3 && currentScale < 1.0) {
+          currentScale = 1.0
+          renderer.setPixelRatio(basePixelRatio * currentScale)
+        }
+      } else {
+        lowFpsDuration = 0
+        highFpsDuration = 0
+      }
     }
 
     const dt = Math.min(clock.getDelta(), 0.05)
@@ -208,6 +236,7 @@ async function init(): Promise<void> {
 
     let surface: 'road' | 'walk' | 'tile' | 'park' = 'walk'
     const loc = getLocationName(player.x, player.z)
+    lightManager.update(dt, camera.position, loc)
     if (loc.includes('Lobby') || loc.includes('Store') || loc.includes('Ramen')) {
       surface = 'tile'
     } else if (loc.includes('Park')) {

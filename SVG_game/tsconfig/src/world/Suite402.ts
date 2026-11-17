@@ -12,6 +12,12 @@ import {
   suiteCurvedMonitorTexture,
   suiteAlarmClockTexture,
   suiteLivingRoomDoorMatTexture,
+  suiteAnimePosterCyberpunkTexture,
+  suiteAnimePosterMechaTexture,
+  suiteAnimePosterGhibliTexture,
+  suiteAnimePosterLofiTexture,
+  suiteMangaSpinesTexture,
+  suiteFlutedWoodTexture,
 } from './Materials'
 
 export interface Suite402Result {
@@ -38,9 +44,9 @@ export function buildSuite402(
   const cx = 0
   const cz = 85
   const floorY = 0.15
-  const innerW = 8.4 // East-West width (X: cx - 4.2 to cx + 4.2)
-  const innerD = 5.6 // North-South depth (Z: cz - 2.8 to cz + 2.8)
-  const wallH = 2.9
+  const innerW = 10.6 // East-West width (X: cx - 5.3 to cx + 5.3) - expanded +26%
+  const innerD = 7.4  // North-South depth (Z: cz - 3.7 to cz + 3.7) - expanded +32%
+  const wallH = 3.0   // Lofty luxury ceiling height
   const wallThick = 0.3
 
   // =========================================================================
@@ -49,26 +55,26 @@ export function buildSuite402(
   const floorTex = suiteHardwoodFloorTexture()
   const floorMat = new THREE.MeshStandardMaterial({
     map: floorTex,
-    roughness: 0.3,
+    roughness: 0.32,
     metalness: 0.08,
   })
 
   const wallMat = new THREE.MeshStandardMaterial({
-    color: 0x161c28,
-    roughness: 0.72,
-    metalness: 0.06,
+    color: 0x141a26,
+    roughness: 0.74,
+    metalness: 0.05,
   })
 
   const wallAccentMat = new THREE.MeshStandardMaterial({
-    color: 0x101520,
+    color: 0x0f1420,
     roughness: 0.65,
     metalness: 0.1,
   })
 
   const goldMat = new THREE.MeshStandardMaterial({
     color: 0xd4af37,
-    roughness: 0.28,
-    metalness: 0.88,
+    roughness: 0.26,
+    metalness: 0.9,
   })
 
   const darkWoodMat = new THREE.MeshStandardMaterial({
@@ -77,8 +83,15 @@ export function buildSuite402(
     metalness: 0.06,
   })
 
+  const flutedWoodTex = suiteFlutedWoodTexture()
+  const flutedWoodMat = new THREE.MeshStandardMaterial({
+    map: flutedWoodTex,
+    roughness: 0.45,
+    metalness: 0.08,
+  })
+
   const wardrobeWoodMat = new THREE.MeshStandardMaterial({
-    color: 0x1f1611,
+    color: 0x1b130e,
     roughness: 0.48,
     metalness: 0.05,
   })
@@ -104,15 +117,15 @@ export function buildSuite402(
   })
 
   const darkMetalMat = new THREE.MeshStandardMaterial({
-    color: 0x1e2430,
-    roughness: 0.35,
-    metalness: 0.8,
+    color: 0x1d222e,
+    roughness: 0.32,
+    metalness: 0.82,
   })
 
   const chromeMat = new THREE.MeshStandardMaterial({
     color: 0xdde4ec,
     roughness: 0.15,
-    metalness: 0.92,
+    metalness: 0.94,
   })
 
   const cyanGlowMat = new THREE.MeshBasicMaterial({
@@ -120,16 +133,39 @@ export function buildSuite402(
     toneMapped: false,
   })
 
+  const blueLedMat = new THREE.MeshBasicMaterial({
+    color: 0x3a86ff,
+    toneMapped: false,
+  })
+
   const navyDuvetMat = new THREE.MeshStandardMaterial({
-    color: 0x1b2333,
-    roughness: 0.84,
+    color: 0x182030,
+    roughness: 0.82,
     metalness: 0.03,
   })
 
   const whiteLinenMat = new THREE.MeshStandardMaterial({
-    color: 0xf3f6f9,
+    color: 0xf4f7fa,
     roughness: 0.8,
     metalness: 0.0,
+  })
+
+  const velvetNavyMat = new THREE.MeshStandardMaterial({
+    color: 0x131926,
+    roughness: 0.88,
+    metalness: 0.05,
+  })
+
+  const marbleMat = new THREE.MeshStandardMaterial({
+    color: 0xedebe8,
+    roughness: 0.22,
+    metalness: 0.1,
+  })
+
+  const plantLeafMat = new THREE.MeshStandardMaterial({
+    color: 0x2d6a4f,
+    roughness: 0.65,
+    side: THREE.DoubleSide,
   })
 
   // =========================================================================
@@ -150,8 +186,8 @@ export function buildSuite402(
   suiteGroup.add(ceilMesh)
 
   // Recessed cove tray
-  const coveTrayW = innerW - 1.6
-  const coveTrayD = innerD - 1.2
+  const coveTrayW = innerW - 1.8
+  const coveTrayD = innerD - 1.6
   const trayMesh = new THREE.Mesh(new THREE.BoxGeometry(coveTrayW, 0.06, coveTrayD), ceilingMat)
   trayMesh.position.set(cx, floorY + wallH - 0.02, cz)
   suiteGroup.add(trayMesh)
@@ -170,13 +206,14 @@ export function buildSuite402(
   }
   addBaseboard(cx, cz + innerD / 2 - 0.02, innerW, 0.04) // South baseboard
   addBaseboard(cx - innerW / 2 + 0.02, cz, 0.04, innerD) // West baseboard
-  addBaseboard(cx - 2.8, cz - innerD / 2 + 0.02, 2.8, 0.04) // North-West baseboard
-  addBaseboard(cx + 2.8, cz - innerD / 2 + 0.02, 2.8, 0.04) // North-East baseboard
-  addBaseboard(cx + innerW / 2 - 0.02, cz - 1.5, 0.04, 2.6) // East-North baseboard
+  addBaseboard(cx - 3.4, cz - innerD / 2 + 0.02, 3.8, 0.04) // North-West baseboard
+  addBaseboard(cx + 3.4, cz - innerD / 2 + 0.02, 3.8, 0.04) // North-East baseboard
+  addBaseboard(cx + innerW / 2 - 0.02, cz - 1.6, 0.04, 4.2) // East-North baseboard
+  addBaseboard(cx + innerW / 2 - 0.02, cz + 2.7, 0.04, 2.0) // East-South baseboard
 
   // 3.4 Walls & Partitions
 
-  // SOUTH WALL (Solid luxury navy with vertical gold accent fluting)
+  // SOUTH WALL (Solid luxury navy with vertical architectural gold accent fluting)
   const sWallGeo = new THREE.BoxGeometry(innerW + wallThick * 2, wallH, wallThick)
   const sWall = new THREE.Mesh(sWallGeo, wallMat)
   sWall.position.set(cx, floorY + wallH / 2, cz + innerD / 2 + wallThick / 2)
@@ -184,14 +221,14 @@ export function buildSuite402(
   sWall.receiveShadow = true
   suiteGroup.add(sWall)
 
-  // Vertical gold accent stripes along the south accent wall
-  for (let sx = -3.2; sx <= 3.2; sx += 1.6) {
-    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.04, wallH - 0.4, 0.02), goldMat)
+  // Vertical gold accent stripes along south accent wall
+  for (let sx = -4.5; sx <= 4.5; sx += 1.8) {
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.04, wallH - 0.35, 0.02), goldMat)
     stripe.position.set(cx + sx, floorY + wallH / 2, cz + innerD / 2 - 0.01)
     suiteGroup.add(stripe)
   }
 
-  // WEST WALL (Behind bed & desk)
+  // WEST WALL (Battlestation & Headboard wall)
   const wWallGeo = new THREE.BoxGeometry(wallThick, wallH, innerD)
   const wWall = new THREE.Mesh(wWallGeo, wallAccentMat)
   wWall.position.set(cx - innerW / 2 - wallThick / 2, floorY + wallH / 2, cz)
@@ -199,37 +236,37 @@ export function buildSuite402(
   wWall.receiveShadow = true
   suiteGroup.add(wWall)
 
-  // EAST WALL (With door opening leading to Living Room / Elevator)
+  // EAST WALL (With entrance sliding pocket door leading to Corridor 4F)
   // North section of East wall
-  const eWallNGeo = new THREE.BoxGeometry(wallThick, wallH, 2.6)
+  const eWallNGeo = new THREE.BoxGeometry(wallThick, wallH, 4.1)
   const eWallN = new THREE.Mesh(eWallNGeo, wallMat)
-  eWallN.position.set(cx + innerW / 2 + wallThick / 2, floorY + wallH / 2, cz - 1.5)
+  eWallN.position.set(cx + innerW / 2 + wallThick / 2, floorY + wallH / 2, cz - 1.65)
   suiteGroup.add(eWallN)
 
   // South section of East wall
-  const eWallSGeo = new THREE.BoxGeometry(wallThick, wallH, 1.2)
+  const eWallSGeo = new THREE.BoxGeometry(wallThick, wallH, 1.7)
   const eWallS = new THREE.Mesh(eWallSGeo, wallMat)
-  eWallS.position.set(cx + innerW / 2 + wallThick / 2, floorY + wallH / 2, cz + 2.2)
+  eWallS.position.set(cx + innerW / 2 + wallThick / 2, floorY + wallH / 2, cz + 2.85)
   suiteGroup.add(eWallS)
 
   // Header above East door opening
-  const eDoorH = 2.3
-  const eDoorTopGeo = new THREE.BoxGeometry(wallThick, wallH - eDoorH, 1.8)
+  const eDoorH = 2.35
+  const eDoorTopGeo = new THREE.BoxGeometry(wallThick, wallH - eDoorH, 1.6)
   const eDoorTop = new THREE.Mesh(eDoorTopGeo, wallMat)
-  eDoorTop.position.set(cx + innerW / 2 + wallThick / 2, floorY + eDoorH + (wallH - eDoorH) / 2, cz + 0.7)
+  eDoorTop.position.set(cx + innerW / 2 + wallThick / 2, floorY + eDoorH + (wallH - eDoorH) / 2, cz + 1.2)
   suiteGroup.add(eDoorTop)
 
   // Sliding pocket door slab in walnut with gold hardware
-  const eDoorGeo = new THREE.BoxGeometry(0.06, eDoorH, 1.4)
+  const eDoorGeo = new THREE.BoxGeometry(0.06, eDoorH, 1.5)
   const eDoorMesh = new THREE.Mesh(eDoorGeo, darkWoodMat)
-  eDoorMesh.position.set(cx + innerW / 2 + 0.04, floorY + eDoorH / 2, cz + 0.8)
+  eDoorMesh.position.set(cx + innerW / 2 + 0.04, floorY + eDoorH / 2, cz + 1.25)
   suiteGroup.add(eDoorMesh)
 
-  const eDoorHandle = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.4, 0.04), goldMat)
-  eDoorHandle.position.set(cx + innerW / 2 - 0.02, floorY + 1.1, cz + 0.3)
+  const eDoorHandle = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.45, 0.04), goldMat)
+  eDoorHandle.position.set(cx + innerW / 2 - 0.02, floorY + 1.15, cz + 0.75)
   suiteGroup.add(eDoorHandle)
 
-  // Inlaid "LIVING ROOM" Threshold Door Mat
+  // Inlaid "LIVING ROOM / SUITE 402" Door Mat
   const matTex = suiteLivingRoomDoorMatTexture()
   const matMat = new THREE.MeshStandardMaterial({
     map: matTex,
@@ -238,57 +275,57 @@ export function buildSuite402(
   })
   const matMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.6), matMat)
   matMesh.rotation.x = -Math.PI / 2
-  matMesh.position.set(cx + innerW / 2 - 0.55, floorY + 0.052, cz + 0.7)
+  matMesh.position.set(cx + innerW / 2 - 0.55, floorY + 0.052, cz + 1.2)
   suiteGroup.add(matMesh)
 
-  // NORTH WALL (With Balcony Glass Sliding Doors)
+  // NORTH WALL (With Grand Balcony Double Glass Sliding Doors)
   // Left wall section
-  const nWallLGeo = new THREE.BoxGeometry(2.8, wallH, wallThick)
+  const nWallLGeo = new THREE.BoxGeometry(3.8, wallH, wallThick)
   const nWallL = new THREE.Mesh(nWallLGeo, wallMat)
-  nWallL.position.set(cx - 2.8, floorY + wallH / 2, cz - innerD / 2 - wallThick / 2)
+  nWallL.position.set(cx - 3.4, floorY + wallH / 2, cz - innerD / 2 - wallThick / 2)
   suiteGroup.add(nWallL)
 
   // Right wall section
-  const nWallRGeo = new THREE.BoxGeometry(2.8, wallH, wallThick)
+  const nWallRGeo = new THREE.BoxGeometry(3.8, wallH, wallThick)
   const nWallR = new THREE.Mesh(nWallRGeo, wallMat)
-  nWallR.position.set(cx + 2.8, floorY + wallH / 2, cz - innerD / 2 - wallThick / 2)
+  nWallR.position.set(cx + 3.4, floorY + wallH / 2, cz - innerD / 2 - wallThick / 2)
   suiteGroup.add(nWallR)
 
   // Header above balcony doors
-  const bDoorH = 2.45
-  const nDoorTopGeo = new THREE.BoxGeometry(2.8, wallH - bDoorH, wallThick)
+  const bDoorH = 2.5
+  const nDoorTopGeo = new THREE.BoxGeometry(3.0, wallH - bDoorH, wallThick)
   const nDoorTop = new THREE.Mesh(nDoorTopGeo, wallMat)
   nDoorTop.position.set(cx, floorY + bDoorH + (wallH - bDoorH) / 2, cz - innerD / 2 - wallThick / 2)
   suiteGroup.add(nDoorTop)
 
   // Balcony Glass Doors Frame (Gold & Steel Trim)
-  const bFrameOuter = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.06, 0.08), goldMat)
+  const bFrameOuter = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.06, 0.08), goldMat)
   bFrameOuter.position.set(cx, floorY + bDoorH, cz - innerD / 2)
   const bFrameDivider = new THREE.Mesh(new THREE.BoxGeometry(0.06, bDoorH, 0.08), goldMat)
   bFrameDivider.position.set(cx, floorY + bDoorH / 2, cz - innerD / 2)
   suiteGroup.add(bFrameOuter, bFrameDivider)
 
   // Left & Right Glass Door Panels
-  const glassPanelGeo = new THREE.BoxGeometry(1.35, bDoorH - 0.1, 0.03)
+  const glassPanelGeo = new THREE.BoxGeometry(1.45, bDoorH - 0.08, 0.03)
   const glassLeft = new THREE.Mesh(glassPanelGeo, glassMat)
-  glassLeft.position.set(cx - 0.7, floorY + bDoorH / 2, cz - innerD / 2)
+  glassLeft.position.set(cx - 0.73, floorY + bDoorH / 2, cz - innerD / 2)
   const glassRight = new THREE.Mesh(glassPanelGeo, glassMat)
-  glassRight.position.set(cx + 0.7, floorY + bDoorH / 2, cz - innerD / 2 + 0.02)
+  glassRight.position.set(cx + 0.73, floorY + bDoorH / 2, cz - innerD / 2 + 0.02)
   suiteGroup.add(glassLeft, glassRight)
 
-  // Glass door vertical handles
-  const handleGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.6, 8)
+  // Glass door handles
+  const handleGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.65, 8)
   const handleL = new THREE.Mesh(handleGeo, goldMat)
-  handleL.position.set(cx - 0.1, floorY + 1.15, cz - innerD / 2 + 0.03)
+  handleL.position.set(cx - 0.1, floorY + 1.2, cz - innerD / 2 + 0.03)
   const handleR = new THREE.Mesh(handleGeo, goldMat)
-  handleR.position.set(cx + 0.1, floorY + 1.15, cz - innerD / 2 + 0.05)
+  handleR.position.set(cx + 0.1, floorY + 1.2, cz - innerD / 2 + 0.05)
   suiteGroup.add(handleL, handleR)
 
   // =========================================================================
   // 4. EXTERIOR BALCONY & TOKYO MIDNIGHT SKYLINE
   // =========================================================================
-  const balconyD = 2.4
-  const balconyW = 3.6
+  const balconyD = 2.6
+  const balconyW = 4.8
   const balconyZ = cz - innerD / 2 - balconyD / 2
 
   // Balcony Deck Floor
@@ -298,7 +335,7 @@ export function buildSuite402(
   suiteGroup.add(bDeck)
 
   // Balcony Safety Glass Railing
-  const railH = 1.1
+  const railH = 1.15
   const bRailFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW, railH, 0.04), glassMat)
   bRailFront.position.set(cx, floorY + railH / 2, balconyZ - balconyD / 2)
   const bRailL = new THREE.Mesh(new THREE.BoxGeometry(0.04, railH, balconyD), glassMat)
@@ -349,7 +386,7 @@ export function buildSuite402(
     tMesh.position.set(cx + t.x, floorY + t.h / 2 - 4, cz + t.z)
     skyGroup.add(tMesh)
 
-    // Window lights grid (procedural dots)
+    // Window lights grid
     const winCols = 5
     const winRows = 8
     for (let r = 0; r < winRows; r++) {
@@ -374,32 +411,34 @@ export function buildSuite402(
   suiteGroup.add(skyGroup)
 
   // =========================================================================
-  // 5. PC GAMING & CYBER WORKSTATION (NORTH-WEST CORNER)
+  // 5. CYBER GAMING WORKSTATION (NORTH-WEST WALL)
+  // [ERGONOMICS FIX]: Desk faces West against the West wall. The chair faces
+  // West towards the screen; its backrest faces East into the room, NEVER into the bed.
   // =========================================================================
-  const deskX = cx - 2.5
-  const deskZ = cz - 1.5
-  const deskW = 1.9
-  const deskD = 1.2
+  const deskX = cx - 4.8    // Pushed against West wall
+  const deskZ = cz - 2.3    // North-West zone (82.7)
+  const deskW = 0.9        // Along X (depth into room)
+  const deskL = 2.0        // Along Z (width of desk)
   const deskH = 0.76
 
   // 5.1 Walnut Desk Top with Gold Perimeter Inlay
-  const deskTopGeo = new THREE.BoxGeometry(deskW, 0.05, deskD)
+  const deskTopGeo = new THREE.BoxGeometry(deskW, 0.05, deskL)
   const deskTop = new THREE.Mesh(deskTopGeo, darkWoodMat)
   deskTop.position.set(deskX, floorY + deskH - 0.025, deskZ)
   deskTop.castShadow = true
   deskTop.receiveShadow = true
 
-  const deskGoldTrim = new THREE.Mesh(new THREE.BoxGeometry(deskW + 0.02, 0.02, deskD + 0.02), goldMat)
+  const deskGoldTrim = new THREE.Mesh(new THREE.BoxGeometry(deskW + 0.02, 0.02, deskL + 0.02), goldMat)
   deskGoldTrim.position.set(deskX, floorY + deskH - 0.04, deskZ)
   suiteGroup.add(deskTop, deskGoldTrim)
 
   // Heavy square legs
   const legGeo = new THREE.BoxGeometry(0.07, deskH, 0.07)
   const legPositions = [
-    { x: deskX - deskW / 2 + 0.06, z: deskZ - deskD / 2 + 0.06 },
-    { x: deskX + deskW / 2 - 0.06, z: deskZ - deskD / 2 + 0.06 },
-    { x: deskX - deskW / 2 + 0.06, z: deskZ + deskD / 2 - 0.06 },
-    { x: deskX + deskW / 2 - 0.06, z: deskZ + deskD / 2 - 0.06 },
+    { x: deskX - deskW / 2 + 0.06, z: deskZ - deskL / 2 + 0.06 },
+    { x: deskX + deskW / 2 - 0.06, z: deskZ - deskL / 2 + 0.06 },
+    { x: deskX - deskW / 2 + 0.06, z: deskZ + deskL / 2 - 0.06 },
+    { x: deskX + deskW / 2 - 0.06, z: deskZ + deskL / 2 - 0.06 },
   ]
   for (const lp of legPositions) {
     const leg = new THREE.Mesh(legGeo, darkMetalMat)
@@ -407,111 +446,133 @@ export function buildSuite402(
     suiteGroup.add(leg)
   }
 
-  // Leather Desk Mat
+  // Extended Leather Desk Mat / RGB Mousepad
   const padMat = new THREE.MeshStandardMaterial({ color: 0x111620, roughness: 0.88 })
-  const padMesh = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.008, 0.75), padMat)
-  padMesh.position.set(deskX + 0.05, floorY + deskH + 0.004, deskZ)
+  const padMesh = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.008, 1.4), padMat)
+  padMesh.position.set(deskX + 0.06, floorY + deskH + 0.004, deskZ)
   suiteGroup.add(padMesh)
 
-  // 5.2 Curved Ultra-Wide Monitor (Facing South-East towards chair)
+  // 5.2 Curved Ultra-Wide Gaming Monitor (Facing East towards user)
   const monitorTex = suiteCurvedMonitorTexture()
   const monMat = new THREE.MeshBasicMaterial({ map: monitorTex, toneMapped: false })
 
   // Monitor Stand
   const monStandBase = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.02, 16), darkMetalMat)
-  monStandBase.position.set(deskX, floorY + deskH + 0.01, deskZ - 0.35)
-  const monStandStem = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.32, 0.06), darkMetalMat)
-  monStandStem.position.set(deskX, floorY + deskH + 0.17, deskZ - 0.35)
+  monStandBase.position.set(deskX - 0.25, floorY + deskH + 0.01, deskZ)
+  const monStandStem = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.35, 0.06), darkMetalMat)
+  monStandStem.position.set(deskX - 0.25, floorY + deskH + 0.18, deskZ)
   suiteGroup.add(monStandBase, monStandStem)
 
-  // Monitor Curved Display Panel (modeled as 3 angled segments for sleek curvature)
+  // Curved display segments (facing +X East)
   const monCenter = new THREE.Mesh(new THREE.PlaneGeometry(0.65, 0.38), monMat)
-  monCenter.position.set(deskX, floorY + deskH + 0.35, deskZ - 0.24)
+  monCenter.rotation.y = Math.PI / 2
+  monCenter.position.set(deskX - 0.16, floorY + deskH + 0.38, deskZ)
 
   const monWingGeo = new THREE.PlaneGeometry(0.24, 0.38)
   const monWingL = new THREE.Mesh(monWingGeo, monMat)
-  monWingL.position.set(deskX - 0.42, floorY + deskH + 0.35, deskZ - 0.21)
-  monWingL.rotation.y = 0.22
+  monWingL.rotation.y = Math.PI / 2 + 0.22
+  monWingL.position.set(deskX - 0.13, floorY + deskH + 0.38, deskZ - 0.42)
 
   const monWingR = new THREE.Mesh(monWingGeo, monMat)
-  monWingR.position.set(deskX + 0.42, floorY + deskH + 0.35, deskZ - 0.21)
-  monWingR.rotation.y = -0.22
+  monWingR.rotation.y = Math.PI / 2 - 0.22
+  monWingR.position.set(deskX - 0.13, floorY + deskH + 0.38, deskZ + 0.42)
 
   // Monitor Back Enclosure
-  const monBack = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.4, 0.04), darkMetalMat)
-  monBack.position.set(deskX, floorY + deskH + 0.35, deskZ - 0.26)
+  const monBack = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.4, 1.1), darkMetalMat)
+  monBack.position.set(deskX - 0.18, floorY + deskH + 0.38, deskZ)
 
   // Cyan glowing light strip behind the monitor
-  const monGlowStrip = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.02, 0.02), cyanGlowMat)
-  monGlowStrip.position.set(deskX, floorY + deskH + 0.35, deskZ - 0.28)
+  const monGlowStrip = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 0.9), cyanGlowMat)
+  monGlowStrip.position.set(deskX - 0.2, floorY + deskH + 0.38, deskZ)
   suiteGroup.add(monCenter, monWingL, monWingR, monBack, monGlowStrip)
 
-  // 5.3 High-End Gaming PC Chassis
-  const pcX = deskX - 0.65
-  const pcZ = deskZ - 0.1
-  const pcW = 0.24
-  const pcD = 0.52
+  // 5.3 Desktop Studio Audio Speakers
+  const speakerGeo = new THREE.BoxGeometry(0.14, 0.22, 0.12)
+  const spkL = new THREE.Mesh(speakerGeo, darkMetalMat)
+  spkL.position.set(deskX - 0.12, floorY + deskH + 0.11, deskZ - 0.65)
+  spkL.rotation.y = 0.25
+  const spkR = new THREE.Mesh(speakerGeo, darkMetalMat)
+  spkR.position.set(deskX - 0.12, floorY + deskH + 0.11, deskZ + 0.65)
+  spkR.rotation.y = -0.25
+
+  // Gold driver cones on speakers
+  const coneGeo = new THREE.CircleGeometry(0.035, 12)
+  const coneL = new THREE.Mesh(coneGeo, goldMat)
+  coneL.rotation.y = Math.PI / 2 + 0.25
+  coneL.position.set(deskX - 0.05, floorY + deskH + 0.1, deskZ - 0.63)
+  const coneR = new THREE.Mesh(coneGeo, goldMat)
+  coneR.rotation.y = Math.PI / 2 - 0.25
+  coneR.position.set(deskX - 0.05, floorY + deskH + 0.1, deskZ + 0.63)
+  suiteGroup.add(spkL, spkR, coneL, coneR)
+
+  // 5.4 High-End Gaming PC Chassis (North corner of desk)
+  const pcX = deskX - 0.05
+  const pcZ = deskZ - 0.78
+  const pcW = 0.52 // along X
+  const pcD = 0.24 // along Z
   const pcH = 0.46
 
   const pcCase = new THREE.Mesh(new THREE.BoxGeometry(pcW, pcH, pcD), darkMetalMat)
   pcCase.position.set(pcX, floorY + deskH + pcH / 2, pcZ)
 
-  // Tempered glass side panel
-  const pcGlass = new THREE.Mesh(new THREE.PlaneGeometry(pcD - 0.04, pcH - 0.04), glassMat)
-  pcGlass.rotation.y = Math.PI / 2
-  pcGlass.position.set(pcX + pcW / 2 + 0.005, floorY + deskH + pcH / 2, pcZ)
+  // Tempered glass side panel facing South (+Z)
+  const pcGlass = new THREE.Mesh(new THREE.PlaneGeometry(pcW - 0.04, pcH - 0.04), glassMat)
+  pcGlass.position.set(pcX, floorY + deskH + pcH / 2, pcZ + pcD / 2 + 0.005)
 
   // Internal glowing components (GPU, RAM, dual LED front intake fans)
-  const pcGpu = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.08, 0.28), cyanGlowMat)
-  pcGpu.position.set(pcX + 0.02, floorY + deskH + 0.18, pcZ - 0.04)
+  const pcGpu = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.08, 0.04), cyanGlowMat)
+  pcGpu.position.set(pcX - 0.04, floorY + deskH + 0.18, pcZ + 0.02)
 
   const fanGeo = new THREE.RingGeometry(0.045, 0.065, 16)
   const fan1 = new THREE.Mesh(fanGeo, cyanGlowMat)
-  fan1.position.set(pcX, floorY + deskH + 0.15, pcZ + pcD / 2 + 0.005)
+  fan1.rotation.y = Math.PI / 2
+  fan1.position.set(pcX + pcW / 2 + 0.005, floorY + deskH + 0.15, pcZ)
   const fan2 = new THREE.Mesh(fanGeo, cyanGlowMat)
-  fan2.position.set(pcX, floorY + deskH + 0.32, pcZ + pcD / 2 + 0.005)
+  fan2.rotation.y = Math.PI / 2
+  fan2.position.set(pcX + pcW / 2 + 0.005, floorY + deskH + 0.32, pcZ)
 
   // Power LED button
   const pwrBtn = new THREE.Mesh(new THREE.CircleGeometry(0.012, 12), cyanGlowMat)
   pwrBtn.rotation.x = -Math.PI / 2
-  pwrBtn.position.set(pcX, floorY + deskH + pcH + 0.002, pcZ + pcD / 2 - 0.04)
+  pwrBtn.position.set(pcX + pcW / 2 - 0.04, floorY + deskH + pcH + 0.002, pcZ)
   suiteGroup.add(pcCase, pcGlass, pcGpu, fan1, fan2, pwrBtn)
 
-  // 5.4 Mechanical Keyboard & Mouse
-  const kbGeo = new THREE.BoxGeometry(0.44, 0.015, 0.16)
+  // 5.5 Mechanical Keyboard & Gaming Mouse
+  const kbGeo = new THREE.BoxGeometry(0.16, 0.015, 0.44)
   const kbMat = new THREE.MeshStandardMaterial({ color: 0x1b202c, roughness: 0.4 })
   const kb = new THREE.Mesh(kbGeo, kbMat)
-  kb.position.set(deskX, floorY + deskH + 0.015, deskZ + 0.06)
+  kb.position.set(deskX + 0.08, floorY + deskH + 0.015, deskZ)
 
   // Cyan key glow strip
-  const kbGlow = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.004, 0.14), cyanGlowMat)
-  kbGlow.position.set(deskX, floorY + deskH + 0.024, deskZ + 0.06)
+  const kbGlow = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.004, 0.42), cyanGlowMat)
+  kbGlow.position.set(deskX + 0.08, floorY + deskH + 0.024, deskZ)
 
   // Mouse with RGB scroll wheel
-  const mouseGeo = new THREE.BoxGeometry(0.07, 0.025, 0.12)
+  const mouseGeo = new THREE.BoxGeometry(0.12, 0.025, 0.07)
   const mouse = new THREE.Mesh(mouseGeo, darkMetalMat)
-  mouse.position.set(deskX + 0.36, floorY + deskH + 0.018, deskZ + 0.06)
+  mouse.position.set(deskX + 0.08, floorY + deskH + 0.018, deskZ + 0.35)
 
   const wheelGeo = new THREE.CylinderGeometry(0.006, 0.006, 0.018, 8)
-  wheelGeo.rotateZ(Math.PI / 2)
   const wheel = new THREE.Mesh(wheelGeo, cyanGlowMat)
-  wheel.position.set(deskX + 0.36, floorY + deskH + 0.032, deskZ + 0.02)
+  wheel.position.set(deskX + 0.04, floorY + deskH + 0.032, deskZ + 0.35)
   suiteGroup.add(kb, kbGlow, mouse, wheel)
 
-  // 5.5 Ceramic Coffee Mug
+  // 5.6 Ceramic Coffee Mug
   const mugGeo = new THREE.CylinderGeometry(0.04, 0.038, 0.09, 16)
   const mug = new THREE.Mesh(mugGeo, whiteLinenMat)
-  mug.position.set(deskX - 0.35, floorY + deskH + 0.045, deskZ + 0.15)
+  mug.position.set(deskX + 0.15, floorY + deskH + 0.045, deskZ - 0.38)
 
   const coffeeGeo = new THREE.CircleGeometry(0.036, 16)
   const coffee = new THREE.Mesh(coffeeGeo, new THREE.MeshBasicMaterial({ color: 0x2e1910 }))
   coffee.rotation.x = -Math.PI / 2
-  coffee.position.set(deskX - 0.35, floorY + deskH + 0.088, deskZ + 0.15)
+  coffee.position.set(deskX + 0.15, floorY + deskH + 0.088, deskZ - 0.38)
   suiteGroup.add(mug, coffee)
 
-  // 5.6 Ergonomic Swivel Mesh Office Chair
-  const chairX = deskX
-  const chairZ = deskZ + 0.75
+  // 5.7 Ergonomic Swivel Mesh Office Chair
+  // [PROPER ERGONOMIC ORIENTATION]: Faces WEST into the desk/monitor.
+  // Backrest is on the EAST (+X) side facing the open room.
+  const chairX = deskX + 0.85 // 82.7 in Z, -3.95 in X
+  const chairZ = deskZ
 
   const chairBase = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.38, 8), chromeMat)
   chairBase.position.set(chairX, floorY + 0.19, chairZ)
@@ -527,30 +588,30 @@ export function buildSuite402(
   }
 
   // Contoured mesh seat
-  const seatGeo = new THREE.BoxGeometry(0.52, 0.07, 0.5)
+  const seatGeo = new THREE.BoxGeometry(0.5, 0.07, 0.52)
   const seat = new THREE.Mesh(seatGeo, new THREE.MeshStandardMaterial({ color: 0x161a22, roughness: 0.85 }))
   seat.position.set(chairX, floorY + 0.44, chairZ)
 
-  // High curved mesh backrest
-  const backGeo = new THREE.BoxGeometry(0.48, 0.65, 0.04)
+  // High curved mesh backrest on East (+X) side facing open room
+  const backGeo = new THREE.BoxGeometry(0.04, 0.65, 0.48)
   const back = new THREE.Mesh(backGeo, new THREE.MeshStandardMaterial({ color: 0x1d222e, roughness: 0.9 }))
-  back.position.set(chairX, floorY + 0.82, chairZ + 0.24)
-  back.rotation.x = -0.1
+  back.position.set(chairX + 0.24, floorY + 0.82, chairZ)
+  back.rotation.z = -0.1 // Ergonomic lean
 
-  // Armrests
-  const armL = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.22, 0.28), darkMetalMat)
-  armL.position.set(chairX - 0.28, floorY + 0.56, chairZ + 0.05)
-  const armR = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.22, 0.28), darkMetalMat)
-  armR.position.set(chairX + 0.28, floorY + 0.56, chairZ + 0.05)
-  suiteGroup.add(chairBase, seat, back, armL, armR)
+  // Armrests (North & South)
+  const armN = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.22, 0.06), darkMetalMat)
+  armN.position.set(chairX + 0.05, floorY + 0.56, chairZ - 0.28)
+  const armS = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.22, 0.06), darkMetalMat)
+  armS.position.set(chairX + 0.05, floorY + 0.56, chairZ + 0.28)
+  suiteGroup.add(chairBase, seat, back, armN, armS)
 
   // =========================================================================
-  // 6. MASTER PLATFORM BED (WEST WALL)
+  // 6. MASTER PLATFORM BED & DUAL NIGHTSTANDS (SOUTH-WEST)
   // =========================================================================
-  const bedX = cx - 2.2
-  const bedZ = cz + 0.4
-  const bedW = 2.4 // Along X
-  const bedD = 1.9 // Along Z
+  const bedX = cx - 4.1    // West wall zone
+  const bedZ = cz + 1.2    // South-West zone (86.2)
+  const bedW = 2.3         // Along X (extends from West wall towards center)
+  const bedD = 2.0         // Along Z
 
   // Recessed floating shadow base
   const bedBase = new THREE.Mesh(new THREE.BoxGeometry(bedW - 0.2, 0.16, bedD - 0.2), darkMetalMat)
@@ -565,15 +626,19 @@ export function buildSuite402(
   bedGoldBorder.position.set(bedX, floorY + 0.34, bedZ)
   suiteGroup.add(bedBase, bedFrame, bedGoldBorder)
 
-  // Headboard against West wall
-  const hbGeo = new THREE.BoxGeometry(0.12, 1.25, bedD + 0.2)
+  // Grand Headboard against West wall
+  const hbGeo = new THREE.BoxGeometry(0.12, 1.35, bedD + 0.3)
   const headboard = new THREE.Mesh(hbGeo, darkWoodMat)
-  headboard.position.set(cx - innerW / 2 + 0.06, floorY + 0.72, bedZ)
+  headboard.position.set(cx - innerW / 2 + 0.06, floorY + 0.76, bedZ)
 
-  // Gold inlay strip along headboard
-  const hbGold = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.03, bedD + 0.16), goldMat)
-  hbGold.position.set(cx - innerW / 2 + 0.13, floorY + 0.95, bedZ)
-  suiteGroup.add(headboard, hbGold)
+  // Fluted wood headboard insert
+  const hbFlute = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1.1, bedD + 0.15), flutedWoodMat)
+  hbFlute.position.set(cx - innerW / 2 + 0.12, floorY + 0.76, bedZ)
+
+  // Gold inlay frame around headboard
+  const hbGold = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.03, bedD + 0.25), goldMat)
+  hbGold.position.set(cx - innerW / 2 + 0.14, floorY + 1.28, bedZ)
+  suiteGroup.add(headboard, hbFlute, hbGold)
 
   // Mattress & Deep Midnight Navy Duvet
   const duvetGeo = new THREE.BoxGeometry(bedW - 0.12, 0.24, bedD - 0.08)
@@ -587,85 +652,428 @@ export function buildSuite402(
   cuff.position.set(bedX - 0.75, floorY + 0.55, bedZ)
 
   // Navy Bed Runner with Gold Piping (Foot of bed)
-  const runnerMat = new THREE.MeshStandardMaterial({ color: 0x111622, roughness: 0.78 })
+  const runnerMat = new THREE.MeshStandardMaterial({ color: 0x101522, roughness: 0.78 })
   const runnerGeo = new THREE.BoxGeometry(0.48, 0.04, bedD - 0.06)
   const runner = new THREE.Mesh(runnerGeo, runnerMat)
-  runner.position.set(bedX + 0.8, floorY + 0.58, bedZ)
+  runner.position.set(bedX + 0.75, floorY + 0.58, bedZ)
 
   const runnerGold1 = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.015, bedD - 0.06), goldMat)
-  runnerGold1.position.set(bedX + 0.56, floorY + 0.6, bedZ)
+  runnerGold1.position.set(bedX + 0.51, floorY + 0.6, bedZ)
   const runnerGold2 = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.015, bedD - 0.06), goldMat)
-  runnerGold2.position.set(bedX + 1.04, floorY + 0.6, bedZ)
+  runnerGold2.position.set(bedX + 0.99, floorY + 0.6, bedZ)
   suiteGroup.add(duvet, cuff, runner, runnerGold1, runnerGold2)
 
-  // Two Plump White Pillows
-  const pillowGeo = new THREE.BoxGeometry(0.44, 0.15, 0.72)
+  // 4 Plush Pillows (2 white linen, 2 navy accent)
+  const pillowGeo = new THREE.BoxGeometry(0.42, 0.14, 0.7)
   const pillow1 = new THREE.Mesh(pillowGeo, whiteLinenMat)
-  pillow1.position.set(bedX - 0.85, floorY + 0.58, bedZ - 0.42)
-  pillow1.rotation.y = 0.05
-
+  pillow1.position.set(bedX - 0.82, floorY + 0.58, bedZ - 0.45)
   const pillow2 = new THREE.Mesh(pillowGeo, whiteLinenMat)
-  pillow2.position.set(bedX - 0.85, floorY + 0.58, bedZ + 0.42)
-  pillow2.rotation.y = -0.05
-  suiteGroup.add(pillow1, pillow2)
+  pillow2.position.set(bedX - 0.82, floorY + 0.58, bedZ + 0.45)
 
-  // =========================================================================
-  // 7. BEDSIDE NIGHTSTAND & DESIGNER WARM LAMP (SOUTH-WEST)
-  // =========================================================================
-  const nsX = cx - 3.4
-  const nsZ = cz + 2.1
-  const nsW = 0.82
-  const nsD = 0.72
+  const pillowAccGeo = new THREE.BoxGeometry(0.32, 0.12, 0.52)
+  const pAcc1 = new THREE.Mesh(pillowAccGeo, velvetNavyMat)
+  pAcc1.position.set(bedX - 0.55, floorY + 0.59, bedZ - 0.45)
+  const pAcc2 = new THREE.Mesh(pillowAccGeo, velvetNavyMat)
+  pAcc2.position.set(bedX - 0.55, floorY + 0.59, bedZ + 0.45)
+  suiteGroup.add(pillow1, pillow2, pAcc1, pAcc2)
+
+  // 6.1 DUAL SYMMETRICAL NIGHTSTANDS
+  const nsW = 0.75 // along X
+  const nsD = 0.65 // along Z
   const nsH = 0.54
-
-  // Nightstand Cabinet
-  const nsGeo = new THREE.BoxGeometry(nsW, nsH, nsD)
-  const nsMesh = new THREE.Mesh(nsGeo, darkWoodMat)
-  nsMesh.position.set(nsX, floorY + nsH / 2, nsZ)
-
-  const nsGold = new THREE.Mesh(new THREE.BoxGeometry(nsW + 0.01, 0.015, nsD + 0.01), goldMat)
-  nsGold.position.set(nsX, floorY + nsH - 0.01, nsZ)
-
-  const nsDrawerHandle = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.025, 0.32), goldMat)
-  nsDrawerHandle.position.set(nsX + nsW / 2 + 0.01, floorY + nsH * 0.65, nsZ)
-  suiteGroup.add(nsMesh, nsGold, nsDrawerHandle)
-
-  // Designer Spherical Table Lamp
-  const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.02, 16), goldMat)
-  lampBase.position.set(nsX, floorY + nsH + 0.01, nsZ - 0.15)
-
-  const lampStem = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.22, 8), goldMat)
-  lampStem.position.set(nsX, floorY + nsH + 0.12, nsZ - 0.15)
-
   const lampGlobeMat = new THREE.MeshBasicMaterial({ color: 0xfffae0, toneMapped: false })
-  const lampGlobe = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), lampGlobeMat)
-  lampGlobe.position.set(nsX, floorY + nsH + 0.28, nsZ - 0.15)
-  suiteGroup.add(lampBase, lampStem, lampGlobe)
 
-  // Digital LED Alarm Clock ("11:42")
+  const createNightstand = (nsZPos: number) => {
+    const nsMesh = new THREE.Mesh(new THREE.BoxGeometry(nsW, nsH, nsD), darkWoodMat)
+    nsMesh.position.set(cx - innerW / 2 + nsW / 2 + 0.05, floorY + nsH / 2, nsZPos)
+
+    const nsGold = new THREE.Mesh(new THREE.BoxGeometry(nsW + 0.01, 0.015, nsD + 0.01), goldMat)
+    nsGold.position.set(cx - innerW / 2 + nsW / 2 + 0.05, floorY + nsH - 0.01, nsZPos)
+
+    const nsDrawerHandle = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.025, 0.28), goldMat)
+    nsDrawerHandle.position.set(cx - innerW / 2 + nsW + 0.055, floorY + nsH * 0.65, nsZPos)
+    suiteGroup.add(nsMesh, nsGold, nsDrawerHandle)
+
+    // Designer Spherical Table Lamp
+    const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.02, 16), goldMat)
+    lampBase.position.set(cx - innerW / 2 + nsW / 2 + 0.05, floorY + nsH + 0.01, nsZPos)
+
+    const lampStem = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.22, 8), goldMat)
+    lampStem.position.set(cx - innerW / 2 + nsW / 2 + 0.05, floorY + nsH + 0.12, nsZPos)
+
+    const lampGlobe = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), lampGlobeMat)
+    lampGlobe.position.set(cx - innerW / 2 + nsW / 2 + 0.05, floorY + nsH + 0.28, nsZPos)
+    suiteGroup.add(lampBase, lampStem, lampGlobe)
+
+    return { lampGlobe, posX: cx - innerW / 2 + nsW / 2 + 0.05, posZ: nsZPos }
+  }
+
+  // North Nightstand (Z: 84.4)
+  const nsNorth = createNightstand(bedZ - bedD / 2 - nsD / 2 - 0.15)
+  // South Nightstand (Z: 88.0)
+  const nsSouth = createNightstand(bedZ + bedD / 2 + nsD / 2 + 0.15)
+
+  // Digital LED Alarm Clock on North Nightstand
   const clockTex = suiteAlarmClockTexture()
   const clockMat = new THREE.MeshBasicMaterial({ map: clockTex, toneMapped: false })
-  const clockCase = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.09, 0.12), darkMetalMat)
-  clockCase.position.set(nsX + 0.18, floorY + nsH + 0.045, nsZ + 0.16)
+  const clockCase = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, 0.1), darkMetalMat)
+  clockCase.position.set(nsNorth.posX + 0.12, floorY + nsH + 0.04, nsNorth.posZ + 0.14)
   clockCase.rotation.y = -0.35
 
-  const clockScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.08), clockMat)
-  clockScreen.position.set(nsX + 0.18 + Math.sin(-0.35) * 0.061, floorY + nsH + 0.045, nsZ + 0.16 + Math.cos(-0.35) * 0.061)
+  const clockScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.07), clockMat)
+  clockScreen.position.set(nsNorth.posX + 0.12 + Math.sin(-0.35) * 0.052, floorY + nsH + 0.04, nsNorth.posZ + 0.14 + Math.cos(-0.35) * 0.052)
   clockScreen.rotation.y = -0.35
   suiteGroup.add(clockCase, clockScreen)
 
-  // Hardcover Books Stack
-  const book1 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.04, 0.18), new THREE.MeshStandardMaterial({ color: 0x8b1a1a, roughness: 0.6 }))
-  book1.position.set(nsX - 0.16, floorY + nsH + 0.02, nsZ + 0.15)
-  book1.rotation.y = 0.12
-
-  const book2 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.035, 0.16), new THREE.MeshStandardMaterial({ color: 0x1b3b2b, roughness: 0.6 }))
-  book2.position.set(nsX - 0.15, floorY + nsH + 0.055, nsZ + 0.14)
-  book2.rotation.y = -0.06
+  // Hardcover Books Stack on South Nightstand
+  const book1 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.035, 0.16), new THREE.MeshStandardMaterial({ color: 0x8b1a1a, roughness: 0.6 }))
+  book1.position.set(nsSouth.posX + 0.08, floorY + nsH + 0.02, nsSouth.posZ - 0.12)
+  book1.rotation.y = 0.15
+  const book2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.03, 0.15), new THREE.MeshStandardMaterial({ color: 0x1b3b2b, roughness: 0.6 }))
+  book2.position.set(nsSouth.posX + 0.09, floorY + nsH + 0.05, nsSouth.posZ - 0.13)
+  book2.rotation.y = -0.08
   suiteGroup.add(book1, book2)
 
   // =========================================================================
-  // 8. LUXURY CENTRAL AREA RUG
+  // 7. GRAND LUXURY WARDROBE (EAST WALL)
+  // [NEW LUXURY WARDROBE]: Generous 2.2m width, fluted dark walnut doors,
+  // crown cornice, gold pull handles, and integrated LED accent downlighting.
+  // =========================================================================
+  const wardX = cx + innerW / 2 - 0.42 // East wall zone (4.88)
+  const wardZ = cz - 1.8               // North-East zone (83.2)
+  const wardD = 0.76                   // Along X (depth into room)
+  const wardW = 2.2                    // Along Z (width of wardrobe)
+  const wardH = 2.55                   // Grand ceiling height
+
+  // Main Carcass
+  const wardCarcass = new THREE.Mesh(new THREE.BoxGeometry(wardD, wardH, wardW), wardrobeWoodMat)
+  wardCarcass.position.set(wardX, floorY + wardH / 2, wardZ)
+  wardCarcass.castShadow = true
+
+  // Crown Molding Cornice with Gold Inlay
+  const cornice = new THREE.Mesh(new THREE.BoxGeometry(wardD + 0.08, 0.12, wardW + 0.08), darkWoodMat)
+  cornice.position.set(wardX, floorY + wardH + 0.05, wardZ)
+
+  const corniceGold = new THREE.Mesh(new THREE.BoxGeometry(wardD + 0.1, 0.02, wardW + 0.1), goldMat)
+  corniceGold.position.set(wardX, floorY + wardH + 0.015, wardZ)
+  suiteGroup.add(wardCarcass, cornice, corniceGold)
+
+  // Triple Symmetrical Fluted Doors facing West (-X)
+  const numDoors = 3
+  const doorWidthZ = (wardW - 0.08) / numDoors
+  for (let d = 0; d < numDoors; d++) {
+    const doorCenterZ = wardZ - wardW / 2 + 0.04 + doorWidthZ * (d + 0.5)
+
+    // Door slab
+    const doorMesh = new THREE.Mesh(new THREE.BoxGeometry(0.04, wardH - 0.18, doorWidthZ - 0.02), wardrobeWoodMat)
+    doorMesh.position.set(wardX - wardD / 2 - 0.01, floorY + wardH / 2 - 0.02, doorCenterZ)
+
+    // Recessed fluted wood insert
+    const doorFlute = new THREE.Mesh(new THREE.BoxGeometry(0.015, wardH - 0.32, doorWidthZ - 0.08), flutedWoodMat)
+    doorFlute.position.set(wardX - wardD / 2 - 0.02, floorY + wardH / 2 - 0.02, doorCenterZ)
+
+    // Brushed gold vertical pull handle
+    const handleWard = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.45, 0.02), goldMat)
+    const handleZOffset = d === 1 ? 0 : d === 0 ? doorWidthZ * 0.32 : -doorWidthZ * 0.32
+    handleWard.position.set(wardX - wardD / 2 - 0.04, floorY + 1.25, doorCenterZ + handleZOffset)
+
+    suiteGroup.add(doorMesh, doorFlute, handleWard)
+  }
+
+  // Integrated warm LED downlight wash strip underneath cornice
+  const wardLed = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, wardW - 0.1), coveLedMat)
+  wardLed.position.set(wardX - wardD / 2 - 0.02, floorY + wardH - 0.02, wardZ)
+  suiteGroup.add(wardLed)
+
+  // =========================================================================
+  // 8. ANIME THEMED POSTERS (GALLERY FRAMES & SPOTLIGHTS)
+  // [NEW FEATURE]: 4 unique high-res procedural anime posters with beveled
+  // metallic frames, glass reflections, and dedicated spotlights.
+  // =========================================================================
+  const createFramedPoster = (
+    posX: number,
+    posY: number,
+    posZ: number,
+    width: number,
+    height: number,
+    tex: THREE.CanvasTexture,
+    rotY: number,
+  ) => {
+    const posterGroup = new THREE.Group()
+    posterGroup.position.set(posX, posY, posZ)
+    posterGroup.rotation.y = rotY
+
+    // Artwork plane
+    const artMat = new THREE.MeshStandardMaterial({
+      map: tex,
+      roughness: 0.25,
+      metalness: 0.12,
+    })
+    const artMesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), artMat)
+    artMesh.position.set(0, 0, 0.025)
+
+    // Outer frame (sleek black titanium)
+    const frameDepth = 0.04
+    const frameBorder = 0.06
+    const frameMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(width + frameBorder * 2, height + frameBorder * 2, frameDepth),
+      darkMetalMat,
+    )
+
+    // Inner gold bevel
+    const innerGold = new THREE.Mesh(
+      new THREE.BoxGeometry(width + 0.02, height + 0.02, frameDepth + 0.005),
+      goldMat,
+    )
+    innerGold.position.set(0, 0, -0.005)
+
+    // Protective glass layer
+    const posterGlass = new THREE.Mesh(new THREE.PlaneGeometry(width, height), glassMat)
+    posterGlass.position.set(0, 0, 0.035)
+
+    // Gallery picture downlight sconce above frame
+    const sconceBase = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.03, 0.08), darkMetalMat)
+    sconceBase.position.set(0, height / 2 + frameBorder + 0.12, 0.08)
+    const sconceArm = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.14, 8), goldMat)
+    sconceArm.rotation.x = Math.PI / 3
+    sconceArm.position.set(0, height / 2 + frameBorder + 0.06, 0.05)
+    const sconceHead = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.02, 0.04), goldMat)
+    sconceHead.position.set(0, height / 2 + frameBorder + 0.12, 0.12)
+
+    posterGroup.add(frameMesh, innerGold, artMesh, posterGlass, sconceBase, sconceArm, sconceHead)
+    suiteGroup.add(posterGroup)
+    return posterGroup
+  }
+
+  // 1. Poster 1: "NEO-TOKYO CYBERPUNK 2099" (North Wall, West of Balcony)
+  const posterCyberTex = suiteAnimePosterCyberpunkTexture()
+  createFramedPoster(cx - 3.4, floorY + 1.7, cz - innerD / 2 + 0.025, 0.95, 1.4, posterCyberTex, 0)
+
+  // 2. Poster 2: "VALLEY OF THE WIND // GHIBLI ARCHIVES" (North Wall, East of Balcony)
+  const posterGhibliTex = suiteAnimePosterGhibliTexture()
+  createFramedPoster(cx + 3.4, floorY + 1.7, cz - innerD / 2 + 0.025, 0.95, 1.4, posterGhibliTex, 0)
+
+  // 3. Poster 3: "PROJECT EVA-01 // MECHA PROTOCOL" (West Wall, above Workstation)
+  const posterMechaTex = suiteAnimePosterMechaTexture()
+  createFramedPoster(cx - innerW / 2 + 0.025, floorY + 2.15, deskZ, 0.85, 1.25, posterMechaTex, Math.PI / 2)
+
+  // 4. Poster 4: "MIDNIGHT STUDY // LO-FI TOKYO" (South Wall, above Lounge Nook)
+  const posterLofiTex = suiteAnimePosterLofiTexture()
+  createFramedPoster(cx + 3.4, floorY + 1.7, cz + innerD / 2 - 0.025, 0.95, 1.4, posterLofiTex, Math.PI)
+
+  // =========================================================================
+  // 9. ANIME COLLECTIBLE & MANGA DISPLAY BOOKSHELF (SOUTH WALL)
+  // [NEW FURNITURE]: Modern 4-tier open shelving unit with manga tankobon
+  // series, collectible anime figurines, and potted bonsai/succulent.
+  // =========================================================================
+  const shelfX = cx - 0.6
+  const shelfZ = cz + innerD / 2 - 0.22 // Against South wall
+  const shelfW = 1.6
+  const shelfD = 0.38
+  const shelfH = 1.45
+
+  // Shelving Frame in Dark Walnut & Brass uprights
+  const shelfFrame = new THREE.Mesh(new THREE.BoxGeometry(shelfW, 0.04, shelfD), darkWoodMat)
+  shelfFrame.position.set(shelfX, floorY + 0.06, shelfZ)
+  suiteGroup.add(shelfFrame)
+
+  // 4 Shelves
+  for (let s = 1; s <= 4; s++) {
+    const sMesh = new THREE.Mesh(new THREE.BoxGeometry(shelfW, 0.03, shelfD), darkWoodMat)
+    sMesh.position.set(shelfX, floorY + s * 0.36, shelfZ)
+    suiteGroup.add(sMesh)
+  }
+
+  // Brass vertical stanchions
+  const stanchionGeo = new THREE.CylinderGeometry(0.015, 0.015, shelfH, 8)
+  const stanchionPositions = [
+    { x: shelfX - shelfW / 2 + 0.04, z: shelfZ - shelfD / 2 + 0.04 },
+    { x: shelfX + shelfW / 2 - 0.04, z: shelfZ - shelfD / 2 + 0.04 },
+    { x: shelfX - shelfW / 2 + 0.04, z: shelfZ + shelfD / 2 - 0.04 },
+    { x: shelfX + shelfW / 2 - 0.04, z: shelfZ + shelfD / 2 - 0.04 },
+  ]
+  for (const sp of stanchionPositions) {
+    const stMesh = new THREE.Mesh(stanchionGeo, goldMat)
+    stMesh.position.set(sp.x, floorY + shelfH / 2, sp.z)
+    suiteGroup.add(stMesh)
+  }
+
+  // Manga Volumes on Shelf 1 & 2
+  const mangaTex = suiteMangaSpinesTexture()
+  const mangaMat = new THREE.MeshStandardMaterial({ map: mangaTex, roughness: 0.5 })
+  const mangaBlock1 = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.24, 0.18), mangaMat)
+  mangaBlock1.position.set(shelfX - 0.35, floorY + 0.36 + 0.12, shelfZ)
+  const mangaBlock2 = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.24, 0.18), mangaMat)
+  mangaBlock2.position.set(shelfX + 0.38, floorY + 0.72 + 0.12, shelfZ)
+  suiteGroup.add(mangaBlock1, mangaBlock2)
+
+  // Anime Scale Figures on Acrylic Stands (Shelf 2 & 3)
+  const acrylicMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1, transparent: true, opacity: 0.5 })
+  // Figure 1: Cyber Heroine Figure (Pink & Cyan)
+  const fig1Base = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.012, 16), acrylicMat)
+  fig1Base.position.set(shelfX - 0.4, floorY + 0.72 + 0.01, shelfZ)
+  const fig1Body = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.025, 0.18, 8), new THREE.MeshStandardMaterial({ color: 0x111625 }))
+  fig1Body.position.set(shelfX - 0.4, floorY + 0.72 + 0.1, shelfZ)
+  const fig1Head = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 12), new THREE.MeshStandardMaterial({ color: 0xffd1b3 }))
+  fig1Head.position.set(shelfX - 0.4, floorY + 0.72 + 0.21, shelfZ)
+  const fig1Hair = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.12, 8), new THREE.MeshStandardMaterial({ color: 0x00f5d4 }))
+  fig1Hair.position.set(shelfX - 0.4, floorY + 0.72 + 0.24, shelfZ - 0.01)
+  suiteGroup.add(fig1Base, fig1Body, fig1Head, fig1Hair)
+
+  // Figure 2: Mecha Scale Model Figure (Red & Gold)
+  const fig2Base = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.012, 16), acrylicMat)
+  fig2Base.position.set(shelfX + 0.35, floorY + 1.08 + 0.01, shelfZ)
+  const fig2Body = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.16, 0.04), new THREE.MeshStandardMaterial({ color: 0x9b111e }))
+  fig2Body.position.set(shelfX + 0.35, floorY + 1.08 + 0.09, shelfZ)
+  const fig2Wings = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.08, 0.01), goldMat)
+  fig2Wings.position.set(shelfX + 0.35, floorY + 1.08 + 0.14, shelfZ - 0.02)
+  suiteGroup.add(fig2Base, fig2Body, fig2Wings)
+
+  // =========================================================================
+  // 10. WALL-MOUNTED 60" OLED TV & MEDIA CONSOLE (SOUTH WALL)
+  // [NEW FURNITURE]: Modern floating entertainment credenza with OLED screen,
+  // next-gen gaming console, and soundbar.
+  // =========================================================================
+  const tvX = cx + 1.5
+  const tvZ = cz + innerD / 2 - 0.05
+  const tvW = 1.7
+  const tvH = 0.96
+
+  // 60" TV Display Panel
+  const tvScreenMat = new THREE.MeshStandardMaterial({ color: 0x05070c, roughness: 0.12, metalness: 0.85 })
+  const tvScreen = new THREE.Mesh(new THREE.BoxGeometry(tvW, tvH, 0.03), tvScreenMat)
+  tvScreen.position.set(tvX, floorY + 1.6, tvZ - 0.02)
+
+  // Gold ultra-thin bezel
+  const tvBezel = new THREE.Mesh(new THREE.BoxGeometry(tvW + 0.02, tvH + 0.02, 0.02), goldMat)
+  tvBezel.position.set(tvX, floorY + 1.6, tvZ - 0.015)
+  suiteGroup.add(tvScreen, tvBezel)
+
+  // Floating Walnut Media Credenza below TV
+  const credW = 2.0
+  const credH = 0.35
+  const credD = 0.45
+  const credZ = cz + innerD / 2 - credD / 2 - 0.02
+  const credMesh = new THREE.Mesh(new THREE.BoxGeometry(credW, credH, credD), darkWoodMat)
+  credMesh.position.set(tvX, floorY + 0.45, credZ)
+
+  const credGold = new THREE.Mesh(new THREE.BoxGeometry(credW + 0.02, 0.015, credD + 0.02), goldMat)
+  credGold.position.set(tvX, floorY + 0.45 + credH / 2, credZ)
+
+  // Slim Soundbar on Credenza
+  const soundbar = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.05, 0.08), darkMetalMat)
+  soundbar.position.set(tvX, floorY + 0.45 + credH / 2 + 0.03, credZ + 0.1)
+
+  // Next-Gen Gaming Console (with glowing blue status stripe)
+  const consoleGeo = new THREE.BoxGeometry(0.3, 0.06, 0.24)
+  const gameConsole = new THREE.Mesh(consoleGeo, whiteLinenMat)
+  gameConsole.position.set(tvX - 0.65, floorY + 0.45 + credH / 2 + 0.035, credZ)
+  const consoleLight = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.005, 0.01), blueLedMat)
+  consoleLight.position.set(tvX - 0.65, floorY + 0.45 + credH / 2 + 0.065, credZ + 0.11)
+
+  suiteGroup.add(credMesh, credGold, soundbar, gameConsole, consoleLight)
+
+  // =========================================================================
+  // 11. LOUNGE READING NOOK & ACCENT ARMCHAIR (SOUTH-EAST)
+  // [NEW FURNITURE]: Contemporary designer armchair, marble/brass side table,
+  // and modern curved floor lamp.
+  // =========================================================================
+  const loungeX = cx + 3.6
+  const loungeZ = cz + 2.0
+
+  // Navy Velvet Accent Armchair
+  const chairGroup = new THREE.Group()
+  chairGroup.position.set(loungeX, floorY, loungeZ)
+  chairGroup.rotation.y = -Math.PI / 4 // Angled towards room center
+
+  // Seat cushion
+  const lSeat = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.16, 0.68), velvetNavyMat)
+  lSeat.position.set(0, 0.32, 0)
+
+  // Curved wraparound backrest & arms
+  const lBack = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.52, 0.14), velvetNavyMat)
+  lBack.position.set(0, 0.58, 0.32)
+  const lArmL = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.38, 0.68), velvetNavyMat)
+  lArmL.position.set(-0.34, 0.48, 0)
+  const lArmR = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.38, 0.68), velvetNavyMat)
+  lArmR.position.set(0.34, 0.48, 0)
+
+  // 4 Tapered brass legs
+  const lLegGeo = new THREE.CylinderGeometry(0.015, 0.02, 0.28, 8)
+  const lLeg1 = new THREE.Mesh(lLegGeo, goldMat); lLeg1.position.set(-0.28, 0.14, -0.28)
+  const lLeg2 = new THREE.Mesh(lLegGeo, goldMat); lLeg2.position.set(0.28, 0.14, -0.28)
+  const lLeg3 = new THREE.Mesh(lLegGeo, goldMat); lLeg3.position.set(-0.28, 0.14, 0.28)
+  const lLeg4 = new THREE.Mesh(lLegGeo, goldMat); lLeg4.position.set(0.28, 0.14, 0.28)
+
+  chairGroup.add(lSeat, lBack, lArmL, lArmR, lLeg1, lLeg2, lLeg3, lLeg4)
+  suiteGroup.add(chairGroup)
+
+  // Round White Marble & Brass Drink Table
+  const tableTop = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.025, 24), marbleMat)
+  tableTop.position.set(loungeX + 0.65, floorY + 0.48, loungeZ - 0.4)
+  const tableStem = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.46, 12), goldMat)
+  tableStem.position.set(loungeX + 0.65, floorY + 0.24, loungeZ - 0.4)
+  const tableBase = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.2, 0.02, 24), goldMat)
+  tableBase.position.set(loungeX + 0.65, floorY + 0.01, loungeZ - 0.4)
+  suiteGroup.add(tableTop, tableStem, tableBase)
+
+  // Arched Contemporary Brass Floor Lamp
+  const fLampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.03, 16), darkMetalMat)
+  fLampBase.position.set(loungeX + 1.0, floorY + 0.015, loungeZ + 0.7)
+  const fLampPole = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 1.85, 8), goldMat)
+  fLampPole.position.set(loungeX + 1.0, floorY + 0.925, loungeZ + 0.7)
+  const fLampShade = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.24, 16, 1, true), goldMat)
+  fLampShade.position.set(loungeX + 0.65, floorY + 1.8, loungeZ + 0.3)
+  const fLampBulb = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), coveLedMat)
+  fLampBulb.position.set(loungeX + 0.65, floorY + 1.74, loungeZ + 0.3)
+  suiteGroup.add(fLampBase, fLampPole, fLampShade, fLampBulb)
+
+  // =========================================================================
+  // 12. DRESSING ARCH MIRROR & POTTED INDOOR MONSTERA PLANT
+  // =========================================================================
+
+  // Full-Length Floor-Standing Arch Mirror (East wall beside wardrobe)
+  const mirrorGroup = new THREE.Group()
+  mirrorGroup.position.set(cx + innerW / 2 - 0.08, floorY + 0.95, cz + 0.1)
+  mirrorGroup.rotation.y = -Math.PI / 2
+
+  const mirrorFrame = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.8, 0.04), goldMat)
+  const mirrorGlass = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 1.72), glassMat)
+  mirrorGlass.position.set(0, 0, 0.022)
+  mirrorGroup.add(mirrorFrame, mirrorGlass)
+  suiteGroup.add(mirrorGroup)
+
+  // Potted Monstera Deliciosa Plant (North-West corner near balcony)
+  const plantGroup = new THREE.Group()
+  plantGroup.position.set(cx - 2.0, floorY, cz - innerD / 2 + 0.5)
+
+  // White Ceramic Planter Pot on wooden tripod
+  const potMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.16, 0.42, 16), whiteLinenMat)
+  potMesh.position.set(0, 0.35, 0)
+  for (let l = 0; l < 3; l++) {
+    const ang = (l * Math.PI * 2) / 3
+    const pLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.28, 8), darkWoodMat)
+    pLeg.position.set(Math.cos(ang) * 0.14, 0.14, Math.sin(ang) * 0.14)
+    plantGroup.add(pLeg)
+  }
+  plantGroup.add(potMesh)
+
+  // Fan of broad Monstera leaves
+  const leafGeo = new THREE.SphereGeometry(0.24, 8, 8)
+  leafGeo.scale(1.2, 0.08, 1.6)
+  for (let i = 0; i < 7; i++) {
+    const a = (i * Math.PI * 2) / 7
+    const leaf = new THREE.Mesh(leafGeo, plantLeafMat)
+    leaf.position.set(Math.cos(a) * 0.22, 0.52 + (i % 3) * 0.08, Math.sin(a) * 0.22)
+    leaf.rotation.x = 0.35 * Math.sin(a)
+    leaf.rotation.z = -0.35 * Math.cos(a)
+    leaf.rotation.y = a
+    plantGroup.add(leaf)
+  }
+  suiteGroup.add(plantGroup)
+
+  // =========================================================================
+  // 13. LUXURY CENTRAL AREA RUG
   // =========================================================================
   const rugTex = suiteLuxuryRugTexture()
   const rugMat = new THREE.MeshStandardMaterial({
@@ -674,110 +1082,61 @@ export function buildSuite402(
     metalness: 0.08,
     transparent: true,
   })
-  const rugMesh = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 2.1), rugMat)
+  const rugMesh = new THREE.Mesh(new THREE.PlaneGeometry(4.8, 2.8), rugMat)
   rugMesh.rotation.x = -Math.PI / 2
-  rugMesh.position.set(cx + 0.6, floorY + 0.052, cz + 0.6)
+  rugMesh.position.set(cx + 0.4, floorY + 0.052, cz + 0.3)
   rugMesh.receiveShadow = true
   suiteGroup.add(rugMesh)
 
   // =========================================================================
-  // 9. GRAND DOUBLE-DOOR WARDROBE (NORTH-EAST CORNER)
-  // =========================================================================
-  const wardX = cx + 3.1
-  const wardZ = cz - 1.5
-  const wardW = 1.6
-  const wardD = 0.72
-  const wardH = 2.45
-
-  // Main Carcass
-  const wardCarcass = new THREE.Mesh(new THREE.BoxGeometry(wardW, wardH, wardD), wardrobeWoodMat)
-  wardCarcass.position.set(wardX, floorY + wardH / 2, wardZ)
-  wardCarcass.castShadow = true
-
-  // Crown Molding Cornice with Gold Inlay
-  const cornice = new THREE.Mesh(new THREE.BoxGeometry(wardW + 0.08, 0.1, wardD + 0.08), darkWoodMat)
-  cornice.position.set(wardX, floorY + wardH + 0.04, wardZ)
-
-  const corniceGold = new THREE.Mesh(new THREE.BoxGeometry(wardW + 0.1, 0.015, wardD + 0.1), goldMat)
-  corniceGold.position.set(wardX, floorY + wardH + 0.01, wardZ)
-  suiteGroup.add(wardCarcass, cornice, corniceGold)
-
-  // Symmetrical Twin Doors with Recessed Molding Panels
-  const doorW = (wardW - 0.06) / 2
-  const doorGeo = new THREE.BoxGeometry(doorW, wardH - 0.18, 0.03)
-
-  const doorL = new THREE.Mesh(doorGeo, wardrobeWoodMat)
-  doorL.position.set(wardX - doorW / 2 - 0.01, floorY + wardH / 2 - 0.02, wardZ + wardD / 2 + 0.01)
-
-  const doorR = new THREE.Mesh(doorGeo, wardrobeWoodMat)
-  doorR.position.set(wardX + doorW / 2 + 0.01, floorY + wardH / 2 - 0.02, wardZ + wardD / 2 + 0.01)
-
-  // Recessed panel trims on doors
-  const addDoorPanels = (parentDoor: THREE.Mesh) => {
-    // Upper panel
-    const p1 = new THREE.Mesh(new THREE.BoxGeometry(doorW - 0.14, 0.85, 0.01), darkWoodMat)
-    p1.position.set(0, 0.42, 0.015)
-    // Lower panel
-    const p2 = new THREE.Mesh(new THREE.BoxGeometry(doorW - 0.14, 0.85, 0.01), darkWoodMat)
-    p2.position.set(0, -0.48, 0.015)
-    parentDoor.add(p1, p2)
-  }
-  addDoorPanels(doorL)
-  addDoorPanels(doorR)
-
-  // Vertical Polished Brass Pull Handles
-  const handleGeoW = new THREE.BoxGeometry(0.02, 0.35, 0.03)
-  const handleLW = new THREE.Mesh(handleGeoW, goldMat)
-  handleLW.position.set(wardX - 0.05, floorY + 1.15, wardZ + wardD / 2 + 0.04)
-
-  const handleRW = new THREE.Mesh(handleGeoW, goldMat)
-  handleRW.position.set(wardX + 0.05, floorY + 1.15, wardZ + wardD / 2 + 0.04)
-  suiteGroup.add(doorL, doorR, handleLW, handleRW)
-
-  // =========================================================================
-  // 10. LIGHTING RIG & LIGHT MANAGER SYNCHRONIZATION
+  // 14. LIGHTING RIG & LIGHT MANAGER SYNCHRONIZATION
   // =========================================================================
 
-  // 10.1 Bedside Amber Designer Lamp
+  // 14.1 Bedside Amber Lamps (Dual Lamps)
   let lampOn = true
-  const lampLight = new THREE.PointLight(0xffa233, 2.6, 6.5, 1.2)
-  lampLight.position.set(nsX, floorY + nsH + 0.35, nsZ - 0.15)
+  const lampLight = new THREE.PointLight(0xffa233, 2.6, 7.5, 1.2)
+  lampLight.position.set(nsNorth.posX, floorY + nsH + 0.35, bedZ)
   suiteGroup.add(lampLight)
 
-  // 10.2 Cyber Workstation Cyan Monitor Glow
+  // 14.2 Cyber Workstation Cyan Monitor Glow
   let pcOn = true
-  const pcLight = new THREE.PointLight(0x00ffff, 2.0, 5.2, 1.1)
-  pcLight.position.set(deskX, floorY + deskH + 0.38, deskZ - 0.1)
+  const pcLight = new THREE.PointLight(0x00ffff, 2.2, 5.5, 1.1)
+  pcLight.position.set(deskX + 0.1, floorY + deskH + 0.4, deskZ)
   suiteGroup.add(pcLight)
 
-  // 10.3 Central Warm Recessed Cove Ambient Light
-  const coveLight = new THREE.PointLight(0xffeed6, 1.8, 11, 1.2)
+  // 14.3 Central Warm Recessed Cove Ambient Light
+  const coveLight = new THREE.PointLight(0xffeed6, 2.0, 13, 1.2)
   coveLight.position.set(cx, floorY + wallH - 0.3, cz)
   suiteGroup.add(coveLight)
 
+  // 14.4 Lounge Reading Warm Lamp
+  const loungeLight = new THREE.PointLight(0xffd28e, 1.6, 5.0, 1.2)
+  loungeLight.position.set(loungeX + 0.65, floorY + 1.7, loungeZ + 0.3)
+  suiteGroup.add(loungeLight)
+
   if (lightManager) {
     lightManager.register({
-      x: nsX,
+      x: nsNorth.posX,
       y: floorY + nsH + 0.35,
-      z: nsZ - 0.15,
+      z: bedZ,
       color: 0xffa233,
       intensity: 2.6,
-      distance: 6.5,
+      distance: 7.5,
       decay: 1.2,
       zone: 'Suite402',
       dynamicIntensity: () => (lampOn ? 2.6 : 0),
     })
 
     lightManager.register({
-      x: deskX,
-      y: floorY + deskH + 0.38,
-      z: deskZ - 0.1,
+      x: deskX + 0.1,
+      y: floorY + deskH + 0.4,
+      z: deskZ,
       color: 0x00ffff,
-      intensity: 2.0,
-      distance: 5.2,
+      intensity: 2.2,
+      distance: 5.5,
       decay: 1.1,
       zone: 'Suite402',
-      dynamicIntensity: () => (pcOn ? 1.8 + Math.sin(Date.now() * 0.003) * 0.2 : 0),
+      dynamicIntensity: () => (pcOn ? 1.9 + Math.sin(Date.now() * 0.003) * 0.3 : 0),
     })
 
     lightManager.register({
@@ -785,15 +1144,26 @@ export function buildSuite402(
       y: floorY + wallH - 0.3,
       z: cz,
       color: 0xffeed6,
-      intensity: 1.8,
-      distance: 11,
+      intensity: 2.0,
+      distance: 13,
+      decay: 1.2,
+      zone: 'Suite402',
+    })
+
+    lightManager.register({
+      x: loungeX + 0.65,
+      y: floorY + 1.7,
+      z: loungeZ + 0.3,
+      color: 0xffd28e,
+      intensity: 1.6,
+      distance: 5.0,
       decay: 1.2,
       zone: 'Suite402',
     })
   }
 
   // =========================================================================
-  // 11. COLLISION BOUNDARIES
+  // 15. COLLISION BOUNDARIES
   // =========================================================================
 
   // South Wall
@@ -816,17 +1186,17 @@ export function buildSuite402(
     maxZ: cz + innerD / 2 + 0.5,
   })
 
-  // North Wall Sections (leaving balcony door open in center)
+  // North Wall Sections (leaving 3.0m balcony sliding doors open in center)
   colliders.add({
     minX: cx - innerW / 2 - 0.5,
     minY: 0,
     minZ: cz - innerD / 2 - 0.5,
-    maxX: cx - 1.35,
+    maxX: cx - 1.45,
     maxY: 4.0,
     maxZ: cz - innerD / 2 + 0.05,
   })
   colliders.add({
-    minX: cx + 1.35,
+    minX: cx + 1.45,
     minY: 0,
     minZ: cz - innerD / 2 - 0.5,
     maxX: cx + innerW / 2 + 0.5,
@@ -860,104 +1230,147 @@ export function buildSuite402(
     maxZ: cz - innerD / 2,
   })
 
-  // East Wall Sections (leaving living room / elevator door open)
+  // East Wall Sections (leaving pocket door open in center)
   colliders.add({
     minX: cx + innerW / 2 - 0.05,
     minY: 0,
     minZ: cz - innerD / 2 - 0.5,
     maxX: cx + innerW / 2 + 1.0,
     maxY: 4.0,
-    maxZ: cz - 0.1,
+    maxZ: cz + 0.45,
   })
   colliders.add({
     minX: cx + innerW / 2 - 0.05,
     minY: 0,
-    minZ: cz + 1.6,
+    minZ: cz + 2.0,
     maxX: cx + innerW / 2 + 1.0,
     maxY: 4.0,
     maxZ: cz + innerD / 2 + 0.5,
   })
-  // East Door Stop (blocks walking outside past the threshold)
+  // East Door Stop (blocks walking outside past threshold)
   colliders.add({
     minX: cx + innerW / 2 + 0.25,
     minY: 0,
-    minZ: cz - 0.1,
+    minZ: cz + 0.45,
     maxX: cx + innerW / 2 + 1.2,
     maxY: 4.0,
-    maxZ: cz + 1.6,
+    maxZ: cz + 2.0,
   })
 
   // Furniture Colliders:
-  // PC Desk
+
+  // Cyber Battlestation Desk
   colliders.add({
-    minX: deskX - deskW / 2 - 0.1,
+    minX: deskX - deskW / 2 - 0.05,
     minY: 0,
-    minZ: deskZ - deskD / 2 - 0.1,
-    maxX: deskX + deskW / 2 + 0.1,
+    minZ: deskZ - deskL / 2 - 0.05,
+    maxX: deskX + deskW / 2 + 0.05,
     maxY: 1.5,
-    maxZ: deskZ + deskD / 2 + 0.1,
+    maxZ: deskZ + deskL / 2 + 0.05,
   })
 
   // Master Bed
   colliders.add({
-    minX: bedX - bedW / 2 - 0.1,
+    minX: bedX - bedW / 2 - 0.05,
     minY: 0,
-    minZ: bedZ - bedD / 2 - 0.1,
-    maxX: bedX + bedW / 2 + 0.1,
+    minZ: bedZ - bedD / 2 - 0.05,
+    maxX: bedX + bedW / 2 + 0.05,
     maxY: 1.2,
-    maxZ: bedZ + bedD / 2 + 0.1,
+    maxZ: bedZ + bedD / 2 + 0.05,
   })
 
-  // Nightstand
+  // North Nightstand
   colliders.add({
-    minX: nsX - nsW / 2 - 0.05,
+    minX: nsNorth.posX - nsW / 2 - 0.05,
     minY: 0,
-    minZ: nsZ - nsD / 2 - 0.05,
-    maxX: nsX + nsW / 2 + 0.05,
+    minZ: nsNorth.posZ - nsD / 2 - 0.05,
+    maxX: nsNorth.posX + nsW / 2 + 0.05,
     maxY: 1.0,
-    maxZ: nsZ + nsD / 2 + 0.05,
+    maxZ: nsNorth.posZ + nsD / 2 + 0.05,
   })
 
-  // Wardrobe
+  // South Nightstand
   colliders.add({
-    minX: wardX - wardW / 2 - 0.05,
+    minX: nsSouth.posX - nsW / 2 - 0.05,
     minY: 0,
-    minZ: wardZ - wardD / 2 - 0.05,
-    maxX: wardX + wardW / 2 + 0.05,
+    minZ: nsSouth.posZ - nsD / 2 - 0.05,
+    maxX: nsSouth.posX + nsW / 2 + 0.05,
+    maxY: 1.0,
+    maxZ: nsSouth.posZ + nsD / 2 + 0.05,
+  })
+
+  // Grand Luxury Wardrobe
+  colliders.add({
+    minX: wardX - wardD / 2 - 0.05,
+    minY: 0,
+    minZ: wardZ - wardW / 2 - 0.05,
+    maxX: wardX + wardD / 2 + 0.05,
     maxY: 3.0,
-    maxZ: wardZ + wardD / 2 + 0.05,
+    maxZ: wardZ + wardW / 2 + 0.05,
+  })
+
+  // Anime Collectibles Bookshelf & Credenza
+  colliders.add({
+    minX: shelfX - shelfW / 2 - 0.05,
+    minY: 0,
+    minZ: shelfZ - shelfD / 2 - 0.05,
+    maxX: shelfX + shelfW / 2 + 0.05,
+    maxY: 1.6,
+    maxZ: shelfZ + shelfD / 2 + 0.05,
+  })
+
+  // Media Console
+  colliders.add({
+    minX: tvX - credW / 2 - 0.05,
+    minY: 0,
+    minZ: credZ - credD / 2 - 0.05,
+    maxX: tvX + credW / 2 + 0.05,
+    maxY: 1.0,
+    maxZ: credZ + credD / 2 + 0.05,
+  })
+
+  // Lounge Armchair
+  colliders.add({
+    minX: loungeX - 0.45,
+    minY: 0,
+    minZ: loungeZ - 0.45,
+    maxX: loungeX + 0.45,
+    maxY: 1.1,
+    maxZ: loungeZ + 0.45,
   })
 
   // =========================================================================
-  // 12. PROXIMITY INTERACTIONS
+  // 16. PROXIMITY INTERACTIONS
   // =========================================================================
 
-  // 1. Bedside Lamp Toggle
+  // 1. Bedside Lamps Toggle
   interactions.add({
     id: 'suite-lamp',
-    x: nsX,
-    z: nsZ,
-    radius: 1.8,
-    prompt: () => (lampOn ? 'Turn Off Bedside Lamp [消灯]' : 'Turn On Bedside Lamp [点灯]'),
+    x: nsNorth.posX,
+    z: bedZ,
+    radius: 2.2,
+    prompt: () => (lampOn ? 'Turn Off Bedside Lamps [消灯]' : 'Turn On Bedside Lamps [点灯]'),
     onInteract: () => {
       lampOn = !lampOn
-      lampGlobe.material = lampOn ? lampGlobeMat : new THREE.MeshBasicMaterial({ color: 0x4a4033 })
+      const globeMat = lampOn ? lampGlobeMat : new THREE.MeshBasicMaterial({ color: 0x4a4033 })
+      nsNorth.lampGlobe.material = globeMat
+      nsSouth.lampGlobe.material = globeMat
       lampLight.intensity = lampOn ? 2.6 : 0
       audio?.playVendingSound()
-      messages.show(lampOn ? 'Bedside amber designer lamp turned ON.' : 'Bedside lamp turned OFF. Midnight shadows settle in.')
+      messages.show(lampOn ? 'Bedside amber designer lamps turned ON.' : 'Bedside lamps turned OFF. Midnight shadows settle in.')
     },
   })
 
   // 2. PC Gaming / Cyber Workstation
   interactions.add({
     id: 'suite-pc',
-    x: deskX,
-    z: deskZ + 0.45,
-    radius: 1.7,
+    x: deskX + 0.45,
+    z: deskZ,
+    radius: 1.8,
     prompt: () => (pcOn ? 'Compile Code on Workstation [PC操作]' : 'Power On Workstation [PC起動]'),
     onInteract: () => {
       pcOn = true
-      pcLight.intensity = 2.0
+      pcLight.intensity = 2.2
       audio?.playVendingSound()
       messages.show('💻 Tokyo Workstation: Build succeeded with 0 errors. All systems optimal!')
     },
@@ -968,31 +1381,117 @@ export function buildSuite402(
     id: 'suite-bed',
     x: bedX + 0.6,
     z: bedZ,
-    radius: 1.8,
+    radius: 2.0,
     prompt: () => 'Rest on Bed [ベッドで休む]',
     onInteract: () => {
-      messages.show('🌙 You sit by the edge of your bed, listening to the distant midnight city murmur.')
+      messages.show('🌙 You sit on the edge of the plush navy duvet, looking out through the glass doors at the Tokyo skyline.')
     },
   })
 
-  // 4. Wardrobe Inspection
+  // 4. Grand Wardrobe Inspection
   interactions.add({
     id: 'suite-wardrobe',
-    x: wardX,
-    z: wardZ + wardD / 2 + 0.4,
-    radius: 1.6,
+    x: wardX - 0.5,
+    z: wardZ,
+    radius: 1.8,
     prompt: () => 'Inspect Wardrobe [クローゼット]',
     onInteract: () => {
-      messages.show('👔 Wardrobe: High-school blazer uniform, dark coats, and fresh linen neatly organized.')
+      audio?.playVendingSound()
+      messages.show('👔 Wardrobe: High-school blazer uniform, tailored dark coats, fresh linen, and travel luggage neatly organized.')
     },
   })
 
-  // 5. Exit Door to 4F Elevator Lounge & Corridor
+  // 5. Anime Poster: Cyberpunk 2099
+  interactions.add({
+    id: 'suite-poster-cyberpunk',
+    x: cx - 3.4,
+    z: cz - innerD / 2 + 0.6,
+    radius: 1.8,
+    prompt: () => 'Inspect Poster: Neo-Tokyo 2099 [ポスター鑑賞]',
+    onInteract: () => {
+      messages.show('🖼️ "Neo-Tokyo 2099" — Limited holographic edition art print featuring the cyber heroine overlooking the neon skyline.')
+    },
+  })
+
+  // 6. Anime Poster: Valley of the Wind
+  interactions.add({
+    id: 'suite-poster-ghibli',
+    x: cx + 3.4,
+    z: cz - innerD / 2 + 0.6,
+    radius: 1.8,
+    prompt: () => 'Inspect Poster: Valley of the Wind [ポスター鑑賞]',
+    onInteract: () => {
+      messages.show('🖼️ "Valley of the Wind" — Nostalgic scenic landscape art print capturing an ancient airship soaring through golden sunset clouds.')
+    },
+  })
+
+  // 7. Anime Poster: Mecha Protocol Unit-01
+  interactions.add({
+    id: 'suite-poster-mecha',
+    x: cx - innerW / 2 + 0.8,
+    z: deskZ,
+    radius: 1.8,
+    prompt: () => 'Inspect Art: Unit-01 Mecha [ポスター鑑賞]',
+    onInteract: () => {
+      messages.show('🖼️ "Project EVA // Unit-01" — Striking crimson combat illustration with glowing emerald optics and battle telemetry.')
+    },
+  })
+
+  // 8. Anime Poster: Midnight Lo-Fi Study
+  interactions.add({
+    id: 'suite-poster-lofi',
+    x: cx + 3.4,
+    z: cz + innerD / 2 - 0.6,
+    radius: 1.8,
+    prompt: () => 'Inspect Poster: Midnight Lo-Fi [ポスター鑑賞]',
+    onInteract: () => {
+      messages.show('🖼️ "Midnight Lo-Fi" — Cozy rainy window art print with headphones, a sleeping cat, and soft neon bokeh lights.')
+    },
+  })
+
+  // 9. Anime Collectibles & Manga Bookshelf
+  interactions.add({
+    id: 'suite-bookshelf',
+    x: shelfX,
+    z: shelfZ - 0.5,
+    radius: 1.8,
+    prompt: () => 'Inspect Manga & Figures [コレクション]',
+    onInteract: () => {
+      messages.show('📚 Display Collection: Complete volumes of favorite shonen manga, cyber heroine scale figure, and limited mecha model.')
+    },
+  })
+
+  // 10. Entertainment TV & Next-Gen Console
+  interactions.add({
+    id: 'suite-tv',
+    x: tvX,
+    z: credZ - 0.5,
+    radius: 1.8,
+    prompt: () => 'Power On Entertainment Console [ゲーム機 / TV]',
+    onInteract: () => {
+      audio?.playVendingSound()
+      messages.show('🎮 Next-Gen Console beeps: Game Ready. Streaming favorite anime OST through the soundbar.')
+    },
+  })
+
+  // 11. Lounge Reading Armchair
+  interactions.add({
+    id: 'suite-lounge',
+    x: loungeX,
+    z: loungeZ,
+    radius: 1.8,
+    prompt: () => 'Relax in Lounge Armchair [ラウンジチェア]',
+    onInteract: () => {
+      messages.show('🛋️ You sink into the soft navy velvet armchair beneath the warm brass floor lamp, enjoying the quiet midnight atmosphere.')
+    },
+  })
+
+  // 12. Exit Door to 4F Elevator Lounge & Corridor
   interactions.add({
     id: 'suite-elevator',
-    x: cx + innerW / 2 - 0.2,
-    z: cz + 0.7,
-    radius: 1.6,
+    x: cx + innerW / 2 - 0.4,
+    z: cz + 1.2,
+    radius: 1.8,
     prompt: () => 'Exit to 4F Lounge & Hallway [廊下・ラウンジへ]',
     onInteract: () => {
       audio?.playVendingSound()
@@ -1004,20 +1503,20 @@ export function buildSuite402(
     },
   })
 
-  // 6. Balcony View
+  // 13. Balcony View
   interactions.add({
     id: 'suite-balcony',
     x: cx,
     z: cz - innerD / 2 - 0.8,
-    radius: 1.6,
+    radius: 1.8,
     prompt: () => 'Gaze across Tokyo Skyline [夜景を眺める]',
     onInteract: () => {
-      messages.show('🌃 The midnight Tokyo skyline glimmers beneath the crescent moon. A cool evening breeze passes.')
+      messages.show('🌃 The midnight Tokyo skyline glimmers beneath the crescent moon. A cool evening breeze passes through the balcony.')
     },
   })
 
   // =========================================================================
-  // 13. RUNTIME UPDATE & DISTANCE CULLING
+  // 17. RUNTIME UPDATE & DISTANCE CULLING
   // =========================================================================
   let time = 0
 
@@ -1028,14 +1527,14 @@ export function buildSuite402(
 
       // Distance culling check (in Low quality mode)
       const distSq = (p.x - cx) ** 2 + (p.z - cz) ** 2
-      const isNear = distSq < 1600 // 40 meters
+      const isNear = distSq < 2000 // 45 meters
       suiteGroup.visible = Settings.isHigh() || isNear
 
       if (!suiteGroup.visible) return
 
       // Subtle pulse on PC intake fans and LED power
       if (pcOn) {
-        const pulse = 1.6 + Math.sin(time * 3.5) * 0.3
+        const pulse = 1.8 + Math.sin(time * 3.5) * 0.35
         pcLight.intensity = pulse
       }
     },

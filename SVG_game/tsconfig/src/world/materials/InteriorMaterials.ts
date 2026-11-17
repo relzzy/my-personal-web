@@ -948,6 +948,614 @@ export function suiteLivingRoomDoorMatTexture(): THREE.CanvasTexture {
   return tex
 }
 
+export function suiteAnimePosterCyberpunkTexture(): THREE.CanvasTexture {
+  const key = 'suite-anime-poster-cyberpunk'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 768
+  const g = canvas.getContext('2d')!
+
+  // Deep synthwave cyber gradient background
+  const bg = g.createLinearGradient(0, 0, 0, 768)
+  bg.addColorStop(0, '#0a0618')
+  bg.addColorStop(0.35, '#1b0d33')
+  bg.addColorStop(0.65, '#2e1047')
+  bg.addColorStop(1, '#05030a')
+  g.fillStyle = bg
+  g.fillRect(0, 0, 512, 768)
+
+  // Cyber perspective grid floor
+  g.strokeStyle = 'rgba(0, 245, 212, 0.35)'
+  g.lineWidth = 1.5
+  const vpX = 256
+  const vpY = 560
+  for (let x = -200; x <= 712; x += 60) {
+    g.beginPath()
+    g.moveTo(vpX, vpY)
+    g.lineTo(x, 768)
+    g.stroke()
+  }
+  for (let y = vpY + 20; y <= 768; y += 35) {
+    const p = (y - vpY) / (768 - vpY)
+    g.strokeStyle = `rgba(255, 0, 127, ${0.15 + p * 0.4})`
+    g.beginPath()
+    g.moveTo(0, y)
+    g.lineTo(512, y)
+    g.stroke()
+  }
+
+  // Giant glowing holographic moon / cyber ring
+  const moonGrad = g.createRadialGradient(256, 320, 40, 256, 320, 180)
+  moonGrad.addColorStop(0, '#ff007f')
+  moonGrad.addColorStop(0.4, '#7928ca')
+  moonGrad.addColorStop(0.8, 'rgba(0, 245, 212, 0.4)')
+  moonGrad.addColorStop(1, 'rgba(0, 0, 0, 0)')
+  g.fillStyle = moonGrad
+  g.beginPath()
+  g.arc(256, 320, 180, 0, Math.PI * 2)
+  g.fill()
+
+  // Neon ring outline
+  g.strokeStyle = '#00f5d4'
+  g.lineWidth = 3
+  g.beginPath()
+  g.arc(256, 320, 140, 0, Math.PI * 2)
+  g.stroke()
+
+  // Silhouette of futuristic city skyline
+  g.fillStyle = '#080512'
+  const bldgWidths = [45, 60, 40, 75, 50, 80, 55, 65, 42]
+  let curX = 0
+  for (let i = 0; i < bldgWidths.length; i++) {
+    const bw = bldgWidths[i]
+    const bh = 140 + Math.sin(i * 1.7) * 70
+    g.fillRect(curX, vpY - bh, bw, bh + 40)
+    // Tiny glowing cyan/amber windows
+    for (let wy = vpY - bh + 15; wy < vpY; wy += 18) {
+      if ((i + wy) % 5 === 0) {
+        g.fillStyle = (i + wy) % 2 === 0 ? '#00f5d4' : '#ff007f'
+        g.fillRect(curX + 8, wy, 4, 6)
+        if (bw > 50) g.fillRect(curX + bw - 14, wy, 4, 6)
+      }
+    }
+    g.fillStyle = '#080512'
+    curX += bw
+  }
+
+  // Cyber Anime Heroine Silhouette (head/shoulders & glowing twin tails)
+  g.save()
+  // Glowing twin-tail hair streamers
+  g.strokeStyle = '#00f5d4'
+  g.lineWidth = 6
+  g.shadowColor = '#00f5d4'
+  g.shadowBlur = 18
+  g.beginPath()
+  g.moveTo(220, 440)
+  g.bezierCurveTo(150, 410, 90, 480, 70, 580)
+  g.stroke()
+  g.beginPath()
+  g.moveTo(292, 440)
+  g.bezierCurveTo(362, 410, 422, 480, 442, 580)
+  g.stroke()
+
+  // Hair highlights in hot magenta
+  g.strokeStyle = '#ff007f'
+  g.lineWidth = 3
+  g.shadowColor = '#ff007f'
+  g.beginPath()
+  g.moveTo(224, 450)
+  g.bezierCurveTo(170, 435, 110, 510, 95, 600)
+  g.stroke()
+  g.beginPath()
+  g.moveTo(288, 450)
+  g.bezierCurveTo(342, 435, 402, 510, 417, 600)
+  g.stroke()
+
+  // Head and torso silhouette
+  g.shadowBlur = 0
+  g.fillStyle = '#06030c'
+  // Shoulders & jacket
+  g.beginPath()
+  g.moveTo(170, 640)
+  g.lineTo(200, 520)
+  g.lineTo(256, 490)
+  g.lineTo(312, 520)
+  g.lineTo(342, 640)
+  g.closePath()
+  g.fill()
+
+  // Head silhouette
+  g.beginPath()
+  g.ellipse(256, 440, 40, 50, 0, 0, Math.PI * 2)
+  g.fill()
+
+  // High-tech glowing cyber visor across eyes
+  g.fillStyle = '#00f5d4'
+  g.shadowColor = '#00f5d4'
+  g.shadowBlur = 14
+  g.fillRect(230, 425, 52, 10)
+
+  // Neon collar trim
+  g.strokeStyle = '#ff007f'
+  g.lineWidth = 3
+  g.shadowColor = '#ff007f'
+  g.beginPath()
+  g.moveTo(215, 530)
+  g.lineTo(256, 560)
+  g.lineTo(297, 530)
+  g.stroke()
+  g.restore()
+
+  // Japanese typography & titles
+  g.save()
+  g.shadowColor = '#00f5d4'
+  g.shadowBlur = 10
+  g.fillStyle = '#ffffff'
+  g.font = '900 48px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('新 東京', 256, 110)
+
+  g.fillStyle = '#ff007f'
+  g.shadowColor = '#ff007f'
+  g.font = 'bold 22px sans-serif'
+  g.fillText('サイバーパンク 2099', 256, 145)
+
+  g.shadowBlur = 0
+  g.font = 'bold 12px monospace'
+  g.fillStyle = '#00f5d4'
+  g.letterSpacing = '4px'
+  g.fillText('NEURAL OVERDRIVE // SPECIAL EDITION', 256, 172)
+  g.fillText('ACT-IV : MIDNIGHT PROTOCOL', 256, 730)
+  g.restore()
+
+  // Framed border vignette
+  g.strokeStyle = 'rgba(255, 255, 255, 0.15)'
+  g.lineWidth = 2
+  g.strokeRect(18, 18, 476, 732)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteAnimePosterMechaTexture(): THREE.CanvasTexture {
+  const key = 'suite-anime-poster-mecha'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 768
+  const g = canvas.getContext('2d')!
+
+  // Crimson apocalypse sunset gradient
+  const bg = g.createLinearGradient(0, 0, 0, 768)
+  bg.addColorStop(0, '#100204')
+  bg.addColorStop(0.4, '#400a10')
+  bg.addColorStop(0.7, '#78121a')
+  bg.addColorStop(1, '#0c0204')
+  g.fillStyle = bg
+  g.fillRect(0, 0, 512, 768)
+
+  // Giant blood moon
+  const moonGrad = g.createRadialGradient(256, 260, 20, 256, 260, 150)
+  moonGrad.addColorStop(0, '#ffdede')
+  moonGrad.addColorStop(0.5, '#e63946')
+  moonGrad.addColorStop(0.9, '#6a040f')
+  moonGrad.addColorStop(1, 'rgba(106, 4, 15, 0)')
+  g.fillStyle = moonGrad
+  g.beginPath()
+  g.arc(256, 260, 150, 0, Math.PI * 2)
+  g.fill()
+
+  // HUD crosshair and radar circles
+  g.strokeStyle = 'rgba(255, 255, 255, 0.3)'
+  g.lineWidth = 1
+  g.beginPath(); g.arc(256, 260, 175, 0, Math.PI * 2); g.stroke()
+  g.beginPath(); g.moveTo(256, 70); g.lineTo(256, 450); g.stroke()
+  g.beginPath(); g.moveTo(66, 260); g.lineTo(446, 260); g.stroke()
+
+  // Mecha Head & Horns Silhouette (Evangelion / Gundam aesthetic)
+  g.save()
+  g.fillStyle = '#080103'
+  g.beginPath()
+  // Crown horn
+  g.moveTo(256, 170)
+  g.lineTo(268, 230)
+  g.lineTo(330, 190) // right antenna
+  g.lineTo(290, 260)
+  g.lineTo(340, 310) // right shoulder armor
+  g.lineTo(360, 480)
+  g.lineTo(256, 520) // chin / center
+  g.lineTo(152, 480)
+  g.lineTo(172, 310) // left shoulder armor
+  g.lineTo(222, 260)
+  g.lineTo(182, 190) // left antenna
+  g.lineTo(244, 230)
+  g.closePath()
+  g.fill()
+
+  // Glowing toxic emerald mecha optics / eyes
+  g.fillStyle = '#52b788'
+  g.shadowColor = '#52b788'
+  g.shadowBlur = 16
+  g.beginPath()
+  g.moveTo(226, 335); g.lineTo(246, 330); g.lineTo(244, 342); g.lineTo(224, 345); g.closePath(); g.fill()
+  g.beginPath()
+  g.moveTo(286, 335); g.lineTo(266, 330); g.lineTo(268, 342); g.lineTo(288, 345); g.closePath(); g.fill()
+
+  // Forehead sensor emerald glow
+  g.beginPath(); g.arc(256, 280, 6, 0, Math.PI * 2); g.fill()
+  g.restore()
+
+  // Hazard caution stripes banner
+  const hzY = 640
+  const hzH = 26
+  g.fillStyle = '#050102'
+  g.fillRect(0, hzY, 512, hzH)
+  for (let x = -40; x < 552; x += 36) {
+    g.fillStyle = '#ffb703'
+    g.beginPath()
+    g.moveTo(x, hzY)
+    g.lineTo(x + 18, hzY)
+    g.lineTo(x + 6, hzY + hzH)
+    g.lineTo(x - 12, hzY + hzH)
+    g.closePath()
+    g.fill()
+  }
+
+  // Japanese typography
+  g.save()
+  g.fillStyle = '#ffffff'
+  g.font = '900 44px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('汎用人型決戦兵器', 256, 95)
+
+  g.fillStyle = '#ffb703'
+  g.font = 'bold 20px monospace'
+  g.fillText('UNIT-01 // BERERK MODE', 256, 130)
+
+  g.fillStyle = '#ff4d6d'
+  g.font = 'bold 12px monospace'
+  g.letterSpacing = '3px'
+  g.fillText('EMERGENCY DEFENSE SYSTEM : ONLINE', 256, 620)
+  g.fillText('SYNCHRONIZATION RATE : 99.8%', 256, 710)
+  g.restore()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteAnimePosterGhibliTexture(): THREE.CanvasTexture {
+  const key = 'suite-anime-poster-ghibli'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 768
+  const g = canvas.getContext('2d')!
+
+  // Lush anime sky gradient (Azure to golden peach sunset)
+  const sky = g.createLinearGradient(0, 0, 0, 768)
+  sky.addColorStop(0, '#134074')
+  sky.addColorStop(0.3, '#1d638f')
+  sky.addColorStop(0.55, '#5aa9b2')
+  sky.addColorStop(0.75, '#f4a261')
+  sky.addColorStop(0.9, '#e76f51')
+  sky.addColorStop(1, '#264653')
+  g.fillStyle = sky
+  g.fillRect(0, 0, 512, 768)
+
+  // Warm golden sun on horizon
+  g.fillStyle = '#fff3b0'
+  g.beginPath()
+  g.arc(360, 520, 55, 0, Math.PI * 2)
+  g.fill()
+
+  // Painterly cumulus clouds
+  const drawCloud = (cx: number, cy: number, r: number, color: string) => {
+    g.fillStyle = color
+    g.beginPath()
+    g.arc(cx, cy, r, 0, Math.PI * 2)
+    g.arc(cx - r * 0.7, cy + r * 0.2, r * 0.75, 0, Math.PI * 2)
+    g.arc(cx + r * 0.7, cy + r * 0.2, r * 0.75, 0, Math.PI * 2)
+    g.arc(cx - r * 0.3, cy - r * 0.3, r * 0.65, 0, Math.PI * 2)
+    g.arc(cx + r * 0.3, cy - r * 0.3, r * 0.65, 0, Math.PI * 2)
+    g.fill()
+  }
+
+  drawCloud(140, 360, 65, 'rgba(255, 245, 230, 0.85)')
+  drawCloud(380, 420, 80, 'rgba(255, 220, 190, 0.9)')
+  drawCloud(220, 470, 75, 'rgba(255, 235, 210, 0.95)')
+
+  // Distant rolling green hills silhouette
+  g.fillStyle = '#2d6a4f'
+  g.beginPath()
+  g.moveTo(0, 560)
+  g.bezierCurveTo(120, 520, 240, 580, 360, 540)
+  g.bezierCurveTo(440, 510, 490, 530, 512, 545)
+  g.lineTo(512, 768)
+  g.lineTo(0, 768)
+  g.closePath()
+  g.fill()
+
+  // Foreground dark emerald cliff with lone torii shrine / gazebo
+  g.fillStyle = '#1b4332'
+  g.beginPath()
+  g.moveTo(0, 610)
+  g.bezierCurveTo(90, 600, 170, 650, 240, 680)
+  g.lineTo(240, 768)
+  g.lineTo(0, 768)
+  g.closePath()
+  g.fill()
+
+  // Torii gate silhouette on cliff
+  g.fillStyle = '#8b2635'
+  g.fillRect(60, 565, 6, 40)
+  g.fillRect(86, 565, 6, 40)
+  g.fillRect(52, 562, 48, 6)
+  g.fillRect(56, 572, 40, 4)
+
+  // Floating fantasy steampunk glider / airship in upper sky
+  g.fillStyle = '#ffffff'
+  g.beginPath()
+  g.ellipse(280, 220, 38, 14, -0.15, 0, Math.PI * 2)
+  g.fill()
+  // Glider canvas wings
+  g.strokeStyle = '#fff0d0'
+  g.lineWidth = 4
+  g.beginPath()
+  g.moveTo(240, 220); g.lineTo(280, 195); g.lineTo(320, 220)
+  g.stroke()
+
+  // White birds soaring in formation
+  const drawBird = (bx: number, by: number, scale: number) => {
+    g.strokeStyle = '#ffffff'
+    g.lineWidth = 2 * scale
+    g.beginPath()
+    g.moveTo(bx - 10 * scale, by + 4 * scale)
+    g.quadraticCurveTo(bx - 4 * scale, by - 6 * scale, bx, by)
+    g.quadraticCurveTo(bx + 4 * scale, by - 6 * scale, bx + 10 * scale, by + 4 * scale)
+    g.stroke()
+  }
+  drawBird(180, 160, 0.8)
+  drawBird(210, 145, 0.9)
+  drawBird(235, 170, 0.6)
+  drawBird(350, 190, 0.7)
+
+  // Japanese title calligraphy
+  g.save()
+  g.fillStyle = '#ffffff'
+  g.font = '900 48px serif'
+  g.textAlign = 'center'
+  g.fillText('風 の 谷', 256, 95)
+
+  g.font = 'bold 20px serif'
+  g.fillStyle = '#ffe5b4'
+  g.fillText('空を駆ける旅人', 256, 130)
+
+  g.font = 'bold 12px sans-serif'
+  g.fillStyle = '#ffffff'
+  g.letterSpacing = '5px'
+  g.fillText('STUDIO NOSTALGIA ARCHIVES', 256, 730)
+  g.restore()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteAnimePosterLofiTexture(): THREE.CanvasTexture {
+  const key = 'suite-anime-poster-lofi'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 768
+  const g = canvas.getContext('2d')!
+
+  // Midnight indigo rain gradient
+  const bg = g.createLinearGradient(0, 0, 0, 768)
+  bg.addColorStop(0, '#090d16')
+  bg.addColorStop(0.4, '#131c2e')
+  bg.addColorStop(0.7, '#1b2842')
+  bg.addColorStop(1, '#0e1422')
+  g.fillStyle = bg
+  g.fillRect(0, 0, 512, 768)
+
+  // Blurred bokeh neon circles in Tokyo rain
+  const bokehs = [
+    { x: 120, y: 220, r: 35, c: 'rgba(255, 94, 125, 0.28)' },
+    { x: 280, y: 180, r: 50, c: 'rgba(0, 245, 212, 0.22)' },
+    { x: 390, y: 260, r: 42, c: 'rgba(255, 209, 102, 0.25)' },
+    { x: 180, y: 340, r: 45, c: 'rgba(120, 110, 255, 0.25)' },
+    { x: 330, y: 360, r: 30, c: 'rgba(255, 94, 125, 0.2)' },
+  ]
+  for (const b of bokehs) {
+    g.fillStyle = b.c
+    g.beginPath(); g.arc(b.x, b.y, b.r, 0, Math.PI * 2); g.fill()
+  }
+
+  // Rain streaks on glass window
+  g.strokeStyle = 'rgba(255, 255, 255, 0.18)'
+  g.lineWidth = 1.2
+  for (let rx = 30; rx < 482; rx += 25) {
+    const ry = (rx * 13) % 200 + 100
+    g.beginPath()
+    g.moveTo(rx, ry)
+    g.lineTo(rx - 8, ry + 45)
+    g.stroke()
+  }
+
+  // Warm glowing desk lamp light cone in foreground
+  const lampGrad = g.createRadialGradient(380, 540, 20, 380, 540, 160)
+  lampGrad.addColorStop(0, 'rgba(255, 225, 160, 0.65)')
+  lampGrad.addColorStop(0.6, 'rgba(255, 180, 100, 0.25)')
+  lampGrad.addColorStop(1, 'rgba(0, 0, 0, 0)')
+  g.fillStyle = lampGrad
+  g.beginPath(); g.arc(380, 540, 160, 0, Math.PI * 2); g.fill()
+
+  // Character sitting with headphones at window desk
+  g.fillStyle = '#0b0f18'
+  // Shoulders and body
+  g.beginPath()
+  g.ellipse(220, 570, 75, 45, -0.1, 0, Math.PI * 2)
+  g.fill()
+  // Head
+  g.beginPath()
+  g.arc(230, 485, 36, 0, Math.PI * 2)
+  g.fill()
+  // Over-ear headphones
+  g.strokeStyle = '#48cae4'
+  g.lineWidth = 6
+  g.beginPath(); g.arc(230, 485, 42, -Math.PI * 0.85, -Math.PI * 0.15); g.stroke()
+  g.fillStyle = '#48cae4'
+  g.beginPath(); g.ellipse(190, 485, 8, 14, 0, 0, Math.PI * 2); g.fill()
+  g.beginPath(); g.ellipse(270, 485, 8, 14, 0, 0, Math.PI * 2); g.fill()
+
+  // Glowing laptop screen
+  g.fillStyle = '#90e0ef'
+  g.beginPath()
+  g.moveTo(130, 560); g.lineTo(195, 540); g.lineTo(200, 590); g.lineTo(135, 605)
+  g.closePath()
+  g.fill()
+
+  // Curled sleeping cat on windowsill
+  g.fillStyle = '#ffb703'
+  g.beginPath(); g.ellipse(360, 610, 26, 18, 0, 0, Math.PI * 2); g.fill()
+  g.beginPath(); g.arc(380, 605, 12, 0, Math.PI * 2); g.fill()
+  // Cat ears
+  g.beginPath(); g.moveTo(375, 595); g.lineTo(380, 586); g.lineTo(385, 595); g.fill()
+  g.beginPath(); g.moveTo(385, 595); g.lineTo(390, 586); g.lineTo(395, 595); g.fill()
+
+  // Japanese typography & track title
+  g.save()
+  g.fillStyle = '#ffffff'
+  g.font = '900 44px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('深夜 急行', 256, 95)
+
+  g.fillStyle = '#48cae4'
+  g.font = 'bold 18px monospace'
+  g.fillText('24/7 TOKYO LO-FI BEATS', 256, 130)
+
+  g.fillStyle = 'rgba(255, 255, 255, 0.7)'
+  g.font = 'bold 12px monospace'
+  g.letterSpacing = '3px'
+  g.fillText('CHILL STUDY // RELAXATION // NIGHT DRIVE', 256, 725)
+  g.restore()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteMangaSpinesTexture(): THREE.CanvasTexture {
+  const key = 'suite-manga-spines'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 256
+  const g = canvas.getContext('2d')!
+
+  // Dark shelf background
+  g.fillStyle = '#141210'
+  g.fillRect(0, 0, 512, 256)
+
+  // 16 colorful manga book spines
+  const colors = [
+    '#e63946', '#f4a261', '#2a9d8f', '#e76f51', '#264653',
+    '#9b5de5', '#f15bb5', '#00bbf9', '#00f5d4', '#fee440',
+    '#d62828', '#003049', '#f77f00', '#fcbf49', '#3a86ff', '#8338ec',
+  ]
+  const spineW = 30
+  for (let i = 0; i < 16; i++) {
+    const x = 16 + i * spineW
+    g.fillStyle = colors[i % colors.length]
+    g.fillRect(x, 10, spineW - 4, 236)
+
+    // Spine 3D shadow crease
+    g.fillStyle = 'rgba(0, 0, 0, 0.25)'
+    g.fillRect(x + spineW - 6, 10, 2, 236)
+    g.fillStyle = 'rgba(255, 255, 255, 0.18)'
+    g.fillRect(x + 2, 10, 2, 236)
+
+    // Japanese Kanji / Title snippet on spine
+    g.save()
+    g.translate(x + (spineW - 4) / 2, 120)
+    g.rotate(Math.PI / 2)
+    g.fillStyle = '#ffffff'
+    g.font = 'bold 13px sans-serif'
+    g.textAlign = 'center'
+    g.fillText(`巻 ${(i % 12) + 1}`, 0, 4)
+    g.restore()
+
+    // Top volume badge
+    g.fillStyle = '#ffffff'
+    g.beginPath()
+    g.arc(x + (spineW - 4) / 2, 30, 8, 0, Math.PI * 2)
+    g.fill()
+    g.fillStyle = '#111111'
+    g.font = 'bold 9px monospace'
+    g.textAlign = 'center'
+    g.fillText(`${i + 1}`, x + (spineW - 4) / 2, 33)
+  }
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteFlutedWoodTexture(): THREE.CanvasTexture {
+  const key = 'suite-fluted-wood'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Deep luxury walnut base
+  g.fillStyle = '#1c140e'
+  g.fillRect(0, 0, 512, 512)
+
+  // Vertical flutes
+  const fluteW = 16
+  for (let x = 0; x < 512; x += fluteW) {
+    // Flute 3D gradient (deep shadow -> highlight ridge -> deep shadow)
+    const fGrad = g.createLinearGradient(x, 0, x + fluteW, 0)
+    fGrad.addColorStop(0, '#0f0a07')
+    fGrad.addColorStop(0.3, '#2a1e16')
+    fGrad.addColorStop(0.6, '#38281e')
+    fGrad.addColorStop(0.9, '#241a13')
+    fGrad.addColorStop(1, '#0e0a07')
+    g.fillStyle = fGrad
+    g.fillRect(x, 0, fluteW, 512)
+
+    // Very fine woodgrain streaks
+    g.strokeStyle = 'rgba(0, 0, 0, 0.2)'
+    g.lineWidth = 1
+    g.beginPath()
+    g.moveTo(x + 4, 0); g.lineTo(x + 4, 512)
+    g.stroke()
+  }
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.RepeatWrapping
+  textureCache.set(key, tex)
+  return tex
+}
+
 // =========================================================================
 // 3. 4F CORRIDOR & ELEVATOR LOUNGE PROCEDURAL TEXTURES
 // =========================================================================

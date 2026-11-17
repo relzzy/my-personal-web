@@ -14,6 +14,9 @@ import {
   corridorWayfindingTexture,
   corridorSuitePlaqueTexture,
   corridorRefuseChuteTexture,
+  corridorLoungeMagazineTexture,
+  corridorLoungeArtTexture,
+  suiteFlutedWoodTexture,
 } from './Materials'
 
 export interface Corridor4FResult {
@@ -75,6 +78,13 @@ export function buildCorridor4F(
     metalness: 0.06,
   })
 
+  const flutedWoodTex = suiteFlutedWoodTexture()
+  const flutedWoodMat = new THREE.MeshStandardMaterial({
+    map: flutedWoodTex,
+    roughness: 0.45,
+    metalness: 0.08,
+  })
+
   const goldMat = new THREE.MeshStandardMaterial({
     color: 0xd4af37,
     roughness: 0.28,
@@ -87,10 +97,10 @@ export function buildCorridor4F(
     metalness: 0.8,
   })
 
-  const elevatorSteelMat = new THREE.MeshStandardMaterial({
-    color: 0x94a3b8,
-    roughness: 0.25,
-    metalness: 0.82,
+  const satinElevatorMat = new THREE.MeshStandardMaterial({
+    color: 0xa0aec0,
+    roughness: 0.35,
+    metalness: 0.72,
   })
 
   const ceilingMat = new THREE.MeshStandardMaterial({
@@ -101,6 +111,38 @@ export function buildCorridor4F(
   const warmSconceGlowMat = new THREE.MeshBasicMaterial({
     color: 0xffea9f,
     toneMapped: false,
+  })
+
+  const coveLedMat = new THREE.MeshBasicMaterial({
+    color: 0xfffae6,
+    toneMapped: false,
+  })
+
+  const marbleMat = new THREE.MeshStandardMaterial({
+    color: 0xedebe8,
+    roughness: 0.22,
+    metalness: 0.08,
+  })
+
+  const leatherCognacMat = new THREE.MeshStandardMaterial({
+    color: 0x78350f,
+    roughness: 0.65,
+    metalness: 0.05,
+  })
+
+  const glassMat = new THREE.MeshStandardMaterial({
+    color: 0x7dd3fc,
+    roughness: 0.05,
+    metalness: 0.1,
+    transparent: true,
+    opacity: 0.35,
+    depthWrite: false,
+  })
+
+  const plantLeafMat = new THREE.MeshStandardMaterial({
+    color: 0x1b4332,
+    roughness: 0.6,
+    side: THREE.DoubleSide,
   })
 
   // =========================================================================
@@ -122,12 +164,21 @@ export function buildCorridor4F(
   runnerMesh.receiveShadow = true
   corridorGroup.add(runnerMesh)
 
-  // 3.3 Ceiling with Recessed Tray
+  // 3.3 Suspended Ceiling with Recessed LED Cove Lighting Tray
   const ceilMesh = new THREE.Mesh(new THREE.BoxGeometry(innerW, 0.1, innerD), ceilingMat)
   ceilMesh.position.set(cx, floorY + wallH + 0.05, cz)
   corridorGroup.add(ceilMesh)
 
-  // 3.4 Wall Wainscoting & Picture Rails
+  // Recessed cove tray
+  const coveTrayW = innerW - 1.2
+  const coveTrayD = innerD - 1.2
+  const trayMesh = new THREE.Mesh(new THREE.BoxGeometry(coveTrayW, 0.05, coveTrayD), ceilingMat)
+  trayMesh.position.set(cx, floorY + wallH - 0.02, cz)
+  const coveEdge = new THREE.Mesh(new THREE.BoxGeometry(coveTrayW + 0.08, 0.02, coveTrayD + 0.08), coveLedMat)
+  coveEdge.position.set(cx, floorY + wallH - 0.04, cz)
+  corridorGroup.add(trayMesh, coveEdge)
+
+  // 3.4 Wall Wainscoting & Picture Rails Builder
   const buildWallWithWainscot = (
     w: number,
     d: number,
@@ -166,68 +217,71 @@ export function buildCorridor4F(
 
     wallGrp.position.set(x, floorY, z)
     corridorGroup.add(wallGrp)
-    return wallGrp
   }
 
-  // SOUTH WALL (Full solid length with emergency fire station)
-  buildWallWithWainscot(innerW + wallThick * 2, wallThick, cx, cz + innerD / 2 + wallThick / 2, true)
+  // SOUTH WALL (Solid backing with wainscot)
+  buildWallWithWainscot(innerW, wallThick, cx, cz + innerD / 2 + wallThick / 2, true)
 
-  // EAST WALL (Solid with sconce)
+  // EAST WALL (Solid with picture rail)
   buildWallWithWainscot(wallThick, innerD, cx + innerW / 2 + wallThick / 2, cz, false)
 
   // WEST WALL (Split with grand entrance to Suite 402)
   const doorW402 = 1.6
-  const doorH402 = 2.4
-  const wWallLen = (innerD - doorW402) / 2
-
-  buildWallWithWainscot(wallThick, wWallLen, cx - innerW / 2 - wallThick / 2, cz - innerD / 2 + wWallLen / 2, false)
-  buildWallWithWainscot(wallThick, wWallLen, cx - innerW / 2 - wallThick / 2, cz + innerD / 2 - wWallLen / 2, false)
+  const wWallSegD = (innerD - doorW402) / 2
+  buildWallWithWainscot(wallThick, wWallSegD, cx - innerW / 2 - wallThick / 2, cz - innerD / 2 + wWallSegD / 2, false)
+  buildWallWithWainscot(wallThick, wWallSegD, cx - innerW / 2 - wallThick / 2, cz + innerD / 2 - wWallSegD / 2, false)
 
   // Header over Suite 402 entrance
-  const wHeader = new THREE.Mesh(new THREE.BoxGeometry(wallThick, wallH - doorH402, doorW402), upperWallMat)
-  wHeader.position.set(cx - innerW / 2 - wallThick / 2, floorY + doorH402 + (wallH - doorH402) / 2, cz)
+  const eDoorH402 = 2.4
+  const wHeader = new THREE.Mesh(new THREE.BoxGeometry(wallThick, wallH - eDoorH402, doorW402), upperWallMat)
+  wHeader.position.set(cx - innerW / 2 - wallThick / 2, floorY + eDoorH402 + (wallH - eDoorH402) / 2, cz)
   corridorGroup.add(wHeader)
 
   // Suite 402 Door Architrave & Plaque
-  const archTop = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, doorW402 + 0.16), goldMat)
-  archTop.position.set(cx - innerW / 2 + 0.02, floorY + doorH402 + 0.04, cz)
-  const archL = new THREE.Mesh(new THREE.BoxGeometry(0.06, doorH402, 0.08), goldMat)
-  archL.position.set(cx - innerW / 2 + 0.02, floorY + doorH402 / 2, cz - doorW402 / 2 - 0.04)
-  const archR = new THREE.Mesh(new THREE.BoxGeometry(0.06, doorH402, 0.08), goldMat)
-  archR.position.set(cx - innerW / 2 + 0.02, floorY + doorH402 / 2, cz + doorW402 / 2 + 0.04)
-  corridorGroup.add(archTop, archL, archR)
+  const archW402 = new THREE.Mesh(new THREE.BoxGeometry(0.08, eDoorH402, 0.08), goldMat)
+  archW402.position.set(cx - innerW / 2 + 0.02, floorY + eDoorH402 / 2, cz - doorW402 / 2)
+  const archW402R = new THREE.Mesh(new THREE.BoxGeometry(0.08, eDoorH402, 0.08), goldMat)
+  archW402R.position.set(cx - innerW / 2 + 0.02, floorY + eDoorH402 / 2, cz + doorW402 / 2)
+  const archW402Top = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.08, doorW402 + 0.16), goldMat)
+  archW402Top.position.set(cx - innerW / 2 + 0.02, floorY + eDoorH402 + 0.04, cz)
+  corridorGroup.add(archW402, archW402R, archW402Top)
 
   // Suite 402 Plaque
-  const plaque402Tex = corridorSuitePlaqueTexture('402')
-  const plaque402 = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.12), new THREE.MeshStandardMaterial({ map: plaque402Tex, metalness: 0.85, roughness: 0.2 }))
+  const plaqueTex402 = corridorSuitePlaqueTexture('402')
+  const plaque402 = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.24, 0.16),
+    new THREE.MeshStandardMaterial({ map: plaqueTex402, metalness: 0.85, roughness: 0.2 }),
+  )
   plaque402.rotation.y = Math.PI / 2
-  plaque402.position.set(cx - innerW / 2 + 0.02, floorY + 1.6, cz + doorW402 / 2 + 0.2)
-  corridorGroup.add(plaque402)
+  plaque402.position.set(cx - innerW / 2 + 0.04, floorY + 1.65, cz - doorW402 / 2 - 0.25)
 
-  // Smart Keypad with glowing LED
-  const keypad = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.16, 0.08), darkMetalMat)
-  keypad.position.set(cx - innerW / 2 + 0.02, floorY + 1.35, cz + doorW402 / 2 + 0.2)
-  const keypadLed = new THREE.Mesh(new THREE.CircleGeometry(0.012, 8), new THREE.MeshBasicMaterial({ color: 0x22c55e, toneMapped: false }))
-  keypadLed.rotation.y = Math.PI / 2
-  keypadLed.position.set(cx - innerW / 2 + 0.031, floorY + 1.4, cz + doorW402 / 2 + 0.2)
-  corridorGroup.add(keypad, keypadLed)
+  // Smart lock keypad with glowing cyan LED
+  const lockMesh = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.22, 0.1), darkMetalMat)
+  lockMesh.position.set(cx - innerW / 2 + 0.03, floorY + 1.25, cz - doorW402 / 2 - 0.25)
+  const lockLed = new THREE.Mesh(new THREE.CircleGeometry(0.012, 12), new THREE.MeshBasicMaterial({ color: 0x00ffff }))
+  lockLed.rotation.y = Math.PI / 2
+  lockLed.position.set(cx - innerW / 2 + 0.046, floorY + 1.32, cz - doorW402 / 2 - 0.25)
+  corridorGroup.add(plaque402, lockMesh, lockLed)
 
   // Coir Welcome Runner Mat for Suite 402
-  const mat402 = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.4), new THREE.MeshStandardMaterial({
-    color: 0x121722,
-    roughness: 0.8,
-  }))
-  mat402.rotation.x = -Math.PI / 2
-  mat402.position.set(cx - innerW / 2 + 0.55, floorY + 0.054, cz)
-  corridorGroup.add(mat402)
+  const coirMat = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.8, 1.3),
+    new THREE.MeshStandardMaterial({ color: 0x3d2c1f, roughness: 0.95 }),
+  )
+  coirMat.rotation.x = -Math.PI / 2
+  coirMat.position.set(cx - innerW / 2 + 0.55, floorY + 0.053, cz)
+  corridorGroup.add(coirMat)
 
   // Warm light spill from Suite 402 door
-  const suiteSpillLight = new THREE.PointLight(0xffb84d, 1.8, 4.5, 1.2)
-  suiteSpillLight.position.set(cx - innerW / 2 + 0.5, floorY + 1.8, cz)
-  corridorGroup.add(suiteSpillLight)
+  const suiteSpill = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.4, 1.5),
+    new THREE.MeshBasicMaterial({ color: 0xffeed6, transparent: true, opacity: 0.18 }),
+  )
+  suiteSpill.rotation.x = -Math.PI / 2
+  suiteSpill.position.set(cx - innerW / 2 + 1.1, floorY + 0.054, cz)
+  corridorGroup.add(suiteSpill)
 
-  // NORTH WALL (With Elevators, Suite 401 & 403 Doors, Refuse Chute, and Stairs)
-  // Solid wall backing
+  // NORTH WALL (Solid backing)
   const nWallGeo = new THREE.BoxGeometry(innerW + wallThick * 2, wallH, wallThick)
   const nWall = new THREE.Mesh(nWallGeo, upperWallMat)
   nWall.position.set(cx, floorY + wallH / 2, cz - innerD / 2 - wallThick / 2)
@@ -241,72 +295,114 @@ export function buildCorridor4F(
   corridorGroup.add(nWainscot, nPictureRail)
 
   // =========================================================================
-  // 4. DUAL ELEVATOR / LIFT BANK (CENTER OF NORTH WALL)
+  // 4. OVERHAULED DUAL ELEVATOR BANK (NORTH WALL)
+  // [ELEVATOR REDESIGN]: Separated into two distinct, realistically scaled
+  // luxury elevator portals (Lift 1 and Lift 2) with an architectural center
+  // call pier, brushed champagne bronze doors, and glowing indicators.
   // =========================================================================
-  const elevBankW = 4.4
-  const elevH = 2.4
+  const elevH = 2.35
+  const elevW = 1.5
   const elevBankZ = cz - innerD / 2 + 0.02
 
-  // Grand Brass Architrave Casing
-  const architrave = new THREE.Mesh(new THREE.BoxGeometry(elevBankW, elevH + 0.35, 0.08), goldMat)
-  architrave.position.set(cx, floorY + (elevH + 0.35) / 2, elevBankZ + 0.04)
+  // 4.1 CENTER ARCHITECTURAL PIER (Between Lift 1 & Lift 2)
+  const pierW = 0.85
+  const pierZ = elevBankZ + 0.04
+  const pierMesh = new THREE.Mesh(new THREE.BoxGeometry(pierW, wallH, 0.08), wainscotMat)
+  pierMesh.position.set(cx, floorY + wallH / 2, pierZ)
 
-  const architraveInner = new THREE.Mesh(new THREE.BoxGeometry(elevBankW - 0.16, elevH + 0.18, 0.06), darkMetalMat)
-  architraveInner.position.set(cx, floorY + (elevH + 0.18) / 2, elevBankZ + 0.06)
-  corridorGroup.add(architrave, architraveInner)
+  // Fluted wood panel insert in center pier
+  const pierFlute = new THREE.Mesh(new THREE.BoxGeometry(pierW - 0.12, wallH - 0.4, 0.02), flutedWoodMat)
+  pierFlute.position.set(cx, floorY + wallH / 2, pierZ + 0.045)
 
-  // Center Call Station Column (between the two elevators)
-  const callStation = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.65, 0.04), darkMetalMat)
-  callStation.position.set(cx, floorY + 1.3, elevBankZ + 0.08)
+  // Gold vertical edge trim on pier
+  const pierTrimL = new THREE.Mesh(new THREE.BoxGeometry(0.025, wallH, 0.03), goldMat)
+  pierTrimL.position.set(cx - pierW / 2 + 0.012, floorY + wallH / 2, pierZ + 0.045)
+  const pierTrimR = new THREE.Mesh(new THREE.BoxGeometry(0.025, wallH, 0.03), goldMat)
+  pierTrimR.position.set(cx + pierW / 2 - 0.012, floorY + wallH / 2, pierZ + 0.045)
+  corridorGroup.add(pierMesh, pierFlute, pierTrimL, pierTrimR)
 
-  const callBtnGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.02, 12)
+  // Brushed Brass Elevator Call Station
+  const callPlate = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.65, 0.03), goldMat)
+  callPlate.position.set(cx, floorY + 1.35, pierZ + 0.06)
+
+  const callBtnGeo = new THREE.CylinderGeometry(0.022, 0.022, 0.02, 12)
   callBtnGeo.rotateX(Math.PI / 2)
   const callBtnUp = new THREE.Mesh(callBtnGeo, warmSconceGlowMat)
-  callBtnUp.position.set(cx, floorY + 1.45, elevBankZ + 0.1)
-  const callBtnDown = new THREE.Mesh(callBtnGeo, goldMat)
-  callBtnDown.position.set(cx, floorY + 1.25, elevBankZ + 0.1)
-  corridorGroup.add(callStation, callBtnUp, callBtnDown)
+  callBtnUp.position.set(cx, floorY + 1.48, pierZ + 0.078)
+  const callBtnDown = new THREE.Mesh(callBtnGeo, new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.4 }))
+  callBtnDown.position.set(cx, floorY + 1.25, pierZ + 0.078)
 
-  // 4.1 Left Elevator (Lift 1: The Active Animated Elevator to 1F Lobby)
-  const lift1X = cx - 1.15
-  const doorPanelW = 0.92
-  const doorGeo = new THREE.BoxGeometry(doorPanelW, elevH, 0.04)
+  // Directory badge
+  const dirPlate = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.08), darkMetalMat)
+  dirPlate.position.set(cx, floorY + 1.72, pierZ + 0.065)
+  corridorGroup.add(callPlate, callBtnUp, callBtnDown, dirPlate)
 
-  const lift1DoorL = new THREE.Mesh(doorGeo, elevatorSteelMat)
-  const lift1DoorR = new THREE.Mesh(doorGeo, elevatorSteelMat)
-  lift1DoorL.position.set(lift1X - doorPanelW / 2 + 0.01, floorY + elevH / 2, elevBankZ + 0.05)
-  lift1DoorR.position.set(lift1X + doorPanelW / 2 - 0.01, floorY + elevH / 2, elevBankZ + 0.05)
+  // 4.2 HELPER: BUILD ELEVATOR PORTAL
+  const buildElevatorPortal = (portalX: number, isLeft: boolean) => {
+    const pGroup = new THREE.Group()
+
+    // Outer Beveled Architrave (Gold / Brushed Bronze)
+    const archTop = new THREE.Mesh(new THREE.BoxGeometry(elevW + 0.22, 0.14, 0.08), goldMat)
+    archTop.position.set(portalX, floorY + elevH + 0.07, elevBankZ + 0.04)
+
+    const archL = new THREE.Mesh(new THREE.BoxGeometry(0.12, elevH, 0.08), goldMat)
+    archL.position.set(portalX - elevW / 2 - 0.06, floorY + elevH / 2, elevBankZ + 0.04)
+
+    const archR = new THREE.Mesh(new THREE.BoxGeometry(0.12, elevH, 0.08), goldMat)
+    archR.position.set(portalX + elevW / 2 + 0.06, floorY + elevH / 2, elevBankZ + 0.04)
+
+    // Inner Dark Titanium Door Reveal
+    const revealTop = new THREE.Mesh(new THREE.BoxGeometry(elevW, 0.04, 0.06), darkMetalMat)
+    revealTop.position.set(portalX, floorY + elevH - 0.02, elevBankZ + 0.05)
+    const revealL = new THREE.Mesh(new THREE.BoxGeometry(0.04, elevH, 0.06), darkMetalMat)
+    revealL.position.set(portalX - elevW / 2 + 0.02, floorY + elevH / 2, elevBankZ + 0.05)
+    const revealR = new THREE.Mesh(new THREE.BoxGeometry(0.04, elevH, 0.06), darkMetalMat)
+    revealR.position.set(portalX + elevW / 2 - 0.02, floorY + elevH / 2, elevBankZ + 0.05)
+
+    // Polished Brass Floor Sill
+    const sill = new THREE.Mesh(new THREE.BoxGeometry(elevW + 0.08, 0.02, 0.14), goldMat)
+    sill.position.set(portalX, floorY + 0.053, elevBankZ + 0.07)
+
+    // Backlit Floor Indicator Screen Box
+    const dispTex = corridorElevatorDisplayTexture(isLeft ? 'left' : 'right')
+    const dispMat = new THREE.MeshBasicMaterial({ map: dispTex, toneMapped: false })
+    const dispMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.18), dispMat)
+    dispMesh.position.set(portalX, floorY + elevH + 0.24, elevBankZ + 0.085)
+
+    const dispFrame = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.22, 0.03), darkMetalMat)
+    dispFrame.position.set(portalX, floorY + elevH + 0.24, elevBankZ + 0.07)
+
+    // Directional Arrival Lantern (Chevron Up)
+    const lanternGeo = new THREE.ConeGeometry(0.04, 0.07, 4)
+    const lanternMat = isLeft ? warmSconceGlowMat : new THREE.MeshStandardMaterial({ color: 0x475569 })
+    const lantern = new THREE.Mesh(lanternGeo, lanternMat)
+    lantern.position.set(portalX, floorY + elevH + 0.38, elevBankZ + 0.07)
+
+    pGroup.add(
+      archTop, archL, archR,
+      revealTop, revealL, revealR,
+      sill, dispFrame, dispMesh, lantern,
+    )
+    corridorGroup.add(pGroup)
+  }
+
+  // 4.3 LIFT 1 (ACTIVE ELEVATOR TO 1F) - Left Portal
+  const lift1X = cx - 1.45
+  buildElevatorPortal(lift1X, true)
+
+  // Sliding Elevator Doors for Lift 1
+  const doorPanelW = 0.74
+  const doorPanelH = elevH - 0.04
+  const doorGeo = new THREE.BoxGeometry(doorPanelW, doorPanelH, 0.035)
+
+  const lift1DoorL = new THREE.Mesh(doorGeo, satinElevatorMat)
+  const lift1DoorR = new THREE.Mesh(doorGeo, satinElevatorMat)
+  lift1DoorL.position.set(lift1X - doorPanelW / 2 + 0.01, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
+  lift1DoorR.position.set(lift1X + doorPanelW / 2 - 0.01, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
   corridorGroup.add(lift1DoorL, lift1DoorR)
 
-  // Digital Floor Display: "▲ 4"
-  const dispTex1 = corridorElevatorDisplayTexture('left')
-  const dispMat1 = new THREE.MeshBasicMaterial({ map: dispTex1, toneMapped: false })
-  const dispMesh1 = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 0.2), dispMat1)
-  dispMesh1.position.set(lift1X, floorY + elevH + 0.18, elevBankZ + 0.09)
-  corridorGroup.add(dispMesh1)
-
-  // 4.2 Right Elevator (Lift 2: Idle Elevator)
-  const lift2X = cx + 1.15
-  const lift2DoorL = new THREE.Mesh(doorGeo, elevatorSteelMat)
-  const lift2DoorR = new THREE.Mesh(doorGeo, elevatorSteelMat)
-  lift2DoorL.position.set(lift2X - doorPanelW / 2 + 0.01, floorY + elevH / 2, elevBankZ + 0.05)
-  lift2DoorR.position.set(lift2X + doorPanelW / 2 - 0.01, floorY + elevH / 2, elevBankZ + 0.05)
-  corridorGroup.add(lift2DoorL, lift2DoorR)
-
-  // Digital Floor Display: "4 - IDLE"
-  const dispTex2 = corridorElevatorDisplayTexture('right')
-  const dispMat2 = new THREE.MeshBasicMaterial({ map: dispTex2, toneMapped: false })
-  const dispMesh2 = new THREE.Mesh(new THREE.PlaneGeometry(0.65, 0.2), dispMat2)
-  dispMesh2.position.set(lift2X, floorY + elevH + 0.18, elevBankZ + 0.09)
-  corridorGroup.add(dispMesh2)
-
-  // Polished Brass Floor Sill Threshold
-  const elevSill = new THREE.Mesh(new THREE.BoxGeometry(elevBankW - 0.1, 0.02, 0.16), goldMat)
-  elevSill.position.set(cx, floorY + 0.053, elevBankZ + 0.08)
-  corridorGroup.add(elevSill)
-
-  // Elevator Cab Behind Left Lift
-  const cabW = 2.1
+  // Lift 1 Cab Interior (Behind doors, Z: 60.4 to 62.4)
+  const cabW = 1.9
   const cabD = 2.0
   const cabH = 2.5
   const cabZ = elevBankZ - cabD / 2 - 0.02
@@ -314,11 +410,34 @@ export function buildCorridor4F(
   cabFloor.position.set(lift1X, floorY + 0.02, cabZ)
   const cabCeil = new THREE.Mesh(new THREE.BoxGeometry(cabW, 0.06, cabD), darkMetalMat)
   cabCeil.position.set(lift1X, floorY + cabH, cabZ)
-  const cabBack = new THREE.Mesh(new THREE.BoxGeometry(cabW, cabH, 0.04), new THREE.MeshStandardMaterial({ color: 0xc8d4e0, roughness: 0.1, metalness: 0.9 }))
+  // Rear stainless mirror panel
+  const cabBack = new THREE.Mesh(
+    new THREE.BoxGeometry(cabW, cabH, 0.04),
+    new THREE.MeshStandardMaterial({ color: 0xd8e2ec, roughness: 0.12, metalness: 0.92 }),
+  )
   cabBack.position.set(lift1X, floorY + cabH / 2, cabZ - cabD / 2)
-  const cabLight = new THREE.PointLight(0xfffae6, 2.0, 5.0)
+  // Brass interior handrail
+  const cabRail = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, cabW - 0.3, 12), goldMat)
+  cabRail.rotateZ(Math.PI / 2)
+  cabRail.position.set(lift1X, floorY + 0.95, cabZ - cabD / 2 + 0.08)
+
+  const cabLight = new THREE.PointLight(0xfffae6, 2.2, 5.5, 1.2)
   cabLight.position.set(lift1X, floorY + cabH - 0.1, cabZ)
-  corridorGroup.add(cabFloor, cabCeil, cabBack, cabLight)
+  corridorGroup.add(cabFloor, cabCeil, cabBack, cabRail, cabLight)
+
+  // 4.4 LIFT 2 (STANDBY ELEVATOR) - Right Portal
+  const lift2X = cx + 1.45
+  buildElevatorPortal(lift2X, false)
+
+  const lift2DoorL = new THREE.Mesh(doorGeo, satinElevatorMat)
+  const lift2DoorR = new THREE.Mesh(doorGeo, satinElevatorMat)
+  lift2DoorL.position.set(lift2X - doorPanelW / 2 + 0.01, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
+  lift2DoorR.position.set(lift2X + doorPanelW / 2 - 0.01, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
+
+  // Vertical center seam highlight
+  const seamR = new THREE.Mesh(new THREE.BoxGeometry(0.008, doorPanelH, 0.038), darkMetalMat)
+  seamR.position.set(lift2X, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
+  corridorGroup.add(lift2DoorL, lift2DoorR, seamR)
 
   // =========================================================================
   // 5. SUITE 401 & SUITE 403 ENTRANCE DOORS
@@ -420,9 +539,6 @@ export function buildCorridor4F(
   stairsSign.position.set(stairsX, floorY + 2.52, stairsZ + 0.06)
   corridorGroup.add(stairsFrame, stairsLeaf, glassPanel, panicBar, stairsSign)
 
-  // =========================================================================
-  // 8. WAYFINDING DIRECTIONAL SIGNAGE & SCONCES
-  // =========================================================================
   // Directional Plaque: "◄ 401-404 | LIFTS | STAIRS ►"
   const wayTex = corridorWayfindingTexture()
   const wayMat = new THREE.MeshStandardMaterial({ map: wayTex, roughness: 0.35, metalness: 0.6 })
@@ -430,22 +546,196 @@ export function buildCorridor4F(
   wayMesh.position.set(cx + 6.3, floorY + 1.6, cz - innerD / 2 + 0.04)
   corridorGroup.add(wayMesh)
 
-  // Recessed Fire Safety Station on South Wall (Hose reel & extinguisher)
+  // =========================================================================
+  // 8. LUXURY RESIDENTIAL LOUNGE SEATING & CONSOLE (SOUTH WALL)
+  // [NEW POLISH]: High-end cognac leather sofa, Italian marble coffee table,
+  // architectural console credenza, large decorative mirror, magazines, and plants.
+  // =========================================================================
+  const sofaX = cx + 0.5
+  const sofaZ = cz + innerD / 2 - 0.48 // South wall zone (67.1)
+  const sofaW = 2.2
+  const sofaD = 0.78
+
+  // 8.1 Cognac Leather Lounge Sofa
+  const sofaGroup = new THREE.Group()
+  sofaGroup.position.set(sofaX, floorY, sofaZ)
+
+  // Main base & seat cushion
+  const sofaSeat = new THREE.Mesh(new THREE.BoxGeometry(sofaW, 0.22, sofaD), leatherCognacMat)
+  sofaSeat.position.set(0, 0.35, 0)
+
+  // Low angled backrest
+  const sofaBack = new THREE.Mesh(new THREE.BoxGeometry(sofaW, 0.48, 0.16), leatherCognacMat)
+  sofaBack.position.set(0, 0.65, sofaD / 2 - 0.08)
+
+  // Symmetrical armrests
+  const sofaArmL = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.32, sofaD), leatherCognacMat)
+  sofaArmL.position.set(-sofaW / 2 + 0.08, 0.48, 0)
+  const sofaArmR = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.32, sofaD), leatherCognacMat)
+  sofaArmR.position.set(sofaW / 2 - 0.08, 0.48, 0)
+
+  // 4 Tapered brass legs
+  const sLegGeo = new THREE.CylinderGeometry(0.018, 0.024, 0.24, 8)
+  const sLeg1 = new THREE.Mesh(sLegGeo, goldMat); sLeg1.position.set(-sofaW / 2 + 0.15, 0.12, -sofaD / 2 + 0.12)
+  const sLeg2 = new THREE.Mesh(sLegGeo, goldMat); sLeg2.position.set(sofaW / 2 - 0.15, 0.12, -sofaD / 2 + 0.12)
+  const sLeg3 = new THREE.Mesh(sLegGeo, goldMat); sLeg3.position.set(-sofaW / 2 + 0.15, 0.12, sofaD / 2 - 0.12)
+  const sLeg4 = new THREE.Mesh(sLegGeo, goldMat); sLeg4.position.set(sofaW / 2 - 0.15, 0.12, sofaD / 2 - 0.12)
+
+  sofaGroup.add(sofaSeat, sofaBack, sofaArmL, sofaArmR, sLeg1, sLeg2, sLeg3, sLeg4)
+  corridorGroup.add(sofaGroup)
+
+  // 8.2 Low Italian White Marble Coffee Table
+  const tableX = sofaX
+  const tableZ = sofaZ - 1.05
+  const cTableTop = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.035, 32), marbleMat)
+  cTableTop.position.set(tableX, floorY + 0.4, tableZ)
+
+  const cTableRim = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.56, 0.015, 32), goldMat)
+  cTableRim.position.set(tableX, floorY + 0.39, tableZ)
+
+  // Tripod brass legs
+  for (let i = 0; i < 3; i++) {
+    const ang = (i * Math.PI * 2) / 3
+    const tLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.018, 0.38, 8), goldMat)
+    tLeg.position.set(tableX + Math.cos(ang) * 0.36, floorY + 0.19, tableZ + Math.sin(ang) * 0.36)
+    corridorGroup.add(tLeg)
+  }
+  corridorGroup.add(cTableTop, cTableRim)
+
+  // Architecture Magazine on Coffee Table
+  const magTex = corridorLoungeMagazineTexture()
+  const magMat = new THREE.MeshStandardMaterial({ map: magTex, roughness: 0.35, metalness: 0.1 })
+  const magMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.26, 0.34), magMat)
+  magMesh.rotation.x = -Math.PI / 2
+  magMesh.rotation.z = 0.2
+  magMesh.position.set(tableX - 0.12, floorY + 0.42, tableZ - 0.05)
+
+  // Decorative Ceramic Center Bowl
+  const bowlMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.08, 0.05, 16), darkMetalMat)
+  bowlMesh.position.set(tableX + 0.18, floorY + 0.43, tableZ + 0.08)
+  corridorGroup.add(magMesh, bowlMesh)
+
+  // 8.3 Floating Walnut Console Credenza (South Wall)
+  const credX = cx - 3.2
+  const credZ = cz + innerD / 2 - 0.22
+  const credW = 1.8
+  const credH = 0.52
+  const credD = 0.38
+
+  const credMesh = new THREE.Mesh(new THREE.BoxGeometry(credW, credH, credD), wainscotMat)
+  credMesh.position.set(credX, floorY + 0.55, credZ)
+
+  const credGold = new THREE.Mesh(new THREE.BoxGeometry(credW + 0.02, 0.015, credD + 0.02), goldMat)
+  credGold.position.set(credX, floorY + 0.55 + credH / 2, credZ)
+  corridorGroup.add(credMesh, credGold)
+
+  // Ceramic Blossom Vase on Credenza
+  const vaseMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 0.28, 16), marbleMat)
+  vaseMesh.position.set(credX - 0.5, floorY + 0.55 + credH / 2 + 0.14, credZ)
+
+  // Cherry Blossom branch
+  const branchGeo = new THREE.CylinderGeometry(0.008, 0.012, 0.45, 6)
+  const branch = new THREE.Mesh(branchGeo, new THREE.MeshStandardMaterial({ color: 0x3d2b1f }))
+  branch.rotation.z = 0.25
+  branch.position.set(credX - 0.48, floorY + 0.55 + credH / 2 + 0.35, credZ)
+  const blossomPetal = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffb7c5 }))
+  blossomPetal.position.set(credX - 0.42, floorY + 0.55 + credH / 2 + 0.52, credZ)
+  corridorGroup.add(vaseMesh, branch, blossomPetal)
+
+  // Warm Table Lamp on Credenza
+  const tLampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 0.02, 16), goldMat)
+  tLampBase.position.set(credX + 0.5, floorY + 0.55 + credH / 2 + 0.01, credZ)
+  const tLampStem = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.22, 8), goldMat)
+  tLampStem.position.set(credX + 0.5, floorY + 0.55 + credH / 2 + 0.12, credZ)
+  const tLampShade = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.18, 16), new THREE.MeshStandardMaterial({ color: 0xfaf5ee, roughness: 0.8 }))
+  tLampShade.position.set(credX + 0.5, floorY + 0.55 + credH / 2 + 0.26, credZ)
+  const tLampLight = new THREE.PointLight(0xffeaaf, 1.2, 3.5, 1.2)
+  tLampLight.position.set(credX + 0.5, floorY + 0.55 + credH / 2 + 0.26, credZ)
+  corridorGroup.add(tLampBase, tLampStem, tLampShade, tLampLight)
+
+  // 8.4 Large Decorative Arched Mirror (Above Credenza)
+  const mirrorX = credX
+  const mirrorY = floorY + 1.75
+  const mirrorZ = cz + innerD / 2 - 0.02
+  const mirrorW = 1.2
+  const mirrorH = 1.25
+
+  const mirrorFrame = new THREE.Mesh(new THREE.BoxGeometry(mirrorW, mirrorH, 0.03), goldMat)
+  mirrorFrame.position.set(mirrorX, mirrorY, mirrorZ)
+  const mirrorGlass = new THREE.Mesh(new THREE.PlaneGeometry(mirrorW - 0.08, mirrorH - 0.08), glassMat)
+  mirrorGlass.position.set(mirrorX, mirrorY, mirrorZ + 0.018)
+  corridorGroup.add(mirrorFrame, mirrorGlass)
+
+  // 8.5 Contemporary Japanese Abstract Gallery Artwork (South Wall & East Wall)
+  const artTex = corridorLoungeArtTexture()
+  const artMat = new THREE.MeshStandardMaterial({ map: artTex, roughness: 0.25, metalness: 0.15 })
+
+  // South Wall Art piece
+  const artMesh1 = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.2), artMat)
+  artMesh1.position.set(cx + 3.6, floorY + 1.7, cz + innerD / 2 - 0.02)
+  const artFrame1 = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.3, 0.03), darkMetalMat)
+  artFrame1.position.set(cx + 3.6, floorY + 1.7, cz + innerD / 2 - 0.03)
+  const artSconce1 = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.03, 0.08), goldMat)
+  artSconce1.position.set(cx + 3.6, floorY + 2.45, cz + innerD / 2 - 0.06)
+  corridorGroup.add(artMesh1, artFrame1, artSconce1)
+
+  // East Wall Art piece
+  const artMesh2 = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 1.3), artMat)
+  artMesh2.rotation.y = -Math.PI / 2
+  artMesh2.position.set(cx + innerW / 2 - 0.02, floorY + 1.7, cz)
+  const artFrame2 = new THREE.Mesh(new THREE.BoxGeometry(0.03, 1.4, 1.4), darkMetalMat)
+  artFrame2.position.set(cx + innerW / 2 - 0.03, floorY + 1.7, cz)
+  corridorGroup.add(artMesh2, artFrame2)
+
+  // 8.6 Potted Sansevieria Snake Plants
+  const createPlanter = (px: number, pz: number) => {
+    const pGroup = new THREE.Group()
+    pGroup.position.set(px, floorY, pz)
+
+    // White Fluted Ceramic Pot
+    const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.16, 0.45, 16), marbleMat)
+    pot.position.set(0, 0.35, 0)
+
+    // Brass tripod stand
+    for (let l = 0; l < 3; l++) {
+      const a = (l * Math.PI * 2) / 3
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.28, 8), goldMat)
+      leg.position.set(Math.cos(a) * 0.14, 0.14, Math.sin(a) * 0.14)
+      pGroup.add(leg)
+    }
+    pGroup.add(pot)
+
+    // Upward sword leaves
+    for (let i = 0; i < 9; i++) {
+      const a = (i * Math.PI * 2) / 9
+      const h = 0.55 + (i % 3) * 0.15
+      const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.08, h, 0.015), plantLeafMat)
+      leaf.position.set(Math.cos(a) * 0.09, 0.45 + h / 2, Math.sin(a) * 0.09)
+      leaf.rotation.y = a
+      leaf.rotation.z = Math.cos(a) * 0.08
+      pGroup.add(leaf)
+    }
+    corridorGroup.add(pGroup)
+  }
+
+  createPlanter(sofaX - 1.4, sofaZ)
+  createPlanter(sofaX + 1.4, sofaZ)
+  createPlanter(cx - 6.4, cz - innerD / 2 + 0.4)
+
+  // Fire safety station on South wall
   const fireBox = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.55, 0.06), new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.4 }))
-  fireBox.position.set(cx - 2.8, floorY + 1.25, cz + innerD / 2 - 0.02)
+  fireBox.position.set(cx - 5.0, floorY + 1.25, cz + innerD / 2 - 0.02)
   corridorGroup.add(fireBox)
 
   // Brass Hourglass Wall Sconces
-  const sconceXPositions = [cx - 5.5, cx - 1.8, cx + 1.8, cx + 4.4, cx]
+  const sconceXPositions = [cx - 5.5, cx - 2.8, cx + 2.8, cx + 4.5]
   for (const sx of sconceXPositions) {
     const sconceBase = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.16, 0.04), goldMat)
     sconceBase.position.set(sx, floorY + 1.75, cz - innerD / 2 + 0.03)
 
-    // Upward cone
     const coneUp = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.1, 8), warmSconceGlowMat)
     coneUp.position.set(sx, floorY + 1.86, cz - innerD / 2 + 0.04)
 
-    // Downward cone
     const coneDown = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.1, 8), warmSconceGlowMat)
     coneDown.rotation.x = Math.PI
     coneDown.position.set(sx, floorY + 1.64, cz - innerD / 2 + 0.04)
@@ -469,6 +759,11 @@ export function buildCorridor4F(
   const eastLight = new THREE.PointLight(0xffe8cf, 1.8, 9, 1.2)
   eastLight.position.set(cx + 4.5, floorY + wallH - 0.25, cz)
   corridorGroup.add(eastLight)
+
+  // Lounge Seating Ambient Pool
+  const sofaLight = new THREE.PointLight(0xffecd1, 1.6, 6.0, 1.2)
+  sofaLight.position.set(sofaX, floorY + wallH - 0.35, sofaZ - 0.5)
+  corridorGroup.add(sofaLight)
 
   if (lightManager) {
     lightManager.register({
@@ -503,6 +798,17 @@ export function buildCorridor4F(
       decay: 1.2,
       zone: 'Lounge',
     })
+
+    lightManager.register({
+      x: sofaX,
+      y: floorY + wallH - 0.35,
+      z: sofaZ - 0.5,
+      color: 0xffecd1,
+      intensity: 1.6,
+      distance: 6.0,
+      decay: 1.2,
+      zone: 'Lounge',
+    })
   }
 
   // =========================================================================
@@ -523,14 +829,24 @@ export function buildCorridor4F(
     minX: cx - innerW / 2 - 0.5,
     minY: 0,
     minZ: cz - innerD / 2 - 0.8,
-    maxX: lift1X - 0.95,
+    maxX: lift1X - elevW / 2 - 0.05,
     maxY: 4.0,
     maxZ: cz - innerD / 2 + 0.05,
   })
 
-  // North Wall East of Lift 1 (between lifts, idle lift 2, Suite 403, chute, stairs)
+  // Center Pier Collider (between Lift 1 and Lift 2)
   colliders.add({
-    minX: lift1X + 0.95,
+    minX: lift1X + elevW / 2 + 0.05,
+    minY: 0,
+    minZ: cz - innerD / 2 - 0.8,
+    maxX: lift2X - elevW / 2 - 0.05,
+    maxY: 4.0,
+    maxZ: cz - innerD / 2 + 0.08,
+  })
+
+  // North Wall East of Lift 2 (Suite 403, stairs, refuse chute)
+  colliders.add({
+    minX: lift2X + elevW / 2 + 0.05,
     minY: 0,
     minZ: cz - innerD / 2 - 0.8,
     maxX: cx + innerW / 2 + 0.5,
@@ -592,14 +908,44 @@ export function buildCorridor4F(
     maxZ: cz + innerD / 2 + 0.5,
   })
 
+  // Furniture Colliders (South Wall Lounge)
+  // Lounge Sofa
+  colliders.add({
+    minX: sofaX - sofaW / 2 - 0.05,
+    minY: 0,
+    minZ: sofaZ - sofaD / 2 - 0.05,
+    maxX: sofaX + sofaW / 2 + 0.05,
+    maxY: 1.0,
+    maxZ: sofaZ + sofaD / 2 + 0.05,
+  })
+
+  // Coffee Table
+  colliders.add({
+    minX: tableX - 0.6,
+    minY: 0,
+    minZ: tableZ - 0.6,
+    maxX: tableX + 0.6,
+    maxY: 0.6,
+    maxZ: tableZ + 0.6,
+  })
+
+  // Console Credenza
+  colliders.add({
+    minX: credX - credW / 2 - 0.05,
+    minY: 0,
+    minZ: credZ - credD / 2 - 0.05,
+    maxX: credX + credW / 2 + 0.05,
+    maxY: 1.0,
+    maxZ: credZ + credD / 2 + 0.05,
+  })
+
   // =========================================================================
   // 11. PROXIMITY INTERACTIONS & TELEPORTATION
   // =========================================================================
-
-  // 1. Dual Elevator Bank -> Take Elevator to 1F Lobby
   let elevOpen = true
   let elevProgress = 1.0
 
+  // 1. Lift 1 (Active Elevator) -> Take to 1F Lobby
   interactions.add({
     id: 'corridor-elevator',
     x: lift1X,
@@ -623,7 +969,49 @@ export function buildCorridor4F(
     },
   })
 
-  // 2. Emergency Fire Stairwell Door -> Descend to 1F Lobby
+  // 2. Elevator Call Station (Center Pier)
+  interactions.add({
+    id: 'corridor-elevator-call',
+    x: cx,
+    z: pierZ + 0.45,
+    radius: 1.6,
+    prompt: () => 'Call Elevator [エレベーターを呼ぶ]',
+    onInteract: () => {
+      audio?.playElevatorChime()
+      callBtnUp.material = new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
+      messages.show('*Chime* Elevator called. Lift 1 arriving at 4F.')
+      setTimeout(() => {
+        elevOpen = true
+        callBtnUp.material = warmSconceGlowMat
+      }, 600)
+    },
+  })
+
+  // 3. Relax on Lounge Sofa
+  interactions.add({
+    id: 'corridor-sofa',
+    x: sofaX,
+    z: sofaZ - 0.4,
+    radius: 1.8,
+    prompt: () => 'Relax on Lounge Sofa [ソファーでくつろぐ]',
+    onInteract: () => {
+      messages.show('🛋️ You sit on the cognac leather lounge sofa. Quiet lo-fi jazz echoes softly down the hallway.')
+    },
+  })
+
+  // 4. Browse Architecture Magazine on Coffee Table
+  interactions.add({
+    id: 'corridor-magazine',
+    x: tableX,
+    z: tableZ,
+    radius: 1.5,
+    prompt: () => 'Browse Tokyo Design Magazine [雑誌を読む]',
+    onInteract: () => {
+      messages.show('📖 Tokyo Architecture Issue 42: "Sun Heights Penthouse Suites & Modern Urban Living."')
+    },
+  })
+
+  // 5. Emergency Fire Stairwell Door -> Descend to 1F Lobby
   interactions.add({
     id: 'corridor-stairs',
     x: stairsX,
@@ -640,7 +1028,7 @@ export function buildCorridor4F(
     },
   })
 
-  // 3. Suite 402 Entrance Door -> Step into Bedroom
+  // 6. Suite 402 Entrance Door -> Step into Bedroom
   interactions.add({
     id: 'corridor-suite-402',
     x: cx - innerW / 2 + 0.6,
@@ -656,7 +1044,7 @@ export function buildCorridor4F(
     },
   })
 
-  // 4. Suite 401 Doorbell
+  // 7. Suite 401 Doorbell
   interactions.add({
     id: 'corridor-suite-401',
     x: cx - 3.8,
@@ -669,7 +1057,7 @@ export function buildCorridor4F(
     },
   })
 
-  // 5. Suite 403 Doorbell
+  // 8. Suite 403 Doorbell
   interactions.add({
     id: 'corridor-suite-403',
     x: cx + 3.4,
@@ -682,7 +1070,7 @@ export function buildCorridor4F(
     },
   })
 
-  // 6. Refuse / Recycling Chute
+  // 9. Refuse / Recycling Chute
   interactions.add({
     id: 'corridor-refuse-chute',
     x: chuteX,
@@ -726,8 +1114,8 @@ export function buildCorridor4F(
       elevProgress += (elevTarget - elevProgress) * Math.min(1, dt * 4.5)
 
       // Animate Lift 1 sliding doors
-      lift1DoorL.position.x = lift1X - doorPanelW / 2 + 0.01 - elevProgress * 0.75
-      lift1DoorR.position.x = lift1X + doorPanelW / 2 - 0.01 + elevProgress * 0.75
+      lift1DoorL.position.x = lift1X - doorPanelW / 2 + 0.01 - elevProgress * 0.65
+      lift1DoorR.position.x = lift1X + doorPanelW / 2 - 0.01 + elevProgress * 0.65
     },
   }
 }

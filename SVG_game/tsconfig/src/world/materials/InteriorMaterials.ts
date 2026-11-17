@@ -1794,3 +1794,113 @@ export function corridorSuitePlaqueTexture(num: string): THREE.CanvasTexture {
   textureCache.set(key, tex)
   return tex
 }
+
+export function corridorLoungeMagazineTexture(): THREE.CanvasTexture {
+  const key = 'corridor-lounge-magazine'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 340
+  const g = canvas.getContext('2d')!
+
+  // Minimalist Tokyo luxury architectural magazine cover
+  g.fillStyle = '#0f172a'
+  g.fillRect(0, 0, 256, 340)
+
+  // Architectural photo frame
+  const grad = g.createLinearGradient(0, 60, 0, 240)
+  grad.addColorStop(0, '#1e293b')
+  grad.addColorStop(0.5, '#334155')
+  grad.addColorStop(1, '#0f172a')
+  g.fillStyle = grad
+  g.fillRect(20, 60, 216, 180)
+
+  // Architectural line sketch / geometry
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 1.5
+  g.beginPath()
+  g.moveTo(40, 220); g.lineTo(128, 90); g.lineTo(216, 220)
+  g.moveTo(60, 220); g.lineTo(128, 120); g.lineTo(196, 220)
+  g.stroke()
+
+  // Magazine title
+  g.fillStyle = '#ffffff'
+  g.font = '900 22px sans-serif'
+  g.textAlign = 'center'
+  g.letterSpacing = '3px'
+  g.fillText('TOKYO ARCH', 128, 42)
+
+  g.fillStyle = '#d4af37'
+  g.font = 'bold 10px monospace'
+  g.letterSpacing = '2px'
+  g.fillText('ISSUE 42 // HIGH LIVING', 128, 270)
+
+  g.fillStyle = '#94a3b8'
+  g.font = '9px sans-serif'
+  g.letterSpacing = '1px'
+  g.fillText('RESIDENTIAL MASTERPIECES', 128, 295)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function corridorLoungeArtTexture(): THREE.CanvasTexture {
+  const key = 'corridor-lounge-art'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Deep indigo/charcoal gallery canvas
+  g.fillStyle = '#0c121e'
+  g.fillRect(0, 0, 512, 512)
+
+  // Japanese Sumi-e & Gold Leaf contemporary abstract composition
+  // Gold circular zen ensō ring
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 18
+  g.beginPath()
+  g.arc(256, 240, 140, -Math.PI * 0.85, Math.PI * 0.95)
+  g.stroke()
+
+  // Inner gold leaf flecks
+  g.fillStyle = 'rgba(212, 175, 55, 0.45)'
+  for (let i = 0; i < 24; i++) {
+    const ang = (i * Math.PI * 2) / 24
+    const rad = 100 + Math.sin(i * 3) * 35
+    g.beginPath()
+    g.arc(256 + Math.cos(ang) * rad, 240 + Math.sin(ang) * rad, 3 + (i % 4), 0, Math.PI * 2)
+    g.fill()
+  }
+
+  // Deep turquoise & charcoal sweeping brushstroke
+  g.strokeStyle = 'rgba(56, 189, 248, 0.35)'
+  g.lineWidth = 28
+  g.beginPath()
+  g.moveTo(80, 360)
+  g.bezierCurveTo(200, 280, 320, 420, 440, 160)
+  g.stroke()
+
+  // Red seal / hanko stamp
+  g.fillStyle = '#dc2626'
+  g.fillRect(400, 390, 36, 36)
+  g.strokeStyle = '#ffffff'
+  g.lineWidth = 2
+  g.strokeRect(403, 393, 30, 30)
+
+  // Subtle border
+  g.strokeStyle = 'rgba(212, 175, 55, 0.2)'
+  g.lineWidth = 2
+  g.strokeRect(16, 16, 480, 480)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+

@@ -521,5 +521,28 @@ export class AudioManager {
     osc.start(now)
     osc.stop(now + 0.5)
   }
+
+  playSkylineChime(): void {
+    if (!this.ctx) return
+    const now = this.ctx.currentTime
+
+    // Ethereal Tokyo midnight bell/chime chord (pentatonic night resonance)
+    const freqs = [659.25, 987.77, 830.61, 739.99] // E5, B5, G#5, F#5
+    freqs.forEach((f, idx) => {
+      const osc = this.ctx!.createOscillator()
+      const gain = this.ctx!.createGain()
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(f, now + idx * 0.08)
+
+      gain.gain.setValueAtTime(0, now + idx * 0.08)
+      gain.gain.linearRampToValueAtTime(0.06, now + idx * 0.08 + 0.04)
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 1.8)
+
+      osc.connect(gain)
+      gain.connect(this.ctx!.destination)
+      osc.start(now + idx * 0.08)
+      osc.stop(now + idx * 0.08 + 1.9)
+    })
+  }
 }
 

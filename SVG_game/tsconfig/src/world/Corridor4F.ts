@@ -1375,6 +1375,12 @@ export function buildCorridor4F(
       }
     },
     update(dt: number, p: { x: number; z: number }) {
+      // If player is inside Suite 402 or on its balcony (Z >= 74), hide corridor so it does not occlude the skyline view
+      if (p.z >= 74) {
+        corridorGroup.visible = false
+        return
+      }
+
       // Distance culling check (in Low quality mode)
       const distSq = (p.x - cx) ** 2 + (p.z - cz) ** 2
       const isNear = distSq < 1600 // 40m

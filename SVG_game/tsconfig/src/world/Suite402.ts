@@ -19,7 +19,9 @@ import {
   suiteAnimePosterLofiTexture,
   suiteMangaSpinesTexture,
   suiteFlutedWoodTexture,
+  balconyTeakDeckTexture,
 } from './Materials'
+import { buildTokyoSkyline } from './buildings/TokyoSkyline'
 
 export interface Suite402Result {
   group: THREE.Group
@@ -323,93 +325,253 @@ export function buildSuite402(
   suiteGroup.add(handleL, handleR)
 
   // =========================================================================
-  // 4. EXTERIOR BALCONY & TOKYO MIDNIGHT SKYLINE
+  // 4. LUXURY EXTERIOR BALCONY & PANORAMIC TOKYO MIDNIGHT SKYLINE
   // =========================================================================
   const balconyD = 2.6
   const balconyW = 4.8
-  const balconyZ = cz - innerD / 2 - balconyD / 2
+  const balconyZ = cz - innerD / 2 - balconyD / 2 // Z = 80.0
 
-  // Balcony Deck Floor
+  // 4.1 Interlocking Teak Wood Parquet Decking
+  const teakTex = balconyTeakDeckTexture()
+  const teakDeckMat = new THREE.MeshStandardMaterial({
+    map: teakTex,
+    roughness: 0.38,
+    metalness: 0.05,
+  })
   const bDeckGeo = new THREE.BoxGeometry(balconyW, 0.08, balconyD)
-  const bDeck = new THREE.Mesh(bDeckGeo, darkWoodMat)
+  const bDeck = new THREE.Mesh(bDeckGeo, teakDeckMat)
   bDeck.position.set(cx, floorY - 0.01, balconyZ)
+  bDeck.receiveShadow = true
   suiteGroup.add(bDeck)
 
-  // Balcony Safety Glass Railing
+  // 4.2 Architectural Safety Glass Railing & Dark Bronze Structure
   const railH = 1.15
-  const bRailFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW, railH, 0.04), glassMat)
+  const bronzeMat = new THREE.MeshStandardMaterial({
+    color: 0x1f1915,
+    roughness: 0.35,
+    metalness: 0.85,
+  })
+
+  // Tinted ultra-clear safety glass with realistic depth
+  const balconyGlassMat = new THREE.MeshStandardMaterial({
+    color: 0x6ba3d0,
+    roughness: 0.05,
+    metalness: 0.12,
+    transparent: true,
+    opacity: 0.28,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  })
+
+  // Glass panels
+  const bRailFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW, railH, 0.03), balconyGlassMat)
   bRailFront.position.set(cx, floorY + railH / 2, balconyZ - balconyD / 2)
-  const bRailL = new THREE.Mesh(new THREE.BoxGeometry(0.04, railH, balconyD), glassMat)
+  const bRailL = new THREE.Mesh(new THREE.BoxGeometry(0.03, railH, balconyD), balconyGlassMat)
   bRailL.position.set(cx - balconyW / 2, floorY + railH / 2, balconyZ)
-  const bRailR = new THREE.Mesh(new THREE.BoxGeometry(0.04, railH, balconyD), glassMat)
+  const bRailR = new THREE.Mesh(new THREE.BoxGeometry(0.03, railH, balconyD), balconyGlassMat)
   bRailR.position.set(cx + balconyW / 2, floorY + railH / 2, balconyZ)
 
-  // Chrome Handrail Cap
-  const handrailFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW + 0.08, 0.05, 0.08), chromeMat)
-  handrailFront.position.set(cx, floorY + railH, balconyZ - balconyD / 2)
-  const handrailL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.05, balconyD), chromeMat)
-  handrailL.position.set(cx - balconyW / 2, floorY + railH, balconyZ)
-  const handrailR = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.05, balconyD), chromeMat)
-  handrailR.position.set(cx + balconyW / 2, floorY + railH, balconyZ)
+  // Architectural vertical balustrade stanchion posts in dark bronze
+  const postGeo = new THREE.BoxGeometry(0.05, railH + 0.02, 0.05)
+  const postPositions = [
+    { x: cx - balconyW / 2, z: balconyZ - balconyD / 2 },
+    { x: cx + balconyW / 2, z: balconyZ - balconyD / 2 },
+    { x: cx - balconyW / 6, z: balconyZ - balconyD / 2 },
+    { x: cx + balconyW / 6, z: balconyZ - balconyD / 2 },
+    { x: cx - balconyW / 2, z: balconyZ + balconyD / 4 },
+    { x: cx + balconyW / 2, z: balconyZ + balconyD / 4 },
+  ]
+  for (const pp of postPositions) {
+    const post = new THREE.Mesh(postGeo, bronzeMat)
+    post.position.set(pp.x, floorY + railH / 2, pp.z)
+    suiteGroup.add(post)
+  }
+
+  // Dark Bronze Chamfered Handrail Cap
+  const handrailFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW + 0.08, 0.06, 0.08), bronzeMat)
+  handrailFront.position.set(cx, floorY + railH + 0.02, balconyZ - balconyD / 2)
+  const handrailL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, balconyD), bronzeMat)
+  handrailL.position.set(cx - balconyW / 2, floorY + railH + 0.02, balconyZ)
+  const handrailR = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, balconyD), bronzeMat)
+  handrailR.position.set(cx + balconyW / 2, floorY + railH + 0.02, balconyZ)
   suiteGroup.add(bRailFront, bRailL, bRailR, handrailFront, handrailL, handrailR)
 
-  // Distant Tokyo City Skyline & Towers
-  const skyGroup = new THREE.Group()
-  skyGroup.name = 'balcony-tokyo-skyline'
+  // 4.3 Under-Rail Warm Ambient LED Strip Glow (Architectural Downlighting)
+  const railLedMat = new THREE.MeshBasicMaterial({ color: 0xffdf99, toneMapped: false })
+  const railGlowFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW - 0.1, 0.016, 0.025), railLedMat)
+  railGlowFront.position.set(cx, floorY + railH - 0.012, balconyZ - balconyD / 2 + 0.02)
+  const railGlowL = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.016, balconyD - 0.1), railLedMat)
+  railGlowL.position.set(cx - balconyW / 2 + 0.02, floorY + railH - 0.012, balconyZ)
+  const railGlowR = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.016, balconyD - 0.1), railLedMat)
+  railGlowR.position.set(cx + balconyW / 2 - 0.02, floorY + railH - 0.012, balconyZ)
+  suiteGroup.add(railGlowFront, railGlowL, railGlowR)
 
-  // Night Sky Backdrop Mesh
-  const skyBackdropMat = new THREE.MeshBasicMaterial({
-    color: 0x070c17,
-    side: THREE.BackSide,
+  // 4.4 Balcony Overhead Modern Cantilever Canopy & Warm Recessed Downlights
+  const canopyGeo = new THREE.BoxGeometry(balconyW + 0.4, 0.12, balconyD + 0.2)
+  const canopyMesh = new THREE.Mesh(canopyGeo, wallAccentMat)
+  canopyMesh.position.set(cx, floorY + wallH + 0.06, balconyZ - 0.1)
+  suiteGroup.add(canopyMesh)
+
+  // Recessed warm downlight fixtures on canopy soffit
+  const soffitPinMat = new THREE.MeshBasicMaterial({ color: 0xfff0cc, toneMapped: false })
+  for (const px of [-1.2, 1.2]) {
+    const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.02, 12), soffitPinMat)
+    pin.position.set(cx + px, floorY + wallH - 0.005, balconyZ)
+    suiteGroup.add(pin)
+  }
+
+  // 4.5 Exterior Architectural Wall Sconces (Flanking Sliding Glass Doors)
+  const sconceGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.28, 8)
+  const sconceLensMat = new THREE.MeshBasicMaterial({ color: 0xffe2a8, toneMapped: false })
+  for (const sx of [-1.9, 1.9]) {
+    const sconce = new THREE.Mesh(sconceGeo, darkMetalMat)
+    sconce.position.set(cx + sx, floorY + 1.8, cz - innerD / 2 - 0.04)
+
+    const lensTop = new THREE.Mesh(new THREE.CircleGeometry(0.034, 8), sconceLensMat)
+    lensTop.rotation.x = -Math.PI / 2
+    lensTop.position.set(cx + sx, floorY + 1.94, cz - innerD / 2 - 0.04)
+
+    const lensBot = new THREE.Mesh(new THREE.CircleGeometry(0.034, 8), sconceLensMat)
+    lensBot.rotation.x = Math.PI / 2
+    lensBot.position.set(cx + sx, floorY + 1.66, cz - innerD / 2 - 0.04)
+
+    suiteGroup.add(sconce, lensTop, lensBot)
+  }
+
+  // 4.6 Aesthetic Outdoor Balcony Furniture
+
+  // A) Contemporary Deep-Seating Lounge Armchair (North-West corner)
+  const chairBX = cx - 1.5
+  const chairBZ = balconyZ - 0.15
+  const chairFrameMat = new THREE.MeshStandardMaterial({ color: 0x1f1915, roughness: 0.55 })
+  const cushionMat = new THREE.MeshStandardMaterial({ color: 0x2e3542, roughness: 0.85 })
+  const throwMat = new THREE.MeshStandardMaterial({ color: 0xf5f3ee, roughness: 0.9 })
+
+  const bChairBase = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.06, 0.75), chairFrameMat)
+  bChairBase.position.set(chairBX, floorY + 0.22, chairBZ)
+  bChairBase.rotation.y = 0.35 // Angled slightly towards Tokyo Tower
+
+  for (const lx of [-0.32, 0.32]) {
+    for (const lz of [-0.32, 0.32]) {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.015, 0.22, 6), chairFrameMat)
+      const rotated = new THREE.Vector3(lx, 0, lz).applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.35)
+      leg.position.set(chairBX + rotated.x, floorY + 0.11, chairBZ + rotated.z)
+      suiteGroup.add(leg)
+    }
+  }
+
+  const seatCushion = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.12, 0.68), cushionMat)
+  seatCushion.position.set(chairBX, floorY + 0.31, chairBZ)
+  seatCushion.rotation.y = 0.35
+
+  const backCushion = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.45, 0.12), cushionMat)
+  const backOffset = new THREE.Vector3(0, 0, 0.32).applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.35)
+  backCushion.position.set(chairBX + backOffset.x, floorY + 0.54, chairBZ + backOffset.z)
+  backCushion.rotation.y = 0.35
+  backCushion.rotation.x = 0.12 // Relaxed lean
+
+  const throwBlanket = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.16, 0.42), throwMat)
+  const throwOffset = new THREE.Vector3(-0.25, 0, 0.1).applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.35)
+  throwBlanket.position.set(chairBX + throwOffset.x, floorY + 0.38, chairBZ + throwOffset.z)
+  throwBlanket.rotation.y = 0.35
+
+  suiteGroup.add(bChairBase, seatCushion, backCushion, throwBlanket)
+
+  // B) Minimalist Round Bistro Side Table
+  const tableBX = cx - 0.7
+  const tableBZ = balconyZ - 0.65
+  const tableTopH = 0.55
+
+  const pedestalGeo = new THREE.CylinderGeometry(0.04, 0.18, tableTopH - 0.03, 16)
+  const pedestal = new THREE.Mesh(pedestalGeo, bronzeMat)
+  pedestal.position.set(tableBX, floorY + (tableTopH - 0.03) / 2, tableBZ)
+
+  const marbleTopGeo = new THREE.CylinderGeometry(0.28, 0.28, 0.03, 24)
+  const blackMarbleMat = new THREE.MeshStandardMaterial({
+    color: 0x161a22,
+    roughness: 0.18,
+    metalness: 0.1,
   })
-  const skyDome = new THREE.Mesh(new THREE.SphereGeometry(45, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), skyBackdropMat)
-  skyDome.position.set(cx, floorY, cz)
-  skyGroup.add(skyDome)
+  const marbleTop = new THREE.Mesh(marbleTopGeo, blackMarbleMat)
+  marbleTop.position.set(tableBX, floorY + tableTopH, tableBZ)
+  suiteGroup.add(pedestal, marbleTop)
 
-  // Crescent Moon
-  const moonMat = new THREE.MeshBasicMaterial({ color: 0xfff6cf, toneMapped: false })
-  const moonMesh = new THREE.Mesh(new THREE.CircleGeometry(1.6, 24), moonMat)
-  moonMesh.position.set(cx + 10, floorY + 18, cz - 40)
-  moonMesh.rotation.y = Math.PI
-  skyGroup.add(moonMesh)
+  // Hot ceramic coffee mug on table
+  const balconyMug = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.032, 0.08, 12), whiteLinenMat)
+  balconyMug.position.set(tableBX + 0.08, floorY + tableTopH + 0.055, tableBZ - 0.04)
 
-  // Skyline high-rise silhouettes
-  const towers = [
-    { x: -18, z: -38, w: 9, h: 28, d: 9, color: 0x0a101d },
-    { x: -7, z: -32, w: 7, h: 22, d: 7, color: 0x0e1626 },
-    { x: 3, z: -36, w: 10, h: 32, d: 10, color: 0x090f1b },
-    { x: 14, z: -30, w: 8, h: 24, d: 8, color: 0x0e1728 },
-    { x: 24, z: -38, w: 11, h: 35, d: 11, color: 0x080e18 },
+  const balconyCoffee = new THREE.Mesh(new THREE.CircleGeometry(0.03, 12), new THREE.MeshBasicMaterial({ color: 0x1a0f0a }))
+  balconyCoffee.rotation.x = -Math.PI / 2
+  balconyCoffee.position.set(tableBX + 0.08, floorY + tableTopH + 0.092, tableBZ - 0.04)
+
+  // Glass Votive Candle with Warm Flickering Flame
+  const votiveGlass = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.038, 0.034, 0.07, 12),
+    new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.5, roughness: 0.1 }),
+  )
+  votiveGlass.position.set(tableBX - 0.07, floorY + tableTopH + 0.05, tableBZ + 0.05)
+
+  const candleFlameMat = new THREE.MeshBasicMaterial({ color: 0xff9900, toneMapped: false })
+  const candleFlame = new THREE.Mesh(new THREE.SphereGeometry(0.014, 8, 8), candleFlameMat)
+  candleFlame.scale.set(1, 1.8, 1)
+  candleFlame.position.set(tableBX - 0.07, floorY + tableTopH + 0.065, tableBZ + 0.05)
+
+  suiteGroup.add(balconyMug, balconyCoffee, votiveGlass, candleFlame)
+
+  // C) Modern Architectural Fluted Planter with Japanese Bamboo (East side)
+  const planterBX = cx + 1.75
+  const planterBZ = balconyZ + 0.35
+  const planterH = 0.65
+  const planterGeo = new THREE.CylinderGeometry(0.24, 0.2, planterH, 16)
+  const planterMat = new THREE.MeshStandardMaterial({ color: 0x1a212b, roughness: 0.65 })
+  const planter = new THREE.Mesh(planterGeo, planterMat)
+  planter.position.set(planterBX, floorY + planterH / 2, planterBZ)
+
+  const soilGeo = new THREE.CircleGeometry(0.22, 16)
+  const soilMat = new THREE.MeshStandardMaterial({ color: 0x1f1712, roughness: 0.9 })
+  const soil = new THREE.Mesh(soilGeo, soilMat)
+  soil.rotation.x = -Math.PI / 2
+  soil.position.set(planterBX, floorY + planterH - 0.02, planterBZ)
+  suiteGroup.add(planter, soil)
+
+  // Bamboo Stalks (Take)
+  const bambooMat = new THREE.MeshStandardMaterial({ color: 0x3d704d, roughness: 0.55 })
+  const bambooLeafMat = new THREE.MeshStandardMaterial({ color: 0x4f8a61, roughness: 0.65, side: THREE.DoubleSide })
+  const stalkOffsets = [
+    { x: -0.08, z: -0.06, h: 1.8, r: 0.018 },
+    { x: 0.07, z: -0.05, h: 2.1, r: 0.02 },
+    { x: 0.01, z: 0.08, h: 1.95, r: 0.019 },
   ]
+  for (const s of stalkOffsets) {
+    const stalk = new THREE.Mesh(new THREE.CylinderGeometry(s.r, s.r * 1.1, s.h, 8), bambooMat)
+    stalk.position.set(planterBX + s.x, floorY + planterH + s.h / 2, planterBZ + s.z)
+    suiteGroup.add(stalk)
 
-  for (const t of towers) {
-    const tMesh = new THREE.Mesh(new THREE.BoxGeometry(t.w, t.h, t.d), new THREE.MeshBasicMaterial({ color: t.color }))
-    tMesh.position.set(cx + t.x, floorY + t.h / 2 - 4, cz + t.z)
-    skyGroup.add(tMesh)
-
-    // Window lights grid
-    const winCols = 5
-    const winRows = 8
-    for (let r = 0; r < winRows; r++) {
-      for (let c = 0; c < winCols; c++) {
-        if ((r * 3 + c * 7) % 3 === 0) {
-          const winColor = (r + c) % 2 === 0 ? 0xffea9f : 0x7dd3fc
-          const win = new THREE.Mesh(new THREE.PlaneGeometry(0.35, 0.45), new THREE.MeshBasicMaterial({ color: winColor, toneMapped: false }))
-          win.position.set(cx + t.x - t.w / 2 + 1.0 + c * 1.5, floorY + 4 + r * 2.2, cz + t.z + t.d / 2 + 0.05)
-          skyGroup.add(win)
-        }
-      }
+    for (let nh = 0.35; nh < s.h; nh += 0.35) {
+      const node = new THREE.Mesh(new THREE.TorusGeometry(s.r + 0.003, 0.004, 6, 12), darkWoodMat)
+      node.rotation.x = Math.PI / 2
+      node.position.set(planterBX + s.x, floorY + planterH + nh, planterBZ + s.z)
+      suiteGroup.add(node)
     }
 
-    // Rooftop antenna tower with red blinking beacon
-    const antGeo = new THREE.CylinderGeometry(0.04, 0.08, 4.0, 6)
-    const ant = new THREE.Mesh(antGeo, darkMetalMat)
-    ant.position.set(cx + t.x, floorY + t.h - 4 + 2.0, cz + t.z)
-    const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff2222, toneMapped: false }))
-    beacon.position.set(cx + t.x, floorY + t.h - 4 + 4.1, cz + t.z)
-    skyGroup.add(ant, beacon)
+    for (let a = 0; a < 4; a++) {
+      const leafGeo = new THREE.PlaneGeometry(0.28, 0.08)
+      const leaf = new THREE.Mesh(leafGeo, bambooLeafMat)
+      const leafAngle = (a * Math.PI) / 2 + Math.random() * 0.3
+      leaf.position.set(
+        planterBX + s.x + Math.cos(leafAngle) * 0.12,
+        floorY + planterH + s.h - 0.2 + a * 0.06,
+        planterBZ + s.z + Math.sin(leafAngle) * 0.12,
+      )
+      leaf.rotation.y = leafAngle
+      leaf.rotation.z = -0.25
+      suiteGroup.add(leaf)
+    }
   }
-  suiteGroup.add(skyGroup)
+
+  // 4.7 Integrate Tokyo Midnight Skyline Vista
+  const tokyoSkyline = buildTokyoSkyline(cx, cz)
+  suiteGroup.add(tokyoSkyline.group)
 
   // =========================================================================
   // 5. CYBER GAMING WORKSTATION (NORTH-WEST WALL)
@@ -1340,6 +1502,36 @@ export function buildSuite402(
     maxZ: loungeZ + 0.45,
   })
 
+  // Balcony Outdoor Armchair
+  colliders.add({
+    minX: chairBX - 0.45,
+    minY: 0,
+    minZ: chairBZ - 0.45,
+    maxX: chairBX + 0.45,
+    maxY: 1.0,
+    maxZ: chairBZ + 0.45,
+  })
+
+  // Balcony Bistro Table
+  colliders.add({
+    minX: tableBX - 0.32,
+    minY: 0,
+    minZ: tableBZ - 0.32,
+    maxX: tableBX + 0.32,
+    maxY: 0.8,
+    maxZ: tableBZ + 0.32,
+  })
+
+  // Balcony Planter
+  colliders.add({
+    minX: planterBX - 0.28,
+    minY: 0,
+    minZ: planterBZ - 0.28,
+    maxX: planterBX + 0.28,
+    maxY: 1.2,
+    maxZ: planterBZ + 0.28,
+  })
+
   // =========================================================================
   // 16. PROXIMITY INTERACTIONS
   // =========================================================================
@@ -1505,14 +1697,25 @@ export function buildSuite402(
   })
 
   // 13. Balcony View
+  let balconyGazeIndex = 0
+  const balconyGazeMessages = [
+    '🌃 Tokyo at 02:00 AM — Tokyo Tower glows radiant amber against the deep midnight indigo. A cool evening breeze whispers past.',
+    '✨ Below, the Shuto Expressway flows like rivers of ruby taillights and gold headlights through the sleepless metropolis.',
+    '🌙 High above the high-rises, the luminous crescent moon watches over the neon signs and rooftop helipads of Neo-Tokyo.',
+    '☕ Steam rises gently from your hot coffee on the balcony table. Midnight serenity settles over the city.',
+  ]
+
   interactions.add({
     id: 'suite-balcony',
     x: cx,
     z: cz - innerD / 2 - 0.8,
-    radius: 1.8,
+    radius: 2.2,
     prompt: () => 'Gaze across Tokyo Skyline [夜景を眺める]',
     onInteract: () => {
-      messages.show('🌃 The midnight Tokyo skyline glimmers beneath the crescent moon. A cool evening breeze passes through the balcony.')
+      audio?.playSkylineChime()
+      const msg = balconyGazeMessages[balconyGazeIndex % balconyGazeMessages.length]
+      balconyGazeIndex++
+      messages.show(msg, 6.0)
     },
   })
 
@@ -1526,12 +1729,24 @@ export function buildSuite402(
     update(dt: number, p: { x: number; z: number }) {
       time += dt
 
+      // If player is outside Suite 402 area (e.g. in Corridor 4F at Z=65), hide Suite 402
+      if (p.z < 74) {
+        suiteGroup.visible = false
+        return
+      }
+
       // Distance culling check (in Low quality mode)
       const distSq = (p.x - cx) ** 2 + (p.z - cz) ** 2
       const isNear = distSq < 2000 // 45 meters
       suiteGroup.visible = Settings.isHigh() || isNear
 
       if (!suiteGroup.visible) return
+
+      // Update Tokyo Skyline dynamic animations (traffic trails, stars, aviation beacons, aircraft)
+      tokyoSkyline.update(dt)
+
+      // Candle flame gentle flicker
+      candleFlame.scale.y = 1.7 + Math.sin(time * 12) * 0.35
 
       // Subtle pulse on PC intake fans and LED power
       if (pcOn) {

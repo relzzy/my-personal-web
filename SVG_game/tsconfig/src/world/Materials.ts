@@ -4357,3 +4357,370 @@ export function parkToiletSignTexture(): THREE.CanvasTexture {
   textureCache.set(key, tex)
   return tex
 }
+
+// =========================================================================
+// SUITE 402 (EXECUTIVE BEDROOM) PROCEDURAL TEXTURES
+// =========================================================================
+
+export function suiteHardwoodFloorTexture(): THREE.CanvasTexture {
+  const key = 'suite-hardwood-floor'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Base dark wood tone
+  g.fillStyle = '#1c1511'
+  g.fillRect(0, 0, 512, 512)
+
+  // Draw 8 horizontal planks
+  const plankH = 64
+  const plankColors = ['#1d1612', '#221a15', '#1a130f', '#251c17', '#1f1713', '#241b16', '#1b1410', '#231b15']
+
+  for (let i = 0; i < 8; i++) {
+    const y = i * plankH
+    g.fillStyle = plankColors[i % plankColors.length]
+    g.fillRect(0, y + 2, 512, plankH - 4)
+
+    // Wood grain lines
+    g.strokeStyle = 'rgba(0, 0, 0, 0.28)'
+    g.lineWidth = 1.2
+    for (let k = 0; k < 6; k++) {
+      const lineY = y + 8 + k * 8 + (Math.sin(k * 2) * 3)
+      g.beginPath()
+      g.moveTo(0, lineY)
+      g.bezierCurveTo(128, lineY + (k % 2 === 0 ? 3 : -3), 384, lineY + (k % 2 === 0 ? -3 : 3), 512, lineY)
+      g.stroke()
+    }
+
+    // Wood highlight sheen
+    g.strokeStyle = 'rgba(212, 175, 55, 0.04)'
+    g.lineWidth = 1
+    g.beginPath()
+    g.moveTo(0, y + 4)
+    g.lineTo(512, y + 4)
+    g.stroke()
+
+    // Plank seam shadow
+    g.fillStyle = '#0e0a07'
+    g.fillRect(0, y + plankH - 2, 512, 2)
+  }
+
+  // Staggered vertical end joints
+  const joints = [
+    { x: 140, y: 0 }, { x: 380, y: 0 },
+    { x: 260, y: 64 },
+    { x: 120, y: 128 }, { x: 420, y: 128 },
+    { x: 310, y: 192 },
+    { x: 180, y: 256 }, { x: 440, y: 256 },
+    { x: 280, y: 320 },
+    { x: 160, y: 384 }, { x: 390, y: 384 },
+    { x: 240, y: 448 },
+  ]
+  g.fillStyle = '#0e0a07'
+  for (const j of joints) {
+    g.fillRect(j.x, j.y + 2, 2, plankH - 4)
+  }
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.RepeatWrapping
+  tex.repeat.set(3, 3)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteLuxuryRugTexture(): THREE.CanvasTexture {
+  const key = 'suite-luxury-rug'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 1024
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  const cx = 512
+  const cy = 256
+
+  // Transparent clear canvas
+  g.clearRect(0, 0, 1024, 512)
+
+  // 1. Base Navy Woven Oval
+  g.save()
+  g.beginPath()
+  g.ellipse(cx, cy, 480, 235, 0, 0, Math.PI * 2)
+  g.fillStyle = '#121722'
+  g.fill()
+
+  // Fine woven textile noise
+  const imgData = g.getImageData(0, 0, 1024, 512)
+  const d = imgData.data
+  for (let y = 30; y < 482; y += 2) {
+    for (let x = 40; x < 984; x += 2) {
+      const idx = (y * 1024 + x) * 4
+      if (d[idx + 3] > 0) {
+        const noise = (Math.random() - 0.5) * 16
+        d[idx] = Math.max(10, Math.min(35, d[idx] + noise))
+        d[idx + 1] = Math.max(15, Math.min(42, d[idx + 1] + noise))
+        d[idx + 2] = Math.max(25, Math.min(58, d[idx + 2] + noise))
+      }
+    }
+  }
+  g.putImageData(imgData, 0, 0)
+  g.restore()
+
+  // 2. Solid Gold Outer Piping
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 10
+  g.beginPath()
+  g.ellipse(cx, cy, 470, 225, 0, 0, Math.PI * 2)
+  g.stroke()
+
+  // 3. Stitched Dashed Gold Oval Ring
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 4
+  g.setLineDash([20, 12])
+  g.beginPath()
+  g.ellipse(cx, cy, 390, 175, 0, 0, Math.PI * 2)
+  g.stroke()
+  g.setLineDash([])
+
+  // 4. Inner Fine Gold Oval Ring
+  g.strokeStyle = 'rgba(212, 175, 55, 0.65)'
+  g.lineWidth = 2.5
+  g.beginPath()
+  g.ellipse(cx, cy, 260, 105, 0, 0, Math.PI * 2)
+  g.stroke()
+
+  // 5. Classic Center Diamond Emblems
+  g.strokeStyle = '#d4af37'
+  g.fillStyle = 'rgba(212, 175, 55, 0.12)'
+  g.lineWidth = 5
+  g.beginPath()
+  g.moveTo(cx, cy - 65)
+  g.lineTo(cx + 60, cy)
+  g.lineTo(cx, cy + 65)
+  g.lineTo(cx - 60, cy)
+  g.closePath()
+  g.fill()
+  g.stroke()
+
+  // Inner nested diamond
+  g.lineWidth = 2
+  g.beginPath()
+  g.moveTo(cx, cy - 35)
+  g.lineTo(cx + 32, cy)
+  g.lineTo(cx, cy + 35)
+  g.lineTo(cx - 32, cy)
+  g.closePath()
+  g.stroke()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteCurvedMonitorTexture(): THREE.CanvasTexture {
+  const key = 'suite-curved-monitor'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 1024
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Deep IDE background
+  g.fillStyle = '#070b12'
+  g.fillRect(0, 0, 1024, 512)
+
+  // Glowing cyan bezel border
+  g.strokeStyle = '#00ffff'
+  g.lineWidth = 3
+  g.strokeRect(4, 4, 1016, 504)
+
+  // Title bar
+  g.fillStyle = '#0f1724'
+  g.fillRect(6, 6, 1012, 42)
+
+  // Window dots
+  g.fillStyle = '#ff5f56'
+  g.beginPath(); g.arc(26, 27, 7, 0, Math.PI * 2); g.fill()
+  g.fillStyle = '#ffbd2e'
+  g.beginPath(); g.arc(46, 27, 7, 0, Math.PI * 2); g.fill()
+  g.fillStyle = '#27c93f'
+  g.beginPath(); g.arc(66, 27, 7, 0, Math.PI * 2); g.fill()
+
+  // Tab
+  g.fillStyle = '#182438'
+  g.fillRect(90, 12, 220, 36)
+  g.fillStyle = '#00ffff'
+  g.font = 'bold 16px monospace'
+  g.fillText('Suite402.ts • relzzy', 106, 36)
+
+  // Right System telemetry
+  g.fillStyle = '#10b981'
+  g.font = '14px monospace'
+  g.fillText('SYS: 120 FPS // RTX 3060 ONLINE // LAT: 0.8ms', 600, 32)
+
+  // Left Sidebar
+  g.fillStyle = '#0a0f18'
+  g.fillRect(6, 48, 140, 458)
+  g.fillStyle = '#64748b'
+  g.font = '13px monospace'
+  const files = ['EXPLORER', '▶ src', '  ▼ world', '    Suite402.ts', '    Audio.ts', '    Props.ts', '  ▶ game', '  ▶ ui', '  package.json']
+  files.forEach((f, idx) => {
+    g.fillStyle = f.includes('Suite402') ? '#00ffff' : f.startsWith('▶') || f.startsWith('▼') ? '#94a3b8' : '#64748b'
+    g.fillText(f, 16, 78 + idx * 24)
+  })
+
+  // Code Area
+  g.fillStyle = '#070b12'
+  g.fillRect(146, 48, 872, 458)
+
+  const codeLines: { num: string; text: string; color: string }[] = [
+    { num: '01', text: 'import { Scene, PerspectiveCamera } from "three";', color: '#e2e8f0' },
+    { num: '02', text: 'import { Suite402 } from "./world/Suite402";', color: '#38ef7d' },
+    { num: '03', text: '', color: '#e2e8f0' },
+    { num: '04', text: '// EXECUTIVE SUITE 402 — CYBER WORKSTATION INITIALIZED', color: '#64748b' },
+    { num: '05', text: 'export async function launchTokyoNight(): Promise<void> {', color: '#00ffff' },
+    { num: '06', text: '  const district = await buildMidnightTokyo({', color: '#f8fafc' },
+    { num: '07', text: '    location: "Sun Heights Mansion // Suite 402",', color: '#ffd166' },
+    { num: '08', text: '    lighting: "Ultra PBR Dynamic Pool",', color: '#ffd166' },
+    { num: '09', text: '    atmosphere: "Cyber Midnight Twilight (東京の夜)",', color: '#ffd166' },
+    { num: '10', text: '    fpsTarget: 120, status: "READY"', color: '#38ef7d' },
+    { num: '11', text: '  });', color: '#f8fafc' },
+    { num: '12', text: '  district.igniteAtmosphere();', color: '#00ffff' },
+    { num: '13', text: '  console.log("Welcome home to Tokyo, Relzzy.");', color: '#f472b6' },
+    { num: '14', text: '}', color: '#00ffff' },
+  ]
+
+  codeLines.forEach((line, idx) => {
+    const y = 84 + idx * 26
+    g.fillStyle = '#334155'
+    g.font = '14px monospace'
+    g.fillText(line.num, 160, y)
+    g.fillStyle = line.color
+    g.font = '15px monospace'
+    g.fillText(line.text, 195, y)
+  })
+
+  // Pulsing terminal cursor
+  g.fillStyle = '#00ffff'
+  g.fillRect(360, 84 + 13 * 26 - 13, 10, 16)
+
+  // Bottom Terminal output box
+  g.fillStyle = '#04070c'
+  g.fillRect(146, 440, 872, 66)
+  g.strokeStyle = '#1e293b'
+  g.strokeRect(146, 440, 872, 66)
+  g.fillStyle = '#10b981'
+  g.font = 'bold 13px monospace'
+  g.fillText('TERMINAL: build succeeded in 1.10s — 0 errors — All 43 point lights synchronized.', 160, 470)
+  g.fillStyle = '#38bdf8'
+  g.fillText('relzzy@tokyo-rig:~/project$ █', 160, 492)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteAlarmClockTexture(): THREE.CanvasTexture {
+  const key = 'suite-alarm-clock'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 128
+  const g = canvas.getContext('2d')!
+
+  // Matte dark casing
+  g.fillStyle = '#080a0f'
+  g.fillRect(0, 0, 256, 128)
+
+  // Inner bevel bezel
+  g.strokeStyle = '#1b2230'
+  g.lineWidth = 4
+  g.strokeRect(8, 8, 240, 112)
+
+  // Dim ghost segments
+  g.fillStyle = 'rgba(0, 255, 255, 0.08)'
+  g.font = 'bold 64px monospace'
+  g.textAlign = 'center'
+  g.fillText('88:88', 128, 88)
+
+  // Bright glowing cyan active time
+  g.shadowColor = '#00ffff'
+  g.shadowBlur = 14
+  g.fillStyle = '#00ffff'
+  g.font = 'bold 64px monospace'
+  g.fillText('11:42', 128, 88)
+  g.shadowBlur = 0
+
+  // PM indicator and ALARM indicator
+  g.fillStyle = '#00ffff'
+  g.font = 'bold 12px monospace'
+  g.fillText('PM', 214, 50)
+  g.fillStyle = '#10b981'
+  g.fillText('● ALARM ON', 128, 112)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteLivingRoomDoorMatTexture(): THREE.CanvasTexture {
+  const key = 'suite-living-room-mat'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Dark charcoal luxury threshold base
+  g.fillStyle = '#141822'
+  g.fillRect(0, 0, 256, 512)
+
+  // Polished brass perimeter frame
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 8
+  g.strokeRect(8, 8, 240, 496)
+
+  // Inner dashed line
+  g.strokeStyle = 'rgba(212, 175, 55, 0.6)'
+  g.lineWidth = 3
+  g.setLineDash([12, 8])
+  g.strokeRect(20, 20, 216, 472)
+  g.setLineDash([])
+
+  // Gold indicator dots at top and bottom
+  g.fillStyle = '#d4af37'
+  g.beginPath(); g.arc(128, 48, 6, 0, Math.PI * 2); g.fill()
+  g.beginPath(); g.arc(128, 464, 6, 0, Math.PI * 2); g.fill()
+
+  // Vertical embossed text rotated 90 degrees
+  g.save()
+  g.translate(128, 256)
+  g.rotate(-Math.PI / 2)
+  g.fillStyle = '#d4af37'
+  g.font = '900 28px sans-serif'
+  g.textAlign = 'center'
+  g.letterSpacing = '6px'
+  g.fillText('LIVING ROOM', 0, 8)
+  g.font = 'bold 13px monospace'
+  g.fillStyle = 'rgba(212, 175, 55, 0.75)'
+  g.fillText('SUITE 402 // TOKYO', 0, 32)
+  g.restore()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+

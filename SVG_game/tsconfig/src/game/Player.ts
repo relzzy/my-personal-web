@@ -128,4 +128,14 @@ export class Player {
     const v = this.look(this.forward)
     return { x: v.x, z: v.z }
   }
+
+  teleport(x: number, z: number, yaw?: number): void {
+    this.x = x
+    this.z = z
+    if (yaw !== undefined) this.yaw = yaw
+    this.vx = 0
+    this.vz = 0
+    this.feetY = groundAt(x, z)
+  }
 }
+

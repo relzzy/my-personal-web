@@ -48,6 +48,8 @@ import { CollisionWorld } from '../game/Collision'
 import { InteractionSystem } from '../game/Interaction'
 import { MessageBus } from '../game/Messages'
 import { Settings } from '../game/Settings'
+import type { Player } from '../game/Player'
+import { buildSuite402 } from './Suite402'
 import type { AudioManager } from './Audio'
 import type { LightManager } from './LightManager'
 
@@ -66,6 +68,7 @@ export function buildBuildings(
   messages: MessageBus,
   audio?: AudioManager,
   lightManager?: LightManager,
+  player?: Player,
 ): BuildingsResult {
   const root = new THREE.Group()
   root.name = 'buildings'
@@ -111,7 +114,7 @@ export function buildBuildings(
     // 1. COLLIDERS & STRUCTURAL SHELL
     if (spec.id === 'b-sunheights') {
       // STARTING APARTMENT: Special hollow enterable ground floor lobby!
-      const lobbyRes = buildApartmentLobby(bGroup, spec, colliders, interactions, messages, wallMat, trimMat, audio, lightManager)
+      const lobbyRes = buildApartmentLobby(bGroup, spec, colliders, interactions, messages, wallMat, trimMat, audio, lightManager, player)
       lobbyLight = lobbyRes.light
       animators.push(lobbyRes.update)
 
@@ -196,6 +199,12 @@ export function buildBuildings(
 
   scene.add(root)
 
+  // 4. SUITE 402 (EXECUTIVE BEDROOM)
+  if (player) {
+    const suiteRes = buildSuite402(scene, colliders, interactions, messages, player, audio, lightManager)
+    animators.push(suiteRes.update)
+  }
+
   return {
     group: root,
     lobbyLight: lobbyLight ?? new THREE.PointLight(0xffe2b0, 1, 10),
@@ -220,6 +229,7 @@ function buildApartmentLobby(
   trimMat: THREE.Material,
   audio?: AudioManager,
   lightManager?: LightManager,
+  player?: Player,
 ): { light: THREE.PointLight; update: (dt: number, p: { x: number; z: number }) => void } {
   const floorH = 3.2
   const halfW = spec.w / 2
@@ -928,14 +938,21 @@ function buildApartmentLobby(
     x: spec.x + elevW / 2 + 0.35,
     z: spec.z + innerD / 2 - 0.8,
     radius: 1.8,
-    prompt: () => (elevOpen ? 'Step into Elevator' : 'Call Elevator [Floor 1]'),
+    prompt: () => (elevOpen ? 'Take Elevator to Suite 402 (Your Room) [4階 部屋へ]' : 'Call Elevator [1階 エレベーター]'),
     onInteract: () => {
-      elevOpen = !elevOpen
-      if (elevOpen) {
+      if (!elevOpen) {
+        elevOpen = true
         audio?.playElevatorChime()
-        messages.show('*Ding* Elevator arrives at 1F. The champagne steel doors slide open.')
+        messages.show('*Ding* Elevator arrives at 1F. Champagne doors glide open.')
       } else {
-        messages.show('The elevator doors glide shut softly.')
+        audio?.playElevatorChime()
+        messages.show('*Ding* Riding elevator up to 4F Suite 402...')
+        if (player) {
+          setTimeout(() => {
+            player.teleport(1.2, 85.2, -Math.PI / 2)
+            messages.show('Sun Heights Suite 402 (Executive Bedroom). Welcome home.', 5.0)
+          }, 400)
+        }
       }
     },
   })

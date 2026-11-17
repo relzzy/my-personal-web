@@ -72,15 +72,21 @@ async function init(): Promise<void> {
   const audio = new AudioManager()
   const hud = new Hud()
 
-  // STARTING POSITION: Inside Sun Heights Apartment Lobby (X: 0, Z: 18.2)
-  // Yaw = Math.PI means facing South towards the front glass exit doors leading out to the street!
-  const player = new Player(0, 18.2, Math.PI)
+  // Check URL params for direct room spawn (?room=1 or ?spawn=room)
+  const urlParams = new URLSearchParams(window.location.search)
+  const spawnRoom = urlParams.get('room') === '1' || urlParams.get('spawn') === 'room'
+
+  // STARTING POSITION: Suite 402 if requested, otherwise Sun Heights Apartment Lobby (X: 0, Z: 18.2)
+  const initialX = spawnRoom ? 1.2 : 0
+  const initialZ = spawnRoom ? 85.2 : 18.2
+  const initialYaw = spawnRoom ? -Math.PI / 2 : Math.PI
+  const player = new Player(initialX, initialZ, initialYaw)
   player.applyCamera(camera)
 
   // 4. BUILD THE 3D WORLD
   const lightManager = new LightManager(scene, Settings.getQuality())
   buildStreets(scene, colliders)
-  const buildingsRes = buildBuildings(scene, colliders, interactions, messages, audio, lightManager)
+  const buildingsRes = buildBuildings(scene, colliders, interactions, messages, audio, lightManager, player)
   const propsRes = buildProps(scene, colliders, interactions, messages, player, audio, lightManager)
 
   // 5. MINIMAP SETUP
@@ -196,6 +202,26 @@ async function init(): Promise<void> {
       onToggleQuality()
       return
     }
+    if (e.code === 'KeyR') {
+      const loc = getLocationName(player.x, player.z)
+      audio.init()
+      audio.resume()
+      audio.playElevatorChime()
+      if (loc.includes('Suite 402')) {
+        messages.show('*Ding* Taking elevator down to 1F Entrance Lobby...')
+        setTimeout(() => {
+          player.teleport(0, 18.2, Math.PI)
+          messages.show('1F Entrance Lobby. Step out to explore midnight Tokyo.', 5.0)
+        }, 400)
+      } else {
+        messages.show('*Ding* Taking elevator up to Suite 402...')
+        setTimeout(() => {
+          player.teleport(1.2, 85.2, -Math.PI / 2)
+          messages.show('Sun Heights Suite 402 (Executive Bedroom). Welcome home.', 5.0)
+        }, 400)
+      }
+      return
+    }
     if (e.code === 'KeyE') {
       const prompt = interactions.prompt().toLowerCase()
       if (prompt.includes('buy') || prompt.includes('coffee') || prompt.includes('tea')) {
@@ -227,7 +253,11 @@ async function init(): Promise<void> {
   })
 
   // Initial welcome message
-  messages.show('Welcome home to Tokyo. Walk through the front glass doors to explore the neighbourhood.', 6.0)
+  if (spawnRoom) {
+    messages.show('Welcome home to Suite 402. Explore your room, check the cyber workstation, or gaze off the balcony.', 6.0)
+  } else {
+    messages.show('Welcome home to Tokyo. Walk through the front glass doors to explore, or take the elevator to Suite 402.', 6.0)
+  }
 
   // 7. MAIN GAME LOOP WITH EXACT 120 FPS LOCK & FRAME PACING
   const clock = new THREE.Clock()

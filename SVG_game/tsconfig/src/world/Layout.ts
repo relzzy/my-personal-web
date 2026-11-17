@@ -37,6 +37,10 @@ export function groundAt(x: number, z: number): number {
 }
 
 export function getLocationName(x: number, z: number): string {
+  // Sun Heights Suite 402 (Your Room)
+  if (x >= -6 && x <= 6 && z >= 78 && z <= 92) {
+    return 'Sun Heights — Suite 402 (Your Room)'
+  }
   // Apartment Lobby & Interior
   if (x >= -4.5 && x <= 4.5 && z >= 12.8 && z <= 22) {
     return 'Sun Heights — Entrance Lobby'

@@ -72,14 +72,24 @@ async function init(): Promise<void> {
   const audio = new AudioManager()
   const hud = new Hud()
 
-  // Check URL params for direct room spawn (?room=1 or ?spawn=room)
+  // Check URL params for direct room or lounge spawn (?room=1, ?lounge=1, ?spawn=room, ?spawn=lounge)
   const urlParams = new URLSearchParams(window.location.search)
   const spawnRoom = urlParams.get('room') === '1' || urlParams.get('spawn') === 'room'
+  const spawnLounge = urlParams.get('lounge') === '1' || urlParams.get('spawn') === 'lounge'
 
-  // STARTING POSITION: Suite 402 if requested, otherwise Sun Heights Apartment Lobby (X: 0, Z: 18.2)
-  const initialX = spawnRoom ? 1.2 : 0
-  const initialZ = spawnRoom ? 85.2 : 18.2
-  const initialYaw = spawnRoom ? -Math.PI / 2 : Math.PI
+  // STARTING POSITION: Suite 402, 4F Lounge, or Sun Heights Apartment Lobby (X: 0, Z: 18.2)
+  let initialX = 0
+  let initialZ = 18.2
+  let initialYaw = Math.PI
+  if (spawnRoom) {
+    initialX = 1.2
+    initialZ = 85.2
+    initialYaw = -Math.PI / 2
+  } else if (spawnLounge) {
+    initialX = -1.15
+    initialZ = 63.6
+    initialYaw = 0
+  }
   const player = new Player(initialX, initialZ, initialYaw)
   player.applyCamera(camera)
 
@@ -208,16 +218,22 @@ async function init(): Promise<void> {
       audio.resume()
       audio.playElevatorChime()
       if (loc.includes('Suite 402')) {
+        messages.show('Leaving Suite 402. Stepping out to 4F Lounge...')
+        setTimeout(() => {
+          player.teleport(-5.8, 65.0, 0)
+          messages.show('Sun Heights 4F Elevator Lounge. Dual lifts and emergency stairs ahead.', 5.0)
+        }, 350)
+      } else if (loc.includes('4F Elevator Lounge')) {
         messages.show('*Ding* Taking elevator down to 1F Entrance Lobby...')
         setTimeout(() => {
           player.teleport(0, 18.2, Math.PI)
           messages.show('1F Entrance Lobby. Step out to explore midnight Tokyo.', 5.0)
         }, 400)
       } else {
-        messages.show('*Ding* Taking elevator up to Suite 402...')
+        messages.show('*Ding* Taking elevator up to 4F Lounge...')
         setTimeout(() => {
-          player.teleport(1.2, 85.2, -Math.PI / 2)
-          messages.show('Sun Heights Suite 402 (Executive Bedroom). Welcome home.', 5.0)
+          player.teleport(-1.15, 63.6, 0)
+          messages.show('Sun Heights 4F Elevator Lounge. Suite 402 is down the hall to the left.', 5.0)
         }, 400)
       }
       return
@@ -255,8 +271,10 @@ async function init(): Promise<void> {
   // Initial welcome message
   if (spawnRoom) {
     messages.show('Welcome home to Suite 402. Explore your room, check the cyber workstation, or gaze off the balcony.', 6.0)
+  } else if (spawnLounge) {
+    messages.show('Sun Heights — 4F Elevator Lounge. Suite 402 is down the hall to the left.', 6.0)
   } else {
-    messages.show('Welcome home to Tokyo. Walk through the front glass doors to explore, or take the elevator to Suite 402.', 6.0)
+    messages.show('Welcome home to Tokyo. Walk through the front glass doors to explore, or take the elevator to 4F Lounge.', 6.0)
   }
 
   // 7. MAIN GAME LOOP WITH EXACT 120 FPS LOCK & FRAME PACING

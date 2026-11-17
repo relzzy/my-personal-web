@@ -4724,3 +4724,289 @@ export function suiteLivingRoomDoorMatTexture(): THREE.CanvasTexture {
   return tex
 }
 
+// =========================================================================
+// 4F CORRIDOR & ELEVATOR LOUNGE PROCEDURAL TEXTURES
+// =========================================================================
+
+export function corridorCarpetRunnerTexture(): THREE.CanvasTexture {
+  const key = 'corridor-carpet-runner'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 1024
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Deep midnight navy carpet base
+  g.fillStyle = '#0f1420'
+  g.fillRect(0, 0, 1024, 512)
+
+  // Woven textile noise
+  const imgData = g.getImageData(0, 0, 1024, 512)
+  const d = imgData.data
+  for (let y = 0; y < 512; y += 2) {
+    for (let x = 0; x < 1024; x += 2) {
+      const idx = (y * 1024 + x) * 4
+      const noise = (Math.random() - 0.5) * 14
+      d[idx] = Math.max(10, Math.min(32, d[idx] + noise))
+      d[idx + 1] = Math.max(14, Math.min(38, d[idx + 1] + noise))
+      d[idx + 2] = Math.max(24, Math.min(52, d[idx + 2] + noise))
+    }
+  }
+  g.putImageData(imgData, 0, 0)
+
+  // Double Polished Gold Borders at Top & Bottom (Ribbons)
+  // Top ribbons
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 8
+  g.beginPath()
+  g.moveTo(0, 20); g.lineTo(1024, 20)
+  g.stroke()
+
+  g.strokeStyle = 'rgba(212, 175, 55, 0.55)'
+  g.lineWidth = 3
+  g.beginPath()
+  g.moveTo(0, 34); g.lineTo(1024, 34)
+  g.stroke()
+
+  // Bottom ribbons
+  g.strokeStyle = 'rgba(212, 175, 55, 0.55)'
+  g.lineWidth = 3
+  g.beginPath()
+  g.moveTo(0, 478); g.lineTo(1024, 478)
+  g.stroke()
+
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 8
+  g.beginPath()
+  g.moveTo(0, 492); g.lineTo(1024, 492)
+  g.stroke()
+
+  // Woven Diamond Lattice Pattern
+  g.strokeStyle = 'rgba(212, 175, 55, 0.28)'
+  g.lineWidth = 2
+  const diamondW = 128
+  for (let x = 0; x <= 1024; x += diamondW) {
+    // Upper to center
+    g.beginPath()
+    g.moveTo(x, 40)
+    g.lineTo(x + diamondW / 2, 256)
+    g.lineTo(x, 472)
+    g.stroke()
+
+    // Downward diagonal
+    g.beginPath()
+    g.moveTo(x + diamondW / 2, 256)
+    g.lineTo(x + diamondW, 40)
+    g.moveTo(x + diamondW / 2, 256)
+    g.lineTo(x + diamondW, 472)
+    g.stroke()
+
+    // Center accent diamond
+    g.fillStyle = 'rgba(212, 175, 55, 0.12)'
+    g.beginPath()
+    g.moveTo(x + diamondW / 2, 220)
+    g.lineTo(x + diamondW / 2 + 25, 256)
+    g.lineTo(x + diamondW / 2, 292)
+    g.lineTo(x + diamondW / 2 - 25, 256)
+    g.closePath()
+    g.fill()
+    g.stroke()
+  }
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.ClampToEdgeWrapping
+  tex.repeat.set(4, 1)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function corridorElevatorDisplayTexture(type: 'left' | 'right'): THREE.CanvasTexture {
+  const key = `corridor-elev-disp-${type}`
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 96
+  const g = canvas.getContext('2d')!
+
+  // Black display casing
+  g.fillStyle = '#060810'
+  g.fillRect(0, 0, 256, 96)
+
+  // Gold border
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 4
+  g.strokeRect(4, 4, 248, 88)
+
+  // Amber glowing LED readout
+  g.shadowColor = '#f59e0b'
+  g.shadowBlur = 12
+  g.fillStyle = '#f59e0b'
+  g.font = 'bold 36px monospace'
+  g.textAlign = 'center'
+
+  if (type === 'left') {
+    g.fillText('▲ 4', 128, 60)
+  } else {
+    g.font = 'bold 28px monospace'
+    g.fillText('4 - IDLE', 128, 58)
+  }
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function corridorFireStairsSignTexture(): THREE.CanvasTexture {
+  const key = 'corridor-fire-stairs-sign'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 96
+  const g = canvas.getContext('2d')!
+
+  // Emergency exit green background
+  g.fillStyle = '#15803d'
+  g.fillRect(0, 0, 256, 96)
+
+  // Bright green border
+  g.strokeStyle = '#22c55e'
+  g.lineWidth = 6
+  g.strokeRect(4, 4, 248, 88)
+
+  // Running man icon
+  g.fillStyle = '#ffffff'
+  g.beginPath()
+  g.arc(60, 36, 9, 0, Math.PI * 2)
+  g.fill()
+  g.fillRect(56, 48, 8, 24)
+  g.fillRect(44, 54, 32, 6)
+
+  // Text
+  g.font = '900 32px monospace'
+  g.fillStyle = '#ffffff'
+  g.fillText('STAIRS', 110, 58)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function corridorWayfindingTexture(): THREE.CanvasTexture {
+  const key = 'corridor-wayfinding-sign'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 128
+  const g = canvas.getContext('2d')!
+
+  // Dark slate plate
+  g.fillStyle = '#0f172a'
+  g.fillRect(0, 0, 512, 128)
+
+  // Gold border
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 4
+  g.strokeRect(6, 6, 500, 116)
+
+  // Gold text
+  g.fillStyle = '#f1f5f9'
+  g.font = 'bold 26px monospace'
+  g.textAlign = 'center'
+  g.fillText('◄ 401-404 | LIFTS | STAIRS ►', 256, 68)
+
+  // Floor subtext
+  g.font = 'bold 14px monospace'
+  g.fillStyle = '#d4af37'
+  g.fillText('4TH FLOOR RESIDENTIAL WING', 256, 96)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function corridorSuitePlaqueTexture(num: string): THREE.CanvasTexture {
+  const key = `corridor-suite-plaque-${num}`
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 128
+  canvas.height = 96
+  const g = canvas.getContext('2d')!
+
+  // Brushed brass background
+  g.fillStyle = '#d4af37'
+  g.fillRect(0, 0, 128, 96)
+
+  // Bevel border
+  g.strokeStyle = '#854d0e'
+  g.lineWidth = 4
+  g.strokeRect(3, 3, 122, 90)
+
+  // Engraved suite number
+  g.fillStyle = '#000000'
+  g.font = '900 44px monospace'
+  g.textAlign = 'center'
+  g.fillText(num, 64, 64)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function corridorRefuseChuteTexture(): THREE.CanvasTexture {
+  const key = 'corridor-refuse-chute'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 320
+  const g = canvas.getContext('2d')!
+
+  // Brushed steel background
+  g.fillStyle = '#64748b'
+  g.fillRect(0, 0, 256, 320)
+
+  // Stainless grain lines
+  g.fillStyle = '#475569'
+  for (let y = 10; y < 310; y += 6) {
+    g.fillRect(10, y, 236, 2)
+  }
+
+  // Label banner
+  g.fillStyle = '#0f172a'
+  g.fillRect(20, 30, 216, 48)
+  g.fillStyle = '#94a3b8'
+  g.font = 'bold 20px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('REFUSE CHUTE', 128, 62)
+
+  // Pull handle
+  g.fillStyle = '#1e293b'
+  g.fillRect(60, 130, 136, 24)
+  g.strokeStyle = '#cbd5e1'
+  g.lineWidth = 3
+  g.strokeRect(60, 130, 136, 24)
+
+  // Green status LED
+  g.fillStyle = '#22c55e'
+  g.beginPath()
+  g.arc(128, 220, 12, 0, Math.PI * 2)
+  g.fill()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+

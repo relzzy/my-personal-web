@@ -50,6 +50,7 @@ import { MessageBus } from '../game/Messages'
 import { Settings } from '../game/Settings'
 import type { Player } from '../game/Player'
 import { buildSuite402 } from './Suite402'
+import { buildCorridor4F, type Corridor4FResult } from './Corridor4F'
 import type { AudioManager } from './Audio'
 import type { LightManager } from './LightManager'
 
@@ -79,6 +80,7 @@ export function buildBuildings(
 
   // Animation hooks
   const animators: ((dt: number, player: { x: number; z: number }) => void)[] = []
+  let corridorRes: Corridor4FResult | undefined
 
   for (const spec of NEIGHBORHOOD_BUILDINGS) {
     const bGroup = new THREE.Group()
@@ -114,7 +116,21 @@ export function buildBuildings(
     // 1. COLLIDERS & STRUCTURAL SHELL
     if (spec.id === 'b-sunheights') {
       // STARTING APARTMENT: Special hollow enterable ground floor lobby!
-      const lobbyRes = buildApartmentLobby(bGroup, spec, colliders, interactions, messages, wallMat, trimMat, audio, lightManager, player)
+      const lobbyRes = buildApartmentLobby(
+        bGroup,
+        spec,
+        colliders,
+        interactions,
+        messages,
+        wallMat,
+        trimMat,
+        audio,
+        lightManager,
+        player,
+        () => {
+          corridorRes?.openElevator(true)
+        },
+      )
       lobbyLight = lobbyRes.light
       animators.push(lobbyRes.update)
 
@@ -203,6 +219,10 @@ export function buildBuildings(
   if (player) {
     const suiteRes = buildSuite402(scene, colliders, interactions, messages, player, audio, lightManager)
     animators.push(suiteRes.update)
+
+    // 5. 4F ELEVATOR LOUNGE & CORRIDOR
+    corridorRes = buildCorridor4F(scene, colliders, interactions, messages, player, audio, lightManager)
+    animators.push(corridorRes.update)
   }
 
   return {
@@ -230,6 +250,7 @@ function buildApartmentLobby(
   audio?: AudioManager,
   lightManager?: LightManager,
   player?: Player,
+  onRideElevatorTo4F?: () => void,
 ): { light: THREE.PointLight; update: (dt: number, p: { x: number; z: number }) => void } {
   const floorH = 3.2
   const halfW = spec.w / 2
@@ -938,20 +959,22 @@ function buildApartmentLobby(
     x: spec.x + elevW / 2 + 0.35,
     z: spec.z + innerD / 2 - 0.8,
     radius: 1.8,
-    prompt: () => (elevOpen ? 'Take Elevator to Suite 402 (Your Room) [4階 部屋へ]' : 'Call Elevator [1階 エレベーター]'),
+    prompt: () => (elevOpen ? 'Take Elevator to 4F Lounge [4階 ラウンジへ]' : 'Call Elevator [1階 エレベーター]'),
     onInteract: () => {
       if (!elevOpen) {
         elevOpen = true
         audio?.playElevatorChime()
         messages.show('*Ding* Elevator arrives at 1F. Champagne doors glide open.')
       } else {
+        elevOpen = false
         audio?.playElevatorChime()
-        messages.show('*Ding* Riding elevator up to 4F Suite 402...')
+        messages.show('*Ding* Doors glide shut. Riding elevator up to 4F Lounge...')
         if (player) {
           setTimeout(() => {
-            player.teleport(1.2, 85.2, -Math.PI / 2)
-            messages.show('Sun Heights Suite 402 (Executive Bedroom). Welcome home.', 5.0)
-          }, 400)
+            player.teleport(-1.15, 61.5, 0)
+            onRideElevatorTo4F?.()
+            messages.show('Sun Heights 4F Elevator Lounge. Suite 402 is down the hall to the left.', 5.0)
+          }, 450)
         }
       }
     },

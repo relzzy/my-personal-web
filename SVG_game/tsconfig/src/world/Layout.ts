@@ -41,6 +41,10 @@ export function getLocationName(x: number, z: number): string {
   if (x >= -6 && x <= 6 && z >= 78 && z <= 92) {
     return 'Sun Heights — Suite 402 (Your Room)'
   }
+  // Sun Heights 4F Elevator Lounge & Corridor
+  if (x >= -8.5 && x <= 8.5 && z >= 60 && z <= 72) {
+    return 'Sun Heights — 4F Elevator Lounge'
+  }
   // Apartment Lobby & Interior
   if (x >= -4.5 && x <= 4.5 && z >= 12.8 && z <= 22) {
     return 'Sun Heights — Entrance Lobby'

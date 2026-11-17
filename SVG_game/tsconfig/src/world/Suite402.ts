@@ -987,20 +987,20 @@ export function buildSuite402(
     },
   })
 
-  // 5. Living Room / Elevator Return to 1F Lobby
+  // 5. Exit Door to 4F Elevator Lounge & Corridor
   interactions.add({
     id: 'suite-elevator',
     x: cx + innerW / 2 - 0.2,
     z: cz + 0.7,
     radius: 1.6,
-    prompt: () => 'Take Elevator to 1F Entrance Lobby [1階 ロビーへ]',
+    prompt: () => 'Exit to 4F Lounge & Hallway [廊下・ラウンジへ]',
     onInteract: () => {
-      audio?.playElevatorChime()
-      messages.show('*Ding* Riding elevator down to 1F Entrance Lobby...')
+      audio?.playVendingSound()
+      messages.show('Stepping out into the 4F Elevator Lounge...')
       setTimeout(() => {
-        player.teleport(0, 18.2, Math.PI)
-        messages.show('1F Entrance Lobby. Step out to explore midnight Tokyo.', 5.0)
-      }, 400)
+        player.teleport(-5.8, 65.0, 0)
+        messages.show('4F Elevator Lounge & Residential Corridor.', 4.0)
+      }, 350)
     },
   })
 

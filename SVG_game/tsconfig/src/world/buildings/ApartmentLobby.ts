@@ -22,6 +22,10 @@ import {
   signMaterial,
   emergencyExitTexture,
   corridorElevatorDoorTexture,
+  corridorElevatorCOPTexture,
+  elevatorAnimePoster1Texture,
+  elevatorAnimePoster2Texture,
+  suiteAnimePosterCyberpunkTexture,
 } from '../Materials'
 import { screenFade } from '../../ui/ScreenFader'
 
@@ -746,10 +750,74 @@ export function buildApartmentLobby(
   cabRRail.position.set(spec.x + cabW / 2 - 0.06, floorY + 0.95, cabCenterZ)
   interiorGroup.add(cabRLower, cabRUpper, cabRRail)
 
-  // Inside Car Operating Panel (COP Column)
-  const inBtnCol = new THREE.Mesh(new THREE.BoxGeometry(0.03, 1.35, 0.26), railMat)
-  inBtnCol.position.set(spec.x + cabW / 2 - 0.035, floorY + 1.25, cabCenterZ - 0.30)
-  interiorGroup.add(inBtnCol)
+  // Inside Car Operating Panel (COP Column) with High-Res Tactile Buttons & LED Screen
+  const copGrp = new THREE.Group()
+  const copChassis = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1.45, 0.34), railMat)
+  copChassis.position.set(0, 0, 0)
+
+  const copFaceTex = corridorElevatorCOPTexture('1F')
+  const copFace = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.32, 1.42),
+    new THREE.MeshStandardMaterial({
+      map: copFaceTex,
+      roughness: 0.35,
+      metalness: 0.55,
+    }),
+  )
+  copFace.rotateY(-Math.PI / 2)
+  copFace.position.set(-0.021, 0, 0)
+  copGrp.add(copChassis, copFace)
+  copGrp.position.set(spec.x + cabW / 2 - 0.02, floorY + 1.25, cabCenterZ - 0.30)
+  interiorGroup.add(copGrp)
+
+  // Framed Anime Girl Art Posters inside 1F Elevator Cab
+  const buildCabPoster = (
+    texture: THREE.Texture,
+    posX: number,
+    posY: number,
+    posZ: number,
+    facingEast: boolean,
+  ) => {
+    const posterGrp = new THREE.Group()
+    const frameMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(0.02, 0.86, 0.58),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.8 }),
+    )
+    const goldTrim = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.88, 0.60), railMat)
+
+    const pic = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.54, 0.82),
+      new THREE.MeshStandardMaterial({ map: texture, roughness: 0.4, metalness: 0.1 }),
+    )
+    pic.rotation.y = facingEast ? Math.PI / 2 : -Math.PI / 2
+    pic.position.set(facingEast ? 0.013 : -0.013, 0, 0)
+
+    const glass = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.54, 0.82),
+      new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        roughness: 0.05,
+        metalness: 0.9,
+        transparent: true,
+        opacity: 0.14,
+      }),
+    )
+    glass.rotation.y = facingEast ? Math.PI / 2 : -Math.PI / 2
+    glass.position.set(facingEast ? 0.015 : -0.015, 0, 0)
+
+    posterGrp.add(goldTrim, frameMesh, pic, glass)
+    posterGrp.position.set(posX, posY, posZ)
+    return posterGrp
+  }
+
+  // Poster 1: Cyber Idol Kira (Left wall, facing East into cab)
+  const poster1 = buildCabPoster(elevatorAnimePoster1Texture(), spec.x - cabW / 2 + 0.02, floorY + 1.45, cabCenterZ - 0.35, true)
+  // Poster 2: Sunset Lo-Fi Mei (Left wall, facing East into cab)
+  const poster2 = buildCabPoster(elevatorAnimePoster2Texture(), spec.x - cabW / 2 + 0.02, floorY + 1.45, cabCenterZ + 0.45, true)
+  // Poster 3: Cyberpunk City Heroine (Right wall, facing West into cab, beside COP)
+  const poster3 = buildCabPoster(suiteAnimePosterCyberpunkTexture(), spec.x + cabW / 2 - 0.02, floorY + 1.45, cabCenterZ + 0.45, false)
+
+  interiorGroup.add(poster1, poster2, poster3)
 
   // Inside Cab Warm Ceiling Spotlight
   const cabLight = new THREE.PointLight(0xfffae0, 2.2, 5.5, 1.2)

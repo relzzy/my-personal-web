@@ -2211,4 +2211,825 @@ export function corridorDoorIntercomTexture(suiteNum: string): THREE.CanvasTextu
   return tex
 }
 
+export function corridorElevatorCOPTexture(activeFloor: '1F' | '4F' = '4F'): THREE.CanvasTexture {
+  const key = `corridor-elev-cop-${activeFloor}`
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 2048
+  const g = canvas.getContext('2d')!
+
+  // 1. Brushed champagne gold and titanium stainless steel plate
+  const grad = g.createLinearGradient(0, 0, 512, 2048)
+  grad.addColorStop(0, '#caa23f')
+  grad.addColorStop(0.2, '#f0dd98')
+  grad.addColorStop(0.5, '#b89030')
+  grad.addColorStop(0.8, '#ecd792')
+  grad.addColorStop(1, '#9b761f')
+  g.fillStyle = grad
+  g.fillRect(0, 0, 512, 2048)
+
+  // Vertical hairline metal grain
+  g.fillStyle = 'rgba(255, 255, 255, 0.07)'
+  for (let x = 0; x < 512; x += 4) {
+    g.fillRect(x, 0, 1.5, 2048)
+  }
+  g.fillStyle = 'rgba(0, 0, 0, 0.05)'
+  for (let x = 2; x < 512; x += 5) {
+    g.fillRect(x, 0, 1, 2048)
+  }
+
+  // Outer bevel edge and machined shadow
+  g.strokeStyle = '#5a420b'
+  g.lineWidth = 10
+  g.strokeRect(5, 5, 502, 2038)
+  g.strokeStyle = 'rgba(255, 255, 255, 0.65)'
+  g.lineWidth = 4
+  g.strokeRect(14, 14, 484, 2020)
+
+  // Precision Hex Mounting Screws in corners and sides
+  const screwPositions = [
+    { x: 36, y: 36 },
+    { x: 476, y: 36 },
+    { x: 36, y: 1024 },
+    { x: 476, y: 1024 },
+    { x: 36, y: 2012 },
+    { x: 476, y: 2012 },
+  ]
+  for (const s of screwPositions) {
+    g.fillStyle = '#6e5214'
+    g.beginPath(); g.arc(s.x, s.y, 11, 0, Math.PI * 2); g.fill()
+    g.fillStyle = '#f5e4ab'
+    g.beginPath(); g.arc(s.x - 1, s.y - 1, 9, 0, Math.PI * 2); g.fill()
+    g.fillStyle = '#4a350b'
+    g.beginPath(); g.arc(s.x, s.y, 7, 0, Math.PI * 2); g.fill()
+    g.strokeStyle = '#f5e4ab'
+    g.lineWidth = 2.5
+    g.beginPath(); g.moveTo(s.x - 5, s.y); g.lineTo(s.x + 5, s.y); g.stroke()
+  }
+
+  // 2. TOP DIGITAL LED/LCD SCREEN BEZEL (Y: 70 - 360)
+  g.fillStyle = '#060a12'
+  g.beginPath()
+  g.roundRect(36, 70, 440, 290, 16)
+  g.fill()
+
+  // Screen inner brass frame
+  g.strokeStyle = '#856117'
+  g.lineWidth = 4
+  g.stroke()
+  g.strokeStyle = 'rgba(255, 255, 255, 0.15)'
+  g.lineWidth = 1.5
+  g.strokeRect(42, 76, 428, 278)
+
+  // Subtle digital dot matrix grid
+  g.fillStyle = 'rgba(255, 183, 3, 0.03)'
+  for (let gy = 86; gy < 350; gy += 14) {
+    for (let gx = 48; gx < 464; gx += 14) {
+      g.fillRect(gx, gy, 3, 3)
+    }
+  }
+
+  // Direction arrow & Floor numeral in glowing LED amber
+  const is4F = activeFloor === '4F'
+  const is1F = activeFloor === '1F'
+
+  g.save()
+  g.shadowColor = '#f59e0b'
+  g.shadowBlur = 24
+  g.fillStyle = '#fbbf24'
+
+  // Direction Chevron
+  g.beginPath()
+  if (is4F) {
+    g.moveTo(110, 205)
+    g.lineTo(80, 245)
+    g.lineTo(140, 245)
+  } else {
+    g.moveTo(110, 245)
+    g.lineTo(80, 205)
+    g.lineTo(140, 205)
+  }
+  g.closePath()
+  g.fill()
+
+  // Floor text
+  g.font = '900 96px monospace'
+  g.textAlign = 'center'
+  g.fillText(activeFloor, 270, 240)
+  g.restore()
+
+  // Screen header & footer text
+  g.fillStyle = 'rgba(251, 191, 36, 0.9)'
+  g.font = 'bold 15px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('SUN HEIGHTS RESIDENTIAL ELEVATOR', 256, 115)
+
+  g.fillStyle = '#38bdf8'
+  g.font = 'bold 18px sans-serif'
+  const floorName = is4F ? '4F SKY LOUNGE & SUITES' : '1F ENTRANCE LOBBY'
+  g.fillText(floorName, 256, 290)
+
+  g.fillStyle = '#94a3b8'
+  g.font = '12px sans-serif'
+  g.fillText('定員 13名 / 積載 900kg (CAPACITY 13 PERS / 900 KG)', 256, 330)
+
+  // Section divider line
+  g.strokeStyle = '#7c5c16'
+  g.lineWidth = 3
+  g.beginPath(); g.moveTo(40, 395); g.lineTo(472, 395); g.stroke()
+
+  // 3. FLOOR BUTTONS SECTION (Y: 420 - 1380)
+  const buttons = [
+    { label: '5', desc: '5F PENTHOUSE', sub: '最上階', braille: '⠢', x: 155, y: 490, active: false },
+    { label: '4', desc: '4F LOUNGE & SUITE', sub: '4階 ラウンジ', braille: '⠙', x: 357, y: 490, active: is4F },
+    { label: '3', desc: '3F RESIDENTIAL', sub: '3階 住居', braille: '⠉', x: 155, y: 790, active: false },
+    { label: '2', desc: '2F RESIDENTIAL', sub: '2階 住居', braille: '⠃', x: 357, y: 790, active: false },
+    { label: '1', desc: '1F MAIN LOBBY', sub: '1階 ロビー', braille: '⠁', x: 155, y: 1090, active: is1F },
+    { label: 'B1', desc: 'B1 PARKING & MECH', sub: '地下 駐車場', braille: '⠼⠁', x: 357, y: 1090, active: false },
+  ]
+
+  for (const btn of buttons) {
+    const r = 70
+    // Outer shadow
+    g.fillStyle = 'rgba(0, 0, 0, 0.35)'
+    g.beginPath(); g.arc(btn.x + 3, btn.y + 4, r + 2, 0, Math.PI * 2); g.fill()
+
+    // Outer 3D metallic bevel ring
+    const ringGrad = g.createRadialGradient(btn.x - 20, btn.y - 20, 10, btn.x, btn.y, r)
+    ringGrad.addColorStop(0, '#ffffff')
+    ringGrad.addColorStop(0.35, '#cbd5e1')
+    ringGrad.addColorStop(0.7, '#64748b')
+    ringGrad.addColorStop(1, '#1e293b')
+    g.fillStyle = ringGrad
+    g.beginPath(); g.arc(btn.x, btn.y, r, 0, Math.PI * 2); g.fill()
+
+    // Active button glow ring
+    if (btn.active) {
+      g.save()
+      g.shadowColor = '#f59e0b'
+      g.shadowBlur = 28
+      g.strokeStyle = '#fbbf24'
+      g.lineWidth = 7
+      g.beginPath(); g.arc(btn.x, btn.y, r - 3, 0, Math.PI * 2); g.stroke()
+      g.restore()
+    }
+
+    // Inner button face
+    const innerR = r - 12
+    if (btn.active) {
+      // Illuminated active state
+      const actGrad = g.createRadialGradient(btn.x - 10, btn.y - 10, 5, btn.x, btn.y, innerR)
+      actGrad.addColorStop(0, '#fef08a')
+      actGrad.addColorStop(0.6, '#f59e0b')
+      actGrad.addColorStop(1, '#b45309')
+      g.fillStyle = actGrad
+    } else {
+      // Idle stainless brushed face
+      const idleGrad = g.createRadialGradient(btn.x - 10, btn.y - 10, 5, btn.x, btn.y, innerR)
+      idleGrad.addColorStop(0, '#334155')
+      idleGrad.addColorStop(0.7, '#1e293b')
+      idleGrad.addColorStop(1, '#0f172a')
+      g.fillStyle = idleGrad
+    }
+    g.beginPath(); g.arc(btn.x, btn.y, innerR, 0, Math.PI * 2); g.fill()
+
+    // Inner rim line
+    g.strokeStyle = btn.active ? '#fef08a' : 'rgba(255, 255, 255, 0.25)'
+    g.lineWidth = 2
+    g.beginPath(); g.arc(btn.x, btn.y, innerR, 0, Math.PI * 2); g.stroke()
+
+    // Large bold floor numeral
+    g.textAlign = 'center'
+    if (btn.active) {
+      g.fillStyle = '#1e1403'
+      g.font = '900 56px sans-serif'
+      g.fillText(btn.label, btn.x, btn.y + 20)
+    } else {
+      g.fillStyle = '#f8fafc'
+      g.font = 'bold 54px sans-serif'
+      g.fillText(btn.label, btn.x, btn.y + 19)
+    }
+
+    // Floor descriptive label under button
+    g.fillStyle = btn.active ? '#78350f' : '#2d1e08'
+    g.font = 'bold 15px sans-serif'
+    g.fillText(btn.desc, btn.x, btn.y + r + 24)
+    g.font = '13px sans-serif'
+    g.fillStyle = btn.active ? '#92400e' : '#453210'
+    g.fillText(btn.sub, btn.x, btn.y + r + 42)
+
+    // Braille tactile dots
+    g.font = 'bold 20px monospace'
+    g.fillStyle = '#6b4f12'
+    g.fillText(btn.braille, btn.x, btn.y + r + 64)
+  }
+
+  // Section divider line
+  g.strokeStyle = '#7c5c16'
+  g.lineWidth = 3
+  g.beginPath(); g.moveTo(40, 1375); g.lineTo(472, 1375); g.stroke()
+
+  // 4. DOOR & OPERATIONAL BUTTONS SECTION (Y: 1400 - 1680)
+  const openX = 155
+  const openY = 1465
+  const ctrlR = 52
+
+  g.fillStyle = '#1e293b'
+  g.beginPath(); g.arc(openX, openY, ctrlR, 0, Math.PI * 2); g.fill()
+  g.strokeStyle = '#cbd5e1'
+  g.lineWidth = 4
+  g.stroke()
+  g.fillStyle = '#38bdf8'
+  g.font = 'bold 30px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('◄||►', openX, openY + 8)
+  g.fillStyle = '#94a3b8'
+  g.font = 'bold 14px sans-serif'
+  g.fillText('OPEN / 開', openX, openY + ctrlR + 20)
+
+  // Door Close (►||◄ 閉)
+  const closeX = 357
+  const closeY = 1465
+  g.fillStyle = '#1e293b'
+  g.beginPath(); g.arc(closeX, closeY, ctrlR, 0, Math.PI * 2); g.fill()
+  g.strokeStyle = '#cbd5e1'
+  g.lineWidth = 4
+  g.stroke()
+  g.fillStyle = '#38bdf8'
+  g.font = 'bold 30px sans-serif'
+  g.fillText('►||◄', closeX, closeY + 8)
+  g.fillStyle = '#94a3b8'
+  g.font = 'bold 14px sans-serif'
+  g.fillText('CLOSE / 閉', closeX, closeY + ctrlR + 20)
+
+  // Emergency Alarm / Call Button (Y: 1610)
+  const alarmX = 256
+  const alarmY = 1620
+  const alarmR = 48
+  // Red warning ring
+  g.fillStyle = '#991b1b'
+  g.beginPath(); g.arc(alarmX, alarmY, alarmR + 6, 0, Math.PI * 2); g.fill()
+  g.fillStyle = '#ef4444'
+  g.beginPath(); g.arc(alarmX, alarmY, alarmR, 0, Math.PI * 2); g.fill()
+  g.strokeStyle = '#fef08a'
+  g.lineWidth = 3
+  g.stroke()
+  // Bell Icon
+  g.fillStyle = '#ffffff'
+  g.font = 'bold 36px sans-serif'
+  g.fillText('🔔', alarmX, alarmY + 12)
+  g.fillStyle = '#dc2626'
+  g.font = 'bold 14px sans-serif'
+  g.fillText('EMERGENCY / 非常呼出', alarmX, alarmY + alarmR + 22)
+
+  // 5. BOTTOM SECTION: INTERCOM SPEAKER GRILLE & BRANDING (Y: 1720 - 2020)
+  g.strokeStyle = '#7c5c16'
+  g.lineWidth = 3
+  g.beginPath(); g.moveTo(40, 1720); g.lineTo(472, 1720); g.stroke()
+
+  // Precision laser-cut speaker holes
+  g.fillStyle = '#3a2707'
+  for (let row = 0; row < 7; row++) {
+    for (let col = 0; col < 15; col++) {
+      const hx = 90 + col * 24
+      const hy = 1750 + row * 16
+      g.beginPath(); g.arc(hx, hy, 3.5, 0, Math.PI * 2); g.fill()
+    }
+  }
+
+  // Official manufacturer & luxury residence plaque
+  g.fillStyle = '#1c1304'
+  g.beginPath()
+  g.roundRect(50, 1885, 412, 110, 10)
+  g.fill()
+  g.strokeStyle = '#856117'
+  g.lineWidth = 2
+  g.stroke()
+
+  g.fillStyle = '#d4af37'
+  g.font = '900 20px sans-serif'
+  g.fillText('SUN HEIGHTS RESIDENCE', 256, 1918)
+  g.font = 'bold 13px sans-serif'
+  g.fillStyle = '#94a3b8'
+  g.fillText('MITSUBISHI ELEVATOR SYSTEM 2026', 256, 1942)
+  g.fillStyle = 'rgba(255, 255, 255, 0.7)'
+  g.font = '12px sans-serif'
+  g.fillText('🚭 車内禁煙 / NO SMOKING   📹 防犯カメラ作動中', 256, 1970)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function elevatorAnimePoster1Texture(): THREE.CanvasTexture {
+  const key = 'elev-anime-poster-1'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 768
+  const g = canvas.getContext('2d')!
+
+  // Deep twilight purple & cyan cyber gradient
+  const bg = g.createLinearGradient(0, 0, 0, 768)
+  bg.addColorStop(0, '#090518')
+  bg.addColorStop(0.35, '#220b42')
+  bg.addColorStop(0.7, '#3b105a')
+  bg.addColorStop(1, '#0c071a')
+  g.fillStyle = bg
+  g.fillRect(0, 0, 512, 768)
+
+  // Floating neon cyber diamonds & sparkles
+  g.strokeStyle = 'rgba(0, 245, 212, 0.35)'
+  g.lineWidth = 2
+  for (let i = 0; i < 8; i++) {
+    const dx = 50 + (i * 57) % 420
+    const dy = 80 + (i * 73) % 550
+    const sz = 16 + (i * 7) % 18
+    g.beginPath()
+    g.moveTo(dx, dy - sz); g.lineTo(dx + sz, dy)
+    g.lineTo(dx, dy + sz); g.lineTo(dx - sz, dy)
+    g.closePath(); g.stroke()
+  }
+
+  // Giant glowing gradient crescent moon in background
+  const moonGrad = g.createRadialGradient(380, 260, 20, 380, 260, 140)
+  moonGrad.addColorStop(0, '#ff007f')
+  moonGrad.addColorStop(0.5, '#7928ca')
+  moonGrad.addColorStop(1, 'rgba(0,0,0,0)')
+  g.fillStyle = moonGrad
+  g.beginPath(); g.arc(380, 260, 140, 0, Math.PI * 2); g.fill()
+
+  // Neon Tokyo Skyline Silhouettes at bottom
+  g.fillStyle = '#0a0614'
+  const bldgWidths = [50, 70, 45, 80, 60, 75, 55, 77]
+  let curX = 0
+  for (let i = 0; i < bldgWidths.length; i++) {
+    const bw = bldgWidths[i]
+    const bh = 150 + Math.sin(i * 1.5) * 60
+    g.fillRect(curX, 620 - bh, bw, bh + 150)
+    for (let wy = 620 - bh + 20; wy < 620; wy += 22) {
+      if ((i + wy) % 4 === 0) {
+        g.fillStyle = (i + wy) % 2 === 0 ? '#00f5d4' : '#ff007f'
+        g.fillRect(curX + 10, wy, 4, 7)
+      }
+    }
+    g.fillStyle = '#0a0614'
+    curX += bw
+  }
+
+  // ANIME GIRL: "Cyber Idol Kira"
+  // 1. Long flowing twin-tail hair in background
+  g.save()
+  g.strokeStyle = '#c084fc'
+  g.lineWidth = 26
+  g.lineCap = 'round'
+  // Left twintail
+  g.beginPath()
+  g.moveTo(180, 310)
+  g.bezierCurveTo(90, 300, 40, 430, 70, 580)
+  g.stroke()
+  // Right twintail
+  g.beginPath()
+  g.moveTo(332, 310)
+  g.bezierCurveTo(422, 300, 472, 430, 442, 580)
+  g.stroke()
+
+  // Cyan hair gradient streaks
+  g.strokeStyle = '#00f5d4'
+  g.lineWidth = 10
+  g.beginPath()
+  g.moveTo(185, 320)
+  g.bezierCurveTo(110, 320, 65, 450, 90, 590)
+  g.stroke()
+  g.beginPath()
+  g.moveTo(327, 320)
+  g.bezierCurveTo(402, 320, 447, 450, 422, 590)
+  g.stroke()
+  g.restore()
+
+  // 2. Neck and shoulders
+  g.fillStyle = '#ffdfd3'
+  g.beginPath()
+  g.rect(236, 420, 40, 60)
+  g.fill()
+
+  // Cute choker with glowing cyan gem
+  g.fillStyle = '#1e1b4b'
+  g.fillRect(234, 445, 44, 14)
+  g.fillStyle = '#00f5d4'
+  g.shadowColor = '#00f5d4'
+  g.shadowBlur = 10
+  g.beginPath(); g.arc(256, 452, 6, 0, Math.PI * 2); g.fill()
+  g.shadowBlur = 0
+
+  // 3. Cyber Idol Jacket & Top
+  g.fillStyle = '#0f172a'
+  g.beginPath()
+  g.moveTo(150, 600)
+  g.lineTo(190, 475)
+  g.lineTo(256, 510)
+  g.lineTo(322, 475)
+  g.lineTo(362, 600)
+  g.closePath()
+  g.fill()
+
+  // Hot magenta collar lapels
+  g.fillStyle = '#ec4899'
+  g.beginPath()
+  g.moveTo(210, 475); g.lineTo(256, 545); g.lineTo(235, 555); g.lineTo(195, 485)
+  g.closePath(); g.fill()
+  g.beginPath()
+  g.moveTo(302, 475); g.lineTo(256, 545); g.lineTo(277, 555); g.lineTo(317, 485)
+  g.closePath(); g.fill()
+
+  // Glowing tie & shirt
+  g.fillStyle = '#ffffff'
+  g.beginPath()
+  g.moveTo(240, 475); g.lineTo(272, 475); g.lineTo(262, 530); g.lineTo(250, 530)
+  g.closePath(); g.fill()
+  g.fillStyle = '#00f5d4'
+  g.fillRect(251, 485, 10, 55)
+
+  // 4. Head and Face
+  g.fillStyle = '#ffe4d6'
+  g.beginPath()
+  g.moveTo(188, 320)
+  g.quadraticCurveTo(188, 440, 256, 460) // Chin
+  g.quadraticCurveTo(324, 440, 324, 320)
+  g.closePath()
+  g.fill()
+
+  // Cheerful pink blush on cheeks
+  g.fillStyle = 'rgba(244, 63, 94, 0.45)'
+  g.beginPath(); g.ellipse(215, 385, 18, 10, 0, 0, Math.PI * 2); g.fill()
+  g.beginPath(); g.ellipse(297, 385, 18, 10, 0, 0, Math.PI * 2); g.fill()
+
+  // 5. Anime Eyes
+  const drawAnimeEye = (ex: number, ey: number, isLeft: boolean) => {
+    // Sclera
+    g.fillStyle = '#ffffff'
+    g.beginPath(); g.ellipse(ex, ey, 24, 28, isLeft ? 0.05 : -0.05, 0, Math.PI * 2); g.fill()
+
+    // Iris
+    const irisGrad = g.createRadialGradient(ex, ey - 5, 2, ex, ey, 22)
+    irisGrad.addColorStop(0, '#06b6d4')
+    irisGrad.addColorStop(0.35, '#d946ef')
+    irisGrad.addColorStop(0.8, '#4c1d95')
+    irisGrad.addColorStop(1, '#1e1b4b')
+    g.fillStyle = irisGrad
+    g.beginPath(); g.ellipse(ex, ey, 19, 24, 0, 0, Math.PI * 2); g.fill()
+
+    // Pupil
+    g.fillStyle = '#0f051d'
+    g.beginPath(); g.ellipse(ex, ey + 2, 8, 11, 0, 0, Math.PI * 2); g.fill()
+
+    // Catchlights
+    g.fillStyle = '#ffffff'
+    g.beginPath(); g.arc(ex - 6, ey - 9, 6, 0, Math.PI * 2); g.fill()
+    g.beginPath(); g.arc(ex + 7, ey + 5, 3.5, 0, Math.PI * 2); g.fill()
+    g.beginPath(); g.arc(ex - 4, ey + 8, 2, 0, Math.PI * 2); g.fill()
+
+    // Eyelash
+    g.strokeStyle = '#1e1035'
+    g.lineWidth = 5
+    g.beginPath()
+    g.arc(ex, ey - 6, 25, isLeft ? Math.PI * 1.15 : Math.PI * 1.1, isLeft ? Math.PI * 1.9 : Math.PI * 1.85)
+    g.stroke()
+
+    // Winged tip
+    g.fillStyle = '#1e1035'
+    g.beginPath()
+    const tipX = isLeft ? ex - 24 : ex + 24
+    g.arc(tipX, ey - 16, 3.5, 0, Math.PI * 2)
+    g.fill()
+
+    // Eyebrow
+    g.strokeStyle = '#c084fc'
+    g.lineWidth = 4
+    g.beginPath()
+    g.moveTo(ex - 20, ey - 32)
+    g.quadraticCurveTo(ex, ey - 38, ex + 20, ey - 32)
+    g.stroke()
+  }
+
+  drawAnimeEye(220, 365, true)
+  drawAnimeEye(292, 365, false)
+
+  // Cute nose dot
+  g.fillStyle = '#e11d48'
+  g.beginPath(); g.arc(256, 396, 2, 0, Math.PI * 2); g.fill()
+
+  // Smiling mouth
+  g.fillStyle = '#be123c'
+  g.beginPath()
+  g.arc(256, 420, 14, 0.1, Math.PI - 0.1, false)
+  g.closePath()
+  g.fill()
+  g.fillStyle = '#ffffff'
+  g.beginPath()
+  g.rect(248, 420, 16, 4)
+  g.fill()
+
+  // 6. Bangs
+  g.fillStyle = '#d8b4fe'
+  g.beginPath()
+  g.moveTo(180, 310)
+  g.quadraticCurveTo(205, 360, 215, 340)
+  g.quadraticCurveTo(235, 370, 248, 335)
+  g.quadraticCurveTo(256, 380, 270, 335)
+  g.quadraticCurveTo(295, 370, 310, 340)
+  g.quadraticCurveTo(325, 360, 332, 310)
+  g.quadraticCurveTo(256, 250, 180, 310)
+  g.closePath()
+  g.fill()
+
+  // Hair barrettes
+  g.fillStyle = '#00f5d4'
+  g.shadowColor = '#00f5d4'
+  g.shadowBlur = 8
+  g.fillRect(175, 290, 18, 12)
+  g.fillRect(319, 290, 18, 12)
+  g.shadowBlur = 0
+
+  // 7. Hand Gesture: Peace Sign
+  g.fillStyle = '#ffe4d6'
+  g.beginPath(); g.arc(360, 440, 16, 0, Math.PI * 2); g.fill()
+  g.lineWidth = 10
+  g.strokeStyle = '#ffe4d6'
+  g.lineCap = 'round'
+  g.beginPath(); g.moveTo(355, 435); g.lineTo(345, 385); g.stroke()
+  g.beginPath(); g.moveTo(365, 435); g.lineTo(375, 385); g.stroke()
+  g.fillStyle = '#fbcfe8'
+  g.beginPath(); g.arc(348, 385, 5, 0, Math.PI * 2); g.fill()
+  g.beginPath(); g.arc(378, 385, 5, 0, Math.PI * 2); g.fill()
+
+  // 8. Typography
+  g.save()
+  g.shadowColor = '#00f5d4'
+  g.shadowBlur = 14
+  g.fillStyle = '#ffffff'
+  g.font = '900 36px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('CYBER IDOL KIRA', 256, 75)
+
+  g.fillStyle = '#ff007f'
+  g.shadowColor = '#ff007f'
+  g.font = 'bold 24px sans-serif'
+  g.fillText('電脳少女キラ ★ 2026 LIVE', 256, 115)
+  g.restore()
+
+  // Bottom Banner
+  g.fillStyle = 'rgba(10, 6, 24, 0.85)'
+  g.fillRect(20, 675, 472, 75)
+  g.strokeStyle = '#00f5d4'
+  g.lineWidth = 2
+  g.strokeRect(20, 675, 472, 75)
+
+  g.fillStyle = '#f8fafc'
+  g.font = 'bold 18px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('SHIBUYA UNDERGROUND ARENA // WORLD TOUR', 256, 706)
+  g.fillStyle = '#38bdf8'
+  g.font = '13px monospace'
+  g.fillText('TICKETS ON SALE NOW // SUN HEIGHTS SPECIAL', 256, 732)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function elevatorAnimePoster2Texture(): THREE.CanvasTexture {
+  const key = 'elev-anime-poster-2'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 768
+  const g = canvas.getContext('2d')!
+
+  // Warm magic hour sunset gradient
+  const bg = g.createLinearGradient(0, 0, 0, 768)
+  bg.addColorStop(0, '#311042')
+  bg.addColorStop(0.3, '#7c2d6a')
+  bg.addColorStop(0.6, '#f97316')
+  bg.addColorStop(0.85, '#fdba74')
+  bg.addColorStop(1, '#fed7aa')
+  g.fillStyle = bg
+  g.fillRect(0, 0, 512, 768)
+
+  // Radiant Golden Sun at Horizon
+  const sunGrad = g.createRadialGradient(256, 420, 20, 256, 420, 160)
+  sunGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)')
+  sunGrad.addColorStop(0.4, 'rgba(254, 215, 170, 0.6)')
+  sunGrad.addColorStop(1, 'rgba(255, 255, 255, 0)')
+  g.fillStyle = sunGrad
+  g.beginPath(); g.arc(256, 420, 160, 0, Math.PI * 2); g.fill()
+
+  // Distant Tokyo Tower & City Skyline Silhouette
+  g.fillStyle = '#4a044e'
+  g.beginPath()
+  g.moveTo(256, 260)
+  g.lineTo(245, 370)
+  g.lineTo(267, 370)
+  g.closePath(); g.fill()
+  g.fillRect(240, 370, 32, 8)
+  g.beginPath()
+  g.moveTo(242, 378); g.lineTo(220, 460); g.lineTo(292, 460); g.lineTo(270, 378)
+  g.closePath(); g.fill()
+
+  // Drifting sakura blossoms
+  g.fillStyle = 'rgba(255, 220, 230, 0.85)'
+  for (let p = 0; p < 14; p++) {
+    const px = (p * 41) % 490 + 15
+    const py = (p * 57) % 450 + 40
+    g.beginPath()
+    g.ellipse(px, py, 10, 5, p * 0.4, 0, Math.PI * 2)
+    g.fill()
+  }
+
+  // ANIME GIRL: "Sunset Lo-Fi Girl Mei"
+  // Hair base
+  g.fillStyle = '#f472b6'
+  g.beginPath()
+  g.ellipse(256, 430, 95, 115, 0, 0, Math.PI * 2)
+  g.fill()
+
+  // Loose side ponytail
+  g.beginPath()
+  g.moveTo(170, 420)
+  g.bezierCurveTo(110, 470, 100, 580, 130, 640)
+  g.bezierCurveTo(160, 580, 190, 510, 185, 440)
+  g.closePath(); g.fill()
+
+  // Neck and shoulders
+  g.fillStyle = '#ffe4d6'
+  g.fillRect(238, 480, 36, 50)
+
+  // Cat-ear headphones around neck
+  g.strokeStyle = '#f43f5e'
+  g.lineWidth = 14
+  g.lineCap = 'round'
+  g.beginPath()
+  g.arc(256, 490, 46, 0.15 * Math.PI, 0.85 * Math.PI, false)
+  g.stroke()
+  g.fillStyle = '#fda4af'
+  g.beginPath(); g.ellipse(206, 510, 14, 22, -0.2, 0, Math.PI * 2); g.fill()
+  g.beginPath(); g.ellipse(306, 510, 14, 22, 0.2, 0, Math.PI * 2); g.fill()
+
+  // Cozy oversized cream knit sweater
+  g.fillStyle = '#fffbeb'
+  g.beginPath()
+  g.moveTo(140, 650)
+  g.lineTo(185, 520)
+  g.lineTo(256, 535)
+  g.lineTo(327, 520)
+  g.lineTo(372, 650)
+  g.closePath(); g.fill()
+
+  // Sweater knit texture
+  g.strokeStyle = '#fed7aa'
+  g.lineWidth = 3
+  for (let k = 535; k < 640; k += 18) {
+    g.beginPath(); g.moveTo(170, k); g.lineTo(342, k); g.stroke()
+  }
+
+  // Face and Features
+  g.fillStyle = '#ffe4d6'
+  g.beginPath()
+  g.moveTo(195, 380)
+  g.quadraticCurveTo(195, 485, 256, 505)
+  g.quadraticCurveTo(317, 485, 317, 380)
+  g.closePath(); g.fill()
+
+  // Peach blush
+  g.fillStyle = 'rgba(251, 113, 133, 0.5)'
+  g.beginPath(); g.ellipse(220, 445, 20, 12, 0, 0, Math.PI * 2); g.fill()
+  g.beginPath(); g.ellipse(292, 445, 20, 12, 0, 0, Math.PI * 2); g.fill()
+
+  // Anime Eyes
+  const drawSunsetEye = (ex: number, ey: number, isLeft: boolean) => {
+    g.fillStyle = '#ffffff'
+    g.beginPath(); g.ellipse(ex, ey, 22, 26, isLeft ? 0.05 : -0.05, 0, Math.PI * 2); g.fill()
+
+    const irisGrad = g.createRadialGradient(ex, ey - 4, 3, ex, ey, 20)
+    irisGrad.addColorStop(0, '#fde047')
+    irisGrad.addColorStop(0.4, '#f59e0b')
+    irisGrad.addColorStop(0.8, '#b45309')
+    irisGrad.addColorStop(1, '#451a03')
+    g.fillStyle = irisGrad
+    g.beginPath(); g.ellipse(ex, ey, 18, 22, 0, 0, Math.PI * 2); g.fill()
+
+    g.fillStyle = '#1c0a00'
+    g.beginPath(); g.ellipse(ex, ey + 2, 7, 10, 0, 0, Math.PI * 2); g.fill()
+
+    g.fillStyle = '#ffffff'
+    g.beginPath(); g.arc(ex - 5, ey - 7, 5.5, 0, Math.PI * 2); g.fill()
+    g.beginPath(); g.arc(ex + 6, ey + 4, 3, 0, Math.PI * 2); g.fill()
+
+    g.strokeStyle = '#451a03'
+    g.lineWidth = 4.5
+    g.beginPath()
+    g.arc(ex, ey - 5, 23, isLeft ? Math.PI * 1.15 : Math.PI * 1.1, isLeft ? Math.PI * 1.9 : Math.PI * 1.85)
+    g.stroke()
+
+    g.strokeStyle = '#f472b6'
+    g.lineWidth = 3.5
+    g.beginPath()
+    g.moveTo(ex - 18, ey - 28)
+    g.quadraticCurveTo(ex, ey - 34, ex + 18, ey - 28)
+    g.stroke()
+  }
+
+  drawSunsetEye(224, 428, true)
+  drawSunsetEye(288, 428, false)
+
+  // Nose & smile
+  g.fillStyle = '#f43f5e'
+  g.beginPath(); g.arc(256, 458, 2, 0, Math.PI * 2); g.fill()
+  g.strokeStyle = '#be123c'
+  g.lineWidth = 3
+  g.beginPath()
+  g.arc(256, 474, 12, 0.2, Math.PI - 0.2, false)
+  g.stroke()
+
+  // Bangs & Sakura Clip
+  g.fillStyle = '#fb7185'
+  g.beginPath()
+  g.moveTo(190, 375)
+  g.quadraticCurveTo(215, 425, 225, 405)
+  g.quadraticCurveTo(245, 435, 256, 405)
+  g.quadraticCurveTo(275, 435, 285, 405)
+  g.quadraticCurveTo(310, 425, 322, 375)
+  g.quadraticCurveTo(256, 320, 190, 375)
+  g.closePath(); g.fill()
+
+  // Sakura Blossom Hairpin
+  g.fillStyle = '#ffffff'
+  for (let b = 0; b < 5; b++) {
+    const ang = (b * Math.PI * 2) / 5
+    const bx = 205 + Math.cos(ang) * 9
+    const by = 370 + Math.sin(ang) * 9
+    g.beginPath(); g.arc(bx, by, 5, 0, Math.PI * 2); g.fill()
+  }
+  g.fillStyle = '#f59e0b'
+  g.beginPath(); g.arc(205, 370, 3.5, 0, Math.PI * 2); g.fill()
+
+  // Holding Boba Cup
+  g.fillStyle = 'rgba(255, 255, 255, 0.75)'
+  g.beginPath()
+  g.moveTo(236, 560); g.lineTo(276, 560); g.lineTo(270, 630); g.lineTo(242, 630)
+  g.closePath(); g.fill()
+  g.fillStyle = '#fb923c'
+  g.beginPath()
+  g.moveTo(238, 575); g.lineTo(274, 575); g.lineTo(269, 626); g.lineTo(243, 626)
+  g.closePath(); g.fill()
+  g.fillStyle = '#3e2723'
+  for (let bp = 0; bp < 6; bp++) {
+    g.beginPath(); g.arc(247 + (bp % 3) * 9, 615 + Math.floor(bp / 3) * 8, 3.5, 0, Math.PI * 2); g.fill()
+  }
+  g.strokeStyle = '#ec4899'
+  g.lineWidth = 4
+  g.beginPath(); g.moveTo(256, 540); g.lineTo(262, 590); g.stroke()
+
+  // Typography
+  g.save()
+  g.shadowColor = '#fbbf24'
+  g.shadowBlur = 12
+  g.fillStyle = '#ffffff'
+  g.font = '900 34px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('TOKYO SUNSET CHILL', 256, 75)
+
+  g.fillStyle = '#fef08a'
+  g.font = 'bold 22px sans-serif'
+  g.fillText('東京 サンセット // LO-FI BEATS', 256, 110)
+  g.restore()
+
+  // Bottom text banner
+  g.fillStyle = 'rgba(30, 10, 40, 0.8)'
+  g.fillRect(20, 675, 472, 75)
+  g.strokeStyle = '#f472b6'
+  g.lineWidth = 2
+  g.strokeRect(20, 675, 472, 75)
+
+  g.fillStyle = '#fed7aa'
+  g.font = 'bold 18px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('CITY POP & CHILLOUT LOUNGE MIX', 256, 706)
+  g.fillStyle = '#fbcfe8'
+  g.font = '13px monospace'
+  g.fillText('STREAMING ON SUN HEIGHTS RADIO // 24/7', 256, 732)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+
 

@@ -132,9 +132,9 @@ export class Minimap {
 
     // 3. ELEVATOR BANK (North Wall, Z: 62.4)
     // Lift 1 Cab (Left, Active elevator to 1F)
-    const l1x = -1.35
-    const l1w = 1.5
-    const l1d = 1.9
+    const l1x = -1.45
+    const l1w = 1.4
+    const l1d = 2.0
     ctx.fillStyle = '#1e385c'
     ctx.strokeStyle = '#38bdf8'
     ctx.lineWidth = 1.5
@@ -146,9 +146,9 @@ export class Minimap {
     ctx.fillRect(toScreenX(l1x - l1w / 2), toScreenY(lzMin - 0.1), l1w * s, 0.2 * s)
 
     // Lift 2 Cab (Right, Standby elevator)
-    const l2x = 1.35
-    const l2w = 1.5
-    const l2d = 1.9
+    const l2x = 1.45
+    const l2w = 1.4
+    const l2d = 2.0
     ctx.fillStyle = '#172233'
     ctx.strokeStyle = '#64748b'
     ctx.lineWidth = 1.5
@@ -159,8 +159,8 @@ export class Minimap {
     ctx.fillStyle = '#221913'
     ctx.strokeStyle = '#d4af37'
     ctx.lineWidth = 1.2
-    ctx.fillRect(toScreenX(-0.45), toScreenY(lzMin - 0.2), 0.9 * s, 0.3 * s)
-    ctx.strokeRect(toScreenX(-0.45), toScreenY(lzMin - 0.2), 0.9 * s, 0.3 * s)
+    ctx.fillRect(toScreenX(-0.6), toScreenY(lzMin - 0.2), 1.2 * s, 0.3 * s)
+    ctx.strokeRect(toScreenX(-0.6), toScreenY(lzMin - 0.2), 1.2 * s, 0.3 * s)
     // Glowing call button dot
     ctx.fillStyle = '#fbbf24'
     ctx.beginPath()

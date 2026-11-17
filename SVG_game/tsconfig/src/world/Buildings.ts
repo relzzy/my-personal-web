@@ -50,6 +50,7 @@ export function buildBuildings(
   // Animation hooks
   const animators: ((dt: number, player: { x: number; z: number }) => void)[] = []
   let corridorRes: Corridor4FResult | undefined
+  let lobbyRes: ReturnType<typeof buildApartmentLobby> | undefined
 
   for (const spec of NEIGHBORHOOD_BUILDINGS) {
     const bGroup = new THREE.Group()
@@ -85,7 +86,7 @@ export function buildBuildings(
     // 1. COLLIDERS & STRUCTURAL SHELL
     if (spec.id === 'b-sunheights') {
       // STARTING APARTMENT: Special hollow enterable ground floor lobby!
-      const lobbyRes = buildApartmentLobby(
+      lobbyRes = buildApartmentLobby(
         bGroup,
         spec,
         colliders,
@@ -190,7 +191,18 @@ export function buildBuildings(
     animators.push(suiteRes.update)
 
     // 5. 4F ELEVATOR LOUNGE & CORRIDOR
-    corridorRes = buildCorridor4F(scene, colliders, interactions, messages, player, audio, lightManager)
+    corridorRes = buildCorridor4F(
+      scene,
+      colliders,
+      interactions,
+      messages,
+      player,
+      audio,
+      lightManager,
+      () => {
+        lobbyRes?.openElevator(true)
+      },
+    )
     animators.push(corridorRes.update)
   }
 

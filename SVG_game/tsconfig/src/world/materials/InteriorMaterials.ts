@@ -1904,3 +1904,311 @@ export function corridorLoungeArtTexture(): THREE.CanvasTexture {
   return tex
 }
 
+export function corridorElevatorDoorTexture(): THREE.CanvasTexture {
+  const key = 'corridor-elev-door-texture'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 1024
+  const g = canvas.getContext('2d')!
+
+  // Deep brushed charcoal-bronze metal
+  const grad = g.createLinearGradient(0, 0, 512, 1024)
+  grad.addColorStop(0, '#2b303a')
+  grad.addColorStop(0.5, '#353c48')
+  grad.addColorStop(1, '#232832')
+  g.fillStyle = grad
+  g.fillRect(0, 0, 512, 1024)
+
+  // Subtle vertical hairline brushed grain
+  g.fillStyle = 'rgba(255, 255, 255, 0.025)'
+  for (let x = 0; x < 512; x += 3) {
+    if ((x * 17) % 5 === 0) {
+      g.fillRect(x, 0, 1.5, 1024)
+    }
+  }
+  g.fillStyle = 'rgba(0, 0, 0, 0.04)'
+  for (let x = 1; x < 512; x += 4) {
+    if ((x * 13) % 7 === 0) {
+      g.fillRect(x, 0, 1.5, 1024)
+    }
+  }
+
+  // Outer recessed bevel frame
+  g.strokeStyle = '#1b2028'
+  g.lineWidth = 12
+  g.strokeRect(6, 6, 500, 1012)
+  g.strokeStyle = 'rgba(212, 175, 55, 0.35)'
+  g.lineWidth = 3
+  g.strokeRect(14, 14, 484, 996)
+
+  // Architectural horizontal gold inlay bands
+  const inlays = [280, 720]
+  for (const y of inlays) {
+    // Dark groove shadow
+    g.fillStyle = '#11141a'
+    g.fillRect(14, y - 6, 484, 12)
+    // Brushed gold inlay strip
+    g.fillStyle = '#d4af37'
+    g.fillRect(14, y - 2, 484, 4)
+    // Highlight reflection
+    g.fillStyle = 'rgba(255, 248, 220, 0.7)'
+    g.fillRect(14, y - 2, 484, 1.5)
+  }
+
+  // Vertical center strike-plate edge shadow
+  g.fillStyle = 'rgba(0, 0, 0, 0.25)'
+  g.fillRect(0, 0, 8, 1024)
+  g.fillRect(504, 0, 8, 1024)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function corridorElevatorCallPanelTexture(): THREE.CanvasTexture {
+  const key = 'corridor-elev-call-panel'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Brushed gold / architectural brass plate
+  const grad = g.createLinearGradient(0, 0, 256, 512)
+  grad.addColorStop(0, '#cda739')
+  grad.addColorStop(0.3, '#ebd47e')
+  grad.addColorStop(0.7, '#b89028')
+  grad.addColorStop(1, '#9e791b')
+  g.fillStyle = grad
+  g.fillRect(0, 0, 256, 512)
+
+  // Fine brushed hairline texture
+  g.fillStyle = 'rgba(255, 255, 255, 0.08)'
+  for (let y = 0; y < 512; y += 4) {
+    g.fillRect(0, y, 256, 1)
+  }
+
+  // Beveled outer border
+  g.strokeStyle = '#5a420b'
+  g.lineWidth = 6
+  g.strokeRect(3, 3, 250, 506)
+  g.strokeStyle = 'rgba(255, 255, 255, 0.5)'
+  g.lineWidth = 2
+  g.strokeRect(8, 8, 240, 496)
+
+  // Top digital LED indicator screen
+  g.fillStyle = '#0a0d14'
+  g.fillRect(28, 28, 200, 80)
+  g.strokeStyle = '#785614'
+  g.lineWidth = 3
+  g.strokeRect(28, 28, 200, 80)
+
+  // Amber glowing "▲  4F" readout
+  g.shadowColor = '#f59e0b'
+  g.shadowBlur = 12
+  g.fillStyle = '#fbbf24'
+  g.font = 'bold 34px monospace'
+  g.textAlign = 'center'
+  g.fillText('▲  4F', 128, 76)
+  g.shadowBlur = 0
+
+  g.font = 'bold 11px sans-serif'
+  g.fillStyle = 'rgba(245, 158, 11, 0.8)'
+  g.fillText('SUN HEIGHTS', 128, 98)
+
+  // Label: "ELEVATOR CALL"
+  g.fillStyle = '#3a2b0c'
+  g.font = 'bold 15px sans-serif'
+  g.fillText('ELEVATOR CALL', 128, 145)
+  g.fillStyle = '#5c4516'
+  g.font = '12px sans-serif'
+  g.fillText('エレベーター呼出', 128, 164)
+
+  // Button 1: UP Call Button plate
+  const upCenterY = 230
+  g.fillStyle = '#1e293b'
+  g.beginPath()
+  g.arc(128, upCenterY, 38, 0, Math.PI * 2)
+  g.fill()
+  g.strokeStyle = '#785614'
+  g.lineWidth = 4
+  g.stroke()
+
+  // UP Button chevron (amber glow)
+  g.shadowColor = '#f59e0b'
+  g.shadowBlur = 10
+  g.fillStyle = '#fbbf24'
+  g.beginPath()
+  g.moveTo(128, upCenterY - 18)
+  g.lineTo(112, upCenterY + 12)
+  g.lineTo(144, upCenterY + 12)
+  g.closePath()
+  g.fill()
+  g.shadowBlur = 0
+
+  // Button 2: DOWN Call Button plate
+  const downCenterY = 330
+  g.fillStyle = '#1e293b'
+  g.beginPath()
+  g.arc(128, downCenterY, 38, 0, Math.PI * 2)
+  g.fill()
+  g.strokeStyle = '#785614'
+  g.lineWidth = 4
+  g.stroke()
+
+  // DOWN Button chevron
+  g.fillStyle = '#94a3b8'
+  g.beginPath()
+  g.moveTo(128, downCenterY + 18)
+  g.lineTo(112, downCenterY - 12)
+  g.lineTo(144, downCenterY - 12)
+  g.closePath()
+  g.fill()
+
+  // Braille dots representation
+  g.fillStyle = '#4a3710'
+  const drawBraille = (bx: number, by: number) => {
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 2; c++) {
+        g.beginPath()
+        g.arc(bx + c * 8, by + r * 7, 2, 0, Math.PI * 2)
+        g.fill()
+      }
+    }
+  }
+  drawBraille(120, 385)
+
+  // Bottom subtitle
+  g.fillStyle = '#4a3710'
+  g.font = 'bold 12px monospace'
+  g.fillText('FLOOR 4 LOUNGE', 128, 470)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function corridorDoorIntercomTexture(suiteNum: string): THREE.CanvasTexture {
+  const key = `corridor-intercom-${suiteNum}`
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 128
+  canvas.height = 256
+  const g = canvas.getContext('2d')!
+
+  // Sleek brushed dark gunmetal
+  const grad = g.createLinearGradient(0, 0, 128, 256)
+  grad.addColorStop(0, '#111827')
+  grad.addColorStop(0.5, '#1e293b')
+  grad.addColorStop(1, '#0f172a')
+  g.fillStyle = grad
+  g.fillRect(0, 0, 128, 256)
+
+  // Border & subtle champagne highlight
+  g.strokeStyle = '#334155'
+  g.lineWidth = 4
+  g.strokeRect(2, 2, 124, 252)
+  g.strokeStyle = 'rgba(212, 175, 55, 0.4)'
+  g.lineWidth = 1.5
+  g.strokeRect(5, 5, 118, 246)
+
+  // Camera lens module
+  g.fillStyle = '#030712'
+  g.beginPath()
+  g.arc(64, 46, 22, 0, Math.PI * 2)
+  g.fill()
+  g.strokeStyle = '#334155'
+  g.lineWidth = 2
+  g.stroke()
+
+  // Camera optical blue reflection
+  const lensGrad = g.createRadialGradient(60, 42, 2, 64, 46, 18)
+  lensGrad.addColorStop(0, '#38bdf8')
+  lensGrad.addColorStop(0.6, '#0369a1')
+  lensGrad.addColorStop(1, '#021e3d')
+  g.fillStyle = lensGrad
+  g.beginPath()
+  g.arc(64, 46, 14, 0, Math.PI * 2)
+  g.fill()
+
+  // White lens glint
+  g.fillStyle = 'rgba(255, 255, 255, 0.85)'
+  g.beginPath()
+  g.arc(59, 41, 3, 0, Math.PI * 2)
+  g.fill()
+
+  // Status LED (green)
+  g.fillStyle = '#22c55e'
+  g.shadowColor = '#22c55e'
+  g.shadowBlur = 6
+  g.beginPath()
+  g.arc(104, 24, 3, 0, Math.PI * 2)
+  g.fill()
+  g.shadowBlur = 0
+
+  // Suite plaque engraving
+  g.fillStyle = '#d4af37'
+  g.font = 'bold 12px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('SUITE', 64, 94)
+  g.font = '900 28px monospace'
+  g.fillStyle = '#f8fafc'
+  g.fillText(suiteNum, 64, 126)
+
+  // Horizontal divider
+  g.strokeStyle = 'rgba(212, 175, 55, 0.3)'
+  g.lineWidth = 1
+  g.beginPath()
+  g.moveTo(20, 140)
+  g.lineTo(108, 140)
+  g.stroke()
+
+  // Doorbell chime button plate
+  const btnY = 180
+  g.fillStyle = '#0f172a'
+  g.beginPath()
+  g.arc(64, btnY, 24, 0, Math.PI * 2)
+  g.fill()
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 3
+  g.stroke()
+
+  // Bell icon
+  g.fillStyle = '#fef08a'
+  g.shadowColor = '#fef08a'
+  g.shadowBlur = 6
+  g.beginPath()
+  g.arc(64, btnY - 4, 9, Math.PI, 0, false)
+  g.lineTo(76, btnY + 7)
+  g.lineTo(52, btnY + 7)
+  g.closePath()
+  g.fill()
+  g.beginPath()
+  g.arc(64, btnY + 9, 3, 0, Math.PI * 2)
+  g.fill()
+  g.shadowBlur = 0
+
+  // Call label
+  g.fillStyle = '#94a3b8'
+  g.font = 'bold 11px sans-serif'
+  g.fillText('CALL / 呼出', 64, 222)
+
+  // Speaker micro slots
+  g.fillStyle = '#334155'
+  for (let s = 0; s < 4; s++) {
+    g.fillRect(44 + s * 11, 238, 7, 2.5)
+  }
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+

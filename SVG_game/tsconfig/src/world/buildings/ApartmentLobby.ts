@@ -21,7 +21,9 @@ import {
   postMat,
   signMaterial,
   emergencyExitTexture,
+  corridorElevatorDoorTexture,
 } from '../Materials'
+import { screenFade } from '../../ui/ScreenFader'
 
 export function buildApartmentLobby(
   group: THREE.Group,
@@ -35,7 +37,11 @@ export function buildApartmentLobby(
   lightManager?: LightManager,
   player?: Player,
   onRideElevatorTo4F?: () => void,
-): { light: THREE.PointLight; update: (dt: number, p: { x: number; z: number }) => void } {
+): {
+  light: THREE.PointLight
+  update: (dt: number, p: { x: number; z: number }) => void
+  openElevator: (autoAnimate?: boolean) => void
+} {
   const floorH = 3.2
   const halfW = spec.w / 2
 
@@ -104,13 +110,37 @@ export function buildApartmentLobby(
     metalness: 0.02,
   })
 
-  // North (Back) Wall
-  const backGeo = new THREE.BoxGeometry(innerW, wallH, wallThick)
-  const backMesh = new THREE.Mesh(backGeo, lobbyWallMat)
-  backMesh.position.set(spec.x, floorY + wallH / 2, spec.z + innerD / 2 - wallThick / 2)
-  group.add(backMesh)
+  // North (Back) Wall: Segmented with open elevator portal in center
+  const elevW = 1.8
+  const elevH = 2.4
+  const nSideW = (innerW - elevW) / 2 // 2.9m on each side
+  const nLintelH = wallH - elevH // 0.65m overhead
+
+  // Left North Wall Segment
+  const backLeft = new THREE.Mesh(new THREE.BoxGeometry(nSideW, wallH, wallThick), lobbyWallMat)
+  backLeft.position.set(spec.x - innerW / 2 + nSideW / 2, floorY + wallH / 2, spec.z + innerD / 2 - wallThick / 2)
+
+  // Right North Wall Segment
+  const backRight = new THREE.Mesh(new THREE.BoxGeometry(nSideW, wallH, wallThick), lobbyWallMat)
+  backRight.position.set(spec.x + innerW / 2 - nSideW / 2, floorY + wallH / 2, spec.z + innerD / 2 - wallThick / 2)
+
+  // Overhead Lintel Header above Elevator Portal
+  const backLintel = new THREE.Mesh(new THREE.BoxGeometry(elevW, nLintelH, wallThick), lobbyWallMat)
+  backLintel.position.set(spec.x, floorY + elevH + nLintelH / 2, spec.z + innerD / 2 - wallThick / 2)
+
+  group.add(backLeft, backRight, backLintel)
+
+  // Colliders for Left and Right North Wall segments (Elevator portal opening remains clear!)
   colliders.add({
     minX: spec.x - innerW / 2,
+    minY: 0,
+    minZ: spec.z + innerD / 2 - wallThick,
+    maxX: spec.x - elevW / 2,
+    maxY: floorH,
+    maxZ: spec.z + innerD / 2 + 1,
+  })
+  colliders.add({
+    minX: spec.x + elevW / 2,
     minY: 0,
     minZ: spec.z + innerD / 2 - wallThick,
     maxX: spec.x + innerW / 2,
@@ -611,50 +641,53 @@ export function buildApartmentLobby(
   // =========================================================================
   // 7. NORTH WALL: ELEVATOR HALL & 3D INTERIOR CAB
   // =========================================================================
-  const elevW = 2.0
-  const elevH = 2.4
-  const elevZ = spec.z + innerD / 2 - wallThick - 0.05
+  const elevZ = spec.z + innerD / 2 - wallThick / 2
 
   // Brushed Champagne Gold Door Frame (三方枠)
   const frameMat = new THREE.MeshStandardMaterial({ color: 0x7c694a, roughness: 0.25, metalness: 0.7 })
   const fL = new THREE.Mesh(new THREE.BoxGeometry(0.12, elevH + 0.06, 0.08), frameMat)
-  fL.position.set(spec.x - elevW / 2 - 0.06, floorY + elevH / 2, elevZ)
+  fL.position.set(spec.x - elevW / 2 - 0.06, floorY + elevH / 2, elevZ - 0.04)
   const fR = new THREE.Mesh(new THREE.BoxGeometry(0.12, elevH + 0.06, 0.08), frameMat)
-  fR.position.set(spec.x + elevW / 2 + 0.06, floorY + elevH / 2, elevZ)
+  fR.position.set(spec.x + elevW / 2 + 0.06, floorY + elevH / 2, elevZ - 0.04)
   const fT = new THREE.Mesh(new THREE.BoxGeometry(elevW + 0.24, 0.12, 0.08), frameMat)
-  fT.position.set(spec.x, floorY + elevH + 0.06, elevZ)
+  fT.position.set(spec.x, floorY + elevH + 0.06, elevZ - 0.04)
   interiorGroup.add(fL, fR, fT)
 
-  // Sliding Elevator Doors
-  const elevLeftGeo = new THREE.BoxGeometry(0.98, elevH, 0.06)
-  const elevRightGeo = new THREE.BoxGeometry(0.98, elevH, 0.06)
-  const elevDoorMat = new THREE.MeshStandardMaterial({ color: 0x8a929d, roughness: 0.25, metalness: 0.75 })
-  const elevLeft = new THREE.Mesh(elevLeftGeo, elevDoorMat)
-  const elevRight = new THREE.Mesh(elevRightGeo, elevDoorMat)
-  elevLeft.position.set(spec.x - 0.5, floorY + elevH / 2, elevZ)
-  elevRight.position.set(spec.x + 0.5, floorY + elevH / 2, elevZ)
+  // Sliding Elevator Doors with Luxury Champagne / Steel Texture
+  const elevDoorLeafW = elevW / 2 + 0.04 // 0.94m
+  const elevDoorGeo = new THREE.BoxGeometry(elevDoorLeafW, elevH - 0.02, 0.04)
+  const elevDoorMat = new THREE.MeshStandardMaterial({
+    map: corridorElevatorDoorTexture(),
+    color: 0x475569,
+    roughness: 0.55,
+    metalness: 0.38,
+  })
+  const elevLeft = new THREE.Mesh(elevDoorGeo, elevDoorMat)
+  const elevRight = new THREE.Mesh(elevDoorGeo, elevDoorMat)
+  elevLeft.position.set(spec.x - elevDoorLeafW / 2, floorY + elevH / 2, elevZ)
+  elevRight.position.set(spec.x + elevDoorLeafW / 2, floorY + elevH / 2, elevZ)
   interiorGroup.add(elevLeft, elevRight)
 
   // Digital Floor Indicator (Floor "1F ▲" Amber Glowing Display)
   const indGeo = new THREE.PlaneGeometry(0.45, 0.22)
   const indMat = new THREE.MeshBasicMaterial({ color: 0xffaa22 })
   const indMesh = new THREE.Mesh(indGeo, indMat)
-  indMesh.position.set(spec.x, floorY + elevH + 0.22, elevZ + 0.05)
+  indMesh.position.set(spec.x, floorY + elevH + 0.22, elevZ - 0.08)
   interiorGroup.add(indMesh)
 
   // Wall Call Station with Circular Illuminated Call Button
   const callPlate = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.28, 0.03), metalMat)
-  callPlate.position.set(spec.x + elevW / 2 + 0.35, floorY + 1.25, elevZ + 0.03)
+  callPlate.position.set(spec.x + elevW / 2 + 0.35, floorY + 1.25, elevZ - 0.08)
   const callBtn = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.02, 10), lampMat)
   callBtn.rotateX(Math.PI / 2)
-  callBtn.position.set(spec.x + elevW / 2 + 0.35, floorY + 1.28, elevZ + 0.05)
+  callBtn.position.set(spec.x + elevW / 2 + 0.35, floorY + 1.28, elevZ - 0.06)
   interiorGroup.add(callPlate, callBtn)
 
-  // 3D ELEVATOR CAB INTERIOR (Visible & Steppable Behind Doors)
-  const cabW = 2.0
-  const cabD = 1.8
-  const cabH = 2.5
-  const cabCenterZ = elevZ + cabD / 2 + 0.05
+  // 3D ELEVATOR CAB INTERIOR (Fully Enclosed Luxury Cab)
+  const cabW = 1.8
+  const cabD = 2.0
+  const cabH = 2.45
+  const cabCenterZ = spec.z + innerD / 2 + cabD / 2 - 0.05
 
   // Cab Floor
   const cabFloorMesh = new THREE.Mesh(new THREE.BoxGeometry(cabW, 0.04, cabD), floorMat)
@@ -666,43 +699,68 @@ export function buildApartmentLobby(
   cabCeilMesh.position.set(spec.x, floorY + cabH, cabCenterZ)
   interiorGroup.add(cabCeilMesh)
 
-  // Cab Back Mirror Wall
-  const mirrorGeo = new THREE.BoxGeometry(cabW - 0.1, cabH - 0.2, 0.04)
-  const mirrorMat = new THREE.MeshStandardMaterial({ color: 0xccd6e0, roughness: 0.05, metalness: 0.9 })
+  // Cab Back Mirror Wall (at cab rear)
+  const cabBackLower = new THREE.Mesh(
+    new THREE.BoxGeometry(cabW, 0.85, 0.04),
+    new THREE.MeshStandardMaterial({ color: 0x221812, roughness: 0.45 }),
+  )
+  cabBackLower.position.set(spec.x, floorY + 0.425, cabCenterZ + cabD / 2 - 0.02)
+
+  const mirrorGeo = new THREE.BoxGeometry(cabW - 0.04, cabH - 0.85, 0.02)
+  const mirrorMat = new THREE.MeshStandardMaterial({ color: 0xd8e2ec, roughness: 0.10, metalness: 0.92 })
   const mirror = new THREE.Mesh(mirrorGeo, mirrorMat)
-  mirror.position.set(spec.x, floorY + cabH / 2, cabCenterZ + cabD / 2 - 0.02)
-  interiorGroup.add(mirror)
+  mirror.position.set(spec.x, floorY + 0.85 + (cabH - 0.85) / 2, cabCenterZ + cabD / 2 - 0.02)
+  interiorGroup.add(cabBackLower, mirror)
 
-  // Cab Left & Right Stainless Walls
-  const cabWallGeo = new THREE.BoxGeometry(0.04, cabH, cabD)
-  const cabLWall = new THREE.Mesh(cabWallGeo, elevDoorMat)
-  cabLWall.position.set(spec.x - cabW / 2 + 0.02, floorY + cabH / 2, cabCenterZ)
-  const cabRWall = new THREE.Mesh(cabWallGeo, elevDoorMat)
-  cabRWall.position.set(spec.x + cabW / 2 - 0.02, floorY + cabH / 2, cabCenterZ)
-  interiorGroup.add(cabLWall, cabRWall)
-
-  // Cab Horizontal Safety Handrail Bar
-  const railGeo = new THREE.CylinderGeometry(0.02, 0.02, cabW - 0.2, 8)
+  // Cab Horizontal Safety Handrail Bar (Back wall)
+  const railMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.28, metalness: 0.88 })
+  const railGeo = new THREE.CylinderGeometry(0.02, 0.02, cabW - 0.25, 12)
   railGeo.rotateZ(Math.PI / 2)
-  const rail = new THREE.Mesh(railGeo, metalMat)
-  rail.position.set(spec.x, floorY + 0.9, cabCenterZ + cabD / 2 - 0.1)
+  const rail = new THREE.Mesh(railGeo, railMat)
+  rail.position.set(spec.x, floorY + 0.95, cabCenterZ + cabD / 2 - 0.07)
   interiorGroup.add(rail)
 
-  // Inside Floor Button Column
-  const inBtnCol = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.7, 0.14), metalMat)
-  inBtnCol.position.set(spec.x + cabW / 2 - 0.06, floorY + 1.25, cabCenterZ - 0.2)
+  // Cab Left & Right Enclosed Walls
+  const cabSideLowerGeo = new THREE.BoxGeometry(0.04, 0.85, cabD)
+  const cabSideLowerMat = new THREE.MeshStandardMaterial({ color: 0x221812, roughness: 0.45 })
+  const cabSideUpperGeo = new THREE.BoxGeometry(0.02, cabH - 0.85, cabD)
+  const cabSideUpperMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5, metalness: 0.4 })
+
+  // Left wall
+  const cabLLower = new THREE.Mesh(cabSideLowerGeo, cabSideLowerMat)
+  cabLLower.position.set(spec.x - cabW / 2 + 0.02, floorY + 0.425, cabCenterZ)
+  const cabLUpper = new THREE.Mesh(cabSideUpperGeo, cabSideUpperMat)
+  cabLUpper.position.set(spec.x - cabW / 2 + 0.02, floorY + 0.85 + (cabH - 0.85) / 2, cabCenterZ)
+  const cabLRail = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, cabD - 0.3, 12), railMat)
+  cabLRail.rotateX(Math.PI / 2)
+  cabLRail.position.set(spec.x - cabW / 2 + 0.06, floorY + 0.95, cabCenterZ)
+  interiorGroup.add(cabLLower, cabLUpper, cabLRail)
+
+  // Right wall
+  const cabRLower = new THREE.Mesh(cabSideLowerGeo, cabSideLowerMat)
+  cabRLower.position.set(spec.x + cabW / 2 - 0.02, floorY + 0.425, cabCenterZ)
+  const cabRUpper = new THREE.Mesh(cabSideUpperGeo, cabSideUpperMat)
+  cabRUpper.position.set(spec.x + cabW / 2 - 0.02, floorY + 0.85 + (cabH - 0.85) / 2, cabCenterZ)
+  const cabRRail = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, cabD - 0.3, 12), railMat)
+  cabRRail.rotateX(Math.PI / 2)
+  cabRRail.position.set(spec.x + cabW / 2 - 0.06, floorY + 0.95, cabCenterZ)
+  interiorGroup.add(cabRLower, cabRUpper, cabRRail)
+
+  // Inside Car Operating Panel (COP Column)
+  const inBtnCol = new THREE.Mesh(new THREE.BoxGeometry(0.03, 1.35, 0.26), railMat)
+  inBtnCol.position.set(spec.x + cabW / 2 - 0.035, floorY + 1.25, cabCenterZ - 0.30)
   interiorGroup.add(inBtnCol)
 
   // Inside Cab Warm Ceiling Spotlight
-  const cabLight = new THREE.PointLight(0xfffae0, 2.0, 5.5)
-  cabLight.position.set(spec.x, floorY + cabH - 0.15, cabCenterZ)
+  const cabLight = new THREE.PointLight(0xfffae0, 2.2, 5.5, 1.2)
+  cabLight.position.set(spec.x, floorY + cabH - 0.12, cabCenterZ)
   if (lightManager) {
     lightManager.register({
       x: spec.x,
-      y: floorY + cabH - 0.15,
+      y: floorY + cabH - 0.12,
       z: cabCenterZ,
       color: 0xfffae0,
-      intensity: 2.0,
+      intensity: 2.2,
       distance: 5.5,
       zone: 'Lobby',
     })
@@ -710,39 +768,40 @@ export function buildApartmentLobby(
     interiorGroup.add(cabLight)
   }
 
-  // Elevator Cab Perimeter Colliders
+  // Elevator Cab Enclosure Colliders (prevents stepping out of walls)
   colliders.add({
     minX: spec.x - cabW / 2 - 0.2,
     minY: 0,
-    minZ: cabCenterZ + cabD / 2 - 0.1,
+    minZ: cabCenterZ + cabD / 2 - 0.05,
     maxX: spec.x + cabW / 2 + 0.2,
     maxY: floorH,
-    maxZ: cabCenterZ + cabD / 2 + 0.3,
+    maxZ: cabCenterZ + cabD / 2 + 0.4,
   })
   colliders.add({
-    minX: spec.x - cabW / 2 - 0.2,
+    minX: spec.x - cabW / 2 - 0.3,
     minY: 0,
-    minZ: elevZ,
-    maxX: spec.x - cabW / 2 + 0.1,
+    minZ: spec.z + innerD / 2 - wallThick,
+    maxX: spec.x - cabW / 2 + 0.05,
     maxY: floorH,
-    maxZ: cabCenterZ + cabD / 2,
+    maxZ: cabCenterZ + cabD / 2 + 0.1,
   })
   colliders.add({
-    minX: spec.x + cabW / 2 - 0.1,
+    minX: spec.x + cabW / 2 - 0.05,
     minY: 0,
-    minZ: elevZ,
-    maxX: spec.x + cabW / 2 + 0.2,
+    minZ: spec.z + innerD / 2 - wallThick,
+    maxX: spec.x + cabW / 2 + 0.3,
     maxY: floorH,
-    maxZ: cabCenterZ + cabD / 2,
+    maxZ: cabCenterZ + cabD / 2 + 0.1,
   })
 
-  // Elevator Call Button
+  // Elevator Call Button & Transit Interaction
   let elevOpen = false
+  let elevProgress = 0
   interactions.add({
     id: 'apt-elevator',
-    x: spec.x + elevW / 2 + 0.35,
-    z: spec.z + innerD / 2 - 0.8,
-    radius: 1.8,
+    x: spec.x,
+    z: spec.z + innerD / 2 - 0.6,
+    radius: 2.0,
     prompt: () => (elevOpen ? 'Take Elevator to 4F Lounge [4階 ラウンジへ]' : 'Call Elevator [1階 エレベーター]'),
     onInteract: () => {
       if (!elevOpen) {
@@ -753,13 +812,13 @@ export function buildApartmentLobby(
         elevOpen = false
         audio?.playElevatorChime()
         messages.show('*Ding* Doors glide shut. Riding elevator up to 4F Lounge...')
-        if (player) {
-          setTimeout(() => {
-            player.teleport(-1.15, 61.5, 0)
+        screenFade(() => {
+          if (player) {
+            player.teleport(-1.45, 61.7, Math.PI)
             onRideElevatorTo4F?.()
             messages.show('Sun Heights 4F Elevator Lounge. Suite 402 is down the hall to the left.', 5.0)
-          }, 450)
-        }
+          }
+        })
       }
     },
   })
@@ -817,8 +876,21 @@ export function buildApartmentLobby(
   }
 
   let doorProgress = 0
-  let elevProgress = 0
   let doorPlayed = false
+
+  function openElevator(autoAnimate = true) {
+    if (autoAnimate) {
+      elevOpen = false
+      elevProgress = 0.0
+      setTimeout(() => {
+        elevOpen = true
+        audio?.playElevatorChime()
+      }, 150)
+    } else {
+      elevOpen = true
+      elevProgress = 1.0
+    }
+  }
 
   const update = (dt: number, p: { x: number; z: number }): void => {
     // Distance culling: hide interior props when player is more than 28m away (in low graphics mode)
@@ -843,13 +915,13 @@ export function buildApartmentLobby(
     // Elevator doors
     if (interiorGroup.visible) {
       const elevTarget = elevOpen ? 1.0 : 0.0
-      elevProgress += (elevTarget - elevProgress) * Math.min(1, dt * 4)
-      elevLeft.position.x = spec.x - 0.5 - elevProgress * 0.75
-      elevRight.position.x = spec.x + 0.5 + elevProgress * 0.75
+      elevProgress += (elevTarget - elevProgress) * Math.min(1, dt * 4.5)
+      elevLeft.position.x = spec.x - elevDoorLeafW / 2 - elevProgress * 0.6
+      elevRight.position.x = spec.x + elevDoorLeafW / 2 + elevProgress * 0.6
     }
   }
 
-  return { light, update }
+  return { light, update, openElevator }
 }
 
 // =========================================================================

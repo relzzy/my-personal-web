@@ -6,6 +6,7 @@ import type { Player } from '../game/Player'
 import { Settings } from '../game/Settings'
 import type { AudioManager } from './Audio'
 import type { LightManager } from './LightManager'
+import { screenFade } from '../ui/ScreenFader'
 import {
   suiteHardwoodFloorTexture,
   suiteLuxuryRugTexture,
@@ -1496,10 +1497,10 @@ export function buildSuite402(
     onInteract: () => {
       audio?.playVendingSound()
       messages.show('Stepping out into the 4F Elevator Lounge...')
-      setTimeout(() => {
-        player.teleport(-5.8, 65.0, 0)
+      screenFade(() => {
+        player.teleport(-6.0, 65.0, -Math.PI / 2)
         messages.show('4F Elevator Lounge & Residential Corridor.', 4.0)
-      }, 350)
+      })
     },
   })
 

@@ -302,3 +302,18 @@ body,
   background: rgba(245, 158, 11, 0.22);
   box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
 }
+
+#screen-fader {
+  position: fixed;
+  inset: 0;
+  background: #06090e;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease-in-out;
+  z-index: 999;
+}
+
+#screen-fader.active {
+  opacity: 1;
+}
+

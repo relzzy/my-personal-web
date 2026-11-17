@@ -6,6 +6,7 @@ import type { Player } from '../game/Player'
 import { Settings } from '../game/Settings'
 import type { AudioManager } from './Audio'
 import type { LightManager } from './LightManager'
+import { screenFade } from '../ui/ScreenFader'
 import {
   suiteHardwoodFloorTexture,
   corridorCarpetRunnerTexture,
@@ -17,6 +18,9 @@ import {
   corridorLoungeMagazineTexture,
   corridorLoungeArtTexture,
   suiteFlutedWoodTexture,
+  corridorElevatorDoorTexture,
+  corridorElevatorCallPanelTexture,
+  corridorDoorIntercomTexture,
 } from './Materials'
 
 export interface Corridor4FResult {
@@ -33,6 +37,7 @@ export function buildCorridor4F(
   player: Player,
   audio?: AudioManager,
   lightManager?: LightManager,
+  onRideElevatorTo1F?: () => void,
 ): Corridor4FResult {
   const corridorGroup = new THREE.Group()
   corridorGroup.name = 'corridor-4f-elevator-lounge'
@@ -97,20 +102,27 @@ export function buildCorridor4F(
     metalness: 0.8,
   })
 
+  const elevDoorTex = corridorElevatorDoorTexture()
   const satinElevatorMat = new THREE.MeshStandardMaterial({
-    color: 0xa0aec0,
-    roughness: 0.35,
-    metalness: 0.72,
+    map: elevDoorTex,
+    color: 0x475569,
+    roughness: 0.55,
+    metalness: 0.38,
+  })
+
+  const btnUpNormalMat = new THREE.MeshBasicMaterial({
+    color: 0xf59e0b,
+    toneMapped: false,
+  })
+
+  const btnUpActiveMat = new THREE.MeshBasicMaterial({
+    color: 0x38bdf8,
+    toneMapped: false,
   })
 
   const ceilingMat = new THREE.MeshStandardMaterial({
     color: 0x121722,
     roughness: 0.7,
-  })
-
-  const warmSconceGlowMat = new THREE.MeshBasicMaterial({
-    color: 0xffea9f,
-    toneMapped: false,
   })
 
   const coveLedMat = new THREE.MeshBasicMaterial({
@@ -246,6 +258,46 @@ export function buildCorridor4F(
   archW402Top.position.set(cx - innerW / 2 + 0.02, floorY + eDoorH402 + 0.04, cz)
   corridorGroup.add(archW402, archW402R, archW402Top)
 
+  // Suite 402 Entrance Door Leaf (Solid dark walnut with recessed architectural panels)
+  const s402DoorLeafW = doorW402 - 0.04 // 1.26m
+  const s402DoorH = eDoorH402 - 0.02 // 2.38m
+  const s402DoorThick = 0.05
+  const s402DoorX = cx - innerW / 2 + 0.02
+
+  const s402DoorGroup = new THREE.Group()
+  const s402DoorMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(s402DoorThick, s402DoorH, s402DoorLeafW),
+    wainscotMat,
+  )
+  s402DoorMesh.position.set(s402DoorX, floorY + s402DoorH / 2, cz)
+
+  // 2 Recessed Architectural Panels on corridor-facing front face
+  const panelGeo = new THREE.BoxGeometry(0.012, s402DoorH - 0.45, 0.46)
+  const panel1 = new THREE.Mesh(
+    panelGeo,
+    new THREE.MeshStandardMaterial({ color: 0x150e09, roughness: 0.55 }),
+  )
+  panel1.position.set(s402DoorX + s402DoorThick / 2 + 0.005, floorY + s402DoorH / 2, cz - 0.30)
+  const panel2 = new THREE.Mesh(
+    panelGeo,
+    new THREE.MeshStandardMaterial({ color: 0x150e09, roughness: 0.55 }),
+  )
+  panel2.position.set(s402DoorX + s402DoorThick / 2 + 0.005, floorY + s402DoorH / 2, cz + 0.30)
+
+  // Satin gold horizontal lever handle & backplate
+  const s402HandlePlate = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.28, 0.06), goldMat)
+  s402HandlePlate.position.set(s402DoorX + s402DoorThick / 2 + 0.008, floorY + 1.05, cz - 0.44)
+  const s402HandleLever = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.028, 0.14), goldMat)
+  s402HandleLever.position.set(s402DoorX + s402DoorThick / 2 + 0.035, floorY + 1.05, cz - 0.48)
+
+  // Optical Peephole
+  const s402Peep = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.03, 12), goldMat)
+  s402Peep.rotateZ(Math.PI / 2)
+  s402Peep.position.set(s402DoorX + s402DoorThick / 2 + 0.01, floorY + 1.55, cz)
+
+  s402DoorGroup.add(s402DoorMesh, panel1, panel2, s402HandlePlate, s402HandleLever, s402Peep)
+  corridorGroup.add(s402DoorGroup)
+
   // Suite 402 Plaque
   const plaqueTex402 = corridorSuitePlaqueTexture('402')
   const plaque402 = new THREE.Mesh(
@@ -281,162 +333,263 @@ export function buildCorridor4F(
   suiteSpill.position.set(cx - innerW / 2 + 1.1, floorY + 0.054, cz)
   corridorGroup.add(suiteSpill)
 
-  // NORTH WALL (Solid backing)
-  const nWallGeo = new THREE.BoxGeometry(innerW + wallThick * 2, wallH, wallThick)
-  const nWall = new THREE.Mesh(nWallGeo, upperWallMat)
-  nWall.position.set(cx, floorY + wallH / 2, cz - innerD / 2 - wallThick / 2)
-  corridorGroup.add(nWall)
+  // =========================================================================
+  // 3. NORTH WALL (SEGMENTED ARCHITECTURAL WALL WITH ELEVATOR OPENINGS)
+  // [ARCHITECTURAL FIX]: Wall is cleanly segmented around Lift 1 and Lift 2
+  // openings so the elevator shaft and doors sit naturally recessed inside
+  // the wall thickness without intersecting solid geometry.
+  // =========================================================================
+  const elevH = 2.30
+  const elevW = 1.40
+  const elevDoorZ = cz - innerD / 2 - 0.07 // 62.33 (recessed inside wall pocket)
 
-  // Lower wainscoting along North Wall
-  const nWainscot = new THREE.Mesh(new THREE.BoxGeometry(innerW, 0.95, 0.04), wainscotMat)
-  nWainscot.position.set(cx, floorY + 0.475, cz - innerD / 2 + 0.02)
-  const nPictureRail = new THREE.Mesh(new THREE.BoxGeometry(innerW, 0.03, 0.04), goldMat)
-  nPictureRail.position.set(cx, floorY + 1.05, cz - innerD / 2 + 0.02)
-  corridorGroup.add(nWainscot, nPictureRail)
+  const lift1X = cx - 1.45 // Active Lift 1 (Left)
+  const lift2X = cx + 1.45 // Standby Lift 2 (Right)
+
+  // 3.1 North Wall Segments (Flanking elevator portals)
+  const sideWallW = 5.05 // from -7.2 to -2.15, and +2.15 to +7.2
+  const westWallMesh = new THREE.Mesh(new THREE.BoxGeometry(sideWallW, wallH, wallThick), upperWallMat)
+  westWallMesh.position.set(-7.2 + sideWallW / 2, floorY + wallH / 2, cz - innerD / 2 - wallThick / 2)
+
+  const eastWallMesh = new THREE.Mesh(new THREE.BoxGeometry(sideWallW, wallH, wallThick), upperWallMat)
+  eastWallMesh.position.set(7.2 - sideWallW / 2, floorY + wallH / 2, cz - innerD / 2 - wallThick / 2)
+
+  const centerPierWall = new THREE.Mesh(new THREE.BoxGeometry(1.50, wallH, wallThick), upperWallMat)
+  centerPierWall.position.set(cx, floorY + wallH / 2, cz - innerD / 2 - wallThick / 2)
+
+  // Lintels above Lift 1 and Lift 2 portals
+  const lintelH = wallH - elevH
+  const lintel1 = new THREE.Mesh(new THREE.BoxGeometry(elevW, lintelH, wallThick), upperWallMat)
+  lintel1.position.set(lift1X, floorY + elevH + lintelH / 2, cz - innerD / 2 - wallThick / 2)
+
+  const lintel2 = new THREE.Mesh(new THREE.BoxGeometry(elevW, lintelH, wallThick), upperWallMat)
+  lintel2.position.set(lift2X, floorY + elevH + lintelH / 2, cz - innerD / 2 - wallThick / 2)
+
+  corridorGroup.add(westWallMesh, eastWallMesh, centerPierWall, lintel1, lintel2)
+
+  // 3.2 Lower Wainscoting along North Wall (Stops cleanly at outer architraves)
+  const wainscotW = 4.92
+  const nWainscotW = new THREE.Mesh(new THREE.BoxGeometry(wainscotW, 0.95, 0.04), wainscotMat)
+  nWainscotW.position.set(-7.2 + wainscotW / 2, floorY + 0.475, cz - innerD / 2 + 0.02)
+  const nPictureRailW = new THREE.Mesh(new THREE.BoxGeometry(wainscotW, 0.03, 0.04), goldMat)
+  nPictureRailW.position.set(-7.2 + wainscotW / 2, floorY + 1.05, cz - innerD / 2 + 0.02)
+
+  const nWainscotE = new THREE.Mesh(new THREE.BoxGeometry(wainscotW, 0.95, 0.04), wainscotMat)
+  nWainscotE.position.set(7.2 - wainscotW / 2, floorY + 0.475, cz - innerD / 2 + 0.02)
+  const nPictureRailE = new THREE.Mesh(new THREE.BoxGeometry(wainscotW, 0.03, 0.04), goldMat)
+  nPictureRailE.position.set(7.2 - wainscotW / 2, floorY + 1.05, cz - innerD / 2 + 0.02)
+  corridorGroup.add(nWainscotW, nPictureRailW, nWainscotE, nPictureRailE)
 
   // =========================================================================
-  // 4. OVERHAULED DUAL ELEVATOR BANK (NORTH WALL)
-  // [ELEVATOR REDESIGN]: Separated into two distinct, realistically scaled
-  // luxury elevator portals (Lift 1 and Lift 2) with an architectural center
-  // call pier, brushed champagne bronze doors, and glowing indicators.
+  // 4. UNIFIED GRAND ELEVATOR BANK (NORTH WALL)
+  // [ELEVATOR OVERHAUL]: A continuous grand architectural entablature ties Lift 1,
+  // the Center Pier, and Lift 2 into a single cohesive luxury hotel installation.
+  // Doors are recessed inside wall pockets and slide behind jambs.
   // =========================================================================
-  const elevH = 2.35
-  const elevW = 1.5
-  const elevBankZ = cz - innerD / 2 + 0.02
+  const bankTotalW = 4.64
 
-  // 4.1 CENTER ARCHITECTURAL PIER (Between Lift 1 & Lift 2)
-  const pierW = 0.85
-  const pierZ = elevBankZ + 0.04
-  const pierMesh = new THREE.Mesh(new THREE.BoxGeometry(pierW, wallH, 0.08), wainscotMat)
-  pierMesh.position.set(cx, floorY + wallH / 2, pierZ)
+  // 4.1 Continuous Architectural Entablature Header across Lift 1, Pier, & Lift 2
+  const entablatureGroup = new THREE.Group()
+  // Lower gold architrave belt
+  const bankArchTrim = new THREE.Mesh(new THREE.BoxGeometry(bankTotalW, 0.04, 0.09), goldMat)
+  bankArchTrim.position.set(cx, floorY + elevH + 0.02, cz - innerD / 2 + 0.045)
 
-  // Fluted wood panel insert in center pier
-  const pierFlute = new THREE.Mesh(new THREE.BoxGeometry(pierW - 0.12, wallH - 0.4, 0.02), flutedWoodMat)
-  pierFlute.position.set(cx, floorY + wallH / 2, pierZ + 0.045)
+  // Center frieze panel (dark walnut)
+  const bankFrieze = new THREE.Mesh(new THREE.BoxGeometry(bankTotalW - 0.04, 0.18, 0.07), wainscotMat)
+  bankFrieze.position.set(cx, floorY + elevH + 0.13, cz - innerD / 2 + 0.035)
 
-  // Gold vertical edge trim on pier
-  const pierTrimL = new THREE.Mesh(new THREE.BoxGeometry(0.025, wallH, 0.03), goldMat)
-  pierTrimL.position.set(cx - pierW / 2 + 0.012, floorY + wallH / 2, pierZ + 0.045)
-  const pierTrimR = new THREE.Mesh(new THREE.BoxGeometry(0.025, wallH, 0.03), goldMat)
-  pierTrimR.position.set(cx + pierW / 2 - 0.012, floorY + wallH / 2, pierZ + 0.045)
+  // Upper stepped gold cornice crown molding
+  const bankCornice = new THREE.Mesh(new THREE.BoxGeometry(bankTotalW + 0.04, 0.05, 0.11), goldMat)
+  bankCornice.position.set(cx, floorY + elevH + 0.245, cz - innerD / 2 + 0.05)
+
+  entablatureGroup.add(bankArchTrim, bankFrieze, bankCornice)
+  corridorGroup.add(entablatureGroup)
+
+  // 4.2 Center Architectural Pier (Between Lift 1 & Lift 2)
+  const pierMesh = new THREE.Mesh(new THREE.BoxGeometry(1.24, elevH, 0.05), wainscotMat)
+  pierMesh.position.set(cx, floorY + elevH / 2, cz - innerD / 2 + 0.025)
+
+  const pierFlute = new THREE.Mesh(new THREE.BoxGeometry(1.10, elevH - 0.06, 0.02), flutedWoodMat)
+  pierFlute.position.set(cx, floorY + elevH / 2, cz - innerD / 2 + 0.05)
+
+  const pierTrimL = new THREE.Mesh(new THREE.BoxGeometry(0.025, elevH, 0.03), goldMat)
+  pierTrimL.position.set(cx - 0.58, floorY + elevH / 2, cz - innerD / 2 + 0.05)
+  const pierTrimR = new THREE.Mesh(new THREE.BoxGeometry(0.025, elevH, 0.03), goldMat)
+  pierTrimR.position.set(cx + 0.58, floorY + elevH / 2, cz - innerD / 2 + 0.05)
   corridorGroup.add(pierMesh, pierFlute, pierTrimL, pierTrimR)
 
-  // Brushed Brass Elevator Call Station
-  const callPlate = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.65, 0.03), goldMat)
-  callPlate.position.set(cx, floorY + 1.35, pierZ + 0.06)
+  // High-End Brushed Brass Elevator Call Station
+  const callPlate = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.54, 0.025), goldMat)
+  callPlate.position.set(cx, floorY + 1.35, cz - innerD / 2 + 0.065)
 
-  const callBtnGeo = new THREE.CylinderGeometry(0.022, 0.022, 0.02, 12)
+  const callPanelTex = corridorElevatorCallPanelTexture()
+  const callPanelMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.24, 0.50),
+    new THREE.MeshBasicMaterial({ map: callPanelTex }),
+  )
+  callPanelMesh.position.set(cx, floorY + 1.35, cz - innerD / 2 + 0.079)
+
+  // Tactile 3D Button Bezels & Illuminated Lenses
+  const callBtnGeo = new THREE.CylinderGeometry(0.026, 0.026, 0.012, 16)
   callBtnGeo.rotateX(Math.PI / 2)
-  const callBtnUp = new THREE.Mesh(callBtnGeo, warmSconceGlowMat)
-  callBtnUp.position.set(cx, floorY + 1.48, pierZ + 0.078)
-  const callBtnDown = new THREE.Mesh(callBtnGeo, new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.4 }))
-  callBtnDown.position.set(cx, floorY + 1.25, pierZ + 0.078)
 
-  // Directory badge
-  const dirPlate = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.08), darkMetalMat)
-  dirPlate.position.set(cx, floorY + 1.72, pierZ + 0.065)
-  corridorGroup.add(callPlate, callBtnUp, callBtnDown, dirPlate)
+  const callBtnUp = new THREE.Mesh(callBtnGeo, btnUpNormalMat)
+  callBtnUp.position.set(cx, floorY + 1.44, cz - innerD / 2 + 0.082)
 
-  // 4.2 HELPER: BUILD ELEVATOR PORTAL
+  const callBtnDown = new THREE.Mesh(
+    callBtnGeo,
+    new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.4 }),
+  )
+  callBtnDown.position.set(cx, floorY + 1.25, cz - innerD / 2 + 0.082)
+
+  corridorGroup.add(callPlate, callPanelMesh, callBtnUp, callBtnDown)
+
+  // 4.3 HELPER: BUILD ELEVATOR PORTAL
   const buildElevatorPortal = (portalX: number, isLeft: boolean) => {
     const pGroup = new THREE.Group()
 
-    // Outer Beveled Architrave (Gold / Brushed Bronze)
-    const archTop = new THREE.Mesh(new THREE.BoxGeometry(elevW + 0.22, 0.14, 0.08), goldMat)
-    archTop.position.set(portalX, floorY + elevH + 0.07, elevBankZ + 0.04)
-
+    // Outer Beveled Architrave Jambs (Gold / Brushed Bronze)
     const archL = new THREE.Mesh(new THREE.BoxGeometry(0.12, elevH, 0.08), goldMat)
-    archL.position.set(portalX - elevW / 2 - 0.06, floorY + elevH / 2, elevBankZ + 0.04)
+    archL.position.set(portalX - elevW / 2 - 0.06, floorY + elevH / 2, cz - innerD / 2 + 0.04)
 
     const archR = new THREE.Mesh(new THREE.BoxGeometry(0.12, elevH, 0.08), goldMat)
-    archR.position.set(portalX + elevW / 2 + 0.06, floorY + elevH / 2, elevBankZ + 0.04)
+    archR.position.set(portalX + elevW / 2 + 0.06, floorY + elevH / 2, cz - innerD / 2 + 0.04)
 
-    // Inner Dark Titanium Door Reveal
-    const revealTop = new THREE.Mesh(new THREE.BoxGeometry(elevW, 0.04, 0.06), darkMetalMat)
-    revealTop.position.set(portalX, floorY + elevH - 0.02, elevBankZ + 0.05)
-    const revealL = new THREE.Mesh(new THREE.BoxGeometry(0.04, elevH, 0.06), darkMetalMat)
-    revealL.position.set(portalX - elevW / 2 + 0.02, floorY + elevH / 2, elevBankZ + 0.05)
-    const revealR = new THREE.Mesh(new THREE.BoxGeometry(0.04, elevH, 0.06), darkMetalMat)
-    revealR.position.set(portalX + elevW / 2 - 0.02, floorY + elevH / 2, elevBankZ + 0.05)
+    // Inner Door Pocket Return Reveals (Concealing door sliding pocket)
+    const revealL = new THREE.Mesh(new THREE.BoxGeometry(0.035, elevH, 0.20), darkMetalMat)
+    revealL.position.set(portalX - elevW / 2 + 0.018, floorY + elevH / 2, cz - innerD / 2 - 0.05)
 
-    // Polished Brass Floor Sill
-    const sill = new THREE.Mesh(new THREE.BoxGeometry(elevW + 0.08, 0.02, 0.14), goldMat)
-    sill.position.set(portalX, floorY + 0.053, elevBankZ + 0.07)
+    const revealR = new THREE.Mesh(new THREE.BoxGeometry(0.035, elevH, 0.20), darkMetalMat)
+    revealR.position.set(portalX + elevW / 2 - 0.018, floorY + elevH / 2, cz - innerD / 2 - 0.05)
 
-    // Backlit Floor Indicator Screen Box
+    const revealTop = new THREE.Mesh(new THREE.BoxGeometry(elevW, 0.035, 0.20), darkMetalMat)
+    revealTop.position.set(portalX, floorY + elevH - 0.018, cz - innerD / 2 - 0.05)
+
+    // Polished Brass Floor Threshold Sill
+    const sill = new THREE.Mesh(new THREE.BoxGeometry(elevW + 0.08, 0.025, 0.22), goldMat)
+    sill.position.set(portalX, floorY + 0.045, cz - innerD / 2 - 0.04)
+
+    // Integrated Floor Indicator Screen Box (Within Frieze)
     const dispTex = corridorElevatorDisplayTexture(isLeft ? 'left' : 'right')
-    const dispMat = new THREE.MeshBasicMaterial({ map: dispTex, toneMapped: false })
-    const dispMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.18), dispMat)
-    dispMesh.position.set(portalX, floorY + elevH + 0.24, elevBankZ + 0.085)
+    const dispMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.44, 0.14),
+      new THREE.MeshBasicMaterial({ map: dispTex, toneMapped: false }),
+    )
+    dispMesh.position.set(portalX, floorY + elevH + 0.13, cz - innerD / 2 + 0.076)
 
-    const dispFrame = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.22, 0.03), darkMetalMat)
-    dispFrame.position.set(portalX, floorY + elevH + 0.24, elevBankZ + 0.07)
+    const dispFrame = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.18, 0.02), darkMetalMat)
+    dispFrame.position.set(portalX, floorY + elevH + 0.13, cz - innerD / 2 + 0.065)
 
     // Directional Arrival Lantern (Chevron Up)
-    const lanternGeo = new THREE.ConeGeometry(0.04, 0.07, 4)
-    const lanternMat = isLeft ? warmSconceGlowMat : new THREE.MeshStandardMaterial({ color: 0x475569 })
+    const lanternGeo = new THREE.ConeGeometry(0.035, 0.06, 4)
+    const lanternMat = isLeft ? btnUpNormalMat : new THREE.MeshStandardMaterial({ color: 0x475569 })
     const lantern = new THREE.Mesh(lanternGeo, lanternMat)
-    lantern.position.set(portalX, floorY + elevH + 0.38, elevBankZ + 0.07)
+    lantern.position.set(portalX, floorY + elevH + 0.23, cz - innerD / 2 + 0.06)
 
-    pGroup.add(
-      archTop, archL, archR,
-      revealTop, revealL, revealR,
-      sill, dispFrame, dispMesh, lantern,
-    )
+    pGroup.add(archL, archR, revealL, revealR, revealTop, sill, dispFrame, dispMesh, lantern)
     corridorGroup.add(pGroup)
   }
 
-  // 4.3 LIFT 1 (ACTIVE ELEVATOR TO 1F) - Left Portal
-  const lift1X = cx - 1.45
+  // 4.4 LIFT 1 (ACTIVE ELEVATOR TO 1F) - Left Portal
   buildElevatorPortal(lift1X, true)
 
-  // Sliding Elevator Doors for Lift 1
-  const doorPanelW = 0.74
+  // Sliding Elevator Doors for Lift 1 (Recessed in wall pocket at elevDoorZ)
+  const doorPanelW = 0.72
   const doorPanelH = elevH - 0.04
-  const doorGeo = new THREE.BoxGeometry(doorPanelW, doorPanelH, 0.035)
+  const doorGeo = new THREE.BoxGeometry(doorPanelW, doorPanelH, 0.028)
 
   const lift1DoorL = new THREE.Mesh(doorGeo, satinElevatorMat)
   const lift1DoorR = new THREE.Mesh(doorGeo, satinElevatorMat)
-  lift1DoorL.position.set(lift1X - doorPanelW / 2 + 0.01, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
-  lift1DoorR.position.set(lift1X + doorPanelW / 2 - 0.01, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
+  lift1DoorL.position.set(lift1X - doorPanelW / 2 + 0.01, floorY + doorPanelH / 2 + 0.01, elevDoorZ)
+  lift1DoorR.position.set(lift1X + doorPanelW / 2 - 0.01, floorY + doorPanelH / 2 + 0.01, elevDoorZ)
   corridorGroup.add(lift1DoorL, lift1DoorR)
 
-  // Lift 1 Cab Interior (Behind doors, Z: 60.4 to 62.4)
-  const cabW = 1.9
-  const cabD = 2.0
-  const cabH = 2.5
-  const cabZ = elevBankZ - cabD / 2 - 0.02
+  // Lift 1 Cab Interior (Fully modeled interior cabin behind recessed doors)
+  const cabW = 1.80
+  const cabD = 2.00
+  const cabH = 2.38
+  const cabZ = cz - innerD / 2 - cabD / 2 - 0.10 // 61.30
+
+  // Cab Floor (Dark Nero Marquina marble with border)
   const cabFloor = new THREE.Mesh(new THREE.BoxGeometry(cabW, 0.04, cabD), woodBorderMat)
   cabFloor.position.set(lift1X, floorY + 0.02, cabZ)
+
+  // Cab Ceiling
   const cabCeil = new THREE.Mesh(new THREE.BoxGeometry(cabW, 0.06, cabD), darkMetalMat)
   cabCeil.position.set(lift1X, floorY + cabH, cabZ)
-  // Rear stainless mirror panel
-  const cabBack = new THREE.Mesh(
-    new THREE.BoxGeometry(cabW, cabH, 0.04),
+
+  // Cab Back Wall (Lower walnut wainscot + Upper tinted bronze mirror)
+  const cabBackLower = new THREE.Mesh(new THREE.BoxGeometry(cabW, 0.85, 0.04), wainscotMat)
+  cabBackLower.position.set(lift1X, floorY + 0.425, cabZ - cabD / 2 + 0.02)
+
+  const cabBackMirror = new THREE.Mesh(
+    new THREE.BoxGeometry(cabW - 0.04, cabH - 0.85, 0.02),
     new THREE.MeshStandardMaterial({ color: 0xd8e2ec, roughness: 0.12, metalness: 0.92 }),
   )
-  cabBack.position.set(lift1X, floorY + cabH / 2, cabZ - cabD / 2)
-  // Brass interior handrail
-  const cabRail = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, cabW - 0.3, 12), goldMat)
-  cabRail.rotateZ(Math.PI / 2)
-  cabRail.position.set(lift1X, floorY + 0.95, cabZ - cabD / 2 + 0.08)
+  cabBackMirror.position.set(lift1X, floorY + 0.85 + (cabH - 0.85) / 2, cabZ - cabD / 2 + 0.02)
 
+  const cabRailBack = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, cabW - 0.25, 12), goldMat)
+  cabRailBack.rotateZ(Math.PI / 2)
+  cabRailBack.position.set(lift1X, floorY + 0.95, cabZ - cabD / 2 + 0.07)
+
+  // Cab Left Side Wall (Solid enclosure)
+  const cabLeftLower = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.85, cabD), wainscotMat)
+  cabLeftLower.position.set(lift1X - cabW / 2 + 0.02, floorY + 0.425, cabZ)
+
+  const cabLeftUpper = new THREE.Mesh(
+    new THREE.BoxGeometry(0.02, cabH - 0.85, cabD),
+    new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5, metalness: 0.4 }),
+  )
+  cabLeftUpper.position.set(lift1X - cabW / 2 + 0.02, floorY + 0.85 + (cabH - 0.85) / 2, cabZ)
+
+  const cabRailLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, cabD - 0.3, 12), goldMat)
+  cabRailLeft.rotateX(Math.PI / 2)
+  cabRailLeft.position.set(lift1X - cabW / 2 + 0.06, floorY + 0.95, cabZ)
+
+  // Cab Right Side Wall (Solid enclosure + COP Button Panel)
+  const cabRightLower = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.85, cabD), wainscotMat)
+  cabRightLower.position.set(lift1X + cabW / 2 - 0.02, floorY + 0.425, cabZ)
+
+  const cabRightUpper = new THREE.Mesh(
+    new THREE.BoxGeometry(0.02, cabH - 0.85, cabD),
+    new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5, metalness: 0.4 }),
+  )
+  cabRightUpper.position.set(lift1X + cabW / 2 - 0.02, floorY + 0.85 + (cabH - 0.85) / 2, cabZ)
+
+  // Car Operating Panel (COP Column)
+  const copColumn = new THREE.Mesh(new THREE.BoxGeometry(0.03, 1.35, 0.26), goldMat)
+  copColumn.position.set(lift1X + cabW / 2 - 0.035, floorY + 1.25, cabZ + 0.30)
+
+  const copScreen = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.20, 0.08),
+    new THREE.MeshBasicMaterial({ color: 0x090d16 }),
+  )
+  copScreen.rotateY(-Math.PI / 2)
+  copScreen.position.set(lift1X + cabW / 2 - 0.052, floorY + 1.75, cabZ + 0.30)
+
+  // Warm elevator interior downlight
   const cabLight = new THREE.PointLight(0xfffae6, 2.2, 5.5, 1.2)
-  cabLight.position.set(lift1X, floorY + cabH - 0.1, cabZ)
-  corridorGroup.add(cabFloor, cabCeil, cabBack, cabRail, cabLight)
+  cabLight.position.set(lift1X, floorY + cabH - 0.12, cabZ)
 
-  // 4.4 LIFT 2 (STANDBY ELEVATOR) - Right Portal
-  const lift2X = cx + 1.45
+  corridorGroup.add(
+    cabFloor, cabCeil,
+    cabBackLower, cabBackMirror, cabRailBack,
+    cabLeftLower, cabLeftUpper, cabRailLeft,
+    cabRightLower, cabRightUpper, copColumn, copScreen,
+    cabLight,
+  )
+
+  // 4.5 LIFT 2 (STANDBY ELEVATOR) - Right Portal
   buildElevatorPortal(lift2X, false)
 
   const lift2DoorL = new THREE.Mesh(doorGeo, satinElevatorMat)
   const lift2DoorR = new THREE.Mesh(doorGeo, satinElevatorMat)
-  lift2DoorL.position.set(lift2X - doorPanelW / 2 + 0.01, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
-  lift2DoorR.position.set(lift2X + doorPanelW / 2 - 0.01, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
+  lift2DoorL.position.set(lift2X - doorPanelW / 2 + 0.01, floorY + doorPanelH / 2 + 0.01, elevDoorZ)
+  lift2DoorR.position.set(lift2X + doorPanelW / 2 - 0.01, floorY + doorPanelH / 2 + 0.01, elevDoorZ)
 
-  // Vertical center seam highlight
-  const seamR = new THREE.Mesh(new THREE.BoxGeometry(0.008, doorPanelH, 0.038), darkMetalMat)
-  seamR.position.set(lift2X, floorY + doorPanelH / 2 + 0.01, elevBankZ + 0.045)
+  // Vertical center gasket seam highlight
+  const seamR = new THREE.Mesh(new THREE.BoxGeometry(0.008, doorPanelH, 0.032), darkMetalMat)
+  seamR.position.set(lift2X, floorY + doorPanelH / 2 + 0.01, elevDoorZ + 0.005)
   corridorGroup.add(lift2DoorL, lift2DoorR, seamR)
 
   // =========================================================================
@@ -479,10 +632,30 @@ export function buildCorridor4F(
     lever.position.set(0.42, 1.05, 0.08)
     doorGrp.add(lever)
 
-    // Illuminated Doorbell Button
-    const bell = new THREE.Mesh(new THREE.CircleGeometry(0.025, 12), warmSconceGlowMat)
-    bell.position.set(-0.58, 1.35, 0.06)
-    doorGrp.add(bell)
+    // Architectural Video Intercom & Doorbell Station
+    const intercomGrp = new THREE.Group()
+    const icPlate = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.18, 0.022), darkMetalMat)
+    icPlate.position.set(0, 0, 0.011)
+
+    const icTex = corridorDoorIntercomTexture(doorNum)
+    const icMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.082, 0.172),
+      new THREE.MeshBasicMaterial({ map: icTex }),
+    )
+    icMesh.position.set(0, 0, 0.023)
+
+    // Tactile 3D button bezel
+    const icBtnGeo = new THREE.CylinderGeometry(0.016, 0.016, 0.008, 16)
+    icBtnGeo.rotateX(Math.PI / 2)
+    const icBtn = new THREE.Mesh(
+      icBtnGeo,
+      new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.3, metalness: 0.7 }),
+    )
+    icBtn.position.set(0, -0.045, 0.025)
+
+    intercomGrp.add(icPlate, icMesh, icBtn)
+    intercomGrp.position.set(-0.68, 1.35, 0.035)
+    doorGrp.add(intercomGrp)
 
     doorGrp.position.set(posX, floorY, cz - innerD / 2)
     corridorGroup.add(doorGrp)
@@ -505,9 +678,11 @@ export function buildCorridor4F(
     roughness: 0.35,
     metalness: 0.75,
   })
+  const chuteFrame = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.98, 0.03), darkMetalMat)
+  chuteFrame.position.set(chuteX, floorY + 1.25, chuteZ + 0.02)
   const chuteMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.65, 0.9), chuteMat)
-  chuteMesh.position.set(chuteX, floorY + 1.25, chuteZ + 0.03)
-  corridorGroup.add(chuteMesh)
+  chuteMesh.position.set(chuteX, floorY + 1.25, chuteZ + 0.036)
+  corridorGroup.add(chuteFrame, chuteMesh)
 
   // =========================================================================
   // 7. EMERGENCY FIRE STAIRWELL DOOR (NORTH-EAST WALL)
@@ -727,20 +902,46 @@ export function buildCorridor4F(
   fireBox.position.set(cx - 5.0, floorY + 1.25, cz + innerD / 2 - 0.02)
   corridorGroup.add(fireBox)
 
-  // Brass Hourglass Wall Sconces
-  const sconceXPositions = [cx - 5.5, cx - 2.8, cx + 2.8, cx + 4.5]
-  for (const sx of sconceXPositions) {
-    const sconceBase = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.16, 0.04), goldMat)
-    sconceBase.position.set(sx, floorY + 1.75, cz - innerD / 2 + 0.03)
+  // 8.4 Minimalist Architectural Cylindrical Tube Wall Sconces
+  const sconceTubeMat = new THREE.MeshStandardMaterial({
+    color: 0xfffae6,
+    roughness: 0.35,
+    emissive: 0xffea9f,
+    emissiveIntensity: 0.7,
+  })
 
-    const coneUp = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.1, 8), warmSconceGlowMat)
-    coneUp.position.set(sx, floorY + 1.86, cz - innerD / 2 + 0.04)
+  const buildModernSconce = (sx: number, sz: number, isSouthWall: boolean) => {
+    const sGroup = new THREE.Group()
+    const rotY = isSouthWall ? Math.PI : 0
 
-    const coneDown = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.1, 8), warmSconceGlowMat)
-    coneDown.rotation.x = Math.PI
-    coneDown.position.set(sx, floorY + 1.64, cz - innerD / 2 + 0.04)
-    corridorGroup.add(sconceBase, coneUp, coneDown)
+    // Brushed gold backplate
+    const plate = new THREE.Mesh(new THREE.BoxGeometry(0.065, 0.34, 0.02), goldMat)
+    plate.position.set(0, 0, 0.01)
+
+    // Frosted acrylic diffuser cylinder
+    const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.22, 16), sconceTubeMat)
+    tube.position.set(0, 0, 0.035)
+
+    // Gold machined top and bottom caps
+    const capGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.035, 16)
+    const capTop = new THREE.Mesh(capGeo, goldMat)
+    capTop.position.set(0, 0.125, 0.035)
+    const capBtm = new THREE.Mesh(capGeo, goldMat)
+    capBtm.position.set(0, -0.125, 0.035)
+
+    sGroup.add(plate, tube, capTop, capBtm)
+    sGroup.rotation.y = rotY
+    sGroup.position.set(sx, floorY + 1.75, sz)
+    corridorGroup.add(sGroup)
   }
+
+  // North Wall Sconces (Architectural placement avoiding doors and chute)
+  buildModernSconce(cx - 5.6, cz - innerD / 2 + 0.01, false) // West wing pier
+  buildModernSconce(cx + 4.6, cz - innerD / 2 + 0.01, false) // East wing pier
+
+  // South Wall Sconces (Lounge Area flanking mirror and art)
+  buildModernSconce(cx - 2.2, cz + innerD / 2 - 0.01, true)
+  buildModernSconce(cx + 2.2, cz + innerD / 2 - 0.01, true)
 
   // =========================================================================
   // 9. LIGHTING & LIGHT MANAGER REGISTRATION
@@ -842,6 +1043,16 @@ export function buildCorridor4F(
     maxX: lift2X - elevW / 2 - 0.05,
     maxY: 4.0,
     maxZ: cz - innerD / 2 + 0.08,
+  })
+
+  // Lift 2 Standby Elevator Portal Collider (blocking player from walking into shaft)
+  colliders.add({
+    minX: lift2X - elevW / 2 - 0.05,
+    minY: 0,
+    minZ: cz - innerD / 2 - 0.8,
+    maxX: lift2X + elevW / 2 + 0.05,
+    maxY: 4.0,
+    maxZ: cz - innerD / 2 + 0.05,
   })
 
   // North Wall East of Lift 2 (Suite 403, stairs, refuse chute)
@@ -961,10 +1172,11 @@ export function buildCorridor4F(
         elevOpen = false
         audio?.playElevatorChime()
         messages.show('*Ding* Elevator doors glide shut. Descending to 1F Entrance Lobby...')
-        setTimeout(() => {
-          player.teleport(0, 18.2, Math.PI)
+        screenFade(() => {
+          player.teleport(0, 22.8, 0)
+          onRideElevatorTo1F?.()
           messages.show('1F Entrance Lobby. Step out into midnight Tokyo.', 5.0)
-        }, 500)
+        })
       }
     },
   })
@@ -973,16 +1185,16 @@ export function buildCorridor4F(
   interactions.add({
     id: 'corridor-elevator-call',
     x: cx,
-    z: pierZ + 0.45,
+    z: cz - innerD / 2 + 0.45,
     radius: 1.6,
     prompt: () => 'Call Elevator [エレベーターを呼ぶ]',
     onInteract: () => {
       audio?.playElevatorChime()
-      callBtnUp.material = new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
+      callBtnUp.material = btnUpActiveMat
       messages.show('*Chime* Elevator called. Lift 1 arriving at 4F.')
       setTimeout(() => {
         elevOpen = true
-        callBtnUp.material = warmSconceGlowMat
+        callBtnUp.material = btnUpNormalMat
       }, 600)
     },
   })
@@ -1021,10 +1233,11 @@ export function buildCorridor4F(
     onInteract: () => {
       audio?.playVendingSound()
       messages.show('Heavy fire door clicks open. Descending fire stairs to 1F...')
-      setTimeout(() => {
+      screenFade(() => {
         player.teleport(0, 18.2, Math.PI)
+        onRideElevatorTo1F?.()
         messages.show('Arrived at 1F Entrance Lobby.', 4.0)
-      }, 400)
+      })
     },
   })
 
@@ -1038,9 +1251,9 @@ export function buildCorridor4F(
     onInteract: () => {
       audio?.playElevatorChime()
       messages.show('Smart lock beeps: Access Granted. Welcome home to Suite 402.')
-      setTimeout(() => {
+      screenFade(() => {
         player.teleport(1.2, 85.2, -Math.PI / 2)
-      }, 350)
+      })
     },
   })
 
@@ -1114,8 +1327,8 @@ export function buildCorridor4F(
       elevProgress += (elevTarget - elevProgress) * Math.min(1, dt * 4.5)
 
       // Animate Lift 1 sliding doors
-      lift1DoorL.position.x = lift1X - doorPanelW / 2 + 0.01 - elevProgress * 0.65
-      lift1DoorR.position.x = lift1X + doorPanelW / 2 - 0.01 + elevProgress * 0.65
+      lift1DoorL.position.x = lift1X - doorPanelW / 2 + 0.01 - elevProgress * 0.58
+      lift1DoorR.position.x = lift1X + doorPanelW / 2 - 0.01 + elevProgress * 0.58
     },
   }
 }

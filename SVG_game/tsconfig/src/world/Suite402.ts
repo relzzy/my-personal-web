@@ -534,26 +534,46 @@ export function buildSuite402(
   for (const fl of floorLevels) {
     const slab = new THREE.Mesh(fullFloorSlabGeo, concreteSlabMat)
     slab.position.set(cx, fl.y - slabThick / 2, balconyZ)
+    slab.castShadow = false
+    slab.receiveShadow = false
 
     const rail = new THREE.Mesh(fullRailGeo, balconyGlassMat)
     rail.position.set(cx, fl.y + railH / 2, frontRailZ)
+    rail.castShadow = false
+    rail.receiveShadow = false
+
     const cap = new THREE.Mesh(fullCapGeo, bronzeRailMat)
     cap.position.set(cx, fl.y + railH + 0.02, frontRailZ)
+    cap.castShadow = false
+    cap.receiveShadow = false
 
     const pL = new THREE.Mesh(new THREE.BoxGeometry(0.04, wallH - 0.2, partitionDepth), bronzeRailMat)
     pL.position.set(cx - balconyW / 2, fl.y + (wallH - 0.2) / 2, partitionZ)
+    pL.castShadow = false
+    pL.receiveShadow = false
+
     const pR = new THREE.Mesh(new THREE.BoxGeometry(0.04, wallH - 0.2, partitionDepth), bronzeRailMat)
     pR.position.set(cx + balconyW / 2, fl.y + (wallH - 0.2) / 2, partitionZ)
+    pR.castShadow = false
+    pR.receiveShadow = false
 
     const doorL = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.1), fl.curtain)
     doorL.position.set(cx - 5.5, fl.y + 1.1, facadeZ + 0.02)
     doorL.rotation.y = Math.PI
+    doorL.castShadow = false
+    doorL.receiveShadow = false
+
     const doorMid = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.1), fl.curtain)
     doorMid.position.set(cx, fl.y + 1.1, facadeZ + 0.02)
     doorMid.rotation.y = Math.PI
+    doorMid.castShadow = false
+    doorMid.receiveShadow = false
+
     const doorR = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.1), fl.curtain)
     doorR.position.set(cx + 5.5, fl.y + 1.1, facadeZ + 0.02)
     doorR.rotation.y = Math.PI
+    doorR.castShadow = false
+    doorR.receiveShadow = false
 
     suiteGroup.add(slab, rail, cap, pL, pR, doorL, doorMid, doorR)
   }
@@ -566,12 +586,37 @@ export function buildSuite402(
     suiteGroup.add(pin)
   }
 
-  // Heavy Vertical Structural Concrete Piers running from Ground (Y = -12.5) to Roof (Y = 10.0)
-  const totalFacadeH = 22.5
+  // 4.6.1 Continuous Solid Exterior Wall & Ground Podium Extending Down to Street Level (Y = -14)
+  const totalFacadeH = 24.5 // From Y = -14 to Y = 10.5
+  const fullFacadeCenterY = -14 + totalFacadeH / 2 // Y = -1.75
+
+  // Full-height solid rear facade backing wall behind all balcony levels
+  const solidBackingWall = new THREE.Mesh(
+    new THREE.BoxGeometry(totalFloorSpanW, totalFacadeH, 0.3),
+    sunHeightsTileMat,
+  )
+  solidBackingWall.position.set(cx, fullFacadeCenterY, facadeZ + 0.15)
+  solidBackingWall.castShadow = false
+  solidBackingWall.receiveShadow = false
+
+  // Solid ground-floor foundation podium underneath balconies (from street Y = -14 to 1F slab Y = -9.15)
+  const basePodiumH = 4.85
+  const basePodium = new THREE.Mesh(
+    new THREE.BoxGeometry(totalFloorSpanW, basePodiumH, balconyD),
+    concreteSlabMat,
+  )
+  basePodium.position.set(cx, -14 + basePodiumH / 2, balconyZ)
+  basePodium.castShadow = false
+  basePodium.receiveShadow = false
+  suiteGroup.add(solidBackingWall, basePodium)
+
+  // Heavy Vertical Structural Concrete Piers running from Ground (Y = -14) to Roof (Y = 10.5)
   const pierGeo = new THREE.BoxGeometry(0.35, totalFacadeH, 0.35)
   for (const px of [cx - buildingHalfW, cx - balconyW / 2, cx + balconyW / 2, cx + buildingHalfW]) {
     const pier = new THREE.Mesh(pierGeo, concreteTrimMat)
-    pier.position.set(px, floorY - 1.25, frontRailZ + 0.15)
+    pier.position.set(px, fullFacadeCenterY, frontRailZ + 0.15)
+    pier.castShadow = false
+    pier.receiveShadow = false
     suiteGroup.add(pier)
   }
 
@@ -579,7 +624,9 @@ export function buildSuite402(
   const downspoutGeo = new THREE.CylinderGeometry(0.045, 0.045, totalFacadeH, 8)
   for (const px of [cx - buildingHalfW + 0.2, cx + buildingHalfW - 0.2]) {
     const pipe = new THREE.Mesh(downspoutGeo, darkMetalMat)
-    pipe.position.set(px, floorY - 1.25, facadeZ - 0.1)
+    pipe.position.set(px, fullFacadeCenterY, facadeZ - 0.1)
+    pipe.castShadow = false
+    pipe.receiveShadow = false
     suiteGroup.add(pipe)
   }
 
@@ -587,32 +634,52 @@ export function buildSuite402(
   const roofParapetY = floorY + floorHeightStep * 3 // Y = 9.45
   const roofParapet = new THREE.Mesh(new THREE.BoxGeometry(totalFloorSpanW, 0.9, 0.3), concreteTrimMat)
   roofParapet.position.set(cx, roofParapetY + 0.45, frontRailZ)
+  roofParapet.castShadow = false
+  roofParapet.receiveShadow = false
 
   const penthouse = new THREE.Mesh(new THREE.BoxGeometry(6.0, 2.5, 6.0), sunHeightsTileMat)
   penthouse.position.set(cx, roofParapetY + 1.25, facadeZ + 3.0)
+  penthouse.castShadow = false
+  penthouse.receiveShadow = false
 
   // Roof Obstruction Beacon on Rooftop Antenna
   const roofAntenna = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.2, 5.0, 8), darkMetalMat)
   roofAntenna.position.set(cx + 4.0, roofParapetY + 2.5, facadeZ + 2.0)
+  roofAntenna.castShadow = false
+  roofAntenna.receiveShadow = false
+
   const roofBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff2222, toneMapped: false }))
   roofBeacon.position.set(cx + 4.0, roofParapetY + 5.1, facadeZ + 2.0)
+  roofBeacon.castShadow = false
+  roofBeacon.receiveShadow = false
   suiteGroup.add(roofParapet, penthouse, roofAntenna, roofBeacon)
 
-  // 4.7 Continuous Building Side Return Walls (East & West)
+  // 4.7 Continuous Building Side Return Walls (East & West down to Y = -14)
   const sideWallGeo = new THREE.BoxGeometry(0.35, totalFacadeH, 9.5)
   const sideWallWest = new THREE.Mesh(sideWallGeo, sunHeightsTileMat)
-  sideWallWest.position.set(cx - buildingHalfW, floorY - 1.25, facadeZ + 4.5)
+  sideWallWest.position.set(cx - buildingHalfW, fullFacadeCenterY, facadeZ + 4.5)
+  sideWallWest.castShadow = false
+  sideWallWest.receiveShadow = false
+
   const sideWallEast = new THREE.Mesh(sideWallGeo, sunHeightsTileMat)
-  sideWallEast.position.set(cx + buildingHalfW, floorY - 1.25, facadeZ + 4.5)
+  sideWallEast.position.set(cx + buildingHalfW, fullFacadeCenterY, facadeZ + 4.5)
+  sideWallEast.castShadow = false
+  sideWallEast.receiveShadow = false
 
   const ventWindowMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8, toneMapped: false })
   for (let wy = -6.0; wy <= 6.0; wy += 3.1) {
     const ventW = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), ventWindowMat)
     ventW.position.set(cx - buildingHalfW - 0.18, floorY + wy + 1.2, facadeZ + 4.5)
     ventW.rotation.y = -Math.PI / 2
+    ventW.castShadow = false
+    ventW.receiveShadow = false
+
     const ventE = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), ventWindowMat)
     ventE.position.set(cx + buildingHalfW + 0.18, floorY + wy + 1.2, facadeZ + 4.5)
     ventE.rotation.y = Math.PI / 2
+    ventE.castShadow = false
+    ventE.receiveShadow = false
+
     suiteGroup.add(ventW, ventE)
   }
 

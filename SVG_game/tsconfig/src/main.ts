@@ -18,17 +18,17 @@ import { Hud } from './ui/Hud'
 async function init(): Promise<void> {
   // 1. SETUP THREE.JS SCENE & RENDERER
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x0c1017)
-  scene.fog = new THREE.FogExp2(0x0c1017, 0.022)
+  scene.background = new THREE.Color(0x1a1f36)
+  scene.fog = new THREE.FogExp2(0x1a1f36, 0.0042)
 
-  const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, Settings.isHigh() ? 180 : 90)
+  const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, Settings.isHigh() ? 750 : 600)
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     powerPreference: 'high-performance',
   })
   renderer.setSize(window.innerWidth, window.innerHeight)
-  const getBasePixelRatio = () => (Settings.isHigh() ? Math.min(window.devicePixelRatio || 1, 1.5) : Math.min(window.devicePixelRatio || 1, 1.0))
+  const getBasePixelRatio = () => Math.min(window.devicePixelRatio || 1, 2)
   let basePixelRatio = getBasePixelRatio()
   renderer.setPixelRatio(basePixelRatio)
   renderer.toneMapping = THREE.ACESFilmicToneMapping
@@ -147,7 +147,7 @@ async function init(): Promise<void> {
 
   const applyQualitySettings = () => {
     const isHigh = Settings.isHigh()
-    camera.far = isHigh ? 180 : 90
+    camera.far = isHigh ? 750 : 600
     camera.updateProjectionMatrix()
     basePixelRatio = getBasePixelRatio()
     currentScale = 1.0
@@ -264,7 +264,7 @@ async function init(): Promise<void> {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.setPixelRatio(basePixelRatio * currentScale)
+    renderer.setPixelRatio(Math.min(basePixelRatio * currentScale, 2))
     shadowNeedsUpdate = true
   })
 

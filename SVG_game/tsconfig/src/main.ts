@@ -18,8 +18,8 @@ import { Hud } from './ui/Hud'
 async function init(): Promise<void> {
   // 1. SETUP THREE.JS SCENE & RENDERER
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x1a1f36)
-  scene.fog = new THREE.FogExp2(0x1a1f36, 0.0042)
+  scene.background = new THREE.Color(0x121324)
+  scene.fog = new THREE.FogExp2(0x121324, 0.0045)
 
   const camera = new THREE.PerspectiveCamera(74, window.innerWidth / window.innerHeight, 0.1, Settings.isHigh() ? 750 : 600)
 
@@ -95,7 +95,7 @@ async function init(): Promise<void> {
 
   // 4. BUILD THE 3D WORLD
   const lightManager = new LightManager(scene, Settings.getQuality())
-  buildStreets(scene, colliders)
+  const streetsGroup = buildStreets(scene, colliders)
   const buildingsRes = buildBuildings(scene, colliders, interactions, messages, audio, lightManager, player)
   const propsRes = buildProps(scene, colliders, interactions, messages, player, audio, lightManager)
 
@@ -344,9 +344,19 @@ async function init(): Promise<void> {
     player.update(dt, playing, colliders)
     player.applyCamera(camera)
 
+    // Floor Isolation: when player is on 4F (Suite 402 or 4F Lounge, Z >= 55),
+    // hide the 1F City Block (storefronts, 1F buildings, street poles, 1F roads)
+    // to eliminate the floating city island and save GPU draw calls.
+    const on4F = player.z >= 55
+    streetsGroup.visible = !on4F
+    buildingsRes.group.visible = !on4F
+    propsRes.group.visible = !on4F
+
     // Environmental Animations (Sliding Doors, Steam, Lanterns, Petals, Cat)
-    buildingsRes.update(dt, player)
-    propsRes.update(dt)
+    if (!on4F) {
+      buildingsRes.update(dt, player)
+      propsRes.update(dt)
+    }
 
     // Interaction Detection
     interactions.update(player, colliders)

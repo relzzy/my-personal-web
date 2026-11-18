@@ -411,6 +411,46 @@ export function buildSuite402(
 
   suiteGroup.add(bSlab, fasciaFront, fasciaL, fasciaR, bTeak)
 
+  // 4.2.1 Architectural Framing: Wing-Walls, Overhead Soffit & 30m Deep Facade
+  const darkArchitecturalConcreteMat = new THREE.MeshStandardMaterial({
+    color: 0x0c1017,
+    roughness: 0.85,
+    metalness: 0.05,
+  })
+
+  // Solid Concrete Wing-Walls (Fin walls: 1.5m outward, 30m down, 6m up -> 36m total height)
+  const finWallH = 36.0
+  const finWallCenterY = floorY - 12.0 // from floorY - 30 to floorY + 6
+  const finWallDepth = 1.5
+  const finWallCenterZ = facadeZ - finWallDepth / 2 // Z = 80.55
+  const finWallGeo = new THREE.BoxGeometry(0.35, finWallH, finWallDepth)
+
+  const finWallL = new THREE.Mesh(finWallGeo, darkArchitecturalConcreteMat)
+  finWallL.position.set(cx - balconyW / 2 - 0.175, finWallCenterY, finWallCenterZ)
+  finWallL.castShadow = false
+  finWallL.receiveShadow = false
+
+  const finWallR = new THREE.Mesh(finWallGeo, darkArchitecturalConcreteMat)
+  finWallR.position.set(cx + balconyW / 2 + 0.175, finWallCenterY, finWallCenterZ)
+  finWallR.castShadow = false
+  finWallR.receiveShadow = false
+
+  // Matching Dark Concrete Soffit / Overhang above the balcony
+  const soffitOverhangGeo = new THREE.BoxGeometry(balconyW + 0.7, 0.35, balconyD + 0.2)
+  const soffitOverhang = new THREE.Mesh(soffitOverhangGeo, darkArchitecturalConcreteMat)
+  soffitOverhang.position.set(cx, floorY + wallH + 0.175, balconyZ - 0.1)
+  soffitOverhang.castShadow = false
+  soffitOverhang.receiveShadow = false
+
+  // Solid Building Facade directly underneath the balcony floor slab going down 30m
+  const underFacadeGeo = new THREE.BoxGeometry(balconyW + 0.7, 30.0, balconyD)
+  const underFacade = new THREE.Mesh(underFacadeGeo, darkArchitecturalConcreteMat)
+  underFacade.position.set(cx, floorY - slabThick - 15.0, balconyZ)
+  underFacade.castShadow = false
+  underFacade.receiveShadow = false
+
+  suiteGroup.add(finWallL, finWallR, soffitOverhang, underFacade)
+
   // 4.3 Japanese Balcony Privacy Divider Screens (*Hedate-ban* 隔て板)
   const partitionDepth = 1.7
   const partitionZ = facadeZ - partitionDepth / 2 // Z = 80.45

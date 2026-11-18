@@ -3031,5 +3031,629 @@ export function elevatorAnimePoster2Texture(): THREE.CanvasTexture {
   return tex
 }
 
+// =========================================================================
+// 5. SUITE 402 HALL (LIVING ROOM & CUISINE) PROCEDURAL TEXTURES
+// =========================================================================
 
+export function suite402WelcomeRunnerTexture(): THREE.CanvasTexture {
+  const key = 'suite-402-welcome-runner'
+  const cached = textureCache.get(key)
+  if (cached) return cached
 
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Deep coir charcoal weave base
+  g.fillStyle = '#141822'
+  g.fillRect(0, 0, 256, 512)
+
+  // Textured woven ribs
+  g.fillStyle = '#181e2b'
+  for (let y = 6; y < 512; y += 8) {
+    g.fillRect(8, y, 240, 4)
+  }
+
+  // Polished gold border
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 6
+  g.strokeRect(10, 10, 236, 492)
+
+  // Inner dashed gold border
+  g.strokeStyle = '#ffd166'
+  g.lineWidth = 2.5
+  g.setLineDash([12, 8])
+  g.strokeRect(22, 22, 212, 468)
+  g.setLineDash([])
+
+  // Rotated vertical luxury typography "SUITE 402"
+  g.save()
+  g.translate(128, 256)
+  g.rotate(-Math.PI / 2)
+  g.fillStyle = '#ffd166'
+  g.font = 'bold 32px "JetBrains Mono", monospace'
+  g.textAlign = 'center'
+  g.textBaseline = 'middle'
+  g.shadowColor = '#d4af37'
+  g.shadowBlur = 8
+  g.fillText('SUITE 402', 0, 0)
+  g.restore()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suite402BedroomMatTexture(): THREE.CanvasTexture {
+  const key = 'suite-402-bedroom-mat'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Deep coir navy base
+  g.fillStyle = '#121622'
+  g.fillRect(0, 0, 256, 512)
+
+  // Woven mat texture
+  g.fillStyle = '#191f2e'
+  for (let y = 6; y < 512; y += 8) {
+    g.fillRect(8, y, 240, 4)
+  }
+
+  // Gold border
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 6
+  g.strokeRect(10, 10, 236, 492)
+
+  // Inner dashed gold accent
+  g.strokeStyle = '#ffd166'
+  g.lineWidth = 2.5
+  g.setLineDash([10, 7])
+  g.strokeRect(22, 22, 212, 468)
+  g.setLineDash([])
+
+  // Vertical text "BEDROOM"
+  g.save()
+  g.translate(128, 256)
+  g.rotate(Math.PI / 2)
+  g.fillStyle = '#ffd166'
+  g.font = 'bold 32px "JetBrains Mono", monospace'
+  g.textAlign = 'center'
+  g.textBaseline = 'middle'
+  g.shadowColor = '#d4af37'
+  g.shadowBlur = 8
+  g.fillText('BEDROOM', 0, 0)
+  g.restore()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suite402LivingRoomRugTexture(): THREE.CanvasTexture {
+  const key = 'suite-402-living-rug'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Deep midnight slate/navy woven texture
+  const grad = g.createRadialGradient(256, 256, 20, 256, 256, 320)
+  grad.addColorStop(0, '#1f2738')
+  grad.addColorStop(0.7, '#161c28')
+  grad.addColorStop(1, '#111520')
+  g.fillStyle = grad
+  g.fillRect(0, 0, 512, 512)
+
+  // Subtle woven diagonal textile grain
+  g.fillStyle = 'rgba(255, 255, 255, 0.025)'
+  for (let i = -512; i < 1024; i += 8) {
+    g.fillRect(i, 0, 2, 512)
+  }
+
+  // Outer solid gold stitching
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 5
+  g.strokeRect(24, 24, 464, 464)
+
+  // Inner dashed gold stitching border
+  g.strokeStyle = '#ffd166'
+  g.lineWidth = 3
+  g.setLineDash([14, 8])
+  g.strokeRect(44, 44, 424, 424)
+  g.setLineDash([])
+
+  // Inset geometric panel frames
+  g.strokeStyle = 'rgba(212, 175, 55, 0.35)'
+  g.lineWidth = 2
+  g.strokeRect(70, 70, 180, 220)
+  g.strokeRect(262, 70, 180, 220)
+  g.strokeRect(70, 302, 372, 140)
+
+  // Decorative corner brass brackets
+  const drawCorner = (x: number, y: number, dx: number, dy: number) => {
+    g.strokeStyle = '#d4af37'
+    g.lineWidth = 4
+    g.beginPath()
+    g.moveTo(x + dx * 24, y)
+    g.lineTo(x, y)
+    g.lineTo(x, y + dy * 24)
+    g.stroke()
+  }
+  drawCorner(24, 24, 1, 1)
+  drawCorner(488, 24, -1, 1)
+  drawCorner(24, 488, 1, -1)
+  drawCorner(488, 488, -1, -1)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteCuisineSignTexture(): THREE.CanvasTexture {
+  const key = 'suite-cuisine-sign'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 128
+  const g = canvas.getContext('2d')!
+
+  // Dark slate acrylic frame
+  g.fillStyle = '#0f141f'
+  g.fillRect(0, 0, 512, 128)
+
+  // Gold metallic border
+  g.strokeStyle = '#d4af37'
+  g.lineWidth = 4
+  g.strokeRect(8, 8, 496, 112)
+
+  // Indicator LED dots on left (Red, Green, Grey, Amber)
+  const dots = ['#ef4444', '#22c55e', '#64748b', '#f59e0b']
+  dots.forEach((color, i) => {
+    const cx = 50 + i * 36
+    g.fillStyle = color
+    g.beginPath()
+    g.arc(cx, 64, 9, 0, Math.PI * 2)
+    g.fill()
+    g.shadowColor = color
+    g.shadowBlur = 10
+    g.beginPath()
+    g.arc(cx, 64, 4, 0, Math.PI * 2)
+    g.fillStyle = '#ffffff'
+    g.fill()
+    g.shadowBlur = 0
+  })
+
+  // Illuminated "CUISINE" text on right
+  g.shadowColor = '#d4af37'
+  g.shadowBlur = 12
+  g.fillStyle = '#ffd166'
+  g.font = 'bold 44px "Space Grotesk", sans-serif'
+  g.textAlign = 'right'
+  g.textBaseline = 'middle'
+  g.fillText('CUISINE', 470, 64)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteAudioWaveformTexture(): THREE.CanvasTexture {
+  const key = 'suite-audio-waveform'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 256
+  const g = canvas.getContext('2d')!
+
+  // Glossy high-tech display panel
+  g.fillStyle = '#080d15'
+  g.fillRect(0, 0, 512, 256)
+
+  // Grid lines
+  g.strokeStyle = 'rgba(0, 255, 255, 0.12)'
+  g.lineWidth = 1
+  for (let x = 0; x < 512; x += 32) {
+    g.beginPath()
+    g.moveTo(x, 0)
+    g.lineTo(x, 256)
+    g.stroke()
+  }
+  for (let y = 0; y < 256; y += 32) {
+    g.beginPath()
+    g.moveTo(0, y)
+    g.lineTo(512, y)
+    g.stroke()
+  }
+
+  // Cyan audio waveform sine/pulse line
+  g.shadowColor = '#00ffff'
+  g.shadowBlur = 14
+  g.strokeStyle = '#00ffff'
+  g.lineWidth = 3.5
+  g.beginPath()
+  g.moveTo(20, 128)
+  for (let x = 20; x <= 492; x += 4) {
+    const freq1 = Math.sin((x - 20) * 0.05) * 45
+    const freq2 = Math.sin((x - 20) * 0.12) * 20
+    const envelope = Math.sin(((x - 20) / 472) * Math.PI)
+    const y = 128 + (freq1 + freq2) * envelope
+    g.lineTo(x, y)
+  }
+  g.stroke()
+
+  // Center pulse dot
+  g.fillStyle = '#ffffff'
+  g.beginPath()
+  g.arc(256, 128, 5, 0, Math.PI * 2)
+  g.fill()
+
+  // Frequency spectrum bars along bottom
+  g.shadowBlur = 4
+  for (let b = 0; b < 24; b++) {
+    const barH = 15 + Math.sin(b * 0.45) * 25 + Math.sin(b * 1.2) * 15
+    g.fillStyle = b > 18 ? '#ef4444' : b > 14 ? '#ffd166' : '#38ef7d'
+    g.fillRect(70 + b * 16, 230 - barH, 10, barH)
+  }
+
+  // Status text
+  g.shadowBlur = 0
+  g.fillStyle = '#94a3b8'
+  g.font = 'bold 12px "JetBrains Mono", monospace'
+  g.fillText('HI-FI MASTER OUTPUT // 96kHz 24-BIT', 30, 30)
+  g.fillStyle = '#00ffff'
+  g.fillText('▶ SYNTHESIS AUDIO SYSTEM ACTIVE', 30, 48)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteArtBookCoverTexture(): THREE.CanvasTexture {
+  const key = 'suite-art-book'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 384
+  const g = canvas.getContext('2d')!
+
+  // Clean minimalist white gallery cover
+  g.fillStyle = '#f8fafc'
+  g.fillRect(0, 0, 256, 384)
+
+  // Bold black block with "ART"
+  g.fillStyle = '#0f172a'
+  g.fillRect(24, 30, 80, 50)
+  g.fillStyle = '#ffd166'
+  g.font = 'bold 26px "Space Grotesk", sans-serif'
+  g.textAlign = 'center'
+  g.textBaseline = 'middle'
+  g.fillText('ART', 64, 55)
+
+  // Minimalist dot & line design
+  g.fillStyle = '#b45309'
+  g.beginPath()
+  g.arc(150, 55, 6, 0, Math.PI * 2)
+  g.fill()
+
+  g.fillStyle = '#1e293b'
+  g.fillRect(190, 40, 40, 30)
+
+  // Architectural photo frame inset
+  g.fillStyle = '#e2e8f0'
+  g.fillRect(24, 110, 208, 190)
+  g.fillStyle = '#334155'
+  g.fillRect(34, 120, 188, 170)
+
+  // Abstract architectural geometric composition
+  g.fillStyle = '#475569'
+  g.beginPath()
+  g.moveTo(34, 290)
+  g.lineTo(130, 150)
+  g.lineTo(222, 290)
+  g.fill()
+
+  g.fillStyle = '#d4af37'
+  g.beginPath()
+  g.arc(130, 190, 24, 0, Math.PI * 2)
+  g.fill()
+
+  // Spine & Subtitle
+  g.fillStyle = '#64748b'
+  g.font = '10px "JetBrains Mono", monospace'
+  g.textAlign = 'left'
+  g.fillText('MODERN ARCHITECTURE // TOKYO', 24, 330)
+  g.fillText('EDITION NO. 04', 24, 350)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteKitchenMarbleTexture(): THREE.CanvasTexture {
+  const key = 'suite-kitchen-marble'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Pure white polished Carrara base
+  g.fillStyle = '#f8f9fa'
+  g.fillRect(0, 0, 512, 512)
+
+  // Soft grey marble shading
+  g.fillStyle = 'rgba(235, 238, 242, 0.6)'
+  g.beginPath()
+  g.ellipse(180, 220, 200, 140, Math.PI / 4, 0, Math.PI * 2)
+  g.fill()
+
+  // Fine grey veining
+  const drawVein = (
+    startX: number,
+    startY: number,
+    cp1x: number,
+    cp1y: number,
+    cp2x: number,
+    cp2y: number,
+    endX: number,
+    endY: number,
+    width: number,
+    alpha: number,
+  ) => {
+    g.strokeStyle = `rgba(148, 163, 184, ${alpha})`
+    g.lineWidth = width
+    g.beginPath()
+    g.moveTo(startX, startY)
+    g.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, endY)
+    g.stroke()
+  }
+
+  drawVein(20, 480, 140, 360, 220, 410, 490, 80, 2.5, 0.45)
+  drawVein(80, 500, 180, 380, 260, 330, 450, 40, 1.5, 0.3)
+  drawVein(0, 120, 120, 160, 320, 110, 512, 280, 2.0, 0.35)
+  drawVein(200, 390, 270, 440, 340, 420, 420, 512, 1.2, 0.25)
+
+  // Golden vein accents
+  g.strokeStyle = 'rgba(212, 175, 55, 0.28)'
+  g.lineWidth = 1.0
+  g.beginPath()
+  g.moveTo(30, 475)
+  g.bezierCurveTo(145, 355, 225, 405, 485, 85)
+  g.stroke()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.RepeatWrapping
+  textureCache.set(key, tex)
+  return tex
+}
+
+// =========================================================================
+// 6. SUITE 402 EN-SUITE BATHROOM PROCEDURAL TEXTURES
+// =========================================================================
+
+export function bathroomTravertineTileTexture(): THREE.CanvasTexture {
+  const key = 'bathroom-travertine-tile'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Dark slate travertine base
+  g.fillStyle = '#1c212d'
+  g.fillRect(0, 0, 512, 512)
+
+  // 4 large square floor tile slabs
+  const tileSize = 256
+  for (let x = 0; x < 2; x++) {
+    for (let y = 0; y < 2; y++) {
+      const tx = x * tileSize
+      const ty = y * tileSize
+
+      // Subtle tone variation between tiles
+      g.fillStyle = (x + y) % 2 === 0 ? '#1f2533' : '#191e29'
+      g.fillRect(tx + 2, ty + 2, tileSize - 4, tileSize - 4)
+
+      // Fine travertine cross-hatch stippling
+      for (let dot = 0; dot < 30; dot++) {
+        g.fillStyle = 'rgba(255, 255, 255, 0.03)'
+        g.fillRect(
+          tx + 4 + Math.random() * (tileSize - 12),
+          ty + 4 + Math.random() * (tileSize - 12),
+          Math.random() * 4 + 1,
+          Math.random() * 2 + 1,
+        )
+      }
+
+      // Elegant faint grey marble grain
+      g.strokeStyle = 'rgba(100, 116, 139, 0.25)'
+      g.lineWidth = 1.5
+      g.beginPath()
+      g.moveTo(tx + 20, ty + tileSize - 20)
+      g.bezierCurveTo(tx + 80, ty + 120, tx + 140, ty + 160, tx + tileSize - 30, ty + 30)
+      g.stroke()
+    }
+  }
+
+  // Grout seams
+  g.fillStyle = '#0f131a'
+  g.fillRect(254, 0, 4, 512)
+  g.fillRect(0, 254, 512, 4)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.RepeatWrapping
+  tex.repeat.set(2, 2)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function bathroomWasherDisplayTexture(): THREE.CanvasTexture {
+  const key = 'bathroom-washer-display'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 128
+  const g = canvas.getContext('2d')!
+
+  // Deep graphite chassis
+  g.fillStyle = '#131722'
+  g.fillRect(0, 0, 512, 128)
+
+  // Border & frame
+  g.strokeStyle = '#2d3748'
+  g.lineWidth = 3
+  g.strokeRect(4, 4, 504, 120)
+
+  // Left detergent drawer indicator
+  g.fillStyle = '#1c2333'
+  g.fillRect(20, 20, 120, 88)
+  g.strokeStyle = '#384358'
+  g.lineWidth = 2
+  g.strokeRect(20, 20, 120, 88)
+  g.fillStyle = '#64748b'
+  g.font = 'bold 13px "JetBrains Mono", monospace'
+  g.fillText('DETERGENT', 34, 68)
+
+  // Center Digital LED status box
+  g.fillStyle = '#090d14'
+  g.fillRect(170, 20, 160, 88)
+  g.strokeStyle = '#00ffff'
+  g.lineWidth = 2
+  g.strokeRect(170, 20, 160, 88)
+
+  // Glowing "42m" time remaining display
+  g.shadowColor = '#00ffff'
+  g.shadowBlur = 12
+  g.fillStyle = '#00ffff'
+  g.font = 'bold 46px "JetBrains Mono", monospace'
+  g.textAlign = 'center'
+  g.textBaseline = 'middle'
+  g.fillText('42m', 250, 64)
+  g.shadowBlur = 0
+
+  // Right rotary selector knob & cycle status
+  g.fillStyle = '#2d3748'
+  g.beginPath()
+  g.arc(420, 64, 38, 0, Math.PI * 2)
+  g.fill()
+  g.strokeStyle = '#cbd5e1'
+  g.lineWidth = 3
+  g.beginPath()
+  g.arc(420, 64, 38, 0, Math.PI * 2)
+  g.stroke()
+
+  // Active cyan cycle notch
+  g.fillStyle = '#38bdf8'
+  g.beginPath()
+  g.arc(420, 36, 6, 0, Math.PI * 2)
+  g.fill()
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function bathroomMirrorBacklitTexture(): THREE.CanvasTexture {
+  const key = 'bathroom-mirror-backlit'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 256
+  const g = canvas.getContext('2d')!
+
+  // Deep mirror silver/blue glass gradient
+  const grad = g.createLinearGradient(0, 0, 512, 256)
+  grad.addColorStop(0, '#1c2638')
+  grad.addColorStop(0.5, '#243248')
+  grad.addColorStop(1, '#182030')
+  g.fillStyle = grad
+  g.fillRect(0, 0, 512, 256)
+
+  // Gentle diagonal glass reflection glare
+  g.fillStyle = 'rgba(255, 255, 255, 0.08)'
+  g.beginPath()
+  g.moveTo(60, 0)
+  g.lineTo(160, 0)
+  g.lineTo(100, 256)
+  g.lineTo(0, 256)
+  g.fill()
+
+  // Glowing perimeter LED halo rim
+  g.strokeStyle = '#7dd3fc'
+  g.lineWidth = 6
+  g.strokeRect(8, 8, 496, 240)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function bathroomWaterSurfaceTexture(): THREE.CanvasTexture {
+  const key = 'bathroom-water-surface'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Shimmering azure pool base
+  const grad = g.createLinearGradient(0, 0, 512, 512)
+  grad.addColorStop(0, '#38bdf8')
+  grad.addColorStop(0.5, '#0284c7')
+  grad.addColorStop(1, '#0369a1')
+  g.fillStyle = grad
+  g.fillRect(0, 0, 512, 512)
+
+  // Gentle water ripple wave curves
+  g.strokeStyle = 'rgba(255, 255, 255, 0.45)'
+  g.lineWidth = 3
+  for (let y = 60; y < 512; y += 90) {
+    g.beginPath()
+    g.moveTo(20, y)
+    g.bezierCurveTo(160, y - 25, 340, y + 25, 490, y)
+    g.stroke()
+  }
+
+  // Soft caustic sparkles
+  for (let i = 0; i < 20; i++) {
+    g.fillStyle = 'rgba(255, 255, 255, 0.5)'
+    const sx = Math.random() * 480 + 16
+    const sy = Math.random() * 480 + 16
+    g.beginPath()
+    g.arc(sx, sy, Math.random() * 3 + 1, 0, Math.PI * 2)
+    g.fill()
+  }
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.RepeatWrapping
+  textureCache.set(key, tex)
+  return tex
+}

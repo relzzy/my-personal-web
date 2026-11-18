@@ -1302,18 +1302,19 @@ export function buildCorridor4F(
     },
   })
 
-  // 6. Suite 402 Entrance Door -> Step into Bedroom
+  // 6. Suite 402 Entrance Door -> Step into Hall & Living Room
   interactions.add({
     id: 'corridor-suite-402',
     x: cx - innerW / 2 + 0.6,
     z: cz,
     radius: 1.7,
-    prompt: () => 'Enter Suite 402 (Your Bedroom) [402号室へ]',
+    prompt: () => 'Enter Suite 402 (Hall & Living Room) [402号室へ]',
     onInteract: () => {
       audio?.playElevatorChime()
       messages.show('Smart lock beeps: Access Granted. Welcome home to Suite 402.')
       screenFade(() => {
-        player.teleport(1.2, 85.2, -Math.PI / 2)
+        player.teleport(4.8, 86.0, -Math.PI / 2)
+        messages.show('Suite 402 — Living Room & Hall.', 4.0)
       })
     },
   })

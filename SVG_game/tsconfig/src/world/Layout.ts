@@ -37,9 +37,18 @@ export function groundAt(x: number, z: number): number {
 }
 
 export function getLocationName(x: number, z: number): string {
-  // Sun Heights Suite 402 (Your Room)
-  if (x >= -6 && x <= 6 && z >= 78 && z <= 92) {
-    return 'Sun Heights — Suite 402 (Your Room)'
+  // Sun Heights Suite 402 - Living Room & Hall
+  if (x >= -7 && x <= 7 && z >= 76 && z <= 95) {
+    return 'Sun Heights — Suite 402 (Living Room & Hall)'
+  }
+  // Sun Heights Suite 402 - Master Bedroom & Balcony
+  if (x >= -6.5 && x <= 6.5 && z >= 96 && z <= 117) {
+    if (z < 104.3) return 'Sun Heights — Suite 402 (Tokyo Balcony)'
+    return 'Sun Heights — Suite 402 (Master Bedroom)'
+  }
+  // Sun Heights Suite 402 - En-Suite Bathroom
+  if (x >= -5.5 && x <= 5.5 && z >= 118 && z <= 135) {
+    return 'Sun Heights — Suite 402 (En-Suite Bathroom)'
   }
   // Sun Heights 4F Elevator Lounge & Corridor
   if (x >= -8.5 && x <= 8.5 && z >= 60 && z <= 72) {

@@ -41,14 +41,14 @@ export function buildSuite402(
 ): Suite402Result {
   const suiteGroup = new THREE.Group()
   suiteGroup.name = 'suite-402-executive-bedroom'
-  suiteGroup.visible = player.z >= 74
+  suiteGroup.visible = player.z >= 96 && player.z < 118
   scene.add(suiteGroup)
 
   // =========================================================================
   // 1. DIMENSIONS & COORDINATE ORIGIN
   // =========================================================================
   const cx = 0
-  const cz = 85
+  const cz = 108
   const floorY = 0.15
   const innerW = 10.6 // East-West width (X: cx - 5.3 to cx + 5.3) - expanded +26%
   const innerD = 7.4  // North-South depth (Z: cz - 3.7 to cz + 3.7) - expanded +32%
@@ -210,7 +210,13 @@ export function buildSuite402(
     bb.position.set(x, floorY + 0.06, z)
     suiteGroup.add(bb)
   }
-  addBaseboard(cx, cz + innerD / 2 - 0.02, innerW, 0.04) // South baseboard
+  const bathDoorW = 1.6
+  const bathDoorH = 2.4
+  const sWallSegW = (innerW - bathDoorW) / 2
+
+  // South baseboards (split around Bathroom doorway)
+  addBaseboard(cx - innerW / 2 + sWallSegW / 2, cz + innerD / 2 - 0.02, sWallSegW, 0.04)
+  addBaseboard(cx + innerW / 2 - sWallSegW / 2, cz + innerD / 2 - 0.02, sWallSegW, 0.04)
   addBaseboard(cx - innerW / 2 + 0.02, cz, 0.04, innerD) // West baseboard
   addBaseboard(cx - 3.4, cz - innerD / 2 + 0.02, 3.8, 0.04) // North-West baseboard
   addBaseboard(cx + 3.4, cz - innerD / 2 + 0.02, 3.8, 0.04) // North-East baseboard
@@ -219,16 +225,49 @@ export function buildSuite402(
 
   // 3.4 Walls & Partitions
 
-  // SOUTH WALL (Solid luxury navy with vertical architectural gold accent fluting)
-  const sWallGeo = new THREE.BoxGeometry(innerW + wallThick * 2, wallH, wallThick)
-  const sWall = new THREE.Mesh(sWallGeo, wallMat)
-  sWall.position.set(cx, floorY + wallH / 2, cz + innerD / 2 + wallThick / 2)
-  sWall.castShadow = true
-  sWall.receiveShadow = true
-  suiteGroup.add(sWall)
+  // SOUTH WALL (Split with doorway into En-Suite Bathroom)
+  const sWallW = new THREE.Mesh(new THREE.BoxGeometry(sWallSegW, wallH, wallThick), wallMat)
+  sWallW.position.set(cx - innerW / 2 + sWallSegW / 2, floorY + wallH / 2, cz + innerD / 2 + wallThick / 2)
+  sWallW.castShadow = true
+  sWallW.receiveShadow = true
 
-  // Vertical gold accent stripes along south accent wall
-  for (let sx = -4.5; sx <= 4.5; sx += 1.8) {
+  const sWallE = new THREE.Mesh(new THREE.BoxGeometry(sWallSegW, wallH, wallThick), wallMat)
+  sWallE.position.set(cx + innerW / 2 - sWallSegW / 2, floorY + wallH / 2, cz + innerD / 2 + wallThick / 2)
+  sWallE.castShadow = true
+  sWallE.receiveShadow = true
+
+  const sHeader = new THREE.Mesh(new THREE.BoxGeometry(bathDoorW, wallH - bathDoorH, wallThick), wallMat)
+  sHeader.position.set(cx, floorY + bathDoorH + (wallH - bathDoorH) / 2, cz + innerD / 2 + wallThick / 2)
+
+  // Bathroom Door Gold Frame
+  const bFrameL = new THREE.Mesh(new THREE.BoxGeometry(0.06, bathDoorH, 0.06), goldMat)
+  bFrameL.position.set(cx - bathDoorW / 2, floorY + bathDoorH / 2, cz + innerD / 2 - 0.02)
+  const bFrameR = new THREE.Mesh(new THREE.BoxGeometry(0.06, bathDoorH, 0.06), goldMat)
+  bFrameR.position.set(cx + bathDoorW / 2, floorY + bathDoorH / 2, cz + innerD / 2 - 0.02)
+  const bFrameTop = new THREE.Mesh(new THREE.BoxGeometry(bathDoorW + 0.12, 0.06, 0.06), goldMat)
+  bFrameTop.position.set(cx, floorY + bathDoorH + 0.03, cz + innerD / 2 - 0.02)
+
+  // Solid Walnut Bathroom Door Leaf
+  const bDoorLeaf = new THREE.Mesh(new THREE.BoxGeometry(bathDoorW - 0.04, bathDoorH - 0.04, 0.05), darkWoodMat)
+  bDoorLeaf.position.set(cx, floorY + bathDoorH / 2, cz + innerD / 2 + 0.02)
+
+  // Brass Handle
+  const bHandle = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.025, 0.06), goldMat)
+  bHandle.position.set(cx + 0.55, floorY + 1.05, cz + innerD / 2 - 0.04)
+
+  // Brass Threshold Saddle
+  const bThreshold = new THREE.Mesh(new THREE.BoxGeometry(bathDoorW, 0.015, 0.22), goldMat)
+  bThreshold.position.set(cx, floorY + 0.052, cz + innerD / 2)
+
+  suiteGroup.add(sWallW, sWallE, sHeader, bFrameL, bFrameR, bFrameTop, bDoorLeaf, bHandle, bThreshold)
+
+  // Vertical gold accent stripes along south accent wall segments
+  for (let sx = -4.2; sx <= -1.4; sx += 1.4) {
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.04, wallH - 0.35, 0.02), goldMat)
+    stripe.position.set(cx + sx, floorY + wallH / 2, cz + innerD / 2 - 0.01)
+    suiteGroup.add(stripe)
+  }
+  for (let sx = 1.4; sx <= 4.2; sx += 1.4) {
     const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.04, wallH - 0.35, 0.02), goldMat)
     stripe.position.set(cx + sx, floorY + wallH / 2, cz + innerD / 2 - 0.01)
     suiteGroup.add(stripe)
@@ -1653,14 +1692,22 @@ export function buildSuite402(
   // 15. COLLISION BOUNDARIES
   // =========================================================================
 
-  // South Wall
+  // South Wall Sections (Leaving 1.6m Bathroom Doorway open in center)
   colliders.add({
     minX: cx - innerW / 2 - 0.5,
     minY: 0,
     minZ: cz + innerD / 2 - 0.05,
+    maxX: cx - bathDoorW / 2,
+    maxY: 4.0,
+    maxZ: cz + innerD / 2 + 0.6,
+  })
+  colliders.add({
+    minX: cx + bathDoorW / 2,
+    minY: 0,
+    minZ: cz + innerD / 2 - 0.05,
     maxX: cx + innerW / 2 + 0.5,
     maxY: 4.0,
-    maxZ: cz + innerD / 2 + 1.0,
+    maxZ: cz + innerD / 2 + 0.6,
   })
 
   // West Wall
@@ -2033,24 +2080,41 @@ export function buildSuite402(
     },
   })
 
-  // 12. Exit Door to 4F Elevator Lounge & Corridor
+  // 12. Exit Door to Living Room & Hall
   interactions.add({
-    id: 'suite-elevator',
+    id: 'bedroom-to-hall',
     x: cx + innerW / 2 - 0.4,
     z: cz + 1.2,
     radius: 1.8,
-    prompt: () => 'Exit to 4F Lounge & Hallway [廊下・ラウンジへ]',
+    prompt: () => 'Exit to Living Room & Hall [リビング・ホールへ]',
     onInteract: () => {
       audio?.playVendingSound()
-      messages.show('Stepping out into the 4F Elevator Lounge...')
+      messages.show('Stepping into the Living Room & Hall...')
       screenFade(() => {
-        player.teleport(-6.0, 65.0, -Math.PI / 2)
-        messages.show('4F Elevator Lounge & Residential Corridor.', 4.0)
+        player.teleport(cx - 4.2, 86.0, 0)
+        messages.show('Suite 402 — Living Room & Hall.', 4.0)
       })
     },
   })
 
-  // 13. Balcony View
+  // 13. Door to En-Suite Bathroom
+  interactions.add({
+    id: 'bedroom-to-bathroom',
+    x: cx,
+    z: cz + innerD / 2 - 0.4,
+    radius: 1.8,
+    prompt: () => 'Enter En-Suite Bathroom [バスルームへ]',
+    onInteract: () => {
+      audio?.playElevatorChime()
+      messages.show('Entering En-Suite Bathroom...')
+      screenFade(() => {
+        player.teleport(cx, 124.2, Math.PI)
+        messages.show('Suite 402 — Luxury En-Suite Bathroom.', 4.0)
+      })
+    },
+  })
+
+  // 14. Balcony View
   let balconyGazeIndex = 0
   const balconyGazeMessages = [
     '🌃 Tokyo at 02:00 AM — Tokyo Tower glows radiant amber against the deep midnight indigo. A cool evening breeze whispers past.',
@@ -2083,8 +2147,8 @@ export function buildSuite402(
     update(dt: number, p: { x: number; z: number }) {
       time += dt
 
-      // If player is outside Suite 402 area (e.g. in Corridor 4F at Z=65), hide Suite 402
-      if (p.z < 74) {
+      // If player is outside Bedroom area, hide Suite 402 Bedroom
+      if (p.z < 96 || p.z >= 118) {
         suiteGroup.visible = false
         return
       }

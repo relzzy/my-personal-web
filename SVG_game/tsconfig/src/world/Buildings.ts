@@ -5,6 +5,8 @@ import { InteractionSystem } from '../game/Interaction'
 import { MessageBus } from '../game/Messages'
 import type { Player } from '../game/Player'
 import { buildSuite402 } from './Suite402'
+import { buildSuite402Hall } from './Suite402Hall'
+import { buildSuite402Bathroom } from './Suite402Bathroom'
 import { buildCorridor4F, type Corridor4FResult } from './Corridor4F'
 import type { AudioManager } from './Audio'
 import type { LightManager } from './LightManager'
@@ -185,12 +187,20 @@ export function buildBuildings(
 
   scene.add(root)
 
-  // 4. SUITE 402 (EXECUTIVE BEDROOM)
+  // 4. SUITE 402 - HALL (LIVING ROOM & CUISINE)
   if (player) {
+    const hallRes = buildSuite402Hall(scene, colliders, interactions, messages, player, audio, lightManager)
+    animators.push(hallRes.update)
+
+    // 5. SUITE 402 - MASTER BEDROOM & BALCONY
     const suiteRes = buildSuite402(scene, colliders, interactions, messages, player, audio, lightManager)
     animators.push(suiteRes.update)
 
-    // 5. 4F ELEVATOR LOUNGE & CORRIDOR
+    // 6. SUITE 402 - EN-SUITE BATHROOM
+    const bathRes = buildSuite402Bathroom(scene, colliders, interactions, messages, player, audio, lightManager)
+    animators.push(bathRes.update)
+
+    // 7. 4F ELEVATOR LOUNGE & CORRIDOR
     corridorRes = buildCorridor4F(
       scene,
       colliders,

@@ -72,18 +72,23 @@ async function init(): Promise<void> {
   const audio = new AudioManager()
   const hud = new Hud()
 
-  // Check URL params for direct room or lounge spawn (?room=1, ?lounge=1, ?spawn=room, ?spawn=lounge)
+  // Check URL params for direct room, hall, or lounge spawn (?room=1, ?hall=1, ?lounge=1, ?spawn=room, ?spawn=hall, ?spawn=lounge)
   const urlParams = new URLSearchParams(window.location.search)
   const spawnRoom = urlParams.get('room') === '1' || urlParams.get('spawn') === 'room'
+  const spawnHall = urlParams.get('hall') === '1' || urlParams.get('living') === '1' || urlParams.get('spawn') === 'hall'
   const spawnLounge = urlParams.get('lounge') === '1' || urlParams.get('spawn') === 'lounge'
 
-  // STARTING POSITION: Suite 402, 4F Lounge, or Sun Heights Apartment Lobby (X: 0, Z: 18.2)
+  // STARTING POSITION: Suite 402 Bedroom, Suite 402 Hall, 4F Lounge, or Sun Heights Apartment Lobby (X: 0, Z: 18.2)
   let initialX = 0
   let initialZ = 18.2
   let initialYaw = Math.PI
   if (spawnRoom) {
     initialX = 1.2
-    initialZ = 85.2
+    initialZ = 108.2
+    initialYaw = -Math.PI / 2
+  } else if (spawnHall) {
+    initialX = 3.8
+    initialZ = 86.0
     initialYaw = -Math.PI / 2
   } else if (spawnLounge) {
     initialX = -1.15
@@ -217,7 +222,13 @@ async function init(): Promise<void> {
       audio.init()
       audio.resume()
       audio.playElevatorChime()
-      if (loc.includes('Suite 402')) {
+      if (loc.includes('Master Bedroom') || loc.includes('Bathroom') || loc.includes('Balcony')) {
+        messages.show('Stepping into Suite 402 Living Room & Hall...')
+        setTimeout(() => {
+          player.teleport(0, 86.0, 0)
+          messages.show('Suite 402 — Living Room & Hall.', 4.0)
+        }, 350)
+      } else if (loc.includes('Living Room & Hall')) {
         messages.show('Leaving Suite 402. Stepping out to 4F Lounge...')
         setTimeout(() => {
           player.teleport(-5.8, 65.0, 0)

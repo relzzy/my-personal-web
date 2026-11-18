@@ -45,6 +45,7 @@ export function buildCorridor4F(
 ): Corridor4FResult {
   const corridorGroup = new THREE.Group()
   corridorGroup.name = 'corridor-4f-elevator-lounge'
+  corridorGroup.visible = player.z >= 55 && player.z < 74
   scene.add(corridorGroup)
 
   // =========================================================================
@@ -1375,8 +1376,8 @@ export function buildCorridor4F(
       }
     },
     update(dt: number, p: { x: number; z: number }) {
-      // If player is inside Suite 402 or on its balcony (Z >= 74), hide corridor so it does not occlude the skyline view
-      if (p.z >= 74) {
+      // Corridor is only visible when player is on the 4F corridor / elevator lounge (55 <= Z < 74)
+      if (p.z < 55 || p.z >= 74) {
         corridorGroup.visible = false
         return
       }

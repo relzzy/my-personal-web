@@ -41,6 +41,7 @@ export function buildSuite402(
 ): Suite402Result {
   const suiteGroup = new THREE.Group()
   suiteGroup.name = 'suite-402-executive-bedroom'
+  suiteGroup.visible = player.z >= 74
   scene.add(suiteGroup)
 
   // =========================================================================
@@ -630,14 +631,38 @@ export function buildSuite402(
   const totalFacadeH = 24.5 // From Y = -14 to Y = 10.5
   const fullFacadeCenterY = -14 + totalFacadeH / 2 // Y = -1.75
 
-  // Full-height solid rear facade backing wall behind all balcony levels
-  const solidBackingWall = new THREE.Mesh(
-    new THREE.BoxGeometry(totalFloorSpanW, totalFacadeH, 0.3),
+  // Lower floors facade backing wall (Floors 1-3, from street Y = -14 to 4F slab Y = 0.15)
+  const lowerH = 14.15
+  const lowerWall = new THREE.Mesh(
+    new THREE.BoxGeometry(totalFloorSpanW, lowerH, 0.3),
     sunHeightsTileMat,
   )
-  solidBackingWall.position.set(cx, fullFacadeCenterY, facadeZ + 0.15)
-  solidBackingWall.castShadow = false
-  solidBackingWall.receiveShadow = false
+  lowerWall.position.set(cx, -14 + lowerH / 2, facadeZ + 0.15)
+  lowerWall.castShadow = false
+  lowerWall.receiveShadow = false
+
+  // Upper floors facade backing wall (Floors 5-6 + Roof, from Y = 3.15 to Y = 10.5)
+  const upperH = 7.35
+  const upperWall = new THREE.Mesh(
+    new THREE.BoxGeometry(totalFloorSpanW, upperH, 0.3),
+    sunHeightsTileMat,
+  )
+  upperWall.position.set(cx, 3.15 + upperH / 2, facadeZ + 0.15)
+  upperWall.castShadow = false
+  upperWall.receiveShadow = false
+
+  // 4F Side Wings (Behind Suites 401 & 403 balconies, leaving the central balcony glass doors open)
+  const wingW = buildingHalfW - balconyW / 2 // 6.8m each side
+  const wingGeo = new THREE.BoxGeometry(wingW, wallH, 0.3)
+  const wingL = new THREE.Mesh(wingGeo, sunHeightsTileMat)
+  wingL.position.set(cx - balconyW / 2 - wingW / 2, floorY + wallH / 2, facadeZ + 0.15)
+  wingL.castShadow = false
+  wingL.receiveShadow = false
+
+  const wingR = new THREE.Mesh(wingGeo, sunHeightsTileMat)
+  wingR.position.set(cx + balconyW / 2 + wingW / 2, floorY + wallH / 2, facadeZ + 0.15)
+  wingR.castShadow = false
+  wingR.receiveShadow = false
 
   // Solid ground-floor foundation podium underneath balconies (from street Y = -14 to 1F slab Y = -9.15)
   const basePodiumH = 4.85
@@ -648,7 +673,7 @@ export function buildSuite402(
   basePodium.position.set(cx, -14 + basePodiumH / 2, balconyZ)
   basePodium.castShadow = false
   basePodium.receiveShadow = false
-  suiteGroup.add(solidBackingWall, basePodium)
+  suiteGroup.add(lowerWall, upperWall, wingL, wingR, basePodium)
 
   // Heavy Vertical Structural Concrete Piers running from Ground (Y = -14) to Roof (Y = 10.5)
   const pierGeo = new THREE.BoxGeometry(0.35, totalFacadeH, 0.35)

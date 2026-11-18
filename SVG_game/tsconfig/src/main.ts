@@ -352,9 +352,11 @@ async function init(): Promise<void> {
     buildingsRes.group.visible = !on4F
     propsRes.group.visible = !on4F
 
-    // Environmental Animations (Sliding Doors, Steam, Lanterns, Petals, Cat)
+    // Environmental Animations & Floor Lifecycle Updates
+    // Note: buildingsRes.update() must ALWAYS run because it drives
+    // the floor lifecycle & dynamic updates of Suite 402 and Corridor 4F!
+    buildingsRes.update(dt, player)
     if (!on4F) {
-      buildingsRes.update(dt, player)
       propsRes.update(dt)
     }
 

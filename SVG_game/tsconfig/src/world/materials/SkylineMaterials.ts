@@ -1,5 +1,79 @@
 import * as THREE from 'three'
 import { textureCache } from './TextureCache'
+import tokyoPanoramaUrl from '../../assets/tokyo_balcony_panorama.jpg'
+
+/**
+ * Photographic Matte-Painting Tokyo Skyline Panorama Texture.
+ * Loads the authentic 4th-floor residential dusk panorama and applies smooth
+ * horizontal edge feathering (left 8% and right 8%) and top vertical feathering
+ * using an HTML5 canvas mask so it blends seamlessly into the sky dome.
+ */
+export function tokyoPhotographicPanoramaTexture(): THREE.CanvasTexture {
+  const key = 'tokyo-photographic-panorama'
+  const cached = textureCache.get(key)
+  if (cached) return cached as THREE.CanvasTexture
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 1920
+  canvas.height = 1080
+  const ctx = canvas.getContext('2d')!
+
+  // Deep twilight background while the image finishes loading
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, 1080)
+  bgGrad.addColorStop(0, '#040817')
+  bgGrad.addColorStop(0.5, '#0e1838')
+  bgGrad.addColorStop(1.0, '#262244')
+  ctx.fillStyle = bgGrad
+  ctx.fillRect(0, 0, 1920, 1080)
+
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.colorSpace = THREE.SRGBColorSpace
+  texture.minFilter = THREE.LinearMipmapLinearFilter
+  texture.magFilter = THREE.LinearFilter
+  texture.wrapS = THREE.ClampToEdgeWrapping
+  texture.wrapT = THREE.ClampToEdgeWrapping
+
+  const img = new Image()
+  img.crossOrigin = 'anonymous'
+  img.src = tokyoPanoramaUrl
+  img.onload = () => {
+    canvas.width = img.naturalWidth || 1920
+    canvas.height = img.naturalHeight || 1080
+    const w = canvas.width
+    const h = canvas.height
+
+    // 1. Draw base matte painting
+    ctx.drawImage(img, 0, 0, w, h)
+
+    // 2. Feather horizontal edges (left & right) and top edge into sky dome
+    ctx.save()
+    ctx.globalCompositeOperation = 'destination-in'
+
+    // Left and right horizontal feather
+    const hGrad = ctx.createLinearGradient(0, 0, w, 0)
+    hGrad.addColorStop(0, 'rgba(0, 0, 0, 0)')
+    hGrad.addColorStop(0.08, 'rgba(0, 0, 0, 1)')
+    hGrad.addColorStop(0.92, 'rgba(0, 0, 0, 1)')
+    hGrad.addColorStop(1.0, 'rgba(0, 0, 0, 0)')
+    ctx.fillStyle = hGrad
+    ctx.fillRect(0, 0, w, h)
+
+    // Top vertical feather (soft transition to upper cosmic sky)
+    const vGrad = ctx.createLinearGradient(0, 0, 0, h)
+    vGrad.addColorStop(0, 'rgba(0, 0, 0, 0)')
+    vGrad.addColorStop(0.12, 'rgba(0, 0, 0, 1)')
+    vGrad.addColorStop(1.0, 'rgba(0, 0, 0, 1)')
+    ctx.fillStyle = vGrad
+    ctx.fillRect(0, 0, w, h)
+
+    ctx.restore()
+
+    texture.needsUpdate = true
+  }
+
+  textureCache.set(key, texture)
+  return texture
+}
 
 /**
  * Procedural Balcony Teak Parquet Decking Texture

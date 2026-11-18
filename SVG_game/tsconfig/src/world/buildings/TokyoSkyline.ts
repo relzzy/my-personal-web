@@ -2,11 +2,9 @@ import * as THREE from 'three'
 import {
   skylineOfficeWindowsTexture,
   skylineResidentialWindowsTexture,
-  tokyoTowerLatticeTexture,
-  highwayTrafficTrailsTexture,
   rooftopNeonSignTexture,
   celestialMoonTexture,
-  tokyoPanoramicSkylineTexture,
+  tokyoPhotographicPanoramaTexture,
   rooftopGravelTexture,
 } from '../materials/SkylineMaterials'
 
@@ -19,12 +17,13 @@ export interface TokyoSkylineResult {
  * Re-engineered Hybrid 2.5D + 3D Tokyo City Environment
  *
  * Combines:
- * 1. Near-field opposing 3-story rooftop and ground alleyway (Y = -12.5 to -3.5)
- * 2. Mid-field simplified 3D city blocks with InstancedMesh rooftop props
- * 3. Iconic Tokyo Tower landmark in the mid-distance
- * 4. Animated Shuto Expressway light trails
- * 5. Far-field 2.5D curved cylindrical Tokyo skyline panorama (R = 92m, arc = 220°)
- * 6. Atmospheric blue-hour twilight sky dome, starfield, moon, and cruising airliner
+ * 1. Celestial Blue-Hour Twilight Sky Dome (R = 142m), twinkling starfield, crescent moon, cruising airliner
+ * 2. High-Resolution Curved Panoramic Matte-Painting Environment (R = 68m, Arc ~189°)
+ *    anchored in world-space, feathering smoothly at the edges into the ambient sky
+ * 3. Near-field genuine 3D architecture:
+ *    - Ground alleyway at Y = -12.5m (asphalt, gutter, illuminated vending machines, utility pole & lamp)
+ *    - Opposing 3-story building at Z = 60m (Roof Y = -3.5m) with gravel roof, parapet, water tank on stilts, AC chillers
+ * 4. Peripheral 3D buildings on the far West and East flanks providing real parallax and depth for side views
  */
 export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
   const skylineGroup = new THREE.Group()
@@ -96,7 +95,7 @@ export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
     } else if (colorType < 0.85) {
       starColors[sIdx * 3] = 0.72
       starColors[sIdx * 3 + 1] = 0.86
-      starColors[sIdx * 3 + 2] = 1.0 // Ice blue
+      starColors[sIdx * 3 + 1] = 1.0 // Ice blue
     } else {
       starColors[sIdx * 3] = 1.0
       starColors[sIdx * 3 + 1] = 0.92
@@ -191,14 +190,14 @@ export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
   })
 
   // =========================================================================
-  // 2. FAR-FIELD 2.5D CURVED CYLINDRICAL PANORAMA (R = 92m, Arc = 220°)
+  // 2. CURVED PANORAMIC MATTE-PAINTING ENVIRONMENT (R = 68m, Arc = 189°)
   // =========================================================================
-  const panoRadius = 92
-  const panoHeight = 52
-  const panoArc = Math.PI * 1.22 // ~220 degrees
+  const panoRadius = 68
+  const panoHeight = 42
+  const panoArc = Math.PI * 1.05 // ~189 degrees (from ~West through North to ~East)
   const panoThetaStart = Math.PI - panoArc / 2 // Centered towards North (-Z)
 
-  const panoTex = tokyoPanoramicSkylineTexture()
+  const panoTex = tokyoPhotographicPanoramaTexture()
   const panoMat = new THREE.MeshBasicMaterial({
     map: panoTex,
     transparent: true,
@@ -211,18 +210,19 @@ export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
     panoRadius,
     panoRadius,
     panoHeight,
-    48,
+    64,
     1,
     true,
     panoThetaStart,
     panoArc,
   )
   const panoMesh = new THREE.Mesh(panoGeo, panoMat)
-  panoMesh.position.set(cx, 14, cz)
+  // Anchored in world-space centered around balcony (cx, cz - 5 = 80.0)
+  panoMesh.position.set(cx, 8.5, cz - 5)
   skylineGroup.add(panoMesh)
 
   // =========================================================================
-  // 3. NEAR-FIELD: GROUND ALLEYWAY & OPPOSING 3-STORY ROOFTOP (Y: -12.5 to -3.5)
+  // 3. NEAR-FIELD 3D: GROUND ALLEYWAY & OPPOSING 3-STORY ROOFTOP (Y: -12.5 to -3.5)
   // =========================================================================
   const groundY = -12.5
 
@@ -271,7 +271,7 @@ export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
   skylineGroup.add(pole, arm, lampBulb)
 
   // B) Opposing 3-Story Building Across the Alley (Z in [52, 64], Roof Y = -3.5)
-  // When looking down from the balcony, the player sees this realistic rooftop life
+  // When looking down from the balcony, the player sees authentic rooftop life
   const oppRoofY = -3.5
   const oppBuildingH = oppRoofY - groundY // 9.0 meters tall
   const oppW = 28
@@ -308,7 +308,6 @@ export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
   const waterTank = new THREE.Mesh(tankGeo, tankMat)
   waterTank.position.set(cx - 6.5, oppRoofY + 1.2 + 1.1, oppZ + 1.5)
 
-  // 4 steel stilt legs
   for (const lx of [-0.8, 0.8]) {
     for (const lz of [-0.8, 0.8]) {
       const leg = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.2, 0.08), metalSteelMat)
@@ -326,104 +325,7 @@ export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
   }
 
   // =========================================================================
-  // 4. THE CROWN JEWEL: TOKYO TOWER (東京タワー)
-  // =========================================================================
-  // Positioned at X = 13.5, Z = cz - 58 = 27 (Distance ~52m from balcony)
-  const ttX = cx + 13.5
-  const ttZ = cz - 58
-  const ttBaseY = -6.0
-
-  const ttGroup = new THREE.Group()
-  ttGroup.name = 'tokyo-tower'
-
-  const ttLatticeTex = tokyoTowerLatticeTexture()
-  const ttLatticeMat = new THREE.MeshBasicMaterial({
-    map: ttLatticeTex,
-    color: 0xffa066,
-    fog: false,
-  })
-
-  const ttSteelMat = new THREE.MeshBasicMaterial({ color: 0xff4d00, fog: false })
-  const ttWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff, fog: false })
-  const ttDeckWindowMat = new THREE.MeshBasicMaterial({ color: 0xffea88, fog: false })
-
-  const legH = 22
-  const baseSpread = 9.8
-  const topSpread = 3.8
-
-  const cornerSigns = [
-    { x: -1, z: -1 },
-    { x: 1, z: -1 },
-    { x: -1, z: 1 },
-    { x: 1, z: 1 },
-  ]
-
-  for (const c of cornerSigns) {
-    const legGeo = new THREE.CylinderGeometry(0.38, 0.75, legH, 6)
-    const leg = new THREE.Mesh(legGeo, ttLatticeMat)
-    leg.position.set(
-      (c.x * (baseSpread + topSpread)) / 4,
-      ttBaseY + legH / 2,
-      (c.z * (baseSpread + topSpread)) / 4,
-    )
-    leg.rotation.z = -c.x * 0.14
-    leg.rotation.x = c.z * 0.14
-    ttGroup.add(leg)
-  }
-
-  for (let sh = 4; sh < legH; sh += 5) {
-    const spreadAtH = baseSpread - (sh / legH) * (baseSpread - topSpread)
-    const strut1 = new THREE.Mesh(new THREE.BoxGeometry(spreadAtH, 0.3, 0.3), ttSteelMat)
-    strut1.position.set(0, ttBaseY + sh, spreadAtH / 2)
-    const strut2 = new THREE.Mesh(new THREE.BoxGeometry(spreadAtH, 0.3, 0.3), ttSteelMat)
-    strut2.position.set(0, ttBaseY + sh, -spreadAtH / 2)
-    const strut3 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, spreadAtH), ttSteelMat)
-    strut3.position.set(spreadAtH / 2, ttBaseY + sh, 0)
-    const strut4 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, spreadAtH), ttSteelMat)
-    strut4.position.set(-spreadAtH / 2, ttBaseY + sh, 0)
-    ttGroup.add(strut1, strut2, strut3, strut4)
-  }
-
-  // 2-Tier Main Observation Deck
-  const deckBase = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.5, 5.0), ttSteelMat)
-  deckBase.position.set(0, ttBaseY + legH + 0.25, 0)
-  const deckWindows = new THREE.Mesh(new THREE.BoxGeometry(4.8, 2.6, 4.8), ttDeckWindowMat)
-  deckWindows.position.set(0, ttBaseY + legH + 1.8, 0)
-  const deckRoof = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.4, 5.2), ttWhiteMat)
-  deckRoof.position.set(0, ttBaseY + legH + 3.3, 0)
-  const deckTier2 = new THREE.Mesh(new THREE.BoxGeometry(3.8, 1.8, 3.8), ttDeckWindowMat)
-  deckTier2.position.set(0, ttBaseY + legH + 4.3, 0)
-  ttGroup.add(deckBase, deckWindows, deckRoof, deckTier2)
-
-  // Upper Spire & Top Observation Deck
-  const spireH = 16
-  const upperSpireGeo = new THREE.CylinderGeometry(0.7, 1.8, spireH, 8)
-  const upperSpire = new THREE.Mesh(upperSpireGeo, ttLatticeMat)
-  upperSpire.position.set(0, ttBaseY + legH + 5.2 + spireH / 2, 0)
-
-  const topDeck = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 1.8, 12), ttDeckWindowMat)
-  topDeck.position.set(0, ttBaseY + legH + 5.2 + spireH + 0.9, 0)
-  const topDeckRoof = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 1.8, 0.35, 12), ttWhiteMat)
-  topDeckRoof.position.set(0, ttBaseY + legH + 5.2 + spireH + 1.9, 0)
-
-  // Antenna Needle & Red Beacon
-  const mastH = 11
-  const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.35, mastH, 8), ttWhiteMat)
-  mast.position.set(0, ttBaseY + legH + 5.2 + spireH + 2.1 + mastH / 2, 0)
-
-  const ttBeaconMat = new THREE.MeshBasicMaterial({ color: 0xff1e1e, fog: false })
-  const ttBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.38, 8, 8), ttBeaconMat)
-  ttBeacon.position.set(0, ttBaseY + legH + 5.2 + spireH + 2.1 + mastH + 0.3, 0)
-  ttGroup.add(upperSpire, topDeck, topDeckRoof, mast, ttBeacon)
-
-  ttGroup.position.set(ttX, 0, ttZ)
-  skylineGroup.add(ttGroup)
-
-  const beaconsToAnimate: { mat: THREE.MeshBasicMaterial; offset: number }[] = []
-  beaconsToAnimate.push({ mat: ttBeaconMat, offset: 0 })
-
-  // =========================================================================
-  // 5. MID-FIELD SIMPLIFIED 3D BUILDINGS & INSTANCED ROOFTOP PROPS
+  // 4. PERIPHERAL SIDE 3D BUILDINGS (Flanks |X| >= 34m, for side view depth)
   // =========================================================================
   const officeMat = new THREE.MeshBasicMaterial({
     map: skylineOfficeWindowsTexture(),
@@ -437,7 +339,7 @@ export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
     fog: false,
   })
 
-  interface MidBuildingSpec {
+  interface SideBuildingSpec {
     x: number
     z: number
     w: number
@@ -449,79 +351,54 @@ export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
     neon?: { text: string; sub: string; col: string }
   }
 
-  // Carefully arranged mid-field buildings at distance 30m to 62m
-  const midBuildings: MidBuildingSpec[] = [
-    // West Block (X: -36 to -14, Z: 36 to 52)
+  const sideBuildings: SideBuildingSpec[] = [
+    // West Flank (Side View depth, looking left from balcony)
     {
-      x: -18,
-      z: cz - 44,
-      w: 10,
-      h: 40,
-      d: 9,
-      type: 'office',
-      crown: 'stepped',
-      neon: { text: 'サイバー', sub: 'CYBER HQ', col: '#00ffff' },
-      hasHelipad: true,
-    },
-    {
-      x: -28,
+      x: -34,
       z: cz - 48,
-      w: 11,
+      w: 12,
       h: 36,
-      d: 10,
+      d: 11,
       type: 'res',
       crown: 'slanted',
     },
     {
-      x: -8,
-      z: cz - 40,
-      w: 8.5,
-      h: 32,
-      d: 8,
-      type: 'res',
+      x: -46,
+      z: cz - 60,
+      w: 13,
+      h: 44,
+      d: 12,
+      type: 'office',
       crown: 'flat',
+      neon: { text: 'サイバー', sub: 'CYBER HQ', col: '#00ffff' },
     },
 
-    // Center-East Block (X: 1 to 24, Z: 38 to 52)
+    // East Flank (Side View depth, looking right from balcony)
     {
-      x: 1.5,
-      z: cz - 44,
-      w: 7.5,
-      h: 28,
-      d: 7.5,
-      type: 'res',
-      crown: 'flat',
-    },
-    {
-      x: 23,
-      z: cz - 42,
-      w: 9.5,
-      h: 38,
-      d: 9,
-      type: 'office',
-      crown: 'stepped',
-      neon: { text: '東京', sub: 'TOKYO 2099', col: '#ff007f' },
-      hasHelipad: true,
-    },
-    {
-      x: 32,
+      x: 34,
       z: cz - 48,
       w: 11,
-      h: 42,
+      h: 38,
       d: 10,
       type: 'office',
       crown: 'spire',
       neon: { text: 'SHINJUKU', sub: 'HOTEL 402', col: '#ffd166' },
     },
-
-    // Farther Mid-Field Clusters (Z: 20 to 35)
-    { x: -36, z: cz - 60, w: 12, h: 46, d: 11, type: 'office', crown: 'flat' },
-    { x: -12, z: cz - 58, w: 9, h: 38, d: 9, type: 'office', crown: 'spire' },
-    { x: -2, z: cz - 64, w: 12, h: 50, d: 11, type: 'office', crown: 'stepped', hasHelipad: true },
-    { x: 38, z: cz - 62, w: 12, h: 48, d: 11, type: 'res', crown: 'stepped' },
+    {
+      x: 46,
+      z: cz - 60,
+      w: 13,
+      h: 44,
+      d: 12,
+      type: 'res',
+      crown: 'stepped',
+      hasHelipad: true,
+    },
   ]
 
-  for (const b of midBuildings) {
+  const beaconsToAnimate: { mat: THREE.MeshBasicMaterial; offset: number }[] = []
+
+  for (const b of sideBuildings) {
     const mat = b.type === 'office' ? officeMat : resMat
     const bMesh = new THREE.Mesh(new THREE.BoxGeometry(b.w, b.h, b.d), mat)
     bMesh.position.set(cx + b.x, groundY + b.h / 2, b.z)
@@ -589,57 +466,6 @@ export function buildTokyoSkyline(cx = 0, cz = 85): TokyoSkylineResult {
       const pulse = Math.sin(beaconTime * 3.2 + b.offset * Math.PI * 2)
       b.mat.color.setHex(pulse > 0.05 ? 0xff2222 : 0x4a0a0a)
     }
-  })
-
-  // =========================================================================
-  // 6. SHUTO EXPRESSWAY (首都高) & FLOWING TRAFFIC LIGHT TRAILS
-  // =========================================================================
-  const hwyZ = cz - 46
-  const hwyY = -2.5
-  const hwyW = 75
-  const hwyD = 4.8
-
-  const hwyGroup = new THREE.Group()
-  hwyGroup.name = 'shuto-expressway'
-
-  const hwyDeckMat = new THREE.MeshBasicMaterial({ color: 0x141a24, fog: false })
-  const hwyDeck = new THREE.Mesh(new THREE.BoxGeometry(hwyW, 0.6, hwyD), hwyDeckMat)
-  hwyDeck.position.set(cx, hwyY, hwyZ)
-
-  const barrierMat = new THREE.MeshBasicMaterial({ color: 0x1e2736, fog: false })
-  const barrierN = new THREE.Mesh(new THREE.BoxGeometry(hwyW, 0.5, 0.2), barrierMat)
-  barrierN.position.set(cx, hwyY + 0.45, hwyZ - hwyD / 2)
-  const barrierS = new THREE.Mesh(new THREE.BoxGeometry(hwyW, 0.5, 0.2), barrierMat)
-  barrierS.position.set(cx, hwyY + 0.45, hwyZ + hwyD / 2)
-
-  const pierMat = new THREE.MeshBasicMaterial({ color: 0x0f141d, fog: false })
-  for (let px = -32; px <= 32; px += 16) {
-    const pier = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, hwyY - groundY, 8), pierMat)
-    pier.position.set(cx + px, groundY + (hwyY - groundY) / 2, hwyZ)
-    hwyGroup.add(pier)
-  }
-
-  const trafficTex = highwayTrafficTrailsTexture()
-  trafficTex.repeat.set(6, 1)
-
-  const trafficMat = new THREE.MeshBasicMaterial({
-    map: trafficTex,
-    transparent: true,
-    fog: false,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  })
-
-  const trafficGeo = new THREE.PlaneGeometry(hwyW - 0.5, hwyD - 0.4)
-  trafficGeo.rotateX(-Math.PI / 2)
-  const trafficMesh = new THREE.Mesh(trafficGeo, trafficMat)
-  trafficMesh.position.set(cx, hwyY + 0.32, hwyZ)
-
-  hwyGroup.add(hwyDeck, barrierN, barrierS, trafficMesh)
-  skylineGroup.add(hwyGroup)
-
-  animators.push((dt) => {
-    trafficTex.offset.x -= dt * 0.42
   })
 
   return {

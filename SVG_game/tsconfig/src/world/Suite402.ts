@@ -20,6 +20,8 @@ import {
   suiteMangaSpinesTexture,
   suiteFlutedWoodTexture,
   balconyTeakDeckTexture,
+  sunHeightsFacadeTexture,
+  frostedGlassPartitionTexture,
 } from './Materials'
 import { buildTokyoSkyline } from './buildings/TokyoSkyline'
 
@@ -325,34 +327,48 @@ export function buildSuite402(
   suiteGroup.add(handleL, handleR)
 
   // =========================================================================
-  // 4. LUXURY EXTERIOR BALCONY & PANORAMIC TOKYO MIDNIGHT SKYLINE
+  // 4. ARCHITECTURAL EXTERIOR SHELL & CONTINUOUS 7-STORY RESIDENTIAL TOWER
   // =========================================================================
   const balconyD = 2.6
   const balconyW = 4.8
   const balconyZ = cz - innerD / 2 - balconyD / 2 // Z = 80.0
+  const buildingHalfW = 9.2 // Facade spans X from -9.2 to +9.2 (18.4m total width)
+  const facadeZ = cz - innerD / 2 // Z = 81.3
 
-  // 4.1 Interlocking Teak Wood Parquet Decking
-  const teakTex = balconyTeakDeckTexture()
-  const teakDeckMat = new THREE.MeshStandardMaterial({
-    map: teakTex,
-    roughness: 0.38,
-    metalness: 0.05,
+  // 4.1 Master Architectural Materials for Sun Heights Exterior
+  const sunHeightsTileTex = sunHeightsFacadeTexture()
+  const sunHeightsTileMat = new THREE.MeshStandardMaterial({
+    map: sunHeightsTileTex,
+    roughness: 0.72,
+    metalness: 0.08,
   })
-  const bDeckGeo = new THREE.BoxGeometry(balconyW, 0.08, balconyD)
-  const bDeck = new THREE.Mesh(bDeckGeo, teakDeckMat)
-  bDeck.position.set(cx, floorY - 0.01, balconyZ)
-  bDeck.receiveShadow = true
-  suiteGroup.add(bDeck)
 
-  // 4.2 Architectural Safety Glass Railing & Dark Bronze Structure
-  const railH = 1.15
-  const bronzeMat = new THREE.MeshStandardMaterial({
-    color: 0x1f1915,
-    roughness: 0.35,
+  const concreteSlabMat = new THREE.MeshStandardMaterial({
+    color: 0x1a212e,
+    roughness: 0.65,
+    metalness: 0.08,
+  })
+
+  const concreteTrimMat = new THREE.MeshStandardMaterial({
+    color: 0x121722,
+    roughness: 0.55,
+    metalness: 0.12,
+  })
+
+  const bronzeRailMat = new THREE.MeshStandardMaterial({
+    color: 0x1c1713,
+    roughness: 0.38,
     metalness: 0.85,
   })
 
-  // Tinted ultra-clear safety glass with realistic depth
+  const frostedPartitionTex = frostedGlassPartitionTexture()
+  const partitionMat = new THREE.MeshStandardMaterial({
+    map: frostedPartitionTex,
+    roughness: 0.42,
+    metalness: 0.1,
+    side: THREE.DoubleSide,
+  })
+
   const balconyGlassMat = new THREE.MeshStandardMaterial({
     color: 0x6ba3d0,
     roughness: 0.05,
@@ -363,84 +379,264 @@ export function buildSuite402(
     side: THREE.DoubleSide,
   })
 
-  // Glass panels
-  const bRailFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW, railH, 0.03), balconyGlassMat)
-  bRailFront.position.set(cx, floorY + railH / 2, balconyZ - balconyD / 2)
-  const bRailL = new THREE.Mesh(new THREE.BoxGeometry(0.03, railH, balconyD), balconyGlassMat)
-  bRailL.position.set(cx - balconyW / 2, floorY + railH / 2, balconyZ)
-  const bRailR = new THREE.Mesh(new THREE.BoxGeometry(0.03, railH, balconyD), balconyGlassMat)
-  bRailR.position.set(cx + balconyW / 2, floorY + railH / 2, balconyZ)
+  const curtainWarmMat = new THREE.MeshBasicMaterial({ color: 0xffe8aa, toneMapped: false })
+  const curtainTealMat = new THREE.MeshBasicMaterial({ color: 0xbae6fd, toneMapped: false })
+  const railLedMat = new THREE.MeshBasicMaterial({ color: 0xffdf99, toneMapped: false })
 
-  // Architectural vertical balustrade stanchion posts in dark bronze
+  // 4.2 Suite 402 Balcony: Reinforced Concrete Floor Slab (0.32m Thick)
+  const slabThick = 0.32
+  const bSlabGeo = new THREE.BoxGeometry(balconyW, slabThick, balconyD)
+  const bSlab = new THREE.Mesh(bSlabGeo, concreteSlabMat)
+  bSlab.position.set(cx, floorY - slabThick / 2, balconyZ)
+  bSlab.receiveShadow = true
+
+  const fasciaFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW + 0.06, 0.08, 0.06), concreteTrimMat)
+  fasciaFront.position.set(cx, floorY - 0.04, balconyZ - balconyD / 2 - 0.01)
+  const fasciaL = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, balconyD), concreteTrimMat)
+  fasciaL.position.set(cx - balconyW / 2 - 0.01, floorY - 0.04, balconyZ)
+  const fasciaR = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.08, balconyD), concreteTrimMat)
+  fasciaR.position.set(cx + balconyW / 2 + 0.01, floorY - 0.04, balconyZ)
+
+  // Interlocking Teak Wood Parquet Decking on Top
+  const teakTex = balconyTeakDeckTexture()
+  const teakDeckMat = new THREE.MeshStandardMaterial({
+    map: teakTex,
+    roughness: 0.38,
+    metalness: 0.05,
+  })
+  const bTeak = new THREE.Mesh(new THREE.PlaneGeometry(balconyW - 0.04, balconyD - 0.04), teakDeckMat)
+  bTeak.rotation.x = -Math.PI / 2
+  bTeak.position.set(cx, floorY + 0.005, balconyZ)
+  bTeak.receiveShadow = true
+
+  suiteGroup.add(bSlab, fasciaFront, fasciaL, fasciaR, bTeak)
+
+  // 4.3 Japanese Balcony Privacy Divider Screens (*Hedate-ban* 隔て板)
+  const partitionDepth = 1.7
+  const partitionZ = facadeZ - partitionDepth / 2 // Z = 80.45
+  const partitionH = wallH - 0.1
+
+  const createPrivacyPartition = (px: number) => {
+    const partGrp = new THREE.Group()
+
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(0.06, partitionH, partitionDepth), bronzeRailMat)
+    frame.position.set(0, partitionH / 2, 0)
+
+    const board = new THREE.Mesh(new THREE.PlaneGeometry(partitionDepth - 0.08, partitionH - 0.08), partitionMat)
+    board.position.set(px < 0 ? 0.032 : -0.032, partitionH / 2, 0)
+    board.rotation.y = px < 0 ? -Math.PI / 2 : Math.PI / 2
+
+    partGrp.add(frame, board)
+    partGrp.position.set(px, floorY, partitionZ)
+    return partGrp
+  }
+
+  const partitionWest = createPrivacyPartition(cx - balconyW / 2)
+  const partitionEast = createPrivacyPartition(cx + balconyW / 2)
+  suiteGroup.add(partitionWest, partitionEast)
+
+  // 4.4 Balcony Front & Side Railings (Connecting to Privacy Screens)
+  const railH = 1.15
+  const frontRailZ = balconyZ - balconyD / 2 // Z = 78.7
+  const sideRailDepth = balconyD - partitionDepth // 0.9m forward of partition
+
+  const bRailFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW, railH, 0.03), balconyGlassMat)
+  bRailFront.position.set(cx, floorY + railH / 2, frontRailZ)
+
+  const bRailSideL = new THREE.Mesh(new THREE.BoxGeometry(0.03, railH, sideRailDepth), balconyGlassMat)
+  bRailSideL.position.set(cx - balconyW / 2, floorY + railH / 2, frontRailZ + sideRailDepth / 2)
+  const bRailSideR = new THREE.Mesh(new THREE.BoxGeometry(0.03, railH, sideRailDepth), balconyGlassMat)
+  bRailSideR.position.set(cx + balconyW / 2, floorY + railH / 2, frontRailZ + sideRailDepth / 2)
+
   const postGeo = new THREE.BoxGeometry(0.05, railH + 0.02, 0.05)
-  const postPositions = [
-    { x: cx - balconyW / 2, z: balconyZ - balconyD / 2 },
-    { x: cx + balconyW / 2, z: balconyZ - balconyD / 2 },
-    { x: cx - balconyW / 6, z: balconyZ - balconyD / 2 },
-    { x: cx + balconyW / 6, z: balconyZ - balconyD / 2 },
-    { x: cx - balconyW / 2, z: balconyZ + balconyD / 4 },
-    { x: cx + balconyW / 2, z: balconyZ + balconyD / 4 },
+  const posts = [
+    { x: cx - balconyW / 2, z: frontRailZ },
+    { x: cx + balconyW / 2, z: frontRailZ },
+    { x: cx - balconyW / 6, z: frontRailZ },
+    { x: cx + balconyW / 6, z: frontRailZ },
+    { x: cx - balconyW / 2, z: frontRailZ + sideRailDepth },
+    { x: cx + balconyW / 2, z: frontRailZ + sideRailDepth },
   ]
-  for (const pp of postPositions) {
-    const post = new THREE.Mesh(postGeo, bronzeMat)
-    post.position.set(pp.x, floorY + railH / 2, pp.z)
+  for (const p of posts) {
+    const post = new THREE.Mesh(postGeo, bronzeRailMat)
+    post.position.set(p.x, floorY + railH / 2, p.z)
     suiteGroup.add(post)
   }
 
-  // Dark Bronze Chamfered Handrail Cap
-  const handrailFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW + 0.08, 0.06, 0.08), bronzeMat)
-  handrailFront.position.set(cx, floorY + railH + 0.02, balconyZ - balconyD / 2)
-  const handrailL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, balconyD), bronzeMat)
-  handrailL.position.set(cx - balconyW / 2, floorY + railH + 0.02, balconyZ)
-  const handrailR = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, balconyD), bronzeMat)
-  handrailR.position.set(cx + balconyW / 2, floorY + railH + 0.02, balconyZ)
-  suiteGroup.add(bRailFront, bRailL, bRailR, handrailFront, handrailL, handrailR)
+  const handrailFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW + 0.08, 0.06, 0.08), bronzeRailMat)
+  handrailFront.position.set(cx, floorY + railH + 0.02, frontRailZ)
+  const handrailL = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, sideRailDepth), bronzeRailMat)
+  handrailL.position.set(cx - balconyW / 2, floorY + railH + 0.02, frontRailZ + sideRailDepth / 2)
+  const handrailR = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, sideRailDepth), bronzeRailMat)
+  handrailR.position.set(cx + balconyW / 2, floorY + railH + 0.02, frontRailZ + sideRailDepth / 2)
 
-  // 4.3 Under-Rail Warm Ambient LED Strip Glow (Architectural Downlighting)
-  const railLedMat = new THREE.MeshBasicMaterial({ color: 0xffdf99, toneMapped: false })
   const railGlowFront = new THREE.Mesh(new THREE.BoxGeometry(balconyW - 0.1, 0.016, 0.025), railLedMat)
-  railGlowFront.position.set(cx, floorY + railH - 0.012, balconyZ - balconyD / 2 + 0.02)
-  const railGlowL = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.016, balconyD - 0.1), railLedMat)
-  railGlowL.position.set(cx - balconyW / 2 + 0.02, floorY + railH - 0.012, balconyZ)
-  const railGlowR = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.016, balconyD - 0.1), railLedMat)
-  railGlowR.position.set(cx + balconyW / 2 - 0.02, floorY + railH - 0.012, balconyZ)
-  suiteGroup.add(railGlowFront, railGlowL, railGlowR)
+  railGlowFront.position.set(cx, floorY + railH - 0.012, frontRailZ + 0.02)
+  const railGlowL = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.016, sideRailDepth - 0.05), railLedMat)
+  railGlowL.position.set(cx - balconyW / 2 + 0.02, floorY + railH - 0.012, frontRailZ + sideRailDepth / 2)
+  const railGlowR = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.016, sideRailDepth - 0.05), railLedMat)
+  railGlowR.position.set(cx + balconyW / 2 - 0.02, floorY + railH - 0.012, frontRailZ + sideRailDepth / 2)
 
-  // 4.4 Balcony Overhead Modern Cantilever Canopy & Warm Recessed Downlights
-  const canopyGeo = new THREE.BoxGeometry(balconyW + 0.4, 0.12, balconyD + 0.2)
-  const canopyMesh = new THREE.Mesh(canopyGeo, wallAccentMat)
-  canopyMesh.position.set(cx, floorY + wallH + 0.06, balconyZ - 0.1)
-  suiteGroup.add(canopyMesh)
+  suiteGroup.add(bRailFront, bRailSideL, bRailSideR, handrailFront, handrailL, handrailR, railGlowFront, railGlowL, railGlowR)
 
-  // Recessed warm downlight fixtures on canopy soffit
+  // 4.5 Adjacent 4F Balconies (Unit 401 on West, Unit 403 on East)
+  const adjBalconyW = buildingHalfW - balconyW / 2 // 6.8m wide
+  const adjSlabGeo = new THREE.BoxGeometry(adjBalconyW, slabThick, balconyD)
+
+  // Unit 401 Balcony (West)
+  const slab401 = new THREE.Mesh(adjSlabGeo, concreteSlabMat)
+  slab401.position.set(cx - balconyW / 2 - adjBalconyW / 2, floorY - slabThick / 2, balconyZ)
+  const rail401 = new THREE.Mesh(new THREE.BoxGeometry(adjBalconyW, railH, 0.03), balconyGlassMat)
+  rail401.position.set(cx - balconyW / 2 - adjBalconyW / 2, floorY + railH / 2, frontRailZ)
+  const cap401 = new THREE.Mesh(new THREE.BoxGeometry(adjBalconyW, 0.06, 0.08), bronzeRailMat)
+  cap401.position.set(cx - balconyW / 2 - adjBalconyW / 2, floorY + railH + 0.02, frontRailZ)
+
+  const patioDoor401 = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.3), curtainWarmMat)
+  patioDoor401.position.set(cx - 5.8, floorY + 1.15, facadeZ + 0.02)
+  patioDoor401.rotation.y = Math.PI
+
+  const acUnitGeo = new THREE.BoxGeometry(0.85, 0.65, 0.38)
+  const ac401 = new THREE.Mesh(acUnitGeo, darkMetalMat)
+  ac401.position.set(cx - 3.2, floorY + 0.35, facadeZ - 0.5)
+
+  // Unit 403 Balcony (East)
+  const slab403 = new THREE.Mesh(adjSlabGeo, concreteSlabMat)
+  slab403.position.set(cx + balconyW / 2 + adjBalconyW / 2, floorY - slabThick / 2, balconyZ)
+  const rail403 = new THREE.Mesh(new THREE.BoxGeometry(adjBalconyW, railH, 0.03), balconyGlassMat)
+  rail403.position.set(cx + balconyW / 2 + adjBalconyW / 2, floorY + railH / 2, frontRailZ)
+  const cap403 = new THREE.Mesh(new THREE.BoxGeometry(adjBalconyW, 0.06, 0.08), bronzeRailMat)
+  cap403.position.set(cx + balconyW / 2 + adjBalconyW / 2, floorY + railH + 0.02, frontRailZ)
+
+  const patioDoor403 = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.3), curtainTealMat)
+  patioDoor403.position.set(cx + 5.8, floorY + 1.15, facadeZ + 0.02)
+  patioDoor403.rotation.y = Math.PI
+
+  const ac403 = new THREE.Mesh(acUnitGeo, darkMetalMat)
+  ac403.position.set(cx + 3.2, floorY + 0.35, facadeZ - 0.5)
+
+  suiteGroup.add(slab401, rail401, cap401, patioDoor401, ac401, slab403, rail403, cap403, patioDoor403, ac403)
+
+  // 4.6 Full Vertical Continuation Above & Below (Floors 1, 2, 3 below; Floors 5, 6, Roof above)
+  const totalFloorSpanW = buildingHalfW * 2 // 18.4m
+  const fullFloorSlabGeo = new THREE.BoxGeometry(totalFloorSpanW, slabThick, balconyD)
+  const fullRailGeo = new THREE.BoxGeometry(totalFloorSpanW, railH, 0.03)
+  const fullCapGeo = new THREE.BoxGeometry(totalFloorSpanW, 0.06, 0.08)
+
+  const floorHeightStep = 3.1
+  const floorLevels = [
+    { level: 3, y: floorY - floorHeightStep, curtain: curtainWarmMat },       // 3F (Y = -2.95)
+    { level: 2, y: floorY - floorHeightStep * 2, curtain: curtainTealMat },   // 2F (Y = -6.05)
+    { level: 1, y: floorY - floorHeightStep * 3, curtain: curtainWarmMat },   // 1F (Y = -9.15)
+    { level: 5, y: floorY + floorHeightStep, curtain: curtainWarmMat },       // 5F (Y = 3.25)
+    { level: 6, y: floorY + floorHeightStep * 2, curtain: curtainTealMat },   // 6F (Y = 6.35)
+  ]
+
+  for (const fl of floorLevels) {
+    const slab = new THREE.Mesh(fullFloorSlabGeo, concreteSlabMat)
+    slab.position.set(cx, fl.y - slabThick / 2, balconyZ)
+
+    const rail = new THREE.Mesh(fullRailGeo, balconyGlassMat)
+    rail.position.set(cx, fl.y + railH / 2, frontRailZ)
+    const cap = new THREE.Mesh(fullCapGeo, bronzeRailMat)
+    cap.position.set(cx, fl.y + railH + 0.02, frontRailZ)
+
+    const pL = new THREE.Mesh(new THREE.BoxGeometry(0.04, wallH - 0.2, partitionDepth), bronzeRailMat)
+    pL.position.set(cx - balconyW / 2, fl.y + (wallH - 0.2) / 2, partitionZ)
+    const pR = new THREE.Mesh(new THREE.BoxGeometry(0.04, wallH - 0.2, partitionDepth), bronzeRailMat)
+    pR.position.set(cx + balconyW / 2, fl.y + (wallH - 0.2) / 2, partitionZ)
+
+    const doorL = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.1), fl.curtain)
+    doorL.position.set(cx - 5.5, fl.y + 1.1, facadeZ + 0.02)
+    doorL.rotation.y = Math.PI
+    const doorMid = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.1), fl.curtain)
+    doorMid.position.set(cx, fl.y + 1.1, facadeZ + 0.02)
+    doorMid.rotation.y = Math.PI
+    const doorR = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 2.1), fl.curtain)
+    doorR.position.set(cx + 5.5, fl.y + 1.1, facadeZ + 0.02)
+    doorR.rotation.y = Math.PI
+
+    suiteGroup.add(slab, rail, cap, pL, pR, doorL, doorMid, doorR)
+  }
+
+  // Recessed warm pin-spots on the underside of 5F balcony (ceiling soffit of Suite 402 balcony)
   const soffitPinMat = new THREE.MeshBasicMaterial({ color: 0xfff0cc, toneMapped: false })
   for (const px of [-1.2, 1.2]) {
     const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.02, 12), soffitPinMat)
-    pin.position.set(cx + px, floorY + wallH - 0.005, balconyZ)
+    pin.position.set(cx + px, floorY + wallH - 0.02, balconyZ)
     suiteGroup.add(pin)
   }
 
-  // 4.5 Exterior Architectural Wall Sconces (Flanking Sliding Glass Doors)
+  // Heavy Vertical Structural Concrete Piers running from Ground (Y = -12.5) to Roof (Y = 10.0)
+  const totalFacadeH = 22.5
+  const pierGeo = new THREE.BoxGeometry(0.35, totalFacadeH, 0.35)
+  for (const px of [cx - buildingHalfW, cx - balconyW / 2, cx + balconyW / 2, cx + buildingHalfW]) {
+    const pier = new THREE.Mesh(pierGeo, concreteTrimMat)
+    pier.position.set(px, floorY - 1.25, frontRailZ + 0.15)
+    suiteGroup.add(pier)
+  }
+
+  // Vertical Rainwater Downspout Pipes along the outer facade corners
+  const downspoutGeo = new THREE.CylinderGeometry(0.045, 0.045, totalFacadeH, 8)
+  for (const px of [cx - buildingHalfW + 0.2, cx + buildingHalfW - 0.2]) {
+    const pipe = new THREE.Mesh(downspoutGeo, darkMetalMat)
+    pipe.position.set(px, floorY - 1.25, facadeZ - 0.1)
+    suiteGroup.add(pipe)
+  }
+
+  // Roof Parapet Wall & Mechanical Penthouse (Y = 9.45 to 12.0)
+  const roofParapetY = floorY + floorHeightStep * 3 // Y = 9.45
+  const roofParapet = new THREE.Mesh(new THREE.BoxGeometry(totalFloorSpanW, 0.9, 0.3), concreteTrimMat)
+  roofParapet.position.set(cx, roofParapetY + 0.45, frontRailZ)
+
+  const penthouse = new THREE.Mesh(new THREE.BoxGeometry(6.0, 2.5, 6.0), sunHeightsTileMat)
+  penthouse.position.set(cx, roofParapetY + 1.25, facadeZ + 3.0)
+
+  // Roof Obstruction Beacon on Rooftop Antenna
+  const roofAntenna = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.2, 5.0, 8), darkMetalMat)
+  roofAntenna.position.set(cx + 4.0, roofParapetY + 2.5, facadeZ + 2.0)
+  const roofBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff2222, toneMapped: false }))
+  roofBeacon.position.set(cx + 4.0, roofParapetY + 5.1, facadeZ + 2.0)
+  suiteGroup.add(roofParapet, penthouse, roofAntenna, roofBeacon)
+
+  // 4.7 Continuous Building Side Return Walls (East & West)
+  const sideWallGeo = new THREE.BoxGeometry(0.35, totalFacadeH, 9.5)
+  const sideWallWest = new THREE.Mesh(sideWallGeo, sunHeightsTileMat)
+  sideWallWest.position.set(cx - buildingHalfW, floorY - 1.25, facadeZ + 4.5)
+  const sideWallEast = new THREE.Mesh(sideWallGeo, sunHeightsTileMat)
+  sideWallEast.position.set(cx + buildingHalfW, floorY - 1.25, facadeZ + 4.5)
+
+  const ventWindowMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8, toneMapped: false })
+  for (let wy = -6.0; wy <= 6.0; wy += 3.1) {
+    const ventW = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), ventWindowMat)
+    ventW.position.set(cx - buildingHalfW - 0.18, floorY + wy + 1.2, facadeZ + 4.5)
+    ventW.rotation.y = -Math.PI / 2
+    const ventE = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.6), ventWindowMat)
+    ventE.position.set(cx + buildingHalfW + 0.18, floorY + wy + 1.2, facadeZ + 4.5)
+    ventE.rotation.y = Math.PI / 2
+    suiteGroup.add(ventW, ventE)
+  }
+
+  suiteGroup.add(sideWallWest, sideWallEast)
+
+  // 4.8 Exterior Architectural Wall Sconces (Flanking Sliding Glass Doors)
   const sconceGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.28, 8)
   const sconceLensMat = new THREE.MeshBasicMaterial({ color: 0xffe2a8, toneMapped: false })
   for (const sx of [-1.9, 1.9]) {
     const sconce = new THREE.Mesh(sconceGeo, darkMetalMat)
-    sconce.position.set(cx + sx, floorY + 1.8, cz - innerD / 2 - 0.04)
+    sconce.position.set(cx + sx, floorY + 1.8, facadeZ - 0.04)
 
     const lensTop = new THREE.Mesh(new THREE.CircleGeometry(0.034, 8), sconceLensMat)
     lensTop.rotation.x = -Math.PI / 2
-    lensTop.position.set(cx + sx, floorY + 1.94, cz - innerD / 2 - 0.04)
+    lensTop.position.set(cx + sx, floorY + 1.94, facadeZ - 0.04)
 
     const lensBot = new THREE.Mesh(new THREE.CircleGeometry(0.034, 8), sconceLensMat)
     lensBot.rotation.x = Math.PI / 2
-    lensBot.position.set(cx + sx, floorY + 1.66, cz - innerD / 2 - 0.04)
+    lensBot.position.set(cx + sx, floorY + 1.66, facadeZ - 0.04)
 
     suiteGroup.add(sconce, lensTop, lensBot)
   }
 
-  // 4.6 Aesthetic Outdoor Balcony Furniture
-
-  // A) Contemporary Deep-Seating Lounge Armchair (North-West corner)
+  // 4.9 Aesthetic Outdoor Balcony Furniture (Lounge Chair, Bistro Table, Planter)
   const chairBX = cx - 1.5
   const chairBZ = balconyZ - 0.15
   const chairFrameMat = new THREE.MeshStandardMaterial({ color: 0x1f1915, roughness: 0.55 })
@@ -449,7 +645,7 @@ export function buildSuite402(
 
   const bChairBase = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.06, 0.75), chairFrameMat)
   bChairBase.position.set(chairBX, floorY + 0.22, chairBZ)
-  bChairBase.rotation.y = 0.35 // Angled slightly towards Tokyo Tower
+  bChairBase.rotation.y = 0.35
 
   for (const lx of [-0.32, 0.32]) {
     for (const lz of [-0.32, 0.32]) {
@@ -468,7 +664,7 @@ export function buildSuite402(
   const backOffset = new THREE.Vector3(0, 0, 0.32).applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.35)
   backCushion.position.set(chairBX + backOffset.x, floorY + 0.54, chairBZ + backOffset.z)
   backCushion.rotation.y = 0.35
-  backCushion.rotation.x = 0.12 // Relaxed lean
+  backCushion.rotation.x = 0.12
 
   const throwBlanket = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.16, 0.42), throwMat)
   const throwOffset = new THREE.Vector3(-0.25, 0, 0.1).applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.35)
@@ -477,13 +673,13 @@ export function buildSuite402(
 
   suiteGroup.add(bChairBase, seatCushion, backCushion, throwBlanket)
 
-  // B) Minimalist Round Bistro Side Table
+  // Minimalist Round Bistro Side Table
   const tableBX = cx - 0.7
   const tableBZ = balconyZ - 0.65
   const tableTopH = 0.55
 
   const pedestalGeo = new THREE.CylinderGeometry(0.04, 0.18, tableTopH - 0.03, 16)
-  const pedestal = new THREE.Mesh(pedestalGeo, bronzeMat)
+  const pedestal = new THREE.Mesh(pedestalGeo, bronzeRailMat)
   pedestal.position.set(tableBX, floorY + (tableTopH - 0.03) / 2, tableBZ)
 
   const marbleTopGeo = new THREE.CylinderGeometry(0.28, 0.28, 0.03, 24)
@@ -494,17 +690,13 @@ export function buildSuite402(
   })
   const marbleTop = new THREE.Mesh(marbleTopGeo, blackMarbleMat)
   marbleTop.position.set(tableBX, floorY + tableTopH, tableBZ)
-  suiteGroup.add(pedestal, marbleTop)
 
-  // Hot ceramic coffee mug on table
   const balconyMug = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.032, 0.08, 12), whiteLinenMat)
   balconyMug.position.set(tableBX + 0.08, floorY + tableTopH + 0.055, tableBZ - 0.04)
-
   const balconyCoffee = new THREE.Mesh(new THREE.CircleGeometry(0.03, 12), new THREE.MeshBasicMaterial({ color: 0x1a0f0a }))
   balconyCoffee.rotation.x = -Math.PI / 2
   balconyCoffee.position.set(tableBX + 0.08, floorY + tableTopH + 0.092, tableBZ - 0.04)
 
-  // Glass Votive Candle with Warm Flickering Flame
   const votiveGlass = new THREE.Mesh(
     new THREE.CylinderGeometry(0.038, 0.034, 0.07, 12),
     new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.5, roughness: 0.1 }),
@@ -516,9 +708,9 @@ export function buildSuite402(
   candleFlame.scale.set(1, 1.8, 1)
   candleFlame.position.set(tableBX - 0.07, floorY + tableTopH + 0.065, tableBZ + 0.05)
 
-  suiteGroup.add(balconyMug, balconyCoffee, votiveGlass, candleFlame)
+  suiteGroup.add(pedestal, marbleTop, balconyMug, balconyCoffee, votiveGlass, candleFlame)
 
-  // C) Modern Architectural Fluted Planter with Japanese Bamboo (East side)
+  // Architectural Fluted Planter with Japanese Bamboo (East side)
   const planterBX = cx + 1.75
   const planterBZ = balconyZ + 0.35
   const planterH = 0.65
@@ -532,9 +724,7 @@ export function buildSuite402(
   const soil = new THREE.Mesh(soilGeo, soilMat)
   soil.rotation.x = -Math.PI / 2
   soil.position.set(planterBX, floorY + planterH - 0.02, planterBZ)
-  suiteGroup.add(planter, soil)
 
-  // Bamboo Stalks (Take)
   const bambooMat = new THREE.MeshStandardMaterial({ color: 0x3d704d, roughness: 0.55 })
   const bambooLeafMat = new THREE.MeshStandardMaterial({ color: 0x4f8a61, roughness: 0.65, side: THREE.DoubleSide })
   const stalkOffsets = [
@@ -569,7 +759,9 @@ export function buildSuite402(
     }
   }
 
-  // 4.7 Integrate Tokyo Midnight Skyline Vista
+  suiteGroup.add(planter, soil)
+
+  // 4.10 Integrate Re-Engineered Hybrid Tokyo City Environment
   const tokyoSkyline = buildTokyoSkyline(cx, cz)
   suiteGroup.add(tokyoSkyline.group)
 
@@ -1367,7 +1559,8 @@ export function buildSuite402(
     maxZ: cz - innerD / 2 + 0.05,
   })
 
-  // Balcony perimeter railings
+  // Balcony perimeter railings & privacy screens
+  // Front safety railing (Z = 78.7)
   colliders.add({
     minX: cx - balconyW / 2 - 0.2,
     minY: 0,
@@ -1376,21 +1569,50 @@ export function buildSuite402(
     maxY: 4.0,
     maxZ: balconyZ - balconyD / 2 + 0.1,
   })
+  // West privacy screen & side rail (X = -2.4, prevents walking into Unit 401)
   colliders.add({
     minX: cx - balconyW / 2 - 0.3,
     minY: 0,
-    minZ: cz - innerD / 2 - balconyD,
+    minZ: cz - innerD / 2 - balconyD - 0.1,
     maxX: cx - balconyW / 2 + 0.1,
     maxY: 4.0,
-    maxZ: cz - innerD / 2,
+    maxZ: cz - innerD / 2 + 0.1,
   })
+  // East privacy screen & side rail (X = +2.4, prevents walking into Unit 403)
   colliders.add({
     minX: cx + balconyW / 2 - 0.1,
     minY: 0,
-    minZ: cz - innerD / 2 - balconyD,
+    minZ: cz - innerD / 2 - balconyD - 0.1,
     maxX: cx + balconyW / 2 + 0.3,
     maxY: 4.0,
-    maxZ: cz - innerD / 2,
+    maxZ: cz - innerD / 2 + 0.1,
+  })
+  // Balcony outdoor lounge chair (West)
+  colliders.add({
+    minX: chairBX - 0.45,
+    minY: 0,
+    minZ: chairBZ - 0.45,
+    maxX: chairBX + 0.45,
+    maxY: 2.0,
+    maxZ: chairBZ + 0.45,
+  })
+  // Balcony bistro table (West-Center)
+  colliders.add({
+    minX: tableBX - 0.32,
+    minY: 0,
+    minZ: tableBZ - 0.32,
+    maxX: tableBX + 0.32,
+    maxY: 2.0,
+    maxZ: tableBZ + 0.32,
+  })
+  // Balcony bamboo planter (East)
+  colliders.add({
+    minX: planterBX - 0.28,
+    minY: 0,
+    minZ: planterBZ - 0.28,
+    maxX: planterBX + 0.28,
+    maxY: 2.0,
+    maxZ: planterBZ + 0.28,
   })
 
   // East Wall Sections (leaving pocket door open in center)

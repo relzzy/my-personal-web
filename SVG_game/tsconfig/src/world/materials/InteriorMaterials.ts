@@ -3657,3 +3657,138 @@ export function bathroomWaterSurfaceTexture(): THREE.CanvasTexture {
   textureCache.set(key, tex)
   return tex
 }
+
+export function suiteKitchenBacksplashTexture(): THREE.CanvasTexture {
+  const key = 'suite-kitchen-backsplash'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Soft warm grey grout base
+  g.fillStyle = '#cbd5e1'
+  g.fillRect(0, 0, 512, 512)
+
+  // Staggered glazed ceramic subway tiles
+  const tileW = 128
+  const tileH = 48
+  const grout = 3
+
+  for (let row = 0; row < 12; row++) {
+    const y = row * (tileH + grout)
+    const offsetX = (row % 2 === 0) ? 0 : -tileW / 2
+
+    for (let col = -1; col < 6; col++) {
+      const x = col * (tileW + grout) + offsetX
+      if (x + tileW < 0 || x > 512) continue
+
+      // Glazed ceramic body gradient
+      const tileGrad = g.createLinearGradient(x, y, x, y + tileH)
+      tileGrad.addColorStop(0, '#ffffff')
+      tileGrad.addColorStop(0.2, '#f8fafc')
+      tileGrad.addColorStop(0.85, '#f1f5f9')
+      tileGrad.addColorStop(1, '#e2e8f0')
+      g.fillStyle = tileGrad
+      g.fillRect(x, y, tileW, tileH)
+
+      // Top & Left ceramic specular glaze highlight
+      g.fillStyle = 'rgba(255, 255, 255, 0.75)'
+      g.fillRect(x, y, tileW, 2)
+      g.fillRect(x, y, 2, tileH)
+
+      // Bottom & Right subtle shadow
+      g.fillStyle = 'rgba(148, 163, 184, 0.35)'
+      g.fillRect(x, y + tileH - 2, tileW, 2)
+      g.fillRect(x + tileW - 2, y, 2, tileH)
+    }
+  }
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.RepeatWrapping
+  tex.repeat.set(3, 2)
+  textureCache.set(key, tex)
+  return tex
+}
+
+export function suiteFridgePanelTexture(): THREE.CanvasTexture {
+  const key = 'suite-fridge-panel'
+  const cached = textureCache.get(key)
+  if (cached) return cached
+
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const g = canvas.getContext('2d')!
+
+  // Brushed dark titanium metal base
+  const grad = g.createLinearGradient(0, 0, 512, 0)
+  grad.addColorStop(0, '#1c222e')
+  grad.addColorStop(0.3, '#2a3346')
+  grad.addColorStop(0.7, '#1f2533')
+  grad.addColorStop(1, '#151922')
+  g.fillStyle = grad
+  g.fillRect(0, 0, 512, 512)
+
+  // Subtle brushed metal vertical striations
+  g.strokeStyle = 'rgba(255, 255, 255, 0.04)'
+  g.lineWidth = 1
+  for (let x = 4; x < 512; x += 6) {
+    g.beginPath()
+    g.moveTo(x, 0)
+    g.lineTo(x, 512)
+    g.stroke()
+  }
+
+  // Recessed handle channel
+  g.fillStyle = '#0a0d14'
+  g.fillRect(0, 246, 512, 20)
+  g.fillStyle = 'rgba(212, 175, 55, 0.4)' // Brushed brass accent trim
+  g.fillRect(0, 245, 512, 2)
+
+  // Smart OLED Touch Display Screen (Upper door)
+  g.fillStyle = '#0b0f19'
+  g.strokeStyle = 'rgba(255, 255, 255, 0.12)'
+  g.lineWidth = 2
+  g.fillRect(160, 60, 192, 110)
+  g.strokeRect(160, 60, 192, 110)
+
+  // Header status
+  g.fillStyle = '#94a3b8'
+  g.font = 'bold 11px sans-serif'
+  g.textAlign = 'center'
+  g.fillText('JAPANESE INVERTER // SMART SENSOR', 256, 82)
+
+  // Temperature readings
+  g.fillStyle = '#38bdf8'
+  g.font = 'bold 26px sans-serif'
+  g.fillText('3°C', 210, 122)
+
+  g.fillStyle = '#a5b4fc'
+  g.font = 'bold 26px sans-serif'
+  g.fillText('-18°C', 302, 122)
+
+  g.fillStyle = '#64748b'
+  g.font = '10px sans-serif'
+  g.fillText('REFRIGERATOR', 210, 142)
+  g.fillText('FREEZER', 302, 142)
+
+  // Mode badge
+  g.fillStyle = '#10b981'
+  g.beginPath()
+  g.arc(200, 156, 4, 0, Math.PI * 2)
+  g.fill()
+
+  g.fillStyle = '#cbd5e1'
+  g.font = '10px sans-serif'
+  g.textAlign = 'left'
+  g.fillText('ECO NANO-E ACTIVE', 210, 160)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  textureCache.set(key, tex)
+  return tex
+}
+

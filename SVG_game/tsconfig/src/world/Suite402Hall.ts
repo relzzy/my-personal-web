@@ -11,7 +11,8 @@ import {
   suite402LivingRoomRugTexture,
   suite402WelcomeRunnerTexture,
   suite402BedroomMatTexture,
-  suiteCuisineSignTexture,
+  suiteKitchenBacksplashTexture,
+  suiteFridgePanelTexture,
   suiteAudioWaveformTexture,
   suiteArtBookCoverTexture,
   suiteKitchenMarbleTexture,
@@ -126,6 +127,22 @@ export function buildSuite402Hall(
     color: 0xf8fafc,
     roughness: 0.3,
     metalness: 0.05,
+  })
+
+  const backsplashTex = suiteKitchenBacksplashTexture()
+  const backsplashMat = new THREE.MeshStandardMaterial({
+    map: backsplashTex,
+    roughness: 0.25,
+    metalness: 0.05,
+  })
+
+  const glassMat = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    roughness: 0.08,
+    metalness: 0.1,
+    transparent: true,
+    opacity: 0.45,
+    depthWrite: false,
   })
 
   const plantLeafMat = new THREE.MeshStandardMaterial({
@@ -306,110 +323,350 @@ export function buildSuite402Hall(
   hallGroup.add(bedMatMesh)
 
   // =========================================================================
-  // 6. KITCHENETTE / BREAKFAST BAR ("CUISINE" - NORTH-WEST)
+  // 6. MODERN LUXURY RESIDENTIAL HOUSE KITCHEN (NORTH-WEST)
+  // [RESIDENTIAL HOME KITCHEN]: Replaces commercial "CUISINE" bar with a full,
+  // warm Japanese residential apartment kitchen:
+  // - Ceramic subway tile backsplash with warm under-cabinet LED wash lighting.
+  // - Tall Japanese multi-door French-door refrigerator with OLED temperature readout.
+  // - Rear counter run with 3-zone induction cooktop, Balmuda steam oven, kettle, and knife block.
+  // - Stainless steel chimney extraction range hood with cooktop task downlight.
+  // - Upper cabinetry and open floating display shelving with mugs & ceramics.
+  // - Waterfall Calacatta marble prep island with undermount sink, gooseneck faucet,
+  //   cutting board with citrus garnish, fruit bowl, and 3 modern bar stools.
   // =========================================================================
-  const kitX = cx - 3.6
-  const kitZ = cz - innerD / 2 + 1.15 // ~ 83.25
-  const barW = 3.6
-  const barD = 0.95
-  const barH = 0.92
+  const kitX = cx - 3.4
+  const kitZ = cz - innerD / 2 + 1.25 // ~ 83.35
 
-  // 6.1 "CUISINE" Illuminated Acrylic Sign (North Wall above counter)
-  const cuiSignTex = suiteCuisineSignTexture()
-  const cuiSignMat = new THREE.MeshStandardMaterial({
-    map: cuiSignTex,
-    roughness: 0.25,
-    metalness: 0.3,
+  // 6.1 Full Glazed Ceramic Subway Tile Backsplash (North Wall)
+  const bSplashW = 4.4
+  const bSplashH = 1.7
+  const bSplashZ = cz - innerD / 2 + 0.02
+  const backsplashMesh = new THREE.Mesh(new THREE.BoxGeometry(bSplashW, bSplashH, 0.03), backsplashMat)
+  backsplashMesh.position.set(kitX - 0.2, floorY + 0.9 + bSplashH / 2, bSplashZ)
+  hallGroup.add(backsplashMesh)
+
+  // 6.2 Tall Japanese Multi-Door Refrigerator (West corner)
+  const fridgeW = 0.88
+  const fridgeD = 0.72
+  const fridgeH = 2.18
+  const fridgeX = cx - innerW / 2 + 0.65 // ~ -5.35
+  const fridgeZ = cz - innerD / 2 + fridgeD / 2 + 0.04 // ~ 82.50
+
+  const fridgeBody = new THREE.Mesh(new THREE.BoxGeometry(fridgeW, fridgeH, fridgeD), darkMetalMat)
+  fridgeBody.position.set(fridgeX, floorY + fridgeH / 2, fridgeZ)
+  fridgeBody.castShadow = true
+  fridgeBody.receiveShadow = true
+
+  // Front panel with digital temperature OLED display
+  const fridgeTex = suiteFridgePanelTexture()
+  const fridgeFrontMat = new THREE.MeshStandardMaterial({ map: fridgeTex, roughness: 0.35, metalness: 0.75 })
+  const fridgeFront = new THREE.Mesh(new THREE.PlaneGeometry(fridgeW - 0.02, fridgeH - 0.02), fridgeFrontMat)
+  fridgeFront.position.set(fridgeX, floorY + fridgeH / 2, fridgeZ + fridgeD / 2 + 0.005)
+
+  // Recessed handle brass accent
+  const fridgeHandle = new THREE.Mesh(new THREE.BoxGeometry(fridgeW - 0.06, 0.03, 0.02), goldMat)
+  fridgeHandle.position.set(fridgeX, floorY + 1.05, fridgeZ + fridgeD / 2 + 0.01)
+
+  hallGroup.add(fridgeBody, fridgeFront, fridgeHandle)
+
+  colliders.add({
+    minX: fridgeX - fridgeW / 2 - 0.05,
+    minY: 0,
+    maxX: fridgeX + fridgeW / 2 + 0.05,
+    maxY: 4.0,
+    minZ: fridgeZ - fridgeD / 2 - 0.05,
+    maxZ: fridgeZ + fridgeD / 2 + 0.05,
   })
-  const cuiSign = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.5, 0.06), cuiSignMat)
-  cuiSign.position.set(kitX, floorY + 2.3, cz - innerD / 2 + 0.04)
-  hallGroup.add(cuiSign)
 
-  // 6.2 Counter Base Cabinet (Dark Charcoal / Slate with Gold Toe-Kick)
-  const barBase = new THREE.Mesh(new THREE.BoxGeometry(barW, barH - 0.08, barD - 0.1), darkMetalMat)
-  barBase.position.set(kitX, floorY + (barH - 0.08) / 2, kitZ)
-  barBase.castShadow = true
-  barBase.receiveShadow = true
-  hallGroup.add(barBase)
+  // 6.3 Rear Counter Run (Along North Wall)
+  const rearCounterW = 3.2
+  const rearCounterD = 0.65
+  const rearCounterH = 0.92
+  const rearCounterX = kitX + 0.35 // ~ -3.05
+  const rearCounterZ = cz - innerD / 2 + rearCounterD / 2 + 0.03 // ~ 82.455
 
-  const barToeKick = new THREE.Mesh(new THREE.BoxGeometry(barW - 0.04, 0.08, barD - 0.16), goldMat)
-  barToeKick.position.set(kitX, floorY + 0.04, kitZ)
-  hallGroup.add(barToeKick)
+  // Base Cabinetry (Dark Walnut with Gold Edge Pulls)
+  const rearBase = new THREE.Mesh(new THREE.BoxGeometry(rearCounterW, rearCounterH - 0.06, rearCounterD - 0.05), darkWoodMat)
+  rearBase.position.set(rearCounterX, floorY + (rearCounterH - 0.06) / 2, rearCounterZ)
+  rearBase.castShadow = true
+  rearBase.receiveShadow = true
 
-  // 6.3 Carrara Marble Countertop (with waterfall edge profile)
-  const barTop = new THREE.Mesh(new THREE.BoxGeometry(barW + 0.08, 0.08, barD + 0.08), marbleMat)
-  barTop.position.set(kitX, floorY + barH, kitZ)
-  barTop.castShadow = true
-  barTop.receiveShadow = true
-  hallGroup.add(barTop)
+  const rearToeKick = new THREE.Mesh(new THREE.BoxGeometry(rearCounterW - 0.04, 0.08, rearCounterD - 0.1), darkMetalMat)
+  rearToeKick.position.set(rearCounterX, floorY + 0.04, rearCounterZ)
 
-  // 6.4 Undermount Stainless Sink & Chrome Faucet (Left of Counter)
-  const sinkMesh = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.01, 0.48), darkMetalMat)
-  sinkMesh.position.set(kitX - 1.0, floorY + barH + 0.042, kitZ - 0.1)
-  hallGroup.add(sinkMesh)
+  // Calacatta Marble Countertop
+  const rearTop = new THREE.Mesh(new THREE.BoxGeometry(rearCounterW + 0.04, 0.06, rearCounterD + 0.04), marbleMat)
+  rearTop.position.set(rearCounterX, floorY + rearCounterH - 0.03, rearCounterZ)
+  rearTop.castShadow = true
+  rearTop.receiveShadow = true
 
-  const faucetStem = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.28, 12), chromeMat)
-  faucetStem.position.set(kitX - 1.0, floorY + barH + 0.18, kitZ - 0.3)
-  const faucetSpout = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 0.14), chromeMat)
-  faucetSpout.position.set(kitX - 1.0, floorY + barH + 0.31, kitZ - 0.23)
-  hallGroup.add(faucetStem, faucetSpout)
+  hallGroup.add(rearBase, rearToeKick, rearTop)
 
-  // 6.5 Induction Cooktop (Center of Counter)
-  const cooktop = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.01, 0.5), new THREE.MeshStandardMaterial({
-    color: 0x0a0e17,
-    roughness: 0.1,
-    metalness: 0.9,
+  colliders.add({
+    minX: rearCounterX - rearCounterW / 2 - 0.05,
+    minY: 0,
+    maxX: rearCounterX + rearCounterW / 2 + 0.05,
+    maxY: 4.0,
+    minZ: rearCounterZ - rearCounterD / 2 - 0.05,
+    maxZ: rearCounterZ + rearCounterD / 2 + 0.05,
+  })
+
+  // 6.4 3-Zone Ceramic Induction Cooktop (Rear Counter, left)
+  const cookX = rearCounterX - 0.65 // ~ -3.70
+  const cookZ = rearCounterZ
+  const cooktop = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.015, 0.52), new THREE.MeshStandardMaterial({
+    color: 0x090d14,
+    roughness: 0.08,
+    metalness: 0.92,
   }))
-  cooktop.position.set(kitX, floorY + barH + 0.042, kitZ - 0.1)
+  cooktop.position.set(cookX, floorY + rearCounterH + 0.008, cookZ)
   hallGroup.add(cooktop)
 
   // Glowing induction cooking circles
-  const burnerRing1 = new THREE.Mesh(new THREE.RingGeometry(0.06, 0.09, 24), new THREE.MeshBasicMaterial({ color: 0xf97316 }))
-  burnerRing1.rotation.x = -Math.PI / 2
-  burnerRing1.position.set(kitX - 0.16, floorY + barH + 0.044, kitZ - 0.1)
-  const burnerRing2 = new THREE.Mesh(new THREE.RingGeometry(0.08, 0.12, 24), new THREE.MeshBasicMaterial({ color: 0xf97316 }))
-  burnerRing2.rotation.x = -Math.PI / 2
-  burnerRing2.position.set(kitX + 0.16, floorY + barH + 0.044, kitZ - 0.1)
-  hallGroup.add(burnerRing1, burnerRing2)
+  const bRing1 = new THREE.Mesh(new THREE.RingGeometry(0.06, 0.095, 24), new THREE.MeshBasicMaterial({ color: 0xf97316 }))
+  bRing1.rotation.x = -Math.PI / 2
+  bRing1.position.set(cookX - 0.18, floorY + rearCounterH + 0.016, cookZ + 0.06)
+  const bRing2 = new THREE.Mesh(new THREE.RingGeometry(0.08, 0.12, 24), new THREE.MeshBasicMaterial({ color: 0xf97316 }))
+  bRing2.rotation.x = -Math.PI / 2
+  bRing2.position.set(cookX + 0.16, floorY + rearCounterH + 0.016, cookZ)
+  const bRing3 = new THREE.Mesh(new THREE.RingGeometry(0.05, 0.075, 24), new THREE.MeshBasicMaterial({ color: 0xf97316 }))
+  bRing3.rotation.x = -Math.PI / 2
+  bRing3.position.set(cookX - 0.16, floorY + rearCounterH + 0.016, cookZ - 0.12)
+  hallGroup.add(bRing1, bRing2, bRing3)
 
-  // 6.6 Culinary Board & Food Prep (Right of Counter)
-  const board = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.02, 0.38), darkWoodMat)
-  board.position.set(kitX + 1.05, floorY + barH + 0.045, kitZ - 0.08)
-  hallGroup.add(board)
+  // 6.5 Stainless Steel Extraction Range Hood & Chimney
+  const hoodW = 0.9
+  const hoodD = 0.54
+  const hoodH = 0.12
+  const hoodY = floorY + 1.95
 
-  // Japanese Knife & Citrus Garnish
+  const hoodCanopy = new THREE.Mesh(new THREE.BoxGeometry(hoodW, hoodH, hoodD), chromeMat)
+  hoodCanopy.position.set(cookX, hoodY + hoodH / 2, cookZ)
+
+  const chimW = 0.38
+  const chimD = 0.32
+  const chimH = wallH - (1.95 + hoodH) + 0.05
+  const chimney = new THREE.Mesh(new THREE.BoxGeometry(chimW, chimH, chimD), chromeMat)
+  chimney.position.set(cookX, hoodY + hoodH + chimH / 2, cz - innerD / 2 + chimD / 2 + 0.03)
+
+  // Undermount LED Cooktop Downlight
+  const hoodLight = new THREE.Mesh(new THREE.BoxGeometry(hoodW - 0.1, 0.01, hoodD - 0.1), coveLedMat)
+  hoodLight.position.set(cookX, hoodY - 0.005, cookZ)
+
+  hallGroup.add(hoodCanopy, chimney, hoodLight)
+
+  // 6.6 Upper Wall Cabinets & Open Floating Display Shelving
+  // Left Upper Cabinet (flanking hood, above counter)
+  const uCabLW = 0.6
+  const uCabH = 0.72
+  const uCabD = 0.38
+  const uCabLX = cookX - hoodW / 2 - uCabLW / 2 - 0.04
+  const uCabY = floorY + 1.95 + uCabH / 2
+  const uCabZ = cz - innerD / 2 + uCabD / 2 + 0.03
+
+  const uCabL = new THREE.Mesh(new THREE.BoxGeometry(uCabLW, uCabH, uCabD), darkWoodMat)
+  uCabL.position.set(uCabLX, uCabY, uCabZ)
+  const uCabLTrim = new THREE.Mesh(new THREE.BoxGeometry(uCabLW, 0.02, 0.02), goldMat)
+  uCabLTrim.position.set(uCabLX, uCabY - uCabH / 2 + 0.01, uCabZ + uCabD / 2 + 0.01)
+  hallGroup.add(uCabL, uCabLTrim)
+
+  // Right Upper Cabinet (far right edge)
+  const uCabRW = 0.55
+  const uCabRX = rearCounterX + rearCounterW / 2 - uCabRW / 2
+  const uCabR = new THREE.Mesh(new THREE.BoxGeometry(uCabRW, uCabH, uCabD), darkWoodMat)
+  uCabR.position.set(uCabRX, uCabY, uCabZ)
+  const uCabRTrim = new THREE.Mesh(new THREE.BoxGeometry(uCabRW, 0.02, 0.02), goldMat)
+  uCabRTrim.position.set(uCabRX, uCabY - uCabH / 2 + 0.01, uCabZ + uCabD / 2 + 0.01)
+  hallGroup.add(uCabR, uCabRTrim)
+
+  // Floating Natural Oak Open Display Shelf (between range hood and right cabinet)
+  const shelfX = (cookX + hoodW / 2 + uCabRX - uCabRW / 2) / 2
+  const shelfW = (uCabRX - uCabRW / 2) - (cookX + hoodW / 2) - 0.08
+  const shelf = new THREE.Mesh(new THREE.BoxGeometry(shelfW, 0.035, 0.3), darkWoodMat)
+  shelf.position.set(shelfX, floorY + 2.05, cz - innerD / 2 + 0.18)
+  const shelfGold = new THREE.Mesh(new THREE.BoxGeometry(shelfW + 0.02, 0.01, 0.02), goldMat)
+  shelfGold.position.set(shelfX, floorY + 2.05 - 0.018, cz - innerD / 2 + 0.32)
+  hallGroup.add(shelf, shelfGold)
+
+  // Ceramic Coffee Mugs on Floating Shelf
+  for (let m = 0; m < 4; m++) {
+    const mugX = shelfX - shelfW / 2 + 0.15 + m * 0.22
+    const mugMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.04, 0.09, 16), m % 2 === 0 ? ceramicWhiteMat : darkMetalMat)
+    mugMesh.position.set(mugX, floorY + 2.05 + 0.045 + 0.018, cz - innerD / 2 + 0.18)
+    hallGroup.add(mugMesh)
+  }
+
+  // Under-Cabinet Warm LED Task Lighting Strip
+  const underLedGeo = new THREE.BoxGeometry(rearCounterW - 0.1, 0.015, 0.03)
+  const underLed = new THREE.Mesh(underLedGeo, coveLedMat)
+  underLed.position.set(rearCounterX, floorY + 1.94, cz - innerD / 2 + 0.36)
+  hallGroup.add(underLed)
+
+  // 6.7 Countertop Home Appliances (Rear Counter)
+  // Balmuda Steam Oven / Microwave (Right section of rear counter)
+  const ovenX = rearCounterX + 0.55 // ~ -2.50
+  const ovenZ = rearCounterZ - 0.05
+  const ovenW = 0.52
+  const ovenH = 0.32
+  const ovenD = 0.38
+  const ovenMesh = new THREE.Mesh(new THREE.BoxGeometry(ovenW, ovenH, ovenD), darkMetalMat)
+  ovenMesh.position.set(ovenX, floorY + rearCounterH + ovenH / 2, ovenZ)
+
+  // Oven Glass Door & Amber Dial
+  const ovenGlass = new THREE.Mesh(new THREE.BoxGeometry(ovenW - 0.08, ovenH - 0.08, 0.02), new THREE.MeshStandardMaterial({
+    color: 0x05070b,
+    roughness: 0.1,
+    metalness: 0.9,
+  }))
+  ovenGlass.position.set(ovenX, floorY + rearCounterH + ovenH / 2, ovenZ + ovenD / 2 + 0.01)
+  const ovenDial = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.02, 16), goldMat)
+  ovenDial.rotation.x = Math.PI / 2
+  ovenDial.position.set(ovenX + ovenW / 2 - 0.08, floorY + rearCounterH + 0.08, ovenZ + ovenD / 2 + 0.02)
+  hallGroup.add(ovenMesh, ovenGlass, ovenDial)
+
+  // Balmuda Gooseneck Electric Kettle
+  const kettleX = rearCounterX + 1.25 // ~ -1.80
+  const kettleZ = rearCounterZ
+  const kettleBase = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.02, 20), darkMetalMat)
+  kettleBase.position.set(kettleX, floorY + rearCounterH + 0.01, kettleZ)
+  const kettleBody = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.085, 0.2, 20), darkMetalMat)
+  kettleBody.position.set(kettleX, floorY + rearCounterH + 0.12, kettleZ)
+  const kettleSpout = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.14, 0.12), darkMetalMat)
+  kettleSpout.rotation.x = 0.4
+  kettleSpout.position.set(kettleX, floorY + rearCounterH + 0.14, kettleZ + 0.1)
+  hallGroup.add(kettleBase, kettleBody, kettleSpout)
+
+  // Hardwood Knife Block with Chef Knives (Left section near fridge)
+  const blockX = cookX - 0.65 // ~ -4.35
+  const blockZ = rearCounterZ - 0.08
+  const blockMesh = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.22, 0.22), darkWoodMat)
+  blockMesh.rotation.x = 0.2
+  blockMesh.position.set(blockX, floorY + rearCounterH + 0.11, blockZ)
+  hallGroup.add(blockMesh)
+
+  for (let k = 0; k < 3; k++) {
+    const kHandle = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.09, 0.025), darkMetalMat)
+    kHandle.rotation.x = 0.2
+    kHandle.position.set(blockX - 0.04 + k * 0.04, floorY + rearCounterH + 0.24, blockZ - 0.02)
+    hallGroup.add(kHandle)
+  }
+
+  // Seasoning Shakers & Oil Cruet
+  const oilCruet = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.04, 0.22, 16), glassMat)
+  oilCruet.position.set(rearCounterX - 0.05, floorY + rearCounterH + 0.11, rearCounterZ - 0.14)
+  const shaker1 = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.12, 12), ceramicWhiteMat)
+  shaker1.position.set(rearCounterX + 0.08, floorY + rearCounterH + 0.06, rearCounterZ - 0.14)
+  const shaker2 = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.12, 12), darkMetalMat)
+  shaker2.position.set(rearCounterX + 0.17, floorY + rearCounterH + 0.06, rearCounterZ - 0.14)
+  hallGroup.add(oilCruet, shaker1, shaker2)
+
+  // =========================================================================
+  // 6.8 LUXURY WATERFALL MARBLE ISLAND / BREAKFAST BAR
+  // =========================================================================
+  const islW = 2.7
+  const islD = 0.88
+  const islH = 0.92
+  const islX = kitX + 0.25 // ~ -3.15
+  const islZ = cz - innerD / 2 + 2.35 // ~ 84.45 (leaving 1.25m walk aisle between counters)
+
+  // Marble Waterfall Countertop & Cascading Legs
+  const islTop = new THREE.Mesh(new THREE.BoxGeometry(islW, 0.06, islD), marbleMat)
+  islTop.position.set(islX, floorY + islH - 0.03, islZ)
+  islTop.castShadow = true
+  islTop.receiveShadow = true
+
+  // Left waterfall leg
+  const islLegL = new THREE.Mesh(new THREE.BoxGeometry(0.06, islH - 0.06, islD), marbleMat)
+  islLegL.position.set(islX - islW / 2 + 0.03, floorY + (islH - 0.06) / 2, islZ)
+  // Right waterfall leg
+  const islLegR = new THREE.Mesh(new THREE.BoxGeometry(0.06, islH - 0.06, islD), marbleMat)
+  islLegR.position.set(islX + islW / 2 - 0.03, floorY + (islH - 0.06) / 2, islZ)
+
+  // Island Base Cabinetry (Dark Walnut with Gold Toe-Kick)
+  const islBase = new THREE.Mesh(new THREE.BoxGeometry(islW - 0.16, islH - 0.1, islD - 0.18), darkWoodMat)
+  islBase.position.set(islX, floorY + (islH - 0.1) / 2, islZ - 0.04)
+  islBase.castShadow = true
+
+  const islToeKick = new THREE.Mesh(new THREE.BoxGeometry(islW - 0.2, 0.08, islD - 0.24), goldMat)
+  islToeKick.position.set(islX, floorY + 0.04, islZ - 0.04)
+
+  hallGroup.add(islTop, islLegL, islLegR, islBase, islToeKick)
+
+  colliders.add({
+    minX: islX - islW / 2 - 0.05,
+    minY: 0,
+    maxX: islX + islW / 2 + 0.05,
+    maxY: 4.0,
+    minZ: islZ - islD / 2 - 0.05,
+    maxZ: islZ + islD / 2 + 0.05,
+  })
+
+  // Undermount Prep Sink & High-Arc Chrome Faucet (Left side of island)
+  const sinkX = islX - 0.65
+  const sinkZ = islZ
+  const sinkMesh = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.015, 0.44), darkMetalMat)
+  sinkMesh.position.set(sinkX, floorY + islH - 0.01, sinkZ)
+  hallGroup.add(sinkMesh)
+
+  const faucetStem = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.32, 16), chromeMat)
+  faucetStem.position.set(sinkX, floorY + islH + 0.16, sinkZ - 0.22)
+  const faucetArch = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.016, 12, 16, Math.PI), chromeMat)
+  faucetArch.rotation.z = -Math.PI / 2
+  faucetArch.position.set(sinkX, floorY + islH + 0.32, sinkZ - 0.13)
+  const faucetWand = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.016, 0.08, 16), chromeMat)
+  faucetWand.position.set(sinkX, floorY + islH + 0.27, sinkZ - 0.04)
+  hallGroup.add(faucetStem, faucetArch, faucetWand)
+
+  // End-Grain Walnut Prep Board & Citrus Garnish (Right side of island)
+  const boardX = islX + 0.68
+  const board = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.025, 0.36), darkWoodMat)
+  board.position.set(boardX, floorY + islH + 0.012, islZ)
   const knife = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.008, 0.035), chromeMat)
-  knife.rotation.y = 0.25
-  knife.position.set(kitX + 1.15, floorY + barH + 0.06, kitZ - 0.08)
-  hallGroup.add(knife)
+  knife.rotation.y = 0.35
+  knife.position.set(boardX + 0.08, floorY + islH + 0.03, islZ - 0.05)
+  hallGroup.add(board, knife)
 
-  // 6.7 3 Modern Circular Breakfast Bar Stools
+  // Ceramic Bowl with Fresh Green Apples
+  const bowlX = islX + 0.05
+  const fruitBowl = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.1, 0.08, 20), ceramicWhiteMat)
+  fruitBowl.position.set(bowlX, floorY + islH + 0.04, islZ + 0.02)
+  hallGroup.add(fruitBowl)
+
+  const appleMat = new THREE.MeshStandardMaterial({ color: 0x84cc16, roughness: 0.35 })
+  for (let a = 0; a < 3; a++) {
+    const apple = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 12), appleMat)
+    const angle = (a / 3) * Math.PI * 2
+    apple.position.set(bowlX + Math.cos(angle) * 0.06, floorY + islH + 0.1, islZ + 0.02 + Math.sin(angle) * 0.06)
+    hallGroup.add(apple)
+  }
+
+  // 6.9 3 Modern Circular Breakfast Bar Stools (Room side of island)
   for (let s = -1; s <= 1; s++) {
-    const stoolX = kitX + s * 1.05
-    const stoolZ = kitZ + barD / 2 + 0.35
+    const stoolX = islX + s * 0.85
+    const stoolZ = islZ + islD / 2 + 0.38
     const stoolH = 0.65
 
     // Base plate & Stem
-    const sBase = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.02, 24), goldMat)
+    const sBase = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.02, 24), goldMat)
     sBase.position.set(stoolX, floorY + 0.01, stoolZ)
-    const sStem = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, stoolH, 16), darkMetalMat)
+    const sStem = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, stoolH, 16), darkMetalMat)
     sStem.position.set(stoolX, floorY + stoolH / 2, stoolZ)
-    const sFootRest = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.015, 8, 24), goldMat)
+    const sFootRest = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.012, 8, 24), goldMat)
     sFootRest.rotation.x = Math.PI / 2
     sFootRest.position.set(stoolX, floorY + 0.2, stoolZ)
 
     // Cushioned Swivel Seat
-    const sSeat = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.07, 24), navyVelvetMat)
+    const sSeat = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.07, 24), navyVelvetMat)
     sSeat.position.set(stoolX, floorY + stoolH + 0.035, stoolZ)
     hallGroup.add(sBase, sStem, sFootRest, sSeat)
 
     colliders.add({
-      minX: stoolX - 0.25,
+      minX: stoolX - 0.22,
       minY: 0,
-      minZ: stoolZ - 0.25,
-      maxX: stoolX + 0.25,
+      minZ: stoolZ - 0.22,
+      maxX: stoolX + 0.22,
       maxY: 4.0,
-      maxZ: stoolZ + 0.25,
+      maxZ: stoolZ + 0.22,
     })
   }
 
@@ -721,9 +978,6 @@ export function buildSuite402Hall(
   colliders.add({ minX: cx - innerW / 2 - 0.4, minY: 0, maxX: cx - innerW / 2 + 0.05, maxY: 4.0, minZ: cz - innerD / 2, maxZ: cz - doorW / 2 })
   colliders.add({ minX: cx - innerW / 2 - 0.4, minY: 0, maxX: cx - innerW / 2 + 0.05, maxY: 4.0, minZ: cz + doorW / 2, maxZ: cz + innerD / 2 })
 
-  // Kitchen Bar Counter
-  colliders.add({ minX: kitX - barW / 2 - 0.1, minY: 0, maxX: kitX + barW / 2 + 0.1, maxY: 4.0, minZ: kitZ - barD / 2 - 0.1, maxZ: kitZ + barD / 2 + 0.1 })
-
   // Media Console
   colliders.add({ minX: mediaX - mediaW / 2 - 0.1, minY: 0, maxX: mediaX + mediaW / 2 + 0.1, maxY: 4.0, minZ: mediaZ - mediaD / 2 - 0.1, maxZ: mediaZ + mediaD / 2 + 0.1 })
 
@@ -776,16 +1030,16 @@ export function buildSuite402Hall(
     },
   })
 
-  // 3. Kitchenette / Cuisine Bar
+  // 3. Residential House Kitchen
   interactions.add({
-    id: 'hall-cuisine',
-    x: kitX,
-    z: kitZ + 0.6,
-    radius: 1.7,
-    prompt: () => 'Prepare Coffee & Refreshments [キッチン]',
+    id: 'hall-kitchen',
+    x: kitX + 0.25,
+    z: cz - innerD / 2 + 2.35 + 0.6,
+    radius: 1.8,
+    prompt: () => 'Make Coffee or Prepare Meal [キッチンで料理・珈琲]',
     onInteract: () => {
       audio?.playSipWaterSound()
-      messages.show('☕ Freshly brewed Tokyo roast espresso prepared at the Cuisine Bar.')
+      messages.show('☕ Fresh pour-over coffee brewed on the marble island counter. The kitchen is immaculate and warm.')
     },
   })
 

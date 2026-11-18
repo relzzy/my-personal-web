@@ -1383,19 +1383,19 @@ export function buildSuite402(
   const posterMechaTex = suiteAnimePosterMechaTexture()
   createFramedPoster(cx - innerW / 2 + 0.025, floorY + 2.15, deskZ, 0.85, 1.25, posterMechaTex, Math.PI / 2)
 
-  // 4. Poster 4: "MIDNIGHT STUDY // LO-FI TOKYO" (South Wall, above Lounge Nook)
+  // 4. Poster 4: "MIDNIGHT STUDY // LO-FI TOKYO" (South Wall, East of Media Console)
   const posterLofiTex = suiteAnimePosterLofiTexture()
-  createFramedPoster(cx + 3.4, floorY + 1.7, cz + innerD / 2 - 0.025, 0.95, 1.4, posterLofiTex, Math.PI)
+  createFramedPoster(cx + 4.1, floorY + 1.7, cz + innerD / 2 - 0.025, 0.9, 1.35, posterLofiTex, Math.PI)
 
   // =========================================================================
-  // 9. ANIME COLLECTIBLE & MANGA DISPLAY BOOKSHELF (SOUTH WALL)
-  // [NEW FURNITURE]: Modern 4-tier open shelving unit with manga tankobon
-  // series, collectible anime figurines, and potted bonsai/succulent.
+  // 9. ANIME COLLECTIBLE & MANGA DISPLAY BOOKSHELF (SOUTH-WEST WALL)
+  // [RELOCATED]: Placed cleanly to the West of the bathroom doorway, with
+  // over 1.3m clearance to the door frame so the door is 100% unobstructed.
   // =========================================================================
-  const shelfX = cx - 0.6
-  const shelfZ = cz + innerD / 2 - 0.22 // Against South wall
-  const shelfW = 1.6
-  const shelfD = 0.38
+  const shelfX = cx - 2.8
+  const shelfZ = cz + innerD / 2 - 0.20 // Against South wall
+  const shelfW = 1.35
+  const shelfD = 0.36
   const shelfH = 1.45
 
   // Shelving Frame in Dark Walnut & Brass uprights
@@ -1427,43 +1427,43 @@ export function buildSuite402(
   // Manga Volumes on Shelf 1 & 2
   const mangaTex = suiteMangaSpinesTexture()
   const mangaMat = new THREE.MeshStandardMaterial({ map: mangaTex, roughness: 0.5 })
-  const mangaBlock1 = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.24, 0.18), mangaMat)
-  mangaBlock1.position.set(shelfX - 0.35, floorY + 0.36 + 0.12, shelfZ)
-  const mangaBlock2 = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.24, 0.18), mangaMat)
-  mangaBlock2.position.set(shelfX + 0.38, floorY + 0.72 + 0.12, shelfZ)
+  const mangaBlock1 = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.24, 0.18), mangaMat)
+  mangaBlock1.position.set(shelfX - 0.28, floorY + 0.36 + 0.12, shelfZ)
+  const mangaBlock2 = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.24, 0.18), mangaMat)
+  mangaBlock2.position.set(shelfX + 0.30, floorY + 0.72 + 0.12, shelfZ)
   suiteGroup.add(mangaBlock1, mangaBlock2)
 
   // Anime Scale Figures on Acrylic Stands (Shelf 2 & 3)
   const acrylicMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.1, transparent: true, opacity: 0.5 })
   // Figure 1: Cyber Heroine Figure (Pink & Cyan)
   const fig1Base = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.012, 16), acrylicMat)
-  fig1Base.position.set(shelfX - 0.4, floorY + 0.72 + 0.01, shelfZ)
+  fig1Base.position.set(shelfX - 0.32, floorY + 0.72 + 0.01, shelfZ)
   const fig1Body = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.025, 0.18, 8), new THREE.MeshStandardMaterial({ color: 0x111625 }))
-  fig1Body.position.set(shelfX - 0.4, floorY + 0.72 + 0.1, shelfZ)
+  fig1Body.position.set(shelfX - 0.32, floorY + 0.72 + 0.1, shelfZ)
   const fig1Head = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 12), new THREE.MeshStandardMaterial({ color: 0xffd1b3 }))
-  fig1Head.position.set(shelfX - 0.4, floorY + 0.72 + 0.21, shelfZ)
+  fig1Head.position.set(shelfX - 0.32, floorY + 0.72 + 0.21, shelfZ)
   const fig1Hair = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.12, 8), new THREE.MeshStandardMaterial({ color: 0x00f5d4 }))
-  fig1Hair.position.set(shelfX - 0.4, floorY + 0.72 + 0.24, shelfZ - 0.01)
+  fig1Hair.position.set(shelfX - 0.32, floorY + 0.72 + 0.24, shelfZ - 0.01)
   suiteGroup.add(fig1Base, fig1Body, fig1Head, fig1Hair)
 
   // Figure 2: Mecha Scale Model Figure (Red & Gold)
   const fig2Base = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.012, 16), acrylicMat)
-  fig2Base.position.set(shelfX + 0.35, floorY + 1.08 + 0.01, shelfZ)
+  fig2Base.position.set(shelfX + 0.28, floorY + 1.08 + 0.01, shelfZ)
   const fig2Body = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.16, 0.04), new THREE.MeshStandardMaterial({ color: 0x9b111e }))
-  fig2Body.position.set(shelfX + 0.35, floorY + 1.08 + 0.09, shelfZ)
+  fig2Body.position.set(shelfX + 0.28, floorY + 1.08 + 0.09, shelfZ)
   const fig2Wings = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.08, 0.01), goldMat)
-  fig2Wings.position.set(shelfX + 0.35, floorY + 1.08 + 0.14, shelfZ - 0.02)
+  fig2Wings.position.set(shelfX + 0.28, floorY + 1.08 + 0.14, shelfZ - 0.02)
   suiteGroup.add(fig2Base, fig2Body, fig2Wings)
 
   // =========================================================================
-  // 10. WALL-MOUNTED 60" OLED TV & MEDIA CONSOLE (SOUTH WALL)
-  // [NEW FURNITURE]: Modern floating entertainment credenza with OLED screen,
-  // next-gen gaming console, and soundbar.
+  // 10. WALL-MOUNTED 60" OLED TV & MEDIA CONSOLE (SOUTH-EAST WALL)
+  // [RELOCATED]: Moved cleanly to the East of the bathroom doorway with
+  // generous 0.9m clearance to the door frame, leaving the doorway fully open.
   // =========================================================================
-  const tvX = cx + 1.5
+  const tvX = cx + 2.5
   const tvZ = cz + innerD / 2 - 0.05
-  const tvW = 1.7
-  const tvH = 0.96
+  const tvW = 1.45
+  const tvH = 0.85
 
   // 60" TV Display Panel
   const tvScreenMat = new THREE.MeshStandardMaterial({ color: 0x05070c, roughness: 0.12, metalness: 0.85 })
@@ -1476,9 +1476,9 @@ export function buildSuite402(
   suiteGroup.add(tvScreen, tvBezel)
 
   // Floating Walnut Media Credenza below TV
-  const credW = 2.0
-  const credH = 0.35
-  const credD = 0.45
+  const credW = 1.65
+  const credH = 0.32
+  const credD = 0.42
   const credZ = cz + innerD / 2 - credD / 2 - 0.02
   const credMesh = new THREE.Mesh(new THREE.BoxGeometry(credW, credH, credD), darkWoodMat)
   credMesh.position.set(tvX, floorY + 0.45, credZ)
@@ -1487,15 +1487,15 @@ export function buildSuite402(
   credGold.position.set(tvX, floorY + 0.45 + credH / 2, credZ)
 
   // Slim Soundbar on Credenza
-  const soundbar = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.05, 0.08), darkMetalMat)
+  const soundbar = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.05, 0.08), darkMetalMat)
   soundbar.position.set(tvX, floorY + 0.45 + credH / 2 + 0.03, credZ + 0.1)
 
   // Next-Gen Gaming Console (with glowing blue status stripe)
-  const consoleGeo = new THREE.BoxGeometry(0.3, 0.06, 0.24)
+  const consoleGeo = new THREE.BoxGeometry(0.28, 0.06, 0.22)
   const gameConsole = new THREE.Mesh(consoleGeo, whiteLinenMat)
-  gameConsole.position.set(tvX - 0.65, floorY + 0.45 + credH / 2 + 0.035, credZ)
-  const consoleLight = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.005, 0.01), blueLedMat)
-  consoleLight.position.set(tvX - 0.65, floorY + 0.45 + credH / 2 + 0.065, credZ + 0.11)
+  gameConsole.position.set(tvX - 0.52, floorY + 0.45 + credH / 2 + 0.035, credZ)
+  const consoleLight = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.005, 0.01), blueLedMat)
+  consoleLight.position.set(tvX - 0.52, floorY + 0.45 + credH / 2 + 0.065, credZ + 0.1)
 
   suiteGroup.add(credMesh, credGold, soundbar, gameConsole, consoleLight)
 
@@ -2034,7 +2034,7 @@ export function buildSuite402(
   // 8. Anime Poster: Midnight Lo-Fi Study
   interactions.add({
     id: 'suite-poster-lofi',
-    x: cx + 3.4,
+    x: cx + 4.1,
     z: cz + innerD / 2 - 0.6,
     radius: 1.8,
     prompt: () => 'Inspect Poster: Midnight Lo-Fi [ポスター鑑賞]',
